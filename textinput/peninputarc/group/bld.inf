@@ -1,0 +1,149 @@
+/*
+* Copyright (c) 2005-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Build information file for project PeninputArc
+*
+*/
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+
+// IBY-files
+../rom/peninputarc.iby CORE_MW_LAYER_IBY_EXPORT_PATH(peninputarc.iby)
+../rom/peninputarcresources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(peninputarcresources.iby)
+
+//from peninputlayouteng
+//layout engine header.
+../inc/peninputlayoutenginc/peninputlayouteng.h                         |../../../inc/peninputlayouteng.h
+
+//ecom plugin interface
+../inc/peninputlayoutinterfaceinc/peninputlayoutplugininterface.h       |../../../inc/peninputlayoutplugininterface.h
+
+// Ui layout owner interface
+../inc/pensrvcliinc/peninputuilayoutownerinf.h                             |../../../inc/peninputuilayoutownerinf.h
+// Ui layout base interface
+../inc/pensrvcliinc/peninputuilayoutbase.h                              |../../../inc/peninputuilayoutbase.h
+
+
+//layout header file.
+../inc/peninputlayoutcontrolinc/peninputlayout.h                        |../../../inc/peninputlayout.h
+
+//M interface for layout and base controls
+../inc/peninputlayoutcontrolinc/peninputlayoutminterface.h              |../../../inc/peninputlayoutminterface.h
+
+//the control base header file. 
+../inc/peninputlayoutcontrolinc/peninputlayoutbasecontrol.h             |../../../inc/peninputlayoutbasecontrol.h
+
+//header file for vkb control
+../inc/peninputlayoutcontrolinc/peninputlayoutvkb.h                     |../../../inc/peninputlayoutvkb.h
+
+//header file for control group 
+../inc/peninputlayoutcontrolinc/peninputlayoutctrlgroup.h               |../../../inc/peninputlayoutctrlgroup.h
+
+//header file for hwr window
+../inc/peninputlayoutcontrolinc/peninputlayouthwrwnd.h                  |../../../inc/peninputlayouthwrwnd.h
+
+//header file for button and bsae class
+../inc/peninputlayoutcontrolinc/peninputlayoutbutton.h                  |../../../inc/peninputlayoutbutton.h
+
+//header file for editot area base
+../inc/peninputlayoutcontrolinc/peninputlayouteditareabase.h            |../../../inc/peninputlayouteditareabase.h
+
+//header file for input context field
+../inc/peninputlayoutcontrolinc/peninputinputcontextfield.h             |../../../inc/peninputinputcontextfield.h
+../inc/peninputlayoutcontrolinc/peninputlayoutmultilineicf.h            |../../../inc/peninputlayoutmultilineicf.h
+
+//header file for insert point
+../inc/peninputlayoutcontrolinc/peninputlayoutinsertionpoint.h          |../../../inc/peninputlayoutinsertionpoint.h
+../inc/peninputlayoutcontrolinc/peninputlayoutcursor.h                  |../../../inc/peninputlayoutcursor.h
+
+//header file for candidate window
+../inc/peninputlayoutcontrolinc/peninputlayoutcandidatewnd.h            |../../../inc/peninputlayoutcandidatewnd.h
+
+//root control
+../inc/peninputlayoutcontrolinc/peninputlayoutrootctrl.h                |../../../inc/peninputlayoutrootctrl.h
+../inc/peninputlayoutcontrolinc/peninputlayoutrootctrl.inl                |../../../inc/peninputlayoutrootctrl.inl
+
+//pop up window
+../inc/peninputlayoutcontrolinc/peninputlayoutpopupwnd.h                |../../../inc/peninputlayoutpopupwnd.h
+
+//pop up list
+../inc/peninputlayoutcontrolinc/peninputlayoutchoicelist.h              |../../../inc/peninputlayoutchoicelist.h
+
+//latch button
+../inc/peninputlayoutcontrolinc/peninputlayoutlatchbutton.h             |../../../inc/peninputlayoutlatchbutton.h
+
+//bubble ctrl
+../inc/peninputlayoutcontrolinc/peninputlayoutbubblectrl.h              |../../../inc/peninputlayoutbubblectrl.h
+
+//inline file
+../inc/peninputlayoutcontrolinc/peninputlayout.inl                      |../../../inc/peninputlayout.inl
+../inc/peninputlayoutcontrolinc/peninputlayoutbasecontrol.inl           |../../../inc/peninputlayoutbasecontrol.inl
+../inc/peninputlayoutcontrolinc/peninputlayouteditareabase.inl          |../../../inc/peninputlayouteditareabase.inl
+../inc/peninputlayoutcontrolinc/peninputlayoutctrlgroup.inl             |../../../inc/peninputlayoutctrlgroup.inl
+
+../inc/peninputlayoutcontrolinc/peninputlayoutbutton.inl                |../../../inc/peninputlayoutbutton.inl
+../inc/peninputlayoutcontrolinc/peninputlayouthwrwnd.inl                |../../../inc/peninputlayouthwrwnd.inl
+../inc/peninputlayoutcontrolinc/peninputlayoutvkb.inl                   |../../../inc/peninputlayoutvkb.inl
+../inc/peninputlayoutcontrolinc/peninputlayoutcandidatewnd.inl          |../../../inc/peninputlayoutcandidatewnd.inl
+../inc/peninputlayoutcontrolinc/peninputlayoutchoicelist.inl            |../../../inc/peninputlayoutchoicelist.inl
+../inc/peninputlayoutcontrolinc/peninputlayoutlatchbutton.inl           |../../../inc/peninputlayoutlatchbutton.inl
+
+//fullscreen layout header file.
+../inc/peninputlayoutcontrolinc/peninputfullscrlayout.h                        |../../../inc/peninputfullscrlayout.h
+../inc/peninputlayoutcontrolinc/peninputfullscrlayout.inl                        |../../../inc/peninputfullscrlayout.inl
+
+//from peninputclient
+../inc/pensrvcliinc/peninputcmdparamext.h                                  |../../../inc/peninputcmdparamext.h
+
+//from utils
+../utils/inc/peninputpluginutils.h                                      |../../../inc/peninputpluginutils.h
+
+//from Gs plugin
+../gsplugin/gspeninputplugin/inc/peninputgsinterface.h                  |../../../inc/peninputgsinterface.h
+../gsplugin/gspeninputplugin/inc/peninputgsinterface.inl                |../../../inc/peninputgsinterface.inl
+../gsplugin/gspeninputplugin/inc/gspeninputplugin.h                       |../../inc/gspeninputplugin.h
+../gsplugin/gspeninputplugin/loc/gspeninputplugin.loc  MW_LAYER_LOC_EXPORT_PATH(gspeninputplugin.loc)
+../gsplugin/peninputsetting/inc/peninputsettingAppui.h                       |../../inc/peninputsettingappui.h
+
+PRJ_MMPFILES
+../src/peninputlayoutinterface/peninputlayoutinterface.mmp
+../src/peninputlayouteng/peninputlayouteng.mmp
+../src/peninputcrp/peninputcrp.mmp
+../src/peninputserverapp/peninputserver.mmp
+../src/peninputlayoutcontrol/peninputlayoutcontrol.mmp
+../src/peninputanim/peninputanim.mmp
+../src/peninputclient/peninputclient.mmp
+//utils
+../utils/group/peninputpluginutils.mmp
+
+// Gs plugin
+../gsplugin/gspeninputplugin/group/gspeninputplugin.mmp
+
+// Peninput setting application
+../gsplugin/peninputsetting/group/peninputsetting.mmp
+
+PRJ_TESTMMPFILES
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE gspeninputplugin_aif.mif
+OPTION HEADERFILE gspeninputplugin.mbg
+OPTION SOURCES -c8,8 qgn_prop_cp_dev_pen.svg
+END
+
+// End of file

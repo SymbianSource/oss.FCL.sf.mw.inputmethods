@@ -1,0 +1,107 @@
+/*
+* Copyright (c) 2005-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project peninputlayoutcontrol
+*
+*/
+
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+target                  peninputlayoutcontrol.DLL
+targettype              DLL
+uid                     0x1000008D 0x10281851
+
+MACRO		__ALPHA_TRANCEPARENCY__
+CAPABILITY              CAP_GENERAL_DLL
+VENDORID                VID_DEFAULT
+
+sourcepath              .
+
+SOURCE                  peninputuilayout.cpp
+SOURCE                  peninputlayoutbasecontrol.cpp
+SOURCE                  peninputlayoutbutton.cpp 
+SOURCE                  peninputlayoutcandidatewnd.cpp
+SOURCE                  peninputlayouthwrwindow.cpp
+SOURCE                  peninputlayoutcontrolgroup.cpp
+SOURCE                  peninputlayouttimer.cpp
+SOURCE                  peninputinputcontextfield.cpp
+SOURCE                  peninputlayouteditareabase.cpp
+SOURCE                  peninputlayoutinsertionpoint.cpp
+SOURCE                  peninputlayoutvkb.cpp
+SOURCE                  peninputlayoutrootctrl.cpp
+SOURCE                  peninputlayoutpopupwnd.cpp
+SOURCE                  peninputlayoutchoicelist.cpp
+SOURCE                  peninputlayoutlatchbutton.cpp
+SOURCE                  peninputfullscrlayout.cpp
+SOURCE                  peninputlayoutvkbkeyctrl.cpp
+SOURCE                  peninputlayoutmultilineicf.cpp
+SOURCE                  peninputlayoutmicfcustomdraw.cpp
+SOURCE                  peninputlayoutmicfnomatchesinline.cpp
+SOURCE                  peninputlayoutaknchoicelist.cpp
+SOURCE                  peninputlayoutbubblectrl.cpp
+SOURCE                  peninputlayoutcursor.cpp
+SOURCE                  peninputlayoutmultilineicfeditor.cpp
+SOURCE                  peninputpentracedecorator.cpp
+SOURCE                  peninputlayoutsmiley.cpp
+
+userinclude             ../../inc/peninputlayoutcontrolinc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE           /epoc32/include/ecom
+SYSTEMINCLUDE           ../../../../inc
+SYSTEMINCLUDE           ../../../inc
+
+
+
+
+LIBRARY                 euser.lib
+LIBRARY                 ws32.lib
+LIBRARY                 bitgdi.lib
+LIBRARY                 gdi.lib
+LIBRARY                 fbscli.lib
+LIBRARY                 aknicon.lib
+LIBRARY                 cone.lib
+LIBRARY                 estor.lib
+LIBRARY                 aknskins.lib 
+LIBRARY                 aknskinsrv.lib 
+LIBRARY                 aknswallpaperutils.lib 
+LIBRARY                 eikcore.lib
+LIBRARY                 avkon.lib
+LIBRARY                 centralrepository.lib
+LIBRARY                 etext.lib
+LIBRARY                 form.lib
+LIBRARY                 eikcoctl.lib
+LIBRARY                 tagma.lib
+LIBRARY                 bafl.lib
+LIBRARY                 egul.lib
+LIBRARY                 eikctl.lib
+
+
+LIBRARY                 AknLayout2Scalable.lib 
+LIBRARY                 AknLayout2.lib
+LIBRARY                 CdlEngine.lib
+LIBRARY         		peninputpluginutils.lib
+#ifdef RD_TACTILE_FEEDBACK
+LIBRARY                 FeatMgr.lib                // feature manager
+LIBRARY                 touchfeedback.lib
+#endif // RD_TACTILE_FEEDBACK
+#if defined(WINSCW)
+    deffile    ../../bwins/peninputlayoutcontrol.DEF
+#elif defined(MARM_ARMV5)
+    deffile    ../../eabi/peninputlayoutcontrol.DEF
+#endif

@@ -1,0 +1,258 @@
+/*
+* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: Build info file for language keymapping dlls.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_37.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_42.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_44.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_45.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_25.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_07.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_18.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_01.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_49.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_50.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_09.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_02.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_03.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_54.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_57.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_58.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_30.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_17.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_15.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_59.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_05.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_67.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_68.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_70.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_72.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_08.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_27.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_13.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_31.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_78.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_16.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_79.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_26.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_28.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_04.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_06.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_39.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_29.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_33.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_14.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_93.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_94.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_96.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_102.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_65.mmp
+#endif
+
+PRJ_MMPFILES
+#if defined(WINS)
+PtiKeymappings_ITUT_103.mmp
+#endif

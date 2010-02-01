@@ -1,0 +1,74 @@
+EXPORTS
+	_ZN15RPeninputServer11UiLayoutPosEv @ 1 NONAME
+	_ZN15RPeninputServer13HandleCommandEi @ 2 NONAME
+	_ZN15RPeninputServer13HandleCommandEiRK6TDesC8 @ 3 NONAME
+	_ZN15RPeninputServer13SetUiLayoutIdE4TUid @ 4 NONAME
+	_ZN15RPeninputServer13SetUiLayoutIdE4TUidRK6TDesC8 @ 5 NONAME
+	_ZN15RPeninputServer14ActivateLayoutEi @ 6 NONAME
+	_ZN15RPeninputServer14SetDisplayModeE12TDisplayModeS0_ @ 7 NONAME
+	_ZN15RPeninputServer14SetUiLayoutPosERK6TPoint @ 8 NONAME
+	_ZN15RPeninputServer15ResourceChangedEi @ 9 NONAME
+	_ZN15RPeninputServer16ClearServerEventEv @ 10 NONAME
+	_ZN15RPeninputServer18GetEditorMaxLengthEv @ 11 NONAME ABSENT
+	_ZN15RPeninputServer18GetServerEventDataER6TDes16 @ 12 NONAME
+	_ZN15RPeninputServer18ServerEventDataNumEv @ 13 NONAME
+	_ZN15RPeninputServer22SendFepAwareEditorTextERK29TFepInputContextFieldData_Tag @ 14 NONAME ABSENT
+	_ZN15RPeninputServer26AddPeninputServerObserverLEP27MPeninputServerEventHandler @ 15 NONAME
+	_ZN15RPeninputServer28RemovePeninputServerObserverEv @ 16 NONAME
+	_ZN15RPeninputServer5CloseEv @ 17 NONAME
+	_ZN15RPeninputServer7ConnectEv @ 18 NONAME
+	_ZN15RPeninputServer9IsVisibleEv @ 19 NONAME
+	_ZN15RPeninputServerC1Ev @ 20 NONAME
+	_ZN15RPeninputServerC2Ev @ 21 NONAME
+	_ZNK15RPeninputServer7VersionEv @ 22 NONAME
+	_ZTI23CPeninputServerObserver @ 23 NONAME ABSENT ; #<TI># 
+	_ZTV23CPeninputServerObserver @ 24 NONAME ABSENT ; #<VT>#
+	_ZN15RPeninputServer19GetImePluginIdListLEiiR6RArrayIiE @ 25 NONAME
+	_ZN15RPeninputServer20PenSupportLanguagesLER6RArrayIiE @ 26 NONAME
+	_ZN15RPeninputServer12IsForegroundEv @ 27 NONAME
+	_ZN15RPeninputServer13SetForegroundEi @ 28 NONAME
+	_ZN15RPeninputServer25AddPenUiActivationHandlerEP23MPenUiActivationHandleri @ 29 NONAME
+	_ZN15RPeninputServer28RemovePenUiActivationHandlerEv @ 30 NONAME
+	_ZTI25CPenUiNotificationHandler @ 31 NONAME ABSENT ; #<TI>#
+	_ZTV25CPenUiNotificationHandler @ 32 NONAME ABSENT ; #<VT>#
+	_ZN15RPeninputServer13HandleCommandEiRK6TDesC8Ri @ 33 NONAME
+	_ZN22CPenInputServerHandler10SetIcfTextERK25TFepInputContextFieldData @ 34 NONAME
+	_ZN22CPenInputServerHandler11SetUiLayoutEi @ 35 NONAME
+	_ZN22CPenInputServerHandler13ConnectServerEv @ 36 NONAME
+	_ZN22CPenInputServerHandler16ActivateUiLayoutEi @ 37 NONAME
+	_ZN22CPenInputServerHandler16DisconnectServerEv @ 38 NONAME
+	_ZN22CPenInputServerHandler18SendNewKeyToServerEiRK8TItutKey @ 39 NONAME
+	_ZN22CPenInputServerHandler19SendCommandToServerEi @ 40 NONAME
+	_ZN22CPenInputServerHandler19SendCommandToServerEiRK7TDesC16 @ 41 NONAME
+	_ZN22CPenInputServerHandler19SendCommandToServerEii @ 42 NONAME
+	_ZN22CPenInputServerHandler4NewLEv @ 43 NONAME
+	_ZN22CPenInputServerHandlerD0Ev @ 44 NONAME
+	_ZN22CPenInputServerHandlerD1Ev @ 45 NONAME
+	_ZN22CPenInputServerHandlerD2Ev @ 46 NONAME
+	_ZTI22CPenInputServerHandler @ 47 NONAME ; #<TI>#
+	_ZTV22CPenInputServerHandler @ 48 NONAME ; #<VT>#
+	_ZN22CPenInputServerHandler22SendPromptTextToServerEiRK14TFepPromptText @ 49 NONAME
+	_ZN15RPeninputServer17SetDisabledLayoutEi @ 50 NONAME
+	_ZN15RPeninputServer11DimUiLayoutEi @ 51 NONAME
+	_ZN15RPeninputServer24ActivatePeninputInNotesLEv @ 52 NONAME
+	_ZN15RPeninputServer13UpdateAppInfoERK7TDesC1616TPeninputAppInfo @ 53 NONAME
+	_ZN15RPeninputServer14LoseForegroundEv @ 54 NONAME
+	_ZN15RPeninputServer8IsDimmedEv @ 55 NONAME
+	_ZN15RPeninputServer14DisabledLayoutEv @ 56 NONAME
+	_ZN15RPeninputServer11SetAutoOpenEi @ 57 NONAME
+	_ZN15RPeninputServer12UiLayoutSizeEv @ 58 NONAME
+	_ZN15RPeninputServer28RemovePenUiActivationHandlerEP23MPenUiActivationHandler @ 59 NONAME
+	_ZN15RPeninputServer28RemovePeninputServerObserverEP27MPeninputServerEventHandler @ 60 NONAME
+	_ZN15RPeninputServer8AutoOpenEv @ 61 NONAME
+	_ZN15RPeninputServer19BackgroudDefaultOriEi @ 62 NONAME
+	_ZN15RPeninputServer15PreferredUiModeEv @ 63 NONAME
+	_ZN15RPeninputServer18SetPreferredUiModeE16TPluginInputMode @ 64 NONAME
+	_ZN15RPeninputServer12ClearTouchUIEv @ 65 NONAME
+	_ZN15RPeninputServer14SetGlobalNotesEi @ 66 NONAME
+	_ZN15RPeninputServer16SetInternalPopUpEi @ 67 NONAME
+	_ZN15RPeninputServer17SetEditorPriorityEi @ 68 NONAME
+	_ZN15RPeninputServer17SetResourceChangeEi @ 69 NONAME
+	_ZN15RPeninputServer16SupportInputModeEv @ 70 NONAME
+	_ZN15RPeninputServer16SetInputLanguageEi @ 71 NONAME
+	_ZN15RPeninputServer11ConnectAsycER14TRequestStatus @ 72 NONAME
+

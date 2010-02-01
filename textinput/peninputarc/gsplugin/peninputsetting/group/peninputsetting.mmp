@@ -1,0 +1,66 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for Peninput Setting
+*
+*/
+
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGETPATH              PROGRAMS_DIR   
+TARGET                  peninputsetting.exe
+TARGETTYPE              exe
+UID                     0x100039CE 0x2001959B
+
+CAPABILITY              CAP_APPLICATION
+VENDORID                VID_DEFAULT
+EPOCSTACKSIZE		0x5000
+
+SOURCEPATH              ../src
+SOURCE                  peninputsetting.cpp
+SOURCE                  peninputsettingApplication.cpp 
+SOURCE                  peninputsettingAppui.cpp
+SOURCE                  peninputsettingDocument.cpp
+
+USERINCLUDE             ../inc
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE           /epoc32/include/ecom
+SYSTEMINCLUDE           ../../../../../inc
+SYSTEMINCLUDE           ../../../../inc
+
+LIBRARY                 euser.lib
+LIBRARY                 apparc.lib
+LIBRARY                 cone.lib
+LIBRARY                 eikcore.lib
+LIBRARY                 avkon.lib
+LIBRARY                 eikcoctl.lib
+LIBRARY                 ecom.lib
+LIBRARY                 aknskins.lib              // AknsUtils.h
+LIBRARY                 gsframework.lib           // For GS Framework
+LIBRARY                 ws32.lib
+
+SOURCEPATH              ../data
+START RESOURCE          peninputsetting.rss
+HEADER
+TARGETPATH              APP_RESOURCE_DIR
+LANGUAGE_IDS
+END // RESOURCE
+
+START RESOURCE	        peninputsetting_reg.rss
+DEPENDS peninputsetting.rsg
+TARGETPATH	            /private/10003a3f/apps
+END // RESOURCE
+

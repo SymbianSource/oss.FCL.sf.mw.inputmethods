@@ -1,0 +1,23 @@
+EXPORTS
+	__29TAknInputLanguageCapabilities @ 1 NONAME R3UNUSED ; TAknInputLanguageCapabilities::TAknInputLanguageCapabilities(void)
+	AssignCapability__29TAknInputLanguageCapabilitiesii @ 2 NONAME R3UNUSED ; TAknInputLanguageCapabilities::AssignCapability(int, int)
+	Capabilities__C21CAknInputLanguageItem @ 3 NONAME R3UNUSED ; CAknInputLanguageItem::Capabilities(void) const
+	CreateInputLanguageInfoL__27AknInputLanguageInfoFactory @ 4 NONAME R3UNUSED ; AknInputLanguageInfoFactory::CreateInputLanguageInfoL(void)
+	HasCapability__C29TAknInputLanguageCapabilitiesi @ 5 NONAME R3UNUSED ; TAknInputLanguageCapabilities::HasCapability(int) const
+	LanguageCapabilitiesFromLanguage__20CT9InputLanguageInfo9TLanguage @ 6 NONAME R3UNUSED ; CT9InputLanguageInfo::LanguageCapabilitiesFromLanguage(TLanguage)
+	LanguageCode__C21CAknInputLanguageItem @ 7 NONAME R3UNUSED ; CAknInputLanguageItem::LanguageCode(void) const
+	LanguageName__C21CAknInputLanguageItem @ 8 NONAME R3UNUSED ; CAknInputLanguageItem::LanguageName(void) const
+	MdcaCount__C21CAknInputLanguageList @ 9 NONAME R3UNUSED ; CAknInputLanguageList::MdcaCount(void) const
+	MdcaPoint__C21CAknInputLanguageListi @ 10 NONAME R3UNUSED ; CAknInputLanguageList::MdcaPoint(int) const
+	"_._20CT9InputLanguageInfo" @ 11 NONAME R3UNUSED ; CT9InputLanguageInfo::~CT9InputLanguageInfo(void)
+	"_._21CAknInputLanguageItem" @ 12 NONAME R3UNUSED ; CAknInputLanguageItem::~CAknInputLanguageItem(void)
+	"_._21CAknInputLanguageList" @ 13 NONAME R3UNUSED ; CAknInputLanguageList::~CAknInputLanguageList(void)
+	__21CAknInputLanguageListi @ 14 NONAME R3UNUSED ; CAknInputLanguageList::CAknInputLanguageList(int)
+	AppendLanguagesL__20CT9InputLanguageInfoP21CAknInputLanguageListPt9CArrayFix1ZiR29TAknInputLanguageCapabilities @ 15 NONAME ; CT9InputLanguageInfo::AppendLanguagesL(CAknInputLanguageList *, CArrayFix<int> *, TAknInputLanguageCapabilities &)
+	FilteredCapabilities__C29TAknInputLanguageCapabilitiesR29TAknInputLanguageCapabilities @ 16 NONAME R3UNUSED ; TAknInputLanguageCapabilities::FilteredCapabilities(TAknInputLanguageCapabilities &) const
+	HasAnySupport__C29TAknInputLanguageCapabilities @ 17 NONAME R3UNUSED ; TAknInputLanguageCapabilities::HasAnySupport(void) const
+	LanguageName__C20CT9InputLanguageInfo9TLanguage @ 18 NONAME R3UNUSED ; CT9InputLanguageInfo::LanguageName(TLanguage) const
+	SetAllCapabilities__29TAknInputLanguageCapabilities @ 19 NONAME R3UNUSED ; TAknInputLanguageCapabilities::SetAllCapabilities(void)
+	UrlLanguage__C20CT9InputLanguageInfo @ 20 NONAME R3UNUSED ; CT9InputLanguageInfo::UrlLanguage(void) const
+	AppendAvailableLanguagesL__20CT9InputLanguageInfoP21CAknInputLanguageList @ 21 NONAME R3UNUSED ; CT9InputLanguageInfo::AppendAvailableLanguagesL(CAknInputLanguageList *)
+

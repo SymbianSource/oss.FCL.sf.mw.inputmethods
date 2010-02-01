@@ -1,0 +1,6 @@
+EXPORTS
+	??0CFepUiLayoutInterface@@IAE@XZ @ 1 NONAME ; CFepUiLayoutInterface::CFepUiLayoutInterface(void)
+	??1CFepUiLayoutInterface@@UAE@XZ @ 2 NONAME ; CFepUiLayoutInterface::~CFepUiLayoutInterface(void)
+	?NewL@CFepUiLayoutInterface@@SAPAV1@H@Z @ 3 NONAME ; class CFepUiLayoutInterface * CFepUiLayoutInterface::NewL(int)
+	?SetDestructorKey@CFepUiLayoutInterface@@QAEXVTUid@@@Z @ 4 NONAME ; void CFepUiLayoutInterface::SetDestructorKey(class TUid)
+

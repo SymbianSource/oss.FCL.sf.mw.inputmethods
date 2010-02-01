@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="fbcbccbd65305e401692b50a4bf7aaff" dataversion="2.0">
+  <name>Optical Character Recognition API</name>
+  <description>Contains OCR related enums and constants, text line information, text block information, settings for layout analysis, block  ionformation for recognising blocks, engine environment settings.</description>
+  <type>c++</type>
+  <collection>domain</collection>
+  <libs>
+    <lib name="ocrsrv.lib" />
+  </libs>
+  <release category="public" sinceversion="3.1"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

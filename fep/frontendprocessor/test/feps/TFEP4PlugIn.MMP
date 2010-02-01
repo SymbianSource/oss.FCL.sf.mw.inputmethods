@@ -1,0 +1,57 @@
+// Copyright (c) 1997-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+TARGET 		tfep4plugin.dll
+TARGETTYPE 	plugin
+UID			0x10009D8D 0x1028716D
+VENDORID 	0x70000001
+
+CAPABILITY 	All -Tcb
+
+SOURCEPATH		../feps
+SOURCE			pytable.cpp TFEP4.CPP TFEP4PlugIn.cpp
+USERINCLUDE		../feps
+
+APP_LAYER_SYSTEMINCLUDE 
+MW_LAYER_SYSTEMINCLUDE 
+OS_LAYER_SYSTEMINCLUDE 
+
+
+LIBRARY		euser.lib efsrv.lib estor.lib gdi.lib etext.lib fbscli.lib bitgdi.lib 
+LIBRARY		ws32.lib form.lib cone.lib fepbase.lib bafl.lib eikdlg.lib eikcoctl.lib eikctl.lib
+LIBRARY		ecom.lib
+LIBRARY		egul.lib	// for FontUtils, together with gulutil.h
+
+
+SOURCEPATH	../feps
+START RESOURCE	tfep4_ui.rss
+HEADER
+TARGETPATH	/resource/data
+lang		01 10
+END
+
+
+
+START RESOURCE tfep4plugin.rss
+TARGET tfep4plugin.rsc
+END
+
+
+
+SMPSAFE
+
+
+
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<api id="02e4aeca680651f19ab6ace341955e33" dataversion="2.0">
+  <name>Aknfep Definitions API</name>
+  <description>
+  The AknfepGlobalEnums header contains various definitions and enums related to Text Input. This component consists of definitions of items
+        like-
+        The UI state machine states, 
+        Key press related enums, 
+        FEP's case related enums, 
+        Soft key related enums, 
+        Enums related to Japanese input modes, 
+        Definitions of the various keyboard layouts supported by the platform.
+  </description>
+  <type>c++</type>
+  <collection>textinput</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

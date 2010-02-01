@@ -1,0 +1,78 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:            Project definition file for project peninputimepluginitut
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <bldvariant.hrh>
+#include <platform_paths.hrh>
+
+TARGET      peninputimepluginitut.dll
+TARGETTYPE  plugin
+UID         0x10009D8D 0x2000B133
+
+CAPABILITY  CAP_ECOM_PLUGIN
+VENDORID    VID_DEFAULT
+
+SOURCEPATH  ../src
+
+SOURCE      peninputimepluginitutproxy.cpp
+SOURCE      peninputimepluginitut.cpp
+SOURCE      pluginfepmanagerbase.cpp
+SOURCE      pluginfepmanageritut.cpp
+
+USERINCLUDE     ../inc 
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   /epoc32/include/ecom
+SYSTEMINCLUDE   ../../../../../inc
+
+SOURCEPATH      ../srcdata
+
+START RESOURCE 2000B133.rss
+#ifdef SYMBIAN_SECURE_ECOM 
+TARGET peninputimepluginitut.rsc                                                             
+#endif
+END
+
+
+LIBRARY euser.lib 
+LIBRARY ECom.lib
+LIBRARY centralrepository.lib 
+LIBRARY eikcoctl.lib 
+LIBRARY cone.lib 
+LIBRARY efsrv.lib
+LIBRARY estor.lib 
+
+#ifdef RD_SCALABLE_UI_V2
+LIBRARY         peninputclient.lib
+#else
+LIBRARY         peninputserverstub.lib
+#endif
+
+// End Of File

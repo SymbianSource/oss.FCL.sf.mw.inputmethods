@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="1ae5289e4eeecd605a16eb9eea880d7a" dataversion="2.0">
+  <name>Input Language Info API</name>
+  <description>Provides information of available input languages. Defines the class TaknInputLanguageCapabilities which has various methods for getting the language capabilities like  support for Multitap and/or predictive etc.</description>
+  <type>c++</type>
+  <collection>domain</collection>
+  <libs>
+    <lib name="akninputlanguage.lib" />
+  </libs>
+  <release category="public" sinceversion="0"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

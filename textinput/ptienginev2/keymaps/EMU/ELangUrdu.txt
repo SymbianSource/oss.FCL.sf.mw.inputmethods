@@ -1,0 +1,164 @@
+#
+# Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+# All rights reserved.
+# This component and the accompanying materials are made available
+# under the terms of the License "Eclipse Public License v1.0"
+# which accompanies this distribution, and is available
+# at the URL "http://www.eclipse.org/legal/epl-v10.html".
+#
+# Initial Contributors:
+# Nokia Corporation - initial contribution.
+#
+# Contributors:
+#
+# Description:  PtiEngine keymapping file.
+#
+
+#
+# Multitapping keymap data.
+#
+[KEYBOARD BLOCK 12-KEY]
+
+key lower (1 1) 0x2e,0x61f,0x3a,0x60c,0x21,0x6f1
+key upper (1 1) 0x2e,0x61f,0x3a,0x60c,0x21,0x6f1
+key lower (1 2) 0x628,0x67e,0x62a,0x679,0x62b,0x6c3,0x6f2
+key upper (1 2) 0x628,0x67e,0x62a,0x679,0x62b,0x6c3,0x6f2
+key lower (1 3) 0x627,0x622,0x624,0x626,0x6d3,0x621,0x6f3
+key upper (1 3) 0x627,0x622,0x624,0x626,0x6d3,0x621,0x6f3
+key lower (2 1) 0x633,0x634,0x635,0x636,0x6f4
+key upper (2 1) 0x633,0x634,0x635,0x636,0x6f4
+key lower (2 2) 0x62f,0x688,0x630,0x631,0x691,0x632,0x698,0x6f5
+key upper (2 2) 0x62f,0x688,0x630,0x631,0x691,0x632,0x698,0x6f5
+key lower (2 3) 0x62c,0x686,0x62d,0x62e,0x6f6
+key upper (2 3) 0x62c,0x686,0x62d,0x62e,0x6f6
+key lower (3 1) 0x646,0x6ba,0x648,0x6be,0x6c1,0x6c2,0x6cc,0x6d2,0x6f7
+key upper (3 1) 0x646,0x6ba,0x648,0x6be,0x6c1,0x6c2,0x6cc,0x6d2,0x6f7
+key lower (3 2) 0x641,0x642,0x6a9,0x6af,0x644,0x645,0x6f8
+key upper (3 2) 0x641,0x642,0x6a9,0x6af,0x644,0x645,0x38
+key lower (3 3) 0x637,0x638,0x639,0x63a,0x6f9
+key upper (3 3) 0x637,0x638,0x639,0x63a,0x6f9
+key lower (4 2) 0x20,0x6f0,0x21b3
+key upper (4 2) 0x20,0x30,0x21b3
+
+#
+# Standard 4x12 qwerty keymapping data.
+#
+[KEYBOARD BLOCK QWERTY STANDARD]
+
+key lower (1 2) 0x06f1
+key upper (1 2) 0x0021
+key lower (1 3) 0x06f2
+key upper (1 3) 0x0040
+key lower (1 4) 0x06f3
+key upper (1 4) 0x0023
+key lower (1 5) 0x06f4
+key upper (1 5) 0x0024
+key lower (1 6) 0x06f5
+key upper (1 6) 0x066a
+key lower (1 7) 0x06f6
+key upper (1 7) 0x005e
+key lower (1 8) 0x06f7
+key upper (1 8) 0x0029
+key lower (1 9) 0x06f8
+key upper (1 9) 0x0028
+key lower (1 10) 0x06f9
+key upper (1 10) 0x005f
+key lower (1 11) 0x06f0
+key upper (1 11) 0x002b
+key lower (3 2) 0x0648
+key upper (3 2) 0x0632
+key lower (4 6) 0x0634
+key upper (4 6) 0x0624
+key lower (4 4) 0x06d2
+key upper (4 4) 0x06d3
+key lower (3 4) 0x0646
+key upper (3 4) 0x06ba
+key lower (2 4) 0x062f
+key upper (2 4) 0x0688
+key lower (3 5) 0x0644
+key upper (3 5) 0x06c2
+key lower (3 6) 0x0647
+key upper (3 6) 0x0621
+key lower (3 7) 0x0627
+key upper (3 7) 0x0622
+key lower (2 9) 0x062c
+key upper (2 9) 0x0686
+key lower (3 8) 0x06a9
+key upper (3 8) 0x06af
+key lower (3 9) 0x06cc
+key upper (3 9) 0x064a
+key lower (3 10) 0x061b
+key upper (3 10) 0x003a
+key lower (4 8) 0x0639
+key upper (4 8) 0x200f
+key lower (4 7) 0x063a
+key upper (4 7) 0x0626
+key lower (2 10) 0x062d
+key upper (2 10) 0x062e
+key lower (2 11) 0x002d
+key upper (2 11) 0x007d
+key lower (2 2) 0x0635
+key upper (2 2) 0x0636
+key lower (2 5) 0x06BB
+key upper (2 5) 0x062b
+key lower (3 3) 0x0631
+key upper (3 3) 0x0691
+key lower (2 6) 0x067e
+key upper (2 6) 0x067e
+key lower (2 8) 0x0628
+key upper (2 8) 0x0628
+key lower (4 5) 0x0633
+key upper (4 5) 0x200e
+key lower (2 3) 0x06be
+key upper (2 3) 0x0630
+key lower (4 3) 0x0641
+key upper (4 3) 0x200c
+key lower (2 7) 0x062a
+key upper (2 7) 0x06c3
+key lower (4 2) 0x0642
+key upper (4 2) 0x200d
+key lower (2 1) 0x0637
+key upper (2 1) 0x0638
+key lower (2 12) 0x003d
+key upper (2 12) 0x007b
+key lower (4 9) 0x060c
+key upper (4 9) 0x003e
+key lower (3 11) 0x0027
+key upper (3 11) 0x0022
+key lower (4 10) 0x06d4
+key upper (4 10) 0x003c
+key lower (3 1) 0x0645
+key upper (3 1) 0x0698
+key lower (4 11) 0x002f
+key upper (4 11) 0x061f
+key lower (3 12) 0x005c
+key upper (3 12) 0x002a
+
+#
+# This language can't be used in "latin only" editors.
+#
+latin_like_language = no
+
+#
+# Numeric mode keys missing from default mappings
+#
+numeric_mode_key p (2 11) lower
+numeric_mode_key w (2 3) lower
+numeric_mode_key * (1 8) upper
+numeric_mode_key 1 (1 2) lower
+numeric_mode_key 2 (1 3) lower
+numeric_mode_key 3 (1 4) lower
+numeric_mode_key 4 (1 5) lower
+numeric_mode_key 5 (1 6) lower
+numeric_mode_key 6 (1 7) lower
+numeric_mode_key 7 (1 8) lower
+numeric_mode_key 8 (1 9) lower
+numeric_mode_key 9 (1 10) lower
+numeric_mode_key 0 (1 11) lower
+numeric_mode_key E (2 4) upper
+numeric_mode_key ? (4 11)  upper
+numeric_mode_key , (4 9) lower 
+numeric_mode_key . (4 10) lower
+numeric_mode_key ; (3 11) lower
+
+# End of file

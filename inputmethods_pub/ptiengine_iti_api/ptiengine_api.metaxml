@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="3e5e19ce31dd8194947275049d557394" dataversion="2.0">
+  <name>PtiEngine API</name>
+  <description>ITI(intelligent Text Input) provides for second generation text input. PtiEngine ITI APIs support various keyboard layouts. Multiple keyboard layouts are available  for the products to customise like 4X10, 4X5 layout etc. The ITU-T keyboard is also supported.</description>
+  <type>c++</type>
+  <collection>domain</collection>
+  <libs>
+    <lib name="ptiengine.lib" />
+  </libs>
+  <release category="public" sinceversion="5.0"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>yes</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

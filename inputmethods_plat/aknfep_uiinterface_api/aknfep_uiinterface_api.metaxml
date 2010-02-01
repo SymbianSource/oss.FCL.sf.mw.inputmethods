@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<api id="f0f392aa9873baa699e26a4861381d01" dataversion="2.0">
+<name>aknfep_uiinterface_api</name>
+<description>Defines the class CAknFepUIInterface which provides methods for normal menu abstraction, stylus pop-up menu abstraction, indicator abstraction, use case  abstraction, APAC abstraction, candidates words pop-up abstraction API's</description>
+<type>c++</type>
+<collection>domain</collection>
+<libs><lib name="aknfepuiinterface.lib"/>
+</libs>
+<release category="platform" sinceversion=""/>
+<attributes>
+<htmldocprovided>no</htmldocprovided>
+<adaptation>no</adaptation>
+</attributes>
+</api>

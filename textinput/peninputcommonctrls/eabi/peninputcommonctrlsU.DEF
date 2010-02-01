@@ -1,0 +1,476 @@
+EXPORTS
+	_ZN17CAknFepCtrlButton11SizeChangedE5TRecti @ 1 NONAME
+	_ZN17CAknFepCtrlButton12SetHighlightEi @ 2 NONAME
+	_ZN17CAknFepCtrlButton22ConstructFromResourceLER15TResourceReader @ 3 NONAME
+	_ZN17CAknFepCtrlButton22ConstructFromResourceLEv @ 4 NONAME
+	_ZN17CAknFepCtrlButton4DrawEv @ 5 NONAME
+	_ZN17CAknFepCtrlButton4NewLEP12CFepUiLayouti @ 6 NONAME
+	_ZN17CAknFepCtrlButton5NewLCEP12CFepUiLayouti @ 7 NONAME
+	_ZN17CAknFepCtrlButton9SetActiveEi @ 8 NONAME
+	_ZN17CAknFepCtrlButtonC1EP12CFepUiLayouti @ 9 NONAME
+	_ZN17CAknFepCtrlButtonC2EP12CFepUiLayouti @ 10 NONAME
+	_ZN17CAknFepCtrlButtonD0Ev @ 11 NONAME
+	_ZN17CAknFepCtrlButtonD1Ev @ 12 NONAME
+	_ZN17CAknFepCtrlButtonD2Ev @ 13 NONAME
+	_ZN19CAknFepCtrlRangeBar10ConstructLEv @ 14 NONAME
+	_ZN19CAknFepCtrlRangeBar11ActiveRangeEi @ 15 NONAME
+	_ZN19CAknFepCtrlRangeBar11SizeChangedE5TRect @ 16 NONAME
+	_ZN19CAknFepCtrlRangeBar13ShowAllRangesEv @ 17 NONAME
+	_ZN19CAknFepCtrlRangeBar14SetActionStyleENS_20TRangeBarActionStyleE @ 18 NONAME
+	_ZN19CAknFepCtrlRangeBar16SetPermittedCaseEiii @ 19 NONAME
+	_ZN19CAknFepCtrlRangeBar17SetEventIdForCaseEi @ 20 NONAME
+	_ZN19CAknFepCtrlRangeBar17SetPermittedRangeEii @ 21 NONAME
+	_ZN19CAknFepCtrlRangeBar18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 22 NONAME
+	_ZN19CAknFepCtrlRangeBar18SetEventIdForRangeEi @ 23 NONAME
+	_ZN19CAknFepCtrlRangeBar18SetPermittedRangesEi @ 24 NONAME
+	_ZN19CAknFepCtrlRangeBar22ConstructFromResourceLER15TResourceReader @ 25 NONAME
+	_ZN19CAknFepCtrlRangeBar4DrawEv @ 26 NONAME
+	_ZN19CAknFepCtrlRangeBar4MoveERK6TPoint @ 27 NONAME
+	_ZN19CAknFepCtrlRangeBar4NewLEP12CFepUiLayoutiNS_17TButtonGroupStyleE @ 28 NONAME
+	_ZN19CAknFepCtrlRangeBar5NewLCEP12CFepUiLayoutiNS_17TButtonGroupStyleE @ 29 NONAME
+	_ZN19CAknFepCtrlRangeBar7SetFontEPK5CFont @ 30 NONAME
+	_ZN19CAknFepCtrlRangeBar8SetCaseLEii @ 31 NONAME
+	_ZN19CAknFepCtrlRangeBar8SetRangeEi @ 32 NONAME
+	_ZN19CAknFepCtrlRangeBar9AddRangeLER15TResourceReader @ 33 NONAME
+	_ZN19CAknFepCtrlRangeBar9HideRangeEi @ 34 NONAME
+	_ZN19CAknFepCtrlRangeBar9RefreshUIEv @ 35 NONAME
+	_ZN19CAknFepCtrlRangeBar9ShowRangeEi @ 36 NONAME
+	_ZN19CAknFepCtrlRangeBarC1EP12CFepUiLayoutiNS_17TButtonGroupStyleE @ 37 NONAME
+	_ZN19CAknFepCtrlRangeBarC2EP12CFepUiLayoutiNS_17TButtonGroupStyleE @ 38 NONAME
+	_ZN19CAknFepCtrlRangeBarD0Ev @ 39 NONAME
+	_ZN19CAknFepCtrlRangeBarD1Ev @ 40 NONAME
+	_ZN19CAknFepCtrlRangeBarD2Ev @ 41 NONAME
+	_ZN19CPeninputVkbCtrlExt10CancelDimsEv @ 42 NONAME
+	_ZN19CPeninputVkbCtrlExt11SizeChangedEiiRK6TPoint @ 43 NONAME
+	_ZN19CPeninputVkbCtrlExt17ReorganizeVkbKeysEP22CPeninputVkbLayoutInfo @ 44 NONAME
+	_ZN19CPeninputVkbCtrlExt4MoveERK6TPoint @ 45 NONAME
+	_ZN19CPeninputVkbCtrlExt4NewLERK5TRectP12CFepUiLayoutiPK5CFont @ 46 NONAME ABSENT
+	_ZN19CPeninputVkbCtrlExt5ResetEv @ 47 NONAME
+	_ZN19CPeninputVkbCtrlExt7DimKeysEPK7HBufC16 @ 48 NONAME
+	_ZN19CPeninputVkbCtrlExtC1ERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 49 NONAME ABSENT
+	_ZN19CPeninputVkbCtrlExtC2ERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 50 NONAME ABSENT
+	_ZN19CPeninputVkbCtrlExtD0Ev @ 51 NONAME
+	_ZN19CPeninputVkbCtrlExtD1Ev @ 52 NONAME
+	_ZN19CPeninputVkbCtrlExtD2Ev @ 53 NONAME
+	_ZN19CPeninputVkbKeyInfo4NewLER15TResourceReader @ 54 NONAME
+	_ZN19CPeninputVkbKeyInfoD0Ev @ 55 NONAME
+	_ZN19CPeninputVkbKeyInfoD1Ev @ 56 NONAME
+	_ZN19CPeninputVkbKeyInfoD2Ev @ 57 NONAME
+	_ZN20CAknFepCtrlVkbLayout13SetResourceIdEl @ 58 NONAME
+	_ZN20CAknFepCtrlVkbLayout14SetVkbKeyboardEP19CPeninputVkbCtrlExt @ 59 NONAME
+	_ZN20CAknFepCtrlVkbLayout15ChangeVkbLayoutEi @ 60 NONAME
+	_ZN20CAknFepCtrlVkbLayout17VkbLayoutInfoListEv @ 61 NONAME
+	_ZN20CAknFepCtrlVkbLayout22ConstructFromResourceLEv @ 62 NONAME
+	_ZN20CAknFepCtrlVkbLayout4NewLEv @ 63 NONAME
+	_ZN20CAknFepCtrlVkbLayout5NewLCEv @ 64 NONAME
+	_ZN20CAknFepCtrlVkbLayout5ResetEv @ 65 NONAME
+	_ZN20CAknFepCtrlVkbLayoutD0Ev @ 66 NONAME
+	_ZN20CAknFepCtrlVkbLayoutD1Ev @ 67 NONAME
+	_ZN20CAknFepCtrlVkbLayoutD2Ev @ 68 NONAME
+	_ZN20CFepCtrlDropdownList10SetBgColorE4TRgbi @ 69 NONAME
+	_ZN20CFepCtrlDropdownList11SizeChangedEiii6TPointii @ 70 NONAME
+	_ZN20CFepCtrlDropdownList12OnDeActivateEv @ 71 NONAME
+	_ZN20CFepCtrlDropdownList12SetCellWidthEi @ 72 NONAME
+	_ZN20CFepCtrlDropdownList12SetNaviWidthEi @ 73 NONAME
+	_ZN20CFepCtrlDropdownList12SetTextColorE4TRgbi @ 74 NONAME
+	_ZN20CFepCtrlDropdownList13ResetAndClearENS_9TListTypeE @ 75 NONAME
+	_ZN20CFepCtrlDropdownList13SetCellHeightEi @ 76 NONAME
+	_ZN20CFepCtrlDropdownList13SetTextMarginEii @ 77 NONAME
+	_ZN20CFepCtrlDropdownList14SetBorderColorE4TRgbi @ 78 NONAME
+	_ZN20CFepCtrlDropdownList14SetCandidatesLERK13RPointerArrayI7HBufC16ENS_9TListTypeERK7TDesC16 @ 79 NONAME
+	_ZN20CFepCtrlDropdownList15EnableSecondaryEii @ 80 NONAME
+	_ZN20CFepCtrlDropdownList15SetTopLeftPointE6TPoint @ 81 NONAME
+	_ZN20CFepCtrlDropdownList16SetHighlightCellEiii @ 82 NONAME
+	_ZN20CFepCtrlDropdownList16SetSecondaryListE6RArrayIiEi @ 83 NONAME ABSENT
+	_ZN20CFepCtrlDropdownList16SetTextAlighmentEN16CGraphicsContext10TTextAlignEi @ 84 NONAME
+	_ZN20CFepCtrlDropdownList18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 85 NONAME
+	_ZN20CFepCtrlDropdownList18HandlePointerLeaveERK6TPoint @ 86 NONAME
+	_ZN20CFepCtrlDropdownList19SetHighLightBgColorE4TRgbi @ 87 NONAME
+	_ZN20CFepCtrlDropdownList19SetListEventHandlerEP17MListEventHandler @ 88 NONAME
+	_ZN20CFepCtrlDropdownList19SetSpecialTextColorE4TRgbi @ 89 NONAME
+	_ZN20CFepCtrlDropdownList20SetNavigationBgColorE4TRgbi @ 90 NONAME
+	_ZN20CFepCtrlDropdownList21HandlePointerUpEventLERK6TPoint @ 91 NONAME
+	_ZN20CFepCtrlDropdownList21SetHighLightTextColorE4TRgbi @ 92 NONAME
+	_ZN20CFepCtrlDropdownList22ConstructFromResourceLEv @ 93 NONAME
+	_ZN20CFepCtrlDropdownList23HandlePointerDownEventLERK6TPoint @ 94 NONAME
+	_ZN20CFepCtrlDropdownList23HandlePointerMoveEventLERK6TPoint @ 95 NONAME
+	_ZN20CFepCtrlDropdownList30SetEventIdForCandidateSelectedEi @ 96 NONAME
+	_ZN20CFepCtrlDropdownList4DrawEv @ 97 NONAME
+	_ZN20CFepCtrlDropdownList4MoveERK6TPoint @ 98 NONAME
+	_ZN20CFepCtrlDropdownList4NewLERK6TPointP12CFepUiLayoutiR15TResourceReaderiiiiiPK5CFontP17MListEventHandlerN16CGraphicsContext10TTextAlignEi4TRgbSE_SE_SE_SE_SE_SE_SE_ @ 99 NONAME
+	_ZN20CFepCtrlDropdownList4RectEv @ 100 NONAME
+	_ZN20CFepCtrlDropdownList5NewLCERK6TPointP12CFepUiLayoutiR15TResourceReaderiiiiiPK5CFontP17MListEventHandlerN16CGraphicsContext10TTextAlignEi4TRgbSE_SE_SE_SE_SE_SE_SE_ @ 101 NONAME
+	_ZN20CFepCtrlDropdownList7SetFontEPK5CFonti @ 102 NONAME
+	_ZN20CFepCtrlDropdownList8FoldListEv @ 103 NONAME
+	_ZN20CFepCtrlDropdownList9SetActiveEi @ 104 NONAME
+	_ZN20CFepCtrlDropdownList9SetColNumEi @ 105 NONAME
+	_ZN20CFepCtrlDropdownList9SetRowNumEi @ 106 NONAME
+	_ZN20CFepCtrlDropdownListD0Ev @ 107 NONAME
+	_ZN20CFepCtrlDropdownListD1Ev @ 108 NONAME
+	_ZN20CFepCtrlDropdownListD2Ev @ 109 NONAME
+	_ZN21CAknFepCtrlBaseWindow13SetDragEnableEi @ 110 NONAME
+	_ZN21CAknFepCtrlBaseWindow14BaseConstructLEv @ 111 NONAME
+	_ZN21CAknFepCtrlBaseWindow18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 112 NONAME
+	_ZN21CAknFepCtrlBaseWindow4DrawEv @ 113 NONAME
+	_ZN21CAknFepCtrlBaseWindow5CloseEv @ 114 NONAME
+	_ZN21CAknFepCtrlBaseWindow7ControlEi @ 115 NONAME
+	_ZN21CAknFepCtrlBaseWindow7DoCloseEv @ 116 NONAME
+	_ZN21CAknFepCtrlBaseWindowC2EP12CFepUiLayouti @ 117 NONAME
+	_ZN21CAknFepCtrlBaseWindowD0Ev @ 118 NONAME
+	_ZN21CAknFepCtrlBaseWindowD1Ev @ 119 NONAME
+	_ZN21CAknFepCtrlBaseWindowD2Ev @ 120 NONAME
+	_ZN21CAknFepCtrlDragButton11SizeChangedERK5TRecti @ 121 NONAME ABSENT
+	_ZN21CAknFepCtrlDragButton22ConstructFromResourceLER15TResourceReader @ 122 NONAME
+	_ZN21CAknFepCtrlDragButton22ConstructFromResourceLEv @ 123 NONAME
+	_ZN21CAknFepCtrlDragButton4NewLEP12CFepUiLayouti @ 124 NONAME
+	_ZN21CAknFepCtrlDragButton5NewLCEP12CFepUiLayouti @ 125 NONAME
+	_ZN21CAknFepCtrlDragButtonC1EP12CFepUiLayouti @ 126 NONAME
+	_ZN21CAknFepCtrlDragButtonC2EP12CFepUiLayouti @ 127 NONAME
+	_ZN21CAknFepCtrlDragButtonD0Ev @ 128 NONAME
+	_ZN21CAknFepCtrlDragButtonD1Ev @ 129 NONAME
+	_ZN21CAknFepCtrlDragButtonD2Ev @ 130 NONAME
+	_ZN22CAknFepCtrlEventButton10SetUnicodeEi @ 131 NONAME
+	_ZN22CAknFepCtrlEventButton11DisplayTextEv @ 132 NONAME
+	_ZN22CAknFepCtrlEventButton12SetFontColorE4TRgb @ 133 NONAME
+	_ZN22CAknFepCtrlEventButton13SetShadowFontEPK5CFont @ 134 NONAME
+	_ZN22CAknFepCtrlEventButton18SetShadowFontColorE4TRgb @ 135 NONAME
+	_ZN22CAknFepCtrlEventButton21HandlePointerUpEventLERK6TPoint @ 136 NONAME
+	_ZN22CAknFepCtrlEventButton4DrawEv @ 137 NONAME
+	_ZN22CAknFepCtrlEventButton4NewLEP12CFepUiLayoutiii @ 138 NONAME ABSENT
+	_ZN22CAknFepCtrlEventButton5NewLCEP12CFepUiLayoutiii @ 139 NONAME ABSENT
+	_ZN22CAknFepCtrlEventButton7SetFontEPK5CFont @ 140 NONAME
+	_ZN22CAknFepCtrlEventButton7SetTextERK7TDesC16 @ 141 NONAME
+	_ZN22CAknFepCtrlEventButton8SetEventEi @ 142 NONAME
+	_ZN22CAknFepCtrlEventButtonC1EP12CFepUiLayoutiii @ 143 NONAME ABSENT
+	_ZN22CAknFepCtrlEventButtonC2EP12CFepUiLayoutiii @ 144 NONAME ABSENT
+	_ZN22CAknFepCtrlEventButtonD0Ev @ 145 NONAME
+	_ZN22CAknFepCtrlEventButtonD1Ev @ 146 NONAME
+	_ZN22CAknFepCtrlEventButtonD2Ev @ 147 NONAME
+	_ZN22CPeninputVkbLayoutInfo4NewLER15TResourceReader @ 148 NONAME
+	_ZN22CPeninputVkbLayoutInfo5NewLCER15TResourceReader @ 149 NONAME
+	_ZN22CPeninputVkbLayoutInfo8MoveKeysERK6TPoint @ 150 NONAME
+	_ZN22CPeninputVkbLayoutInfo9ResetSizeEiiiiRK6TPointPK5CFont @ 151 NONAME
+	_ZN22CPeninputVkbLayoutInfoD0Ev @ 152 NONAME
+	_ZN22CPeninputVkbLayoutInfoD1Ev @ 153 NONAME
+	_ZN22CPeninputVkbLayoutInfoD2Ev @ 154 NONAME
+	_ZN23CAknFepCtrlRepeatButton10ConstructLEv @ 155 NONAME
+	_ZN23CAknFepCtrlRepeatButton12CancelRepeatEv @ 156 NONAME
+	_ZN23CAknFepCtrlRepeatButton14HandleTimerOutEPK12CAknFepTimer @ 157 NONAME
+	_ZN23CAknFepCtrlRepeatButton17SetRepeatIntervalERK27TTimeIntervalMicroSeconds32 @ 158 NONAME
+	_ZN23CAknFepCtrlRepeatButton18HandlePointerLeaveERK6TPoint @ 159 NONAME
+	_ZN23CAknFepCtrlRepeatButton21HandlePointerUpEventLERK6TPoint @ 160 NONAME
+	_ZN23CAknFepCtrlRepeatButton23HandlePointerDownEventLERK6TPoint @ 161 NONAME
+	_ZN23CAknFepCtrlRepeatButton4NewLEP12CFepUiLayoutiii @ 162 NONAME ABSENT
+	_ZN23CAknFepCtrlRepeatButton5NewLCEP12CFepUiLayoutiii @ 163 NONAME ABSENT
+	_ZN23CAknFepCtrlRepeatButtonC1EP12CFepUiLayoutiii @ 164 NONAME ABSENT
+	_ZN23CAknFepCtrlRepeatButtonC2EP12CFepUiLayoutiii @ 165 NONAME ABSENT
+	_ZN23CAknFepCtrlRepeatButtonD0Ev @ 166 NONAME
+	_ZN23CAknFepCtrlRepeatButtonD1Ev @ 167 NONAME
+	_ZN23CAknFepCtrlRepeatButtonD2Ev @ 168 NONAME
+	_ZN26CAknFepCtrlMultiModeButton11DisplayTextEv @ 169 NONAME
+	_ZN26CAknFepCtrlMultiModeButton11SizeChangedE5TRecti @ 170 NONAME ABSENT
+	_ZN26CAknFepCtrlMultiModeButton12SetFontColorE4TRgb @ 171 NONAME
+	_ZN26CAknFepCtrlMultiModeButton13SetButtonBmpLE14TButtonBmpTypei @ 172 NONAME
+	_ZN26CAknFepCtrlMultiModeButton14EnableAllModesEv @ 173 NONAME
+	_ZN26CAknFepCtrlMultiModeButton15DisableAllModesEv @ 174 NONAME
+	_ZN26CAknFepCtrlMultiModeButton15SetCurrentModeLE14TButtonBmpTypei @ 175 NONAME
+	_ZN26CAknFepCtrlMultiModeButton17ImageAlreadyExistEl @ 176 NONAME
+	_ZN26CAknFepCtrlMultiModeButton17SetPermittedModesEiii @ 177 NONAME
+	_ZN26CAknFepCtrlMultiModeButton17SetPermittedRangeEii @ 178 NONAME
+	_ZN26CAknFepCtrlMultiModeButton18SetShadowFontColorE4TRgb @ 179 NONAME
+	_ZN26CAknFepCtrlMultiModeButton21IsGivenRangeSupportedEi @ 180 NONAME
+	_ZN26CAknFepCtrlMultiModeButton22ConstructFromResourceLER15TResourceReader @ 181 NONAME
+	_ZN26CAknFepCtrlMultiModeButton22ConstructFromResourceLEv @ 182 NONAME
+	_ZN26CAknFepCtrlMultiModeButton4DrawEv @ 183 NONAME
+	_ZN26CAknFepCtrlMultiModeButton4NewLEP12CFepUiLayouti @ 184 NONAME ABSENT
+	_ZN26CAknFepCtrlMultiModeButton5NewLCEP12CFepUiLayouti @ 185 NONAME ABSENT
+	_ZN26CAknFepCtrlMultiModeButton8AddModeLER15TResourceReader @ 186 NONAME
+	_ZN26CAknFepCtrlMultiModeButton8SetRangeEi @ 187 NONAME
+	_ZN26CAknFepCtrlMultiModeButtonC1EP12CFepUiLayouti @ 188 NONAME ABSENT
+	_ZN26CAknFepCtrlMultiModeButtonC2EP12CFepUiLayouti @ 189 NONAME ABSENT
+	_ZN26CAknFepCtrlMultiModeButtonD0Ev @ 190 NONAME
+	_ZN26CAknFepCtrlMultiModeButtonD1Ev @ 191 NONAME
+	_ZN26CAknFepCtrlMultiModeButtonD2Ev @ 192 NONAME
+	_ZNK19CAknFepCtrlRangeBar7GetCaseEi @ 193 NONAME
+	_ZNK20CFepCtrlDropdownList14CandidateCountEv @ 194 NONAME
+	_ZNK20CFepCtrlDropdownList17IsEnableSecondaryEv @ 195 NONAME
+	_ZNK22CAknFepCtrlEventButton5EventEv @ 196 NONAME
+	_ZNK22CAknFepCtrlEventButton7UnicodeEv @ 197 NONAME
+	_ZNK22CPeninputVkbLayoutInfo11GetRealSizeEii @ 198 NONAME
+	_ZNK22CPeninputVkbLayoutInfo7FindKeyEi @ 199 NONAME
+	_ZNK26CAknFepCtrlMultiModeButton12CurrentRangeEv @ 200 NONAME
+	_ZNK26CAknFepCtrlMultiModeButton16RangeOfGivenModeEi @ 201 NONAME
+	_ZNK26CAknFepCtrlMultiModeButton8NextModeEv @ 202 NONAME
+	_ZTI17CAknFepCtrlButton @ 203 NONAME ; #<TI>#
+	_ZTI19CAknFepCtrlRangeBar @ 204 NONAME ; #<TI>#
+	_ZTI19CPeninputVkbCtrlExt @ 205 NONAME ; #<TI>#
+	_ZTI19CPeninputVkbKeyInfo @ 206 NONAME ; #<TI>#
+	_ZTI20CAknFepCtrlVkbLayout @ 207 NONAME ; #<TI>#
+	_ZTI20CFepCtrlDropdownList @ 208 NONAME ; #<TI>#
+	_ZTI21CAknFepCtrlBaseWindow @ 209 NONAME ; #<TI>#
+	_ZTI21CAknFepCtrlDragButton @ 210 NONAME ; #<TI>#
+	_ZTI22CAknFepCtrlEventButton @ 211 NONAME ; #<TI>#
+	_ZTI22CPeninputVkbLayoutInfo @ 212 NONAME ; #<TI>#
+	_ZTI23CAknFepCtrlRepeatButton @ 213 NONAME ; #<TI>#
+	_ZTI26CAknFepCtrlMultiModeButton @ 214 NONAME ; #<TI>#
+	_ZTV17CAknFepCtrlButton @ 215 NONAME ; #<VT>#
+	_ZTV19CAknFepCtrlRangeBar @ 216 NONAME ; #<VT>#
+	_ZTV19CPeninputVkbCtrlExt @ 217 NONAME ; #<VT>#
+	_ZTV19CPeninputVkbKeyInfo @ 218 NONAME ; #<VT>#
+	_ZTV20CAknFepCtrlVkbLayout @ 219 NONAME ; #<VT>#
+	_ZTV20CFepCtrlDropdownList @ 220 NONAME ; #<VT>#
+	_ZTV21CAknFepCtrlBaseWindow @ 221 NONAME ; #<VT>#
+	_ZTV21CAknFepCtrlDragButton @ 222 NONAME ; #<VT>#
+	_ZTV22CAknFepCtrlEventButton @ 223 NONAME ; #<VT>#
+	_ZTV22CPeninputVkbLayoutInfo @ 224 NONAME ; #<VT>#
+	_ZTV23CAknFepCtrlRepeatButton @ 225 NONAME ; #<VT>#
+	_ZTV26CAknFepCtrlMultiModeButton @ 226 NONAME ; #<VT>#
+	_ZThn388_NK20CFepCtrlDropdownList14CandidateCountEv @ 227 NONAME ABSENT ; #<thunk>#
+	_ZThn388_NK20CFepCtrlDropdownList17IsEnableSecondaryEv @ 228 NONAME ABSENT ; #<thunk>#
+	_ZThn392_N20CFepCtrlDropdownList18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 229 NONAME ABSENT ; #<thunk>#
+	_ZThn448_N19CAknFepCtrlRangeBar18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 230 NONAME ABSENT ; #<thunk>#
+	_ZThn448_N21CAknFepCtrlBaseWindow18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 231 NONAME ABSENT ; #<thunk>#
+	_ZThn660_N23CAknFepCtrlRepeatButton14HandleTimerOutEPK12CAknFepTimer @ 232 NONAME ABSENT ; #<thunk>#
+	_ZThn8_N17CAknFepCtrlButton22ConstructFromResourceLEv @ 233 NONAME ; #<thunk>#
+	_ZThn8_N20CFepCtrlDropdownList22ConstructFromResourceLEv @ 234 NONAME ; #<thunk>#
+	_ZThn8_N21CAknFepCtrlDragButton22ConstructFromResourceLEv @ 235 NONAME ; #<thunk>#
+	_ZThn8_N26CAknFepCtrlMultiModeButton22ConstructFromResourceLEv @ 236 NONAME ; #<thunk>#
+	_ZN20CFepCtrlDropdownList14AddCandidatesLERK13RPointerArrayI7HBufC16ENS_9TListTypeE @ 237 NONAME
+	_ZN20CFepCtrlDropdownList21SetFlagCandidateExistEi @ 238 NONAME
+	_ZN20CFepCtrlDropdownList29SetEventIdForCandidateExistedEi @ 239 NONAME
+	_ZN20CFepCtrlDropdownList30SetEventIdForNextPageCandidateEi @ 240 NONAME
+	_ZN20CFepCtrlDropdownList34SetEventIdForPreviousPageCandidateEi @ 241 NONAME
+	_ZThn448_NK20CFepCtrlDropdownList14CandidateCountEv @ 242 NONAME ; #<thunk>#
+	_ZThn448_NK20CFepCtrlDropdownList17IsEnableSecondaryEv @ 243 NONAME ; #<thunk>#
+	_ZThn452_N20CFepCtrlDropdownList18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 244 NONAME ; #<thunk>#
+	_ZThn616_N19CAknFepCtrlRangeBar18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 245 NONAME ; #<thunk>#
+	_ZThn616_N21CAknFepCtrlBaseWindow18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 246 NONAME ; #<thunk>#
+	_ZThn720_N23CAknFepCtrlRepeatButton14HandleTimerOutEPK12CAknFepTimer @ 247 NONAME ABSENT ; #<thunk>#
+	_ZN20CFepCtrlDropdownList13SetCellMarginEii @ 248 NONAME
+	_ZN20CFepCtrlDropdownList16SetSpinBtnHeightEi @ 249 NONAME
+	_ZN20CFepCtrlDropdownList19SetCandTruncateTypeENS_17TCandTruncateTypeE @ 250 NONAME
+	_ZN20CFepCtrlDropdownList4NewLEP12CFepUiLayoutii6TPoint5TSizeii @ 251 NONAME
+	_ZN23CAknFepCtrlRawKeyButton21HandlePointerUpEventLERK6TPoint @ 252 NONAME
+	_ZN23CAknFepCtrlRawKeyButton22ConstructFromResourceLER15TResourceReader @ 253 NONAME
+	_ZN23CAknFepCtrlRawKeyButton22ConstructFromResourceLEv @ 254 NONAME
+	_ZN23CAknFepCtrlRawKeyButton23HandlePointerDownEventLERK6TPoint @ 255 NONAME
+	_ZN23CAknFepCtrlRawKeyButton4NewLEP12CFepUiLayoutiiii @ 256 NONAME ABSENT
+	_ZN23CAknFepCtrlRawKeyButton5NewLCEP12CFepUiLayoutiiii @ 257 NONAME ABSENT
+	_ZN23CAknFepCtrlRawKeyButtonC1EP12CFepUiLayoutiiii @ 258 NONAME ABSENT
+	_ZN23CAknFepCtrlRawKeyButtonC2EP12CFepUiLayoutiiii @ 259 NONAME ABSENT
+	_ZN23CAknFepCtrlRawKeyButtonD0Ev @ 260 NONAME
+	_ZN23CAknFepCtrlRawKeyButtonD1Ev @ 261 NONAME
+	_ZN23CAknFepCtrlRawKeyButtonD2Ev @ 262 NONAME
+	_ZTI23CAknFepCtrlRawKeyButton @ 263 NONAME ; #<TI>#
+	_ZTV23CAknFepCtrlRawKeyButton @ 264 NONAME ; #<VT>#
+	_ZThn8_N23CAknFepCtrlRawKeyButton22ConstructFromResourceLEv @ 265 NONAME ; #<thunk>#
+	_ZN23CAknFepCtrlRawKeyButton18HandlePointerLeaveERK6TPoint @ 266 NONAME
+	_ZN16CAknFepCtrlLabel10SetBitmapLEP10CFbsBitmap @ 267 NONAME
+	_ZN16CAknFepCtrlLabel11SizeChangedE5TRecti @ 268 NONAME
+	_ZN16CAknFepCtrlLabel12SetFontColorE4TRgb @ 269 NONAME
+	_ZN16CAknFepCtrlLabel13TextAlignmentEv @ 270 NONAME
+	_ZN16CAknFepCtrlLabel14SetMaskBitmapLEP10CFbsBitmap @ 271 NONAME
+	_ZN16CAknFepCtrlLabel16SetTextAlignmentEN16CGraphicsContext10TTextAlignE @ 272 NONAME
+	_ZN16CAknFepCtrlLabel4DrawEv @ 273 NONAME
+	_ZN16CAknFepCtrlLabel4NewLEP12CFepUiLayouti @ 274 NONAME
+	_ZN16CAknFepCtrlLabel7SetFontEPK5CFont @ 275 NONAME
+	_ZN16CAknFepCtrlLabel7SetFontERK9TFontSpec @ 276 NONAME
+	_ZN16CAknFepCtrlLabel7SetTextERK7TDesC16 @ 277 NONAME
+	_ZN16CAknFepCtrlLabelD0Ev @ 278 NONAME
+	_ZN16CAknFepCtrlLabelD1Ev @ 279 NONAME
+	_ZN16CAknFepCtrlLabelD2Ev @ 280 NONAME
+	_ZN22CPenInputSelectionList10RemoveItemEi @ 281 NONAME
+	_ZN22CPenInputSelectionList11CloseWindowEv @ 282 NONAME
+	_ZN22CPenInputSelectionList11SizeChangedE6TPoint5TSizei @ 283 NONAME
+	_ZN22CPenInputSelectionList14RemoveAllItemsEv @ 284 NONAME
+	_ZN22CPenInputSelectionList15SetTextPropertyEPK5CFont4TRgb @ 285 NONAME
+	_ZN22CPenInputSelectionList21HandlePointerUpEventLERK6TPoint @ 286 NONAME
+	_ZN22CPenInputSelectionList22ConstructFromResourceLEv @ 287 NONAME
+	_ZN22CPenInputSelectionList23HandlePointerDownEventLERK6TPoint @ 288 NONAME
+	_ZN22CPenInputSelectionList23HandlePointerMoveEventLERK6TPoint @ 289 NONAME
+	_ZN22CPenInputSelectionList4NewLEP12CFepUiLayouti6TPoint5TSizei @ 290 NONAME
+	_ZN22CPenInputSelectionList7DisplayEv @ 291 NONAME
+	_ZN22CPenInputSelectionList8AddItemLERK7TDesC16 @ 292 NONAME
+	_ZN22CPenInputSelectionList9SetItemsLERK13RPointerArrayI7HBufC16E @ 293 NONAME
+	_ZN22CPenInputSelectionListD0Ev @ 294 NONAME
+	_ZN22CPenInputSelectionListD1Ev @ 295 NONAME
+	_ZN22CPenInputSelectionListD2Ev @ 296 NONAME
+	_ZTI16CAknFepCtrlLabel @ 297 NONAME ; #<TI>#
+	_ZTI22CPenInputSelectionList @ 298 NONAME ; #<TI>#
+	_ZTV16CAknFepCtrlLabel @ 299 NONAME ; #<VT>#
+	_ZTV22CPenInputSelectionList @ 300 NONAME ; #<VT>#
+	_ZThn8_N22CPenInputSelectionList22ConstructFromResourceLEv @ 301 NONAME ; #<thunk>#
+	_ZN25PenInputModeSwitchFactory13CreateSwitchLEP12CFepUiLayouti16TPluginInputMode @ 302 NONAME ABSENT
+	_ZN25PenInputModeSwitchFactory13ReleaseSwitchEP28MPenInputModeSwitchInterface @ 303 NONAME ABSENT
+	_ZTI24CPenInputModeSwitchUtils @ 304 NONAME ABSENT ; #<TI>#
+	_ZTV24CPenInputModeSwitchUtils @ 305 NONAME ABSENT ; #<VT>#
+	_ZN20CFepCtrlDropdownList15SetFuzzyBoundryEi @ 306 NONAME
+	_ZN20CFepCtrlDropdownList17SetCandExpandTypeENS_11TExpandTypeE @ 307 NONAME
+	_ZN23CAknFepCtrlCommonButton11SizeChangedE5TRectS0_i @ 308 NONAME
+	_ZN23CAknFepCtrlCommonButton12SetHighlightEi @ 309 NONAME
+	_ZN23CAknFepCtrlCommonButton19SetForgroundBmpRectERK5TRect @ 310 NONAME
+	_ZN23CAknFepCtrlCommonButton22ConstructFromResourceLER15TResourceReader @ 311 NONAME
+	_ZN23CAknFepCtrlCommonButton22ConstructFromResourceLEv @ 312 NONAME
+	_ZN23CAknFepCtrlCommonButton4DrawEv @ 313 NONAME
+	_ZN23CAknFepCtrlCommonButton4NewLEP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 314 NONAME
+	_ZN23CAknFepCtrlCommonButton5NewLCEP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 315 NONAME
+	_ZN23CAknFepCtrlCommonButton9SetActiveEi @ 316 NONAME
+	_ZN23CAknFepCtrlCommonButtonC1EP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 317 NONAME
+	_ZN23CAknFepCtrlCommonButtonC2EP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 318 NONAME
+	_ZN23CAknFepCtrlCommonButtonD0Ev @ 319 NONAME
+	_ZN23CAknFepCtrlCommonButtonD1Ev @ 320 NONAME
+	_ZN23CAknFepCtrlCommonButtonD2Ev @ 321 NONAME
+	_ZN23CAknFepCtrlRawKeyButton4NewLEP12CFepUiLayouti11TAknsItemIDS2_S2_iii @ 322 NONAME
+	_ZN23CAknFepCtrlRawKeyButton5NewLCEP12CFepUiLayouti11TAknsItemIDS2_S2_iii @ 323 NONAME
+	_ZN23CAknFepCtrlRawKeyButtonC1EP12CFepUiLayouti11TAknsItemIDS2_S2_iii @ 324 NONAME
+	_ZN23CAknFepCtrlRawKeyButtonC2EP12CFepUiLayouti11TAknsItemIDS2_S2_iii @ 325 NONAME
+	_ZTI23CAknFepCtrlCommonButton @ 326 NONAME ; #<TI>#
+	_ZTV23CAknFepCtrlCommonButton @ 327 NONAME ; #<VT>#
+	_ZThn8_N23CAknFepCtrlCommonButton22ConstructFromResourceLEv @ 328 NONAME ; #<thunk>#
+	_ZN23CAknFepCtrlRawKeyButton12OnDeActivateEv @ 329 NONAME
+	_ZN31CPeninputLayoutInputmodelChoice14SwitchListRectEv @ 330 NONAME
+	_ZN31CPeninputLayoutInputmodelChoice15SetSecretEditorEi @ 331 NONAME
+	_ZN31CPeninputLayoutInputmodelChoice16PopUpSwitchListLERK5TRect @ 332 NONAME
+	_ZN31CPeninputLayoutInputmodelChoice4NewLEP12CFepUiLayouti16TPluginInputMode @ 333 NONAME
+	_ZN31CPeninputLayoutInputmodelChoiceD0Ev @ 334 NONAME
+	_ZN31CPeninputLayoutInputmodelChoiceD1Ev @ 335 NONAME
+	_ZN31CPeninputLayoutInputmodelChoiceD2Ev @ 336 NONAME
+	_ZTI31CPeninputLayoutInputmodelChoice @ 337 NONAME ; #<TI>#
+	_ZTV31CPeninputLayoutInputmodelChoice @ 338 NONAME ; #<VT>#
+	_ZN23CAknFepCtrlCommonButton17SetForegroundBmpLEP10CFbsBitmapS1_ @ 339 NONAME
+	_ZN23CAknFepCtrlCommonButton18HandlePointerLeaveERK6TPoint @ 340 NONAME
+	_ZN23CAknFepCtrlCommonButton21HandlePointerUpEventLERK6TPoint @ 341 NONAME
+	_ZN23CAknFepCtrlCommonButton23HandlePointerDownEventLERK6TPoint @ 342 NONAME
+	_ZN26CAknFepCtrlMultiModeButton15DisableOneModesEi @ 343 NONAME
+	_ZN19CAknFepCtrlRangeBar20SetDispalyCellRectsLERK6RArrayI5TRectES4_ @ 344 NONAME
+	_ZN19CPeninputVkbCtrlExt11SizeChangedERK5TRect @ 345 NONAME
+	_ZN19CPeninputVkbCtrlExt4NewLERK5TRectP12CFepUiLayoutiPK5CFonti @ 346 NONAME
+	_ZN19CPeninputVkbCtrlExtC1ERK5TRectP12CFepUiLayoutiRK9TFontSpeci @ 347 NONAME
+	_ZN19CPeninputVkbCtrlExtC2ERK5TRectP12CFepUiLayoutiRK9TFontSpeci @ 348 NONAME
+	_ZN20CAknFepCtrlVkbLayout22SetIrregularResourceIdEl @ 349 NONAME
+	_ZN20CAknFepCtrlVkbLayout31ConstructFromIrregularResourceLEv @ 350 NONAME
+	_ZN22CPeninputVkbLayoutInfo10SetKeyInfoEiiRK5TRectS2_PK5CFont @ 351 NONAME
+	_ZN22CPeninputVkbLayoutInfo15ResetLayoutInfoERK5TSize @ 352 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt13SetDragEnableEi @ 353 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt14BaseConstructLEv @ 354 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 355 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt22ConstructFromResourceLEv @ 356 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt25CreateBaseWindowControlsLEsl @ 357 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt4DrawEv @ 358 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt5CloseEv @ 359 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt7ControlEi @ 360 NONAME
+	_ZN24CAknFepCtrlBaseWindowExt7DoCloseEv @ 361 NONAME
+	_ZN24CAknFepCtrlBaseWindowExtC2EP12CFepUiLayouti @ 362 NONAME
+	_ZN24CAknFepCtrlBaseWindowExtD0Ev @ 363 NONAME
+	_ZN24CAknFepCtrlBaseWindowExtD1Ev @ 364 NONAME
+	_ZN24CAknFepCtrlBaseWindowExtD2Ev @ 365 NONAME
+	_ZTI24CAknFepCtrlBaseWindowExt @ 366 NONAME ; #<TI>#
+	_ZTV24CAknFepCtrlBaseWindowExt @ 367 NONAME ; #<VT>#
+	_ZThn616_N24CAknFepCtrlBaseWindowExt18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 368 NONAME ; #<thunk>#
+	_ZThn8_N24CAknFepCtrlBaseWindowExt22ConstructFromResourceLEv @ 369 NONAME ; #<thunk>#
+	_ZN20CAknFepCtrlVkbLayout25SetNonIrregularResourceIdEl @ 370 NONAME
+	_ZN20CAknFepCtrlVkbLayout34ConstructFromNonIrregularResourceLEv @ 371 NONAME
+	_ZNK26CAknFepCtrlMultiModeButton17GetRealCaseByModeEi @ 372 NONAME
+	_ZN19CAknFepCtrlRangeBar28HideRangeUsingIndicatorStyleEi @ 373 NONAME
+	_ZN19CAknFepCtrlRangeBar28ShowRangeUsingIndicatorStyleEi @ 374 NONAME
+	_ZN24CFepLayoutScrollableList10SetImgFrIdE11TAknsItemIDS0_S0_S0_S0_S0_ @ 375 NONAME
+	_ZN24CFepLayoutScrollableList11SizeChangedE5TSizeiiS0_S0_ @ 376 NONAME
+	_ZN24CFepLayoutScrollableList12CalcPageInfoEv @ 377 NONAME
+	_ZN24CFepLayoutScrollableList15SetTextPropertyEPK5CFont4TRgb @ 378 NONAME
+	_ZN24CFepLayoutScrollableList22ConstructFromResourceLEv @ 379 NONAME
+	_ZN24CFepLayoutScrollableList4NewLEP12CFepUiLayouti5TSizeiiS2_S2_ @ 380 NONAME
+	_ZN24CFepLayoutScrollableList5NewLCEP12CFepUiLayouti5TSizeiiS2_S2_ @ 381 NONAME
+	_ZN24CFepLayoutScrollableListD0Ev @ 382 NONAME
+	_ZN24CFepLayoutScrollableListD1Ev @ 383 NONAME
+	_ZN24CFepLayoutScrollableListD2Ev @ 384 NONAME
+	_ZTI24CFepLayoutScrollableList @ 385 NONAME ; #<TI>#
+	_ZTV24CFepLayoutScrollableList @ 386 NONAME ; #<VT>#
+	_ZThn8_N24CFepLayoutScrollableList22ConstructFromResourceLEv @ 387 NONAME ; #<thunk>#
+	_ZN23CAknFepCtrlCommonButton4MoveERK6TPoint @ 388 NONAME
+	_ZN25CPeninputCommonChoiceList12AddItemRectLERK5TRect @ 389 NONAME
+	_ZN25CPeninputCommonChoiceList12ReCalcLayoutEv @ 390 NONAME
+	_ZN25CPeninputCommonChoiceList13SetListSkinIDE11TAknsItemIDS0_ @ 391 NONAME
+	_ZN25CPeninputCommonChoiceList13SetTextLayoutERK18TAknTextLineLayout @ 392 NONAME
+	_ZN25CPeninputCommonChoiceList18RemoveAllItemsRectEv @ 393 NONAME
+	_ZN25CPeninputCommonChoiceList24SetListColumnNumWithLafLEi @ 394 NONAME
+	_ZN25CPeninputCommonChoiceList4DrawEv @ 395 NONAME
+	_ZN25CPeninputCommonChoiceList4NewLEP12CFepUiLayouti11TAknsItemIDS2_22ECommonChoiceListStyle @ 396 NONAME
+	_ZN25CPeninputCommonChoiceListD0Ev @ 397 NONAME
+	_ZN25CPeninputCommonChoiceListD1Ev @ 398 NONAME
+	_ZN25CPeninputCommonChoiceListD2Ev @ 399 NONAME
+	_ZTI25CPeninputCommonChoiceList @ 400 NONAME ; #<TI>#
+	_ZTV25CPeninputCommonChoiceList @ 401 NONAME ; #<VT>#
+	_ZN24CFepLayoutScrollableList21SetListSeperationRectERK5TRect @ 402 NONAME
+	_ZN25CPeninputCommonChoiceList7HitTestERK6TPoint @ 403 NONAME
+	_ZN21CAknFepCtrlDragButton11SizeChangedE5TRectS0_i @ 404 NONAME
+	_ZN21CAknFepCtrlDragButton17SetForegroundBmpLEP10CFbsBitmapS1_ @ 405 NONAME
+	_ZN21CAknFepCtrlDragButton19SetForgroundBmpRectERK5TRect @ 406 NONAME
+	_ZN21CAknFepCtrlDragButton23HandlePointerDownEventLERK6TPoint @ 407 NONAME
+	_ZN21CAknFepCtrlDragButton4DrawEv @ 408 NONAME
+	_ZN21CAknFepCtrlDragButton4MoveERK6TPoint @ 409 NONAME
+	_ZN22CAknFepCtrlEventButton4NewLEP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 410 NONAME
+	_ZN22CAknFepCtrlEventButton5NewLCEP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 411 NONAME
+	_ZN22CAknFepCtrlEventButtonC1EP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 412 NONAME
+	_ZN22CAknFepCtrlEventButtonC2EP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 413 NONAME
+	_ZN23CAknFepCtrlCommonButton18HandlePointerEnterERK6TPoint @ 414 NONAME
+	_ZN23CAknFepCtrlCommonButton22SetDraw3PieceFrameInfoE17TDraw3PiecesFrame @ 415 NONAME
+	_ZN23CAknFepCtrlRepeatButton4NewLEP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 416 NONAME
+	_ZN23CAknFepCtrlRepeatButton5NewLCEP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 417 NONAME
+	_ZN23CAknFepCtrlRepeatButtonC1EP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 418 NONAME
+	_ZN23CAknFepCtrlRepeatButtonC2EP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 419 NONAME
+	_ZN26CAknFepCtrlMultiModeButton11SizeChangedE5TRectS0_i @ 420 NONAME
+	_ZN26CAknFepCtrlMultiModeButton4NewLEP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 421 NONAME
+	_ZN26CAknFepCtrlMultiModeButton5NewLCEP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 422 NONAME
+	_ZN26CAknFepCtrlMultiModeButtonC1EP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 423 NONAME
+	_ZN26CAknFepCtrlMultiModeButtonC2EP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 424 NONAME
+	_ZThn796_N23CAknFepCtrlRepeatButton14HandleTimerOutEPK12CAknFepTimer @ 425 NONAME ABSENT ; #<thunk>#
+	_ZN24CFepLayoutScrollableList4HideEi @ 426 NONAME
+	_ZN20CFepCtrlDropdownList20SetDropdownListImgIDE21TDropdownListDrawInfo @ 427 NONAME
+	_ZN19CPeninputVkbCtrlExt9DimKeySetEPK7HBufC16i @ 428 NONAME
+	_ZThn804_N23CAknFepCtrlRepeatButton14HandleTimerOutEPK12CAknFepTimer @ 429 NONAME ; #<thunk>#
+	_ZN27CAknFepCtrlMultiImageButton11SizeChangedE5TRectS0_i @ 430 NONAME
+	_ZN27CAknFepCtrlMultiImageButton22ConstructFromResourceLER15TResourceReader @ 431 NONAME
+	_ZN27CAknFepCtrlMultiImageButton22ConstructFromResourceLEv @ 432 NONAME
+	_ZN27CAknFepCtrlMultiImageButton4DrawEv @ 433 NONAME
+	_ZN27CAknFepCtrlMultiImageButton4MoveERK6TPoint @ 434 NONAME
+	_ZN27CAknFepCtrlMultiImageButton4NewLEP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 435 NONAME
+	_ZN27CAknFepCtrlMultiImageButton5NewLCEP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 436 NONAME
+	_ZN27CAknFepCtrlMultiImageButtonC1EP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 437 NONAME
+	_ZN27CAknFepCtrlMultiImageButtonC2EP12CFepUiLayouti11TAknsItemIDS2_S2_ @ 438 NONAME
+	_ZN27CAknFepCtrlMultiImageButtonD0Ev @ 439 NONAME
+	_ZN27CAknFepCtrlMultiImageButtonD1Ev @ 440 NONAME
+	_ZN27CAknFepCtrlMultiImageButtonD2Ev @ 441 NONAME
+	_ZTI27CAknFepCtrlMultiImageButton @ 442 NONAME ; #<TI>#
+	_ZTV27CAknFepCtrlMultiImageButton @ 443 NONAME ; #<VT>#
+	_ZThn8_N27CAknFepCtrlMultiImageButton22ConstructFromResourceLEv @ 444 NONAME ; #<thunk>#
+	_ZN19CPeninputVkbCtrlExt22ConstructFromResourceLEv @ 445 NONAME
+	_ZThn8_N19CPeninputVkbCtrlExt22ConstructFromResourceLEv @ 446 NONAME ; #<thunk>#
+	_ZN24CFepLayoutScrollableList10ConstructLEv @ 447 NONAME
+	_ZN24CFepLayoutScrollableList12DrawPageInfoEv @ 448 NONAME
+	_ZN24CFepLayoutScrollableList12ReCalcLayoutEv @ 449 NONAME
+	_ZN24CFepLayoutScrollableList15UpdatePageInfoLEii @ 450 NONAME
+	_ZN24CFepLayoutScrollableList18CalculateItemWidthEv @ 451 NONAME
+	_ZN24CFepLayoutScrollableList18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 452 NONAME
+	_ZN24CFepLayoutScrollableList22UpdateNaviButtonStatesEv @ 453 NONAME
+	_ZN24CFepLayoutScrollableList4DrawEv @ 454 NONAME
+	_ZN24CFepLayoutScrollableList4MoveERK6TPoint @ 455 NONAME
+	_ZN24CFepLayoutScrollableList7HitTestERK6TPoint @ 456 NONAME
+	_ZN24CFepLayoutScrollableList8DrawItemEii @ 457 NONAME
+	_ZN24CFepLayoutScrollableListC1EP12CFepUiLayouti5TSizeiiS2_S2_ @ 458 NONAME
+	_ZN24CFepLayoutScrollableListC2EP12CFepUiLayouti5TSizeiiS2_S2_ @ 459 NONAME
+	_ZN25CPeninputCommonChoiceListC1EP12CFepUiLayouti11TAknsItemIDS2_22ECommonChoiceListStyle @ 460 NONAME
+	_ZN25CPeninputCommonChoiceListC2EP12CFepUiLayouti11TAknsItemIDS2_22ECommonChoiceListStyle @ 461 NONAME
+	_ZThn768_N24CFepLayoutScrollableList18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 462 NONAME ; #<thunk>#
+	_ZN23CAknFepCtrlRepeatButton18CancelPointerDownLEv @ 463 NONAME
+	_ZN20CFepCtrlDropdownList4NewLEP12CFepUiLayoutii6TPointPK5CFont5TSizeiiiiiiNS_11THDirectionEi @ 464 NONAME
+	_ZN20CFepCtrlDropdownList16SetSecondaryListER6RArrayIiEi @ 465 NONAME
+	_ZN20CFepCtrlDropdownList10ShowBubbleEi @ 466 NONAME
+	_ZN20CFepCtrlDropdownList12SetFrameDiffEiiii @ 467 NONAME
+	_ZN20CFepCtrlDropdownList13SetBubbleSizeERK5TSize @ 468 NONAME
+	_ZN20CFepCtrlDropdownList13SetTextFormatE18TAknTextLineLayout @ 469 NONAME
+	_ZN20CFepCtrlDropdownList17SetBubbleTextFontEPK5CFont @ 470 NONAME
+	_ZN20CFepCtrlDropdownList20SetBubbleBitmapParamEP10CFbsBitmapS1_11TAknsItemID @ 471 NONAME
+	_ZN20CFepCtrlDropdownList10ReDrawRectERK5TRect @ 472 NONAME
+	_ZN23CAknFepCtrlCommonButton18CancelPointerDownLEv @ 473 NONAME
+	_ZN20CFepCtrlDropdownList4HideEi @ 474 NONAME
+

@@ -1,0 +1,203 @@
+/*
+* Copyright (c) 2003-2005 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   PtiEngine resource file.
+*
+*/
+
+
+
+NAME PTIE
+
+#include <eikon.rh>
+#include <languages.hrh>
+
+#include <LanguageCodes.rh>
+
+#define KLangHindiPhonetic	602
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF 
+    { 
+    buf= ""; 
+    }
+
+
+STRUCT PTI_LANGUAGE
+	{
+   	LTEXT name;
+	WORD languageId;
+	}
+
+
+STRUCT PTI_LANGUAGE_TRANSLATIONS
+	{
+	STRUCT languages[];
+	}
+
+// Language names
+
+#define NAME_English     "English"	
+#define NAME_Lithuanian  "Lietuvi"<0x0173>	
+#define NAME_Malay       "Melayu"	
+#define NAME_Polish      "Polski"	
+#define NAME_Portuguese  "Portugu"<0x00EA>"s"	
+#define NAME_Romanian    "Rom"<0x00E2>"n"<0x0103>	
+#define NAME_Serbian     "Srpski"	
+#define NAME_Slovak      "Sloven"<0x010D>"ina"	
+#define NAME_Slovene     "Sloven"<0x0161><0x010D>"ina"	
+#define NAME_Spanish     "Espa"<0x00F1>"ol"	
+#define NAME_Swedish     "Svenska"	
+#define NAME_Tagalog     "Pilipino"	
+#define NAME_Turkish     "Türk"<0x00E7>"e"	
+#define NAME_Czech       <0x010C>"e"<0x0161>"tina"	
+#define NAME_Dutch       "Nederlands"	
+#define NAME_Estonian    "Eesti"	
+#define NAME_French      "Fran"<0x00E7>"ais"	
+#define NAME_Greek       <0x0395><0x03BB><0x03BB><0x03B7><0x03BD><0x03B9><0x03BA><0x03AC>	
+#define NAME_Icelandic   <0x00CD>"slenska"	
+#define NAME_Indonesian  "Indonesia"	
+#define NAME_Italian     "Italiano"	
+#define NAME_Latvian     "Latvie"<0x0161>"u"	
+#define NAME_Croatian    "Hrvatski"	
+#define NAME_German      "Deutsch"	
+#define NAME_Hungarian   "Magyar"	
+#define NAME_Bulgarian    <0x0411><0x044A><0x043B><0x0433><0x0430><0x0440><0x0441><0x043A><0x0438>	
+#define NAME_Finnish     "Suomi"	
+#define NAME_Russian     <0x0420><0x0443><0x0441><0x0441><0x043A><0x0438><0x0439>	
+#define NAME_Danish      "Dansk"	
+#define NAME_Norwegian   "Norsk"	
+#define NAME_Ukrainian   <0x0423><0x043A><0x0440><0x0430><0x0457><0x043D><0x0441><0x044C><0x043A><0x0430>
+#define NAME_Arabic      <0x0627><0x0644><0x0639><0x0631><0x0628><0x064A><0x0629>
+#define NAME_Hebrew      <0x05E2><0x05D1><0x05E8><0x05D9><0x05EA>
+#define NAME_Thai        <0x0E20><0x0E32><0x0E29><0x0E32><0x0E44><0x0E17><0x0E22>
+#define NAME_ChinesePRC  <0x7B80><0x4F53><0x4E2D><0x6587>
+#define NAME_ChineseHK   <0x7E41><0x9AD4><0x4E2D><0x6587><0x0028><0x9999><0x6E2F><0x0029>
+#define NAME_ChineseTW   <0x7E41><0x9AD4><0x4E2D><0x6587><0x0028><0x53F0><0x7063><0x0029>
+#define NAME_Japanese    <0x65E5><0x672C><0x8A9E>
+#define NAME_Vietnamese  "Ti"<0x00EA><0x0301>"ng Vi"<0x00EA><0x0323>"t"
+#define NAME_Farsi       <0x0641><0x0627><0x0631><0x0633><0x0649>
+#define NAME_Hindi       <0x0939><0x093f><0x0928><0x094d><0x0926><0x0940>
+#define NAME_Urdu        <0x0627><0x0631><0x062f><0x0648>
+#define NAME_Catalan     "Català"
+#define NAME_Galician    "Galego"
+#define NAME_Basque      "Euskara"
+#define NAME_Indic_Phonetic <0x0939><0x093f><0x0928><0x094d><0x0926><0x0940>" Phonetic"
+#define NAME_Marathi     <0x092E><0x0930><0x093E><0x0920><0x0940>
+#define NAME_Korean      <0xD55C><0xAD6D><0xC5B4>
+
+
+RESOURCE PTI_LANGUAGE_TRANSLATIONS r_pti_language_translations
+	{
+	languages=
+		{	
+		PTI_LANGUAGE {name=NAME_Arabic  ;	languageId = ELangArabic; },
+		PTI_LANGUAGE {name=NAME_Danish  ;  languageId = ELangDanish; },  	  
+		PTI_LANGUAGE {name=NAME_German  ;  languageId = ELangGerman; },  	  
+		PTI_LANGUAGE {name=NAME_Estonian;  languageId = ELangEstonian; },  	  
+  		PTI_LANGUAGE {name=NAME_English;  languageId = ELangEnglish; },
+		PTI_LANGUAGE {name=NAME_Spanish;  languageId = ELangSpanish; },  	  
+		PTI_LANGUAGE {name=NAME_French;  languageId = ELangFrench; },  	  
+		PTI_LANGUAGE {name=NAME_Hebrew;  languageId = ELangHebrew; },
+		PTI_LANGUAGE {name=NAME_Croatian;  languageId = ELangCroatian; },  	  
+		PTI_LANGUAGE {name=NAME_Indonesian;  languageId = ELangIndonesian; },  	  
+		PTI_LANGUAGE {name=NAME_Italian;  languageId = ELangItalian; },  	  
+		PTI_LANGUAGE {name=NAME_Latvian;  languageId = ELangLatvian; },  	  
+	  	PTI_LANGUAGE {name=NAME_Lithuanian;  languageId = ELangLithuanian; },  	  
+		PTI_LANGUAGE {name=NAME_Hungarian;  languageId = ELangHungarian; },  	  
+		PTI_LANGUAGE {name=NAME_Malay;  languageId = ELangMalay; },  	  
+		PTI_LANGUAGE {name=NAME_Dutch;  languageId = ELangDutch; },  	  
+		PTI_LANGUAGE {name=NAME_Norwegian;  languageId = ELangNorwegian; },  	  
+		PTI_LANGUAGE {name=NAME_Tagalog;  languageId = ELangTagalog; },  	  
+		PTI_LANGUAGE {name=NAME_Polish;  languageId = ELangPolish; },  	  
+		PTI_LANGUAGE {name=NAME_Portuguese; languageId = ELangPortuguese; },  	  
+		PTI_LANGUAGE {name=NAME_Romanian;  languageId = ELangRomanian; },  	  
+		PTI_LANGUAGE {name=NAME_Slovak;  languageId = ELangSlovak; },  	  
+		PTI_LANGUAGE {name=NAME_Slovene;  languageId = ELangSlovenian; },  	  
+		PTI_LANGUAGE {name=NAME_Serbian;  languageId = ELangSerbian; },  	  
+		PTI_LANGUAGE {name=NAME_Finnish;  languageId = ELangFinnish; },  	  
+		PTI_LANGUAGE {name=NAME_Swedish;  languageId = ELangSwedish; },  	  
+		PTI_LANGUAGE {name=NAME_Turkish;  languageId = ELangTurkish; },  	  
+		PTI_LANGUAGE {name=NAME_Icelandic;  languageId = ELangIcelandic; },  	  
+		PTI_LANGUAGE {name=NAME_Czech;  languageId = ELangCzech; },  	  
+		PTI_LANGUAGE {name=NAME_Greek;  languageId = ELangGreek; },  	  
+		PTI_LANGUAGE {name=NAME_Bulgarian;  languageId = ELangBulgarian; },  	  
+		PTI_LANGUAGE {name=NAME_Russian;  languageId = ELangRussian; },  	  
+		PTI_LANGUAGE {name=NAME_Ukrainian  ;  languageId = ELangUkrainian; },
+		PTI_LANGUAGE {name=NAME_Thai  ;  languageId = ELangThai; },
+		PTI_LANGUAGE {name=NAME_ChinesePRC  ;  languageId = ELangPrcChinese; },
+		PTI_LANGUAGE {name=NAME_ChineseHK  ;  languageId = ELangHongKongChinese; },
+		PTI_LANGUAGE {name=NAME_ChineseTW  ;  languageId = ELangTaiwanChinese; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = ELangCanadianEnglish; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = ELangSouthAfricanEnglish; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = ELangInternationalEnglish; },
+		PTI_LANGUAGE {name=NAME_French  ;  languageId = ELangCanadianFrench; },
+		PTI_LANGUAGE {name=NAME_Portuguese  ;  languageId = ELangBrazilianPortuguese; },
+		PTI_LANGUAGE {name=NAME_Spanish  ;  languageId = ELangLatinAmericanSpanish; },
+		PTI_LANGUAGE {name=NAME_Spanish  ;  languageId = ELangInternationalSpanish; },
+		PTI_LANGUAGE {name=NAME_Swedish  ;  languageId = ELangFinlandSwedish; },
+		PTI_LANGUAGE {name=NAME_French  ;  languageId = ELangSwissFrench; },
+		PTI_LANGUAGE {name=NAME_German  ;  languageId = ELangSwissGerman; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = ELangAmerican; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = ELangAustralian; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = KLangTaiwanEnglish; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = KLangHongKongEnglish; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = KLangPrcEnglish; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = KLangJapaneseEnglish; },
+		PTI_LANGUAGE {name=NAME_English  ;  languageId = KLangThaiEnglish; },
+		PTI_LANGUAGE {name=NAME_Japanese ;  languageId = ELangJapanese; },
+		PTI_LANGUAGE {name=NAME_Dutch;  languageId = ELangBelgianFlemish; },  
+		PTI_LANGUAGE {name=NAME_Vietnamese;  languageId = ELangVietnamese; },
+		PTI_LANGUAGE {name=NAME_Farsi;       languageId = ELangFarsi; },
+		PTI_LANGUAGE {name=NAME_Hindi;       languageId = ELangHindi; },
+		PTI_LANGUAGE {name=NAME_Urdu;        languageId = ELangUrdu; },
+		PTI_LANGUAGE {name=NAME_Malay;        languageId = KLangApacMalay;},
+		PTI_LANGUAGE {name=NAME_Catalan;        languageId = ELangCatalan;},
+		PTI_LANGUAGE {name=NAME_Galician;        languageId = KLangGalician;},
+		PTI_LANGUAGE {name=NAME_Basque;        languageId = KLangBasque;},
+		PTI_LANGUAGE {name=NAME_English; languageId = KLangIndicEnglish;},
+		PTI_LANGUAGE {name=NAME_English; languageId = KLangApacEnglish;},
+		PTI_LANGUAGE {name=NAME_Indonesian; languageId = KLangApacIndonesian;}, 																												
+		PTI_LANGUAGE {name=NAME_Indic_Phonetic;        languageId = KLangHindiPhonetic;}, 
+		PTI_LANGUAGE {name=NAME_Marathi;       languageId = ELangMarathi; },
+        	PTI_LANGUAGE {name=NAME_Korean;    languageId = ELangKorean; }
+		};
+	}
+
+
+
+STRUCT MODE_NAME_INDICES
+	{
+	WORD indices[6];
+	}
+
+
+RESOURCE MODE_NAME_INDICES r_pti_prc_indices
+	{
+	indices = {0, -1, 1, 2, 3, 4};
+	}
+
+
+RESOURCE MODE_NAME_INDICES r_pti_tw_indices
+	{
+	indices = {-1, 0, -1, 1, 2, 3};
+	}
+
+
+RESOURCE MODE_NAME_INDICES r_pti_hk_indices
+	{
+	indices = {-1, -1, 0, 1, 2, 3};	
+	}
+
+
+// End of file

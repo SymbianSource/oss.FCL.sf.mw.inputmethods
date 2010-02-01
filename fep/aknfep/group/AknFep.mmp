@@ -1,0 +1,342 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:           
+*       MakMake Project file.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+#include <platform_paths.hrh>
+
+TARGET          avkonfep.dll
+TARGETTYPE      plugin
+
+UID             0x10009d8d 0x100056de
+CAPABILITY      All -Tcb
+
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../resource
+
+START RESOURCE 100056de.rss
+TARGET AvkonFep.rsc
+END
+
+START RESOURCE  AknFep.rss
+HEADER
+TARGETPATH      FEP_RESOURCES_DIR
+LANGUAGE_IDS
+END
+
+MACRO   __REVERSE_FN_KEY_SUPPORTED
+MACRO   __ITI_LONGPRESS_NUM_SHIFT_COPYPASTE__
+MACRO   __HALF_QWERTY_KEYPAD
+MACRO   __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__ 
+
+USERINCLUDE     ../inc .
+//sort this out when move to 2.0 env
+
+
+// Added APP_LAYER_SYSTEMINCLUDE for header split and relocation activity
+APP_LAYER_SYSTEMINCLUDE
+
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   ../inc
+SYSTEMINCLUDE   ../../../inc
+//SYSTEMINCLUDE   ../../inc
+
+SOURCEPATH      ../src
+
+SOURCE          AknFepManager.cpp
+SOURCE          AknFepKeyCatcher.cpp
+SOURCE          AknFepHashKeyManager.cpp
+SOURCE          AknFepCaseManager.cpp
+SOURCE          AknFepSharedDataInterface.cpp
+SOURCE          AknFepLanguageManager.cpp
+SOURCE          AknFepUiManagerBase.cpp
+SOURCE          AknFepInlineTextDecorator.cpp
+
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+SOURCE          AknFepFnKeyManager.cpp
+SOURCE          AknFepUiInputStateHalfQwerty.cpp
+SOURCE			AknFepUiInputStateInitialHalfQwertyWesternPredictive.cpp 
+SOURCE			AknFepUiInputStateEntryHalfQwertyWesternPredictive.cpp
+#endif
+#ifdef RD_SCALABLE_UI_V2
+SOURCE          AknFepPluginManager.cpp
+SOURCE          AknFepPluginMenuManager.cpp
+SOURCE          aknfepuimanagerfingeritutchinese.cpp
+SOURCE          aknfepuifingeritutinputstategeneric.cpp
+
+// for spell
+SOURCE         aknfepuispellcontainer.cpp
+SOURCE         aknfepuispellinputpane.cpp
+#endif
+
+// UI manager for each variant
+SOURCE          AknFepUiManagerWestern.cpp
+SOURCE			AknFepUiIndicInputManager.cpp
+SOURCE			AknFepUiInputStateInitialIndicMultitap.cpp
+SOURCE			AknFepUiInputStateInitialIndicPredictive.cpp
+SOURCE			AknFepUiInputStateEntryIndicPredictive.cpp
+SOURCE			AknFepUiInputStateInitialKoreanMultitap.cpp
+SOURCE          AknFepUiManagerKorean.cpp
+#ifdef RD_HINDI_PHONETIC_INPUT	
+SOURCE			aknfepuiinputstateinitialindicphoneticmultitap.cpp
+SOURCE			aknfepuiinputstateindicphoneticqwerty.cpp
+#endif
+
+SOURCE          AknFepUiManagerChinese.cpp
+SOURCE          AknFepUiManagerJapanese.cpp
+// UI Inputstates
+SOURCE          AknFepUiInputStateBase.cpp
+// for western
+SOURCE          AknFepUiInputStateInitialNumber.cpp
+SOURCE          AknFepUiInputStateInitialLatinMultitap.cpp
+SOURCE          AknFepUiInputStateInitialMultitapBase.cpp
+SOURCE          AknFepUiInputStateInitialWesternPredictive.cpp
+SOURCE          AknFepUiInputStateEntryWesternPredictive.cpp
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+// Predictive Qwerty changes (e.g. XT9) ---->
+SOURCE          AknFepUiInputStateInitialQwertyWesternPredictive.cpp
+SOURCE          AknFepUiInputStateEntryQwertyWesternPredictive.cpp
+// Predictive Qwerty changes (e.g. XT9) <----
+#endif //RD_INTELLIGENT_TEXT_INPUT 
+SOURCE          AknFepUiInputStateEntryWesternPredictiveJp.cpp
+
+// for Arabic and Hebrew
+SOURCE          AknFepUiInputStateInitialArabicHebrewMultitap.cpp
+SOURCE          AknFepUiInputStateInitialArabicHebrewPredictive.cpp
+SOURCE          AknFepUiInputStateEntryArabicHebrewPredictive.cpp
+
+// for Chinese
+SOURCE          AknFepUiInputStateChineseBase.cpp
+SOURCE          AknFepUiInputStateInitialChineseMultitapBase.cpp
+SOURCE          AknFepUiInputStateInitialChineseGeneric.cpp
+SOURCE          AknFepUiInputStateInitialZhuyinFind.cpp
+SOURCE          AknFepUiInputstateInitialStrokeFind.cpp
+SOURCE          AknFepUiInputStateEntryPinyin.cpp
+SOURCE          AknFepUiInputStateEntryZhuyinStrokeBase.cpp
+SOURCE          AknFepUiInputStateEntryZhuyin.cpp
+SOURCE          AknFepUiInputStateEntryStroke.cpp
+SOURCE          AknFepUiInputStateCandidateBase.cpp
+SOURCE          AknFepUiInputStateCandidate.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidate.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidatePinyin.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidateStroke.cpp
+SOURCE          AknFepUiInputStatePredictiveInput.cpp
+SOURCE          AknFepUiInputStatePredictiveInputChinese.cpp
+// Chinese phrase Input state
+SOURCE          AknFepUiInputStateEntryPinyinPhrase.cpp
+SOURCE          AknFepUiInputStateEntryZhuyinPhrase.cpp
+SOURCE          AknFepUiInputStateEntryStrokePhrase.cpp
+SOURCE          AknFepUiInputStateEntryZhuyinStrokeBasePhrase.cpp
+SOURCE          AknFepUiInputStateCandidateChinese.cpp
+SOURCE          AknFepUiInputStateCandidateBasePhrase.cpp
+SOURCE          AknFepUiInputStateCandidateBaseChinesePhrase.cpp
+SOURCE          AknFepUiInputStateCandidateChinesePhrase.cpp
+SOURCE          AknFepUiInputStateCandidateQwertyBaseChinesePhrase.cpp
+SOURCE          AknFepUiInputStateCandidatePinyinAndStrokePhrase.cpp
+SOURCE          AknFepUiInputStateCandidatePhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidatePhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidatePinyinPhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidateStrokePhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveInputPhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidateChinesePhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveInputChinesePhrase.cpp
+// Chinese Qwerty
+SOURCE          AknFepUiInputStateInitialChineseGenericQwerty.cpp
+SOURCE 	        AknFepUiInputStatePredictiveInputQwerty.cpp
+SOURCE 	        AknFepUiInputStatePredictiveInputQwertyPinyin.cpp
+SOURCE          AknFepUiInputStateEntryQwertyPinyin.cpp
+SOURCE          AknFepUiInputStateEntryQwertyZhuyin.cpp
+SOURCE 		AknFepUiInputStateCandidateQwertyZhuyin.cpp
+SOURCE 		AknFepUiInputStatePredictiveCandidateQwertyZhuyin.cpp
+SOURCE          AknFepUiInputStatePredictiveInputQwertyZhuyin.cpp
+SOURCE          AknFepUiInputStateCandidateQwertyBase.cpp
+SOURCE          AknFepUiInputStateCandidateQwertyChineseBase.cpp
+SOURCE          AknFepUiInputStateEntryQwertyBase.cpp
+SOURCE          AknFepUiInputStateEntryQwertyStroke.cpp
+SOURCE          AknFepUiInputStateEntryQwertyCangJie.cpp
+SOURCE 		AknFepUiInputStateCandidateQwertyBasePhrase.cpp
+SOURCE 		AknFepUiInputStateEntryQwertyBaseChinesePhrase.cpp
+SOURCE 		AknFepUiInputStateCandidateQwertyChinesePhrase.cpp
+SOURCE 		AknFepUiInputStateEntryQwertyBasePhrase.cpp
+SOURCE 		AknFepUiInputStatePredictiveInputQwertyPhrase.cpp
+SOURCE 		AknFepUiInputStatePredictiveInputQwertyChinesePhrase.cpp
+SOURCE          AknFepUiInputStateEntryQwertyPinyinPhrase.cpp
+SOURCE          AknFepUiInputStateEntryQwertyZhuyinPhrase.cpp
+SOURCE          AknFepUiInputStateEntryQwertyStrokePhrase.cpp
+SOURCE 		AknFepUiInputStateCandidateQwertyZhuyinPhrase.cpp
+SOURCE 		AknFepUiInputStatePredictiveCandidateQwertyZhuyinPhrase.cpp
+SOURCE 		AknFepUiInputStatePredictiveInputQwertyZhuyinPhrase.cpp
+SOURCE 		AknFepUiInputStateStrokeFindQwerty.cpp
+SOURCE 		AknFepUiInputStateChineseFindQwerty.cpp
+SOURCE 		AknFepUiInputStateZhuyinFindQwerty.cpp
+SOURCE          AknFepUiInputStateCandidateQwertyPhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveInputQwertyPinyinPhrase.cpp
+SOURCE          AknFepUiInputStateCandidateQwerty.cpp
+SOURCE          AknFepUiInputStateCandidateQwertyChinese.cpp
+SOURCE          AknFepUiInputStatePredictiveInputQwertyStrokePhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveInputQwertyStroke.cpp
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+SOURCE          AknFepUiInputStateCandidateMiniQwertyPinyinAndStrokePhrase.cpp
+SOURCE          AknFepUIInputStateEntryMiniQwertyPinyinPhrase.cpp
+SOURCE          AknFepUIInputStatePredictiveInputMiniQwertyChinesePhrase.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidateMiniQwertyChinesePhrase.cpp
+SOURCE          AknFepUiInputStateEntryMiniQwertyZhuyinPhrase.cpp
+SOURCE          AknFepUiInputStateCandidateMiniQwertyZhuyinPhrase.cpp
+SOURCE          AknFepUIInputStateEntryMiniQwertyCangJie.cpp
+SOURCE          aknfepuiinputminiqwertypinyinphrasebase.cpp 
+SOURCE          aknfepuiinputminiqwertystrokephrasebase.cpp 
+SOURCE          aknfepuiinputstateminiqwertystrokephrase.cpp
+SOURCE          aknfepinputstateminiqwertyzhuyinkeymap.cpp  
+SOURCE          aknfepuiinputminiqwertyzhuyinphrasebase.cpp
+SOURCE          aknfepuiinputstateminiqwertyzhuyinphrase.cpp
+SOURCE          AknFepUiInputStateCandidateHalfQwertyChinesePhrase.cpp
+SOURCE          AknFepInputStateInitialChineseGenericHalfQwerty.cpp
+SOURCE          AknFepUiInputStatePredictiveCandidateHalfQwertyChinesePhrase.cpp
+SOURCE          aknfepuiinputstateentryhalfqwertyphrase.cpp 
+#endif
+
+// for thai
+SOURCE          AknFepUiInputStateInitialThaiMultitap.cpp
+SOURCE          AknFepUiInputStateInitialThaiPredictive.cpp
+SOURCE          AknFepUiInputStateEntryThaiPredictive.cpp
+SOURCE          AknFepThaiSCTSelector.cpp
+
+// for Japanese
+SOURCE          AknFepUiInputStateJapaneseBase.cpp
+SOURCE          AknFepUiInputStateInitialJapaneseBase.cpp
+SOURCE          AknFepUiInputStateInitialHiraganaKanji.cpp
+SOURCE          AknFepUiInputStateInitialHiragana.cpp
+SOURCE          AknFepUiInputStateInitialKatakana.cpp
+SOURCE          AknFepUiInputStateInitialLatinJapanese.cpp
+SOURCE          AknFepUiInputStateInitialFullNumber.cpp
+SOURCE          AknFepUiInputStateEntryJapaneseMultitap.cpp
+SOURCE          AknFepUiInputStateEntryHiraganaKanji.cpp
+SOURCE          AknFepUiInputStateEntryKatakana.cpp
+SOURCE          AknFepUiInputStateEntryLatinJapanese.cpp
+SOURCE          AknFepUiInputStateConversionHiraganaKanji.cpp
+SOURCE          AknFepUiInputStateCandidateHiraganaKanji.cpp
+SOURCE          AknFepUiInputStateCompletionJapaneseMultitap.cpp
+SOURCE          AknFepUiInputStateCompletionHiraganaKanji.cpp
+SOURCE          AknFepUiInputStateCompletionKatakana.cpp
+SOURCE          AknFepUiInputStateCompletionPredictiveHiraganaKanji.cpp
+SOURCE          AknFepUiInputStateCompletionLatinJapanese.cpp
+SOURCE          AknFepUiInputStateJapanesePredictiveBase.cpp
+SOURCE          AknFepUiInputStatePredictiveInputJapanese.cpp
+SOURCE          AknFepUiInputStateNextWordJapanesePredictive.cpp
+SOURCE          AknFepUiInputStateCandidateRetroActive.cpp
+
+// for Vietnamese
+SOURCE          AknFepUiInputStateInitialVietnameseMultitap.cpp
+SOURCE          AknFepVietnameseToneManager.cpp
+SOURCE          AknFepUiInputStateEntryVietnamesePredictive.cpp
+
+// for Qwerty
+SOURCE          AknFepUiInputStateQwerty.cpp
+SOURCE          AknFepPlugin.cpp
+// for phraes creation
+SOURCE          aknfepinputstatecandidatepinyinphrasecreation.cpp 
+SOURCE          aknfepinputstatespellingpinyinphrasecreation.cpp 
+SOURCE          aknfepuserdbdlg.cpp 
+SOURCE          aknfepuserdbquerydlg.cpp 
+SOURCE          AknFepZhuyinAnalyser.cpp 
+SOURCE          AknFepZhuyinAnalyserDb.cpp 
+SOURCE          dbmanagement.cpp 
+SOURCE          aknfepuiinputstateentrypinyinphrasecreation.cpp 
+SOURCE          aknfepzhuyinconvertion.cpp 
+SOURCE          aknfepzhuyinkeyhandler.cpp
+SOURCE          aknfepinputstatepinyinphrasecreationbase.cpp
+SOURCE          aknfepuiinputstatestrokephrasebase.cpp 
+SOURCE          aknfepuiinputstateentryzhuyinphrasecreation.cpp 
+SOURCE          aknfepuiinputstatezhuyinphrasecreationbase.cpp
+SOURCE          aknfepuiinputstateqwertykorean.cpp
+
+LIBRARY         euser.lib
+LIBRARY         fepbase.lib
+LIBRARY         cone.lib
+LIBRARY         ws32.lib
+LIBRARY         eikcoctl.lib
+LIBRARY         eikctl.lib
+LIBRARY         eikcore.lib
+LIBRARY         ptiengine.lib // for PtiEngine
+LIBRARY         avkon.lib
+LIBRARY         commonengine.lib
+LIBRARY         bafl.lib
+LIBRARY         form.lib
+LIBRARY         eikdlg.lib
+LIBRARY         aknjapanesereading.lib
+LIBRARY         featmgr.lib
+LIBRARY         jplangutil.lib
+LIBRARY         apparc.lib
+LIBRARY         aknpictograph.lib
+LIBRARY         etext.lib
+LIBRARY         tagma.lib
+LIBRARY         gdi.lib
+LIBRARY         AknIcon.lib
+LIBRARY         egul.lib
+LIBRARY         hlplch.lib 
+
+LIBRARY         AknLayout2Scalable.lib
+LIBRARY         aknskins.lib 
+LIBRARY         aknskinsrv.lib
+LIBRARY         uiklaf.lib 
+
+LIBRARY         fbscli.lib
+LIBRARY		    efsrv.lib
+LIBRARY         CdlEngine.lib
+LIBRARY         apgrfx.lib
+
+#ifdef RD_SCALABLE_UI_V2
+LIBRARY         peninputclient.lib
+#endif
+
+LIBRARY         CentralRepository.lib
+LIBRARY         CenRepNotifHandler.lib
+
+LIBRARY ecom.lib
+LIBRARY			AknfepUiInterface.lib
+
+#ifdef RD_TACTILE_FEEDBACK     
+LIBRARY             touchfeedback.lib
+#endif // RD_TACTILE_FEEDBACK  
+
+
+#ifdef RD_SCALABLE_UI_V2
+LIBRARY    aknnotify.lib
+#endif //RD_SCALABLE_UI_V2
+START WINS
+BASEADDRESS     0x70500000
+END
+
+
+// End of file

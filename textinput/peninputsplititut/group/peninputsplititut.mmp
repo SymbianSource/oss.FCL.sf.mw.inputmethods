@@ -1,0 +1,108 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project peninputgenericitut
+*
+*/
+
+#include <bldvariant.hrh>
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET          peninputsplititut.dll
+TARGETTYPE      plugin
+UID             0x10009D8D 0x2001E2BA
+
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../src
+
+// Plugin Framework
+SOURCE          peninputsplititutmain.cpp peninputsplititutproxy.cpp
+SOURCE          peninputsplititutlayoutimp.cpp
+SOURCE          peninputsplititutdatamgr.cpp
+
+SOURCE          peninputsplititutlayout.cpp
+
+SOURCE          peninputsplicitutuimgrbase.cpp peninputsplititutchnuimgr.cpp
+SOURCE          peninputsplititutuistatebase.cpp peninputsplititutchnuistatestandby.cpp
+SOURCE          peninputsplititutchnuistatepredict.cpp peninputsplititutchnuistatestrokezhuyincomposition.cpp
+
+SOURCE          peninputsplititutchnuistatepinyincomposition.cpp peninputsplititutwesternuimgr.cpp peninputsplititutwesternuistatenonpredict.cpp
+
+SOURCE          peninputsplititutconverter.cpp peninputcommonbgctrl.cpp
+
+USERINCLUDE     ../inc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   /epoc32/include/ecom
+SYSTEMINCLUDE   ../../../inc
+SYSTEMINCLUDE   ../../inc
+
+SOURCEPATH      ../srcdata
+
+#if 0
+START RESOURCE 2001e2ba.rss
+    #ifdef SYMBIAN_SECURE_ECOM 
+        TARGET peninputsplititut.rsc
+    #endif
+END
+#endif
+START RESOURCE 2001e2ba.rss
+	TARGET peninputsplititut.rsc
+END
+
+// general resource file
+
+// common for all languages
+//RESOURCE        peninputsplititut.rss
+START RESOURCE peninputsplititutnew.rss
+HEADER
+LANGUAGE_IDS
+END
+
+// chinese specific resources
+
+// western specific resources
+
+// remember to remove uncessary libs
+LIBRARY         euser.lib
+LIBRARY         ECom.lib
+LIBRARY         gdi.lib
+LIBRARY         bafl.lib
+LIBRARY         aknlayout.lib
+LIBRARY         AknLayout2Scalable.lib
+LIBRARY         aknicon.lib 
+LIBRARY         avkon.lib
+LIBRARY         ptiengine.lib 
+LIBRARY         peninputlayoutinterface.lib 
+LIBRARY         peninputlayoutcontrol.lib
+LIBRARY         peninputcommonctrls.lib
+LIBRARY         cone.lib
+LIBRARY         peninputpluginutils.lib
+LIBRARY         ws32.lib
+LIBRARY         aknskins.lib
+LIBRARY         efsrv.lib
+LIBRARY         estor.lib
+LIBRARY         fbscli.lib
+LIBRARY 		bitgdi.lib 
+LIBRARY         commonengine.lib
+
+// End Of File
+RESOURCE peninputsplititutconfig_chinese.rss peninputsplititutconfig_latin.rss peninputsplititutconfig_cyrillic.rss peninputsplititutconfig_greek.rss peninputsplititutconfig_hebrew.rss peninputsplititutconfig_arabic.rss peninputsplititutconfig_farsi.rss peninputsplititutconfig_urdu.rss peninputsplititutconfig_thai.rss peninputsplititutconfig_devanagari.rss
+SOURCEPATH ../src
+SOURCE peninputsplititutwindow.cpp peninputsplititutwindowmanager.cpp

@@ -1,0 +1,240 @@
+#
+# Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+# All rights reserved.
+# This component and the accompanying materials are made available
+# under the terms of the License "Eclipse Public License v1.0"
+# which accompanies this distribution, and is available
+# at the URL "http://www.eclipse.org/legal/epl-v10.html".
+#
+# Initial Contributors:
+# Nokia Corporation - initial contribution.
+#
+# Contributors:
+#
+# Description:
+#
+#
+# Package definition syntax:
+#
+# [PACKAGE AAA BBB CCC DDD]
+# Language1    Filename1
+# Language2    Filename2
+#    .             .
+#    .             .
+# LanguageN    FilenameN
+#
+# Where:
+#    AAA = Package name. Usually either language id or variant id 
+#          depending on configuration.
+#    BBB = Implementation uid for resulting ecom dll.
+#    CCC = Dll uid for resultin ecom dll.
+#    DDD = can be one of these:
+#            <empty>    If not given, the dll will be built for both wins and armv5
+#            NOWINS     The dll will be built only for armv5
+#            WINSONLY   The dll will be built only for emulator
+#
+
+USE DATASET EMU
+
+#
+# USE BLOCK keyword specifies which data -blocks are built as part of
+# resulting keymapping dlls. S60 enables all blocks by default. Comment
+# out blocks not applicable to your product to optimize data size.
+#
+USE BLOCK 12-KEY
+USE BLOCK QWERTY STANDARD
+USE BLOCK QWERTY 4X10
+USE BLOCK QWERTY 3X11
+USE BLOCK QWERTY HALF
+USE BLOCK CUSTOM
+
+# PtiKeymappings_37.dll    
+[PACKAGE ITUT 37 102818C0 10281B93 WINSONLY]
+Arabic          ELangArabic.txt
+
+# PtiKeymappings_42.dll    
+[PACKAGE ITUT 42 10281B85 10281B88 WINSONLY]
+Bulgarian       ELangBulgarian.txt
+
+# PtiKeymappings_44.dll      
+[PACKAGE ITUT 44 10282546 10282545 WINSONLY]
+Catalan         ELangCatalan.txt
+
+# PtiKeymappings_45.dll    
+[PACKAGE ITUT 45 102818C6 10281B95 WINSONLY]
+Croatian        ELangCroatian.txt
+
+# PtiKeymappings_25.dll    
+[PACKAGE ITUT 25 102818B6 102818BA WINSONLY]
+Czech           ELangCzech.txt
+
+# PtiKeymappings_07.dll    
+[PACKAGE ITUT 07 1028189d 102818AB WINSONLY]
+Danish          ELangDanish.txt
+
+# PtiKeymappings_18.dll    
+[PACKAGE ITUT 18 102818B5 102818B9 WINSONLY]
+Dutch           ELangDutch.txt
+
+# PtiKeymappings_01.dll    
+[PACKAGE ITUT 01 10281897 102818A5 WINSONLY]
+English         ELangEnglish.txt
+
+# PtiKeymappings_49.dll    
+[PACKAGE ITUT 49 102818C7 10281B96 WINSONLY]
+Estonian        ELangEstonian.txt
+
+# PtiKeymappings_50.dll    
+[PACKAGE ITUT 50 10281B86 102072F3 WINSONLY]
+Farsi           ELangFarsi.txt
+
+# PtiKeymappings_09.dll    
+[PACKAGE ITUT 09 1028189f 102818AD WINSONLY]
+Finnish         ELangFinnish.txt
+
+# PtiKeymappings_02.dll    
+[PACKAGE ITUT 02 10281898 102818A6 WINSONLY]
+French          ELangFrench.txt
+
+# PtiKeymappings_03.dll    
+[PACKAGE ITUT 03 10281899 102818A7 WINSONLY]
+German          ELangGerman.txt
+
+# PtiKeymappings_54.dll    
+[PACKAGE ITUT 54 102818C8 10281B97 WINSONLY]
+Greek           ELangGreek.txt
+
+# PtiKeymappings_57.dll    
+[PACKAGE ITUT 57 10281B71 10281B72 WINSONLY]
+Hebrew          ELangHebrew.txt
+
+# PtiKeymappings_58.dll    
+[PACKAGE ITUT 58 10281B73 10281B74 WINSONLY]
+Hindi           ELangHindi.txt
+
+# PtiKeymappings_30.dll    
+[PACKAGE ITUT 30 10281B8B 10281B8E WINSONLY]
+HongKongChinese ELangHongKongChinese.txt
+
+# PtiKeymappings_17.dll    
+[PACKAGE ITUT 17 102818A4 102818B2 WINSONLY]
+Hungarian       ELangHungarian.txt
+
+# PtiKeymappings_15.dll    
+[PACKAGE ITUT 15 102818A2 102818B0 WINSONLY]
+Icelandic       ELangIcelandic.txt
+
+# PtiKeymappings_59.dll    
+[PACKAGE ITUT 59 10281B75 10281B76 WINSONLY]
+Indonesian      ELangIndonesian.txt
+
+# PtiKeymappings_05.dll    
+[PACKAGE ITUT 05 1028189b 102818A9 WINSONLY]
+Italian         ELangItalian.txt
+
+# PtiKeymappings_67.dll    
+[PACKAGE ITUT 67 10281B77 10281B78 WINSONLY]
+Latvian         ELangLatvian.txt
+
+# PtiKeymappings_68.dll    
+[PACKAGE ITUT 68 10281B79 10281B7A WINSONLY]
+Lithuanian      ELangLithuanian.txt
+
+# PtiKeymappings_70.dll    
+[PACKAGE ITUT 70 10281B7B 10281B7C WINSONLY]
+Malay           ELangMalay.txt
+
+# PtiKeymappings_72.dll     
+[PACKAGE ITUT 72 2000B17E 2000B17D WINSONLY]
+Marathi         ELangMarathi.txt
+
+# PtiKeymappings_08.dll    
+[PACKAGE ITUT 08 1028189e 102818AC WINSONLY]
+Norwegian       ELangNorwegian.txt
+
+# PtiKeymappings_27.dll    
+[PACKAGE ITUT 27 102818B8 102818BC WINSONLY]
+Polish          ELangPolish.txt
+
+# PtiKeymappings_13.dll    
+[PACKAGE ITUT 13 102818A0 102818AE WINSONLY]
+Portuguese      ELangPortuguese.txt
+
+# PtiKeymappings_31.dll    
+[PACKAGE ITUT 31 10281B8A 10281B8D WINSONLY]
+PrcChinese      ELangPrcChinese.txt
+
+# PtiKeymappings_78.dll    
+[PACKAGE ITUT 78 10281B7D 10281B7E WINSONLY]
+Romanian        ELangRomanian.txt
+
+# PtiKeymappings_16.dll    
+[PACKAGE ITUT 16 102818A3 102818B1 WINSONLY]
+Russian         ELangRussian.txt
+
+# PtiKeymappings_79.dll    
+[PACKAGE ITUT 79 10281B7F 10281B80 WINSONLY]
+Serbian         ELangSerbian.txt
+
+# PtiKeymappings_26.dll    
+[PACKAGE ITUT 26 102818B7 102818BB WINSONLY]
+Slovak          ELangSlovak.txt
+
+# PtiKeymappings_28.dll    
+[PACKAGE ITUT 28 102818BD 10281B90 WINSONLY]
+Slovenian       ELangSlovenian.txt
+
+# PtiKeymappings_04.dll    
+[PACKAGE ITUT 04 1028189a 102818A8 WINSONLY]
+Spanish         ELangSpanish.txt
+
+# PtiKeymappings_06.dll    
+[PACKAGE ITUT 06 1028189c 102818AA WINSONLY]
+Swedish         ELangSwedish.txt
+
+# PtiKeymappings_39.dll    
+[PACKAGE ITUT 39 102818C5 10281B94 WINSONLY]
+Tagalog         ELangTagalog.txt
+
+# PtiKeymappings_29.dll    
+[PACKAGE ITUT 29 10281B8C 10281B8F WINSONLY]
+TaiwanChinese   ELangTaiwanChinese.txt
+
+# PtiKeymappings_33.dll    
+[PACKAGE ITUT 33 102818BF 10281B92 WINSONLY]
+Thai            ELangThai.txt
+
+# PtiKeymappings_14.dll    
+[PACKAGE ITUT 14 102818A1 102818AF WINSONLY]
+Turkish         ELangTurkish.txt
+
+# PtiKeymappings_93.dll    
+[PACKAGE ITUT 93 10281B81 10281B82 WINSONLY]
+Ukrainian       ELangUkrainian.txt
+
+# PtiKeymappings_94.dll     
+[PACKAGE ITUT 94 10281B87 10281B89 WINSONLY]
+Urdu            ELangUrdu.txt
+
+# PtiKeymappings_96.dll    
+[PACKAGE ITUT 96 10281B83 10281B84 WINSONLY]
+Vietnamese      ELangVietnamese.txt
+
+# PtiKeymappings_102.dll    
+[PACKAGE ITUT 102 1028254A 10282549 WINSONLY]   
+Basque          KLangBasque.txt
+
+# PtiKeymappings_65.dll    
+[PACKAGE ITUT 65 2001FDFB 2001FDFA WINSONLY]   
+Korean          KLangKorean.txt
+# PtiKeymappings_103.dll    
+[PACKAGE ITUT 103 10282548 10282547 WINSONLY]   
+Galician        KLangGalician.txt
+
+# End of file.
+
+
+
+
+
+                   

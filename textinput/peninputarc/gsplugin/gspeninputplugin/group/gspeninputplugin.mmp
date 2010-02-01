@@ -1,0 +1,101 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file.
+*
+*/
+
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+CAPABILITY              CAP_ECOM_PLUGIN
+TARGET                  gspeninputplugin.dll
+TARGETTYPE              PLUGIN
+UID                     0x10009D8D 0x1027510B
+VENDORID                VID_DEFAULT
+
+SOURCEPATH              ../src 
+SOURCE                  gspeninputplugin.cpp
+SOURCE                  gspeninputcontainer.cpp
+SOURCE                  gspeninputmodel.cpp
+SOURCE                  gspeninputimplementationtable.cpp
+SOURCE                  gspeninputimple.cpp
+SOURCE                  gssettingdialog.cpp
+
+USERINCLUDE             ../inc 
+USERINCLUDE             ../data 
+USERINCLUDE             ../loc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+APP_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE           /epoc32/include/ecom
+SYSTEMINCLUDE           /epoc32/include/internal
+SYSTEMINCLUDE           ../../../../../inc
+SYSTEMINCLUDE           ../../../../inc
+
+SOURCEPATH              ../data 
+
+START RESOURCE          1027510B.rss
+TARGET                  gspeninputplugin.rsc
+LANGUAGE_IDS
+END                     
+
+START RESOURCE          gspeninputpluginrsc.rss
+HEADER
+TARGETPATH              RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
+LIBRARY                 aknskins.lib              // AknsUtils.h
+LIBRARY                 avkon.lib
+LIBRARY                 bafl.lib
+LIBRARY                 centralrepository.lib
+LIBRARY                 commonengine.lib          // For RConeResourceLoader
+LIBRARY                 cone.lib
+LIBRARY                 ecom.lib                  // For ECom
+LIBRARY                 efsrv.lib                 // For File server
+LIBRARY                 egul.lib                  // CGulIcon
+LIBRARY                 eikcoctl.lib
+LIBRARY                 eikcore.lib
+LIBRARY                 euser.lib
+LIBRARY                 FeatMgr.lib               // feature manager
+LIBRARY                 GSFramework.lib           // For GS Framework
+LIBRARY                 GSListBox.lib             // For CGSListBoxItemTextArray
+LIBRARY                 AknIcon.lib
+LIBRARY                 fbscli.lib
+LIBRARY                 aknpictograph.lib
+LIBRARY                 etext.lib
+LIBRARY                 tagma.lib
+LIBRARY                 gdi.lib
+LIBRARY                 aknlayout.lib             
+LIBRARY                 bitgdi.lib
+LIBRARY                 hal.lib 
+LIBRARY                 cenrepnotifhandler.lib
+LIBRARY                 GSEcomPlugin.lib
+LIBRARY                 ptiengine.lib
+LIBRARY                 eikdlg.lib
+LIBRARY                 AknLayout2.lib       
+LIBRARY                 AknLayout2Scalable.lib
+LIBRARY                 peninputpluginutils.lib
+LIBRARY                 apparc.lib
+LIBRARY                 gfxtrans.lib
+LIBRARY             hlplch.lib // HlpLauncher
+LIBRARY                 ws32.lib
+LIBRARY                 apgrfx.lib
+
+LIBRARY                 peninputclient.lib
+// End Of File

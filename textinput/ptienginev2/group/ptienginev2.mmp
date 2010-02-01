@@ -1,0 +1,75 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project PtiEngine
+*
+*/
+
+#include <platform_paths.hrh>
+
+target                  PtiEngine.DLL
+targettype              DLL
+uid			0x1000008D 0x101F8610
+
+CAPABILITY      CAP_GENERAL_DLL
+
+
+#ifdef FF_DUAL_LANGUAGE_SUPPORT
+#ifdef WINS
+DEFFILE ../bwins/PtiEngineDualu.DEF   // Mandatory
+#else
+DEFFILE ../eabi/PtiEngineDualu.DEF   // Mandatory
+#endif
+#endif //FF_DUAL_LANGUAGE_SUPPORT
+sourcepath ../src
+
+userinclude             . ../inc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   ../inc
+
+source PtiEngine.cpp
+source PtiEngineImpl.cpp
+source PtiDefaultCore.cpp
+source PtiLanguage.cpp
+source PtiKeyMappings.cpp
+source Ptiqwertykeymappings.cpp
+source PtiUserDictionary.cpp
+source PtiCore.cpp
+source PtiLanguageDatabase.cpp
+source PtiHwrRecognizer.cpp
+source PtiKeyMapData.cpp
+source PtiDefaultNumberModeMappingData.cpp
+source PtiSymbolList.cpp
+source PtiTruiEngine.cpp
+source PtiKeyboardDatabase.cpp
+
+#include <data_caging_paths.hrh>
+
+START RESOURCE PtiEngine.rss
+HEADER    		
+TARGETPATH   RESOURCE_FILES_DIR  
+END
+
+library		EUSER.LIB BAFL.LIB EFSRV.LIB ECOM.LIB ESTOR.LIB
+LIBRARY     CentralRepository.lib avkon.lib eikcore.lib
+
+START WINS
+	baseaddress	0x7dd10000
+END
+
+
+

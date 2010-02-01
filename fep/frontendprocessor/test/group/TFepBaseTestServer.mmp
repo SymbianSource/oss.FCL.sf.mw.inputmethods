@@ -1,0 +1,72 @@
+// Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+// @file
+// @test
+// @internalComponent - Internal Symbian test code *
+// 
+//
+
+TARGET		tfepbasetestserver.exe
+TARGETTYPE	exe
+UID        	0x1000007A 0x10004c74
+VENDORID 	0x70000001
+
+CAPABILITY	All -Tcb
+
+APP_LAYER_SYSTEMINCLUDE 
+MW_LAYER_SYSTEMINCLUDE 
+OS_LAYER_SYSTEMINCLUDE 
+
+USERINCLUDE     ../inc
+USERINCLUDE		../feps
+USERINCLUDE		../../../../../appsupport/appfw/uiftestfw/inc
+USERINCLUDE		../../include
+
+
+SOURCEPATH		../src
+SOURCE			TFepBaseTestServer.cpp
+SOURCE			TFEP1TESTTARGET.CPP 
+SOURCE			DEFOCUSING_EDWIN.CPP 
+SOURCE			KEYBOARDLOGGER.CPP
+SOURCE			TAPPMORSE.cpp
+SOURCE			TFepGen.CPP
+
+
+LIBRARY			euser.lib
+LIBRARY			cone.lib
+LIBRARY			bafl.lib
+LIBRARY			eikdlg.lib
+LIBRARY			eikcoctl.lib
+LIBRARY			eikcore.lib
+LIBRARY			ws32.lib
+LIBRARY			gdi.lib
+LIBRARY			egul.lib
+LIBRARY         ecom.lib
+LIBRARY         fepbase.lib
+LIBRARY			appfwk_test_appui.lib
+LIBRARY			testexecuteutils.lib
+LIBRARY			testexecutelogclient.lib
+LIBRARY			centralrepository.lib
+
+resource			TFEP1TESTTARGET.rss
+start resource		TFEP1TESTTARGET.rss
+targetpath		/system/test/fepbasetest
+lang			01 10
+end
+
+
+// We're quite heavy on the stack... 4k in WinS isn't enough...
+EPOCSTACKSIZE	0x6000
+
+SMPSAFE

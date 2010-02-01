@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="7ce2f5ddb845aadfe1813076e1c05483" dataversion="2.0">
+  <name>ptiengine_key_definations_api</name>
+  <description>Interface for implementing PtiEngine Key Mappings modules. Contains Language database class declaration. The MptiKeyboardDatabase interface methods for retrieving  the scanbinding table. The keymapdata related methods like keymapdata Retrieval etc are available here.</description>
+  <type>c++</type>
+  <collection>domain</collection>
+  <libs>
+     <lib name="ptiengine.lib"/>
+  </libs>
+  <release category="platform" sinceversion="1"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

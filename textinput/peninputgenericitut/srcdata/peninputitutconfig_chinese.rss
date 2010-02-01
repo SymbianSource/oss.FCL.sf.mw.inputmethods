@@ -1,0 +1,1145 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project peninputgenericitut
+*
+*/
+
+
+//  RESOURCE IDENTIFIER
+NAME ITUC
+
+#include <eikon.hrh>
+#include <peninputgenericitut.mbg>
+#include <peninputcommonctrls.rh>
+#include <peninputdropdownlist.rh>
+#include <aknsconstants.hrh>
+
+#include "peninputgenericitut.rh"
+
+#define AKN_FEP_ITUT_BMP "z:\\resource\\apps\\peninputgenericitut.mbm" 
+
+#define R_STRING_PUNC_PINYIN_ZHUYIN      <0xFF0C><0x3002><0xFF1F><0xFF01><0x2026><0xFF1A>
+#define R_STRING_PUNC_STROKE             <0xFF01><0x2026><0xFF1A><0x3001><0xFF08><0xFF09>
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+RESOURCE TBUF r_itut_punc_pinyin_zhuyin {buf = R_STRING_PUNC_PINYIN_ZHUYIN;}
+RESOURCE TBUF r_itut_punc_stroke {buf = R_STRING_PUNC_STROKE;}
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_pinyin_standby_predict
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            rightstr1 = <0x3002><0xff0c>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x0061><0x0062><0x0063>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x0064><0x0065><0x0066>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x0067><0x0068><0x0069>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x006a><0x006b><0x006c>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr1 = <0x006d><0x006e><0x006f>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr1 = <0x0070><0x0071><0x0072><0x0073>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr1 = <0x0074><0x0075><0x0076>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr1 = <0x0077><0x0078><0x0079><0x007A>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>; 
+            rightstr1 = <0x7B26><0x53F7>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr1 = <0xf812>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	    leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x6362>;
+	    rightstr3 = <0x8F93><0x5165>;
+            scancode = 127;
+            }
+        };
+    }
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_pinyin_composition
+    {
+    keys =
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x0061><0x0062><0x0063>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x0064><0x0065><0x0066>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x0067><0x0068><0x0069>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x006a><0x006b><0x006c>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr1 = <0x006d><0x006e><0x006f>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr1 = <0x0070><0x0071><0x0072><0x0073>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr1 = <0x0074><0x0075><0x0076>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr1 = <0x0077><0x0078><0x0079><0x007A>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            rightstr2 = <0x58f0><0x8c03>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr2 = <0x5206><0x9694>;
+            rightstr3 = <0x7b26>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	    leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x6362>;
+	    rightstr3 = <0x8F93><0x5165>;
+            scancode = 127;
+            }
+        };
+    }
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_stroke_standby_predict_prc
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            rightstr1 = <0x4e00>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x4e28>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x4e3f>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x4e36>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x4e5b>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr2 = <0x901a><0x914d>;
+            rightstr3 = <0x7b26>; 
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr1 = <0xff0c>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr1 = <0x3002>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr1 = <0xff1f>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>; 
+            rightstr1 = <0x7B26><0x53F7>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr1 = <0xf812>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	    leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x6362>;
+	    rightstr3 = <0x8F93><0x5165>;
+            scancode = 127;
+            }
+        };
+    }
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_stroke_composition_prc
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            rightstr1 = <0x4e00>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x4e28>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x4e3f>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x4e36>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x4e5b>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr2 = <0x901a><0x914d>;
+            rightstr3 = <0x7b26>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>; 
+            rightstr1 = <0x7B26><0x53F7>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr2 = <0x5206><0x9694>;
+            rightstr3 = <0x7b26>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	    leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x6362>;
+	    rightstr3 = <0x8F93><0x5165>;
+            scancode = 127;
+            }
+        };
+    }
+    
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_stroke_standby_predict_tra
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            rightstr1 = <0x4e00>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x4e28>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x4e3f>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x4e36>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x4e5b>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr2 = <0x901a><0x914d>;
+            rightstr3 = <0x7b26>; 
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr1 = <0xff0c>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr1 = <0x3002>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr1 = <0xff1f>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>; 
+            rightstr1 = <0x7B26><0x865F>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr1 = <0xf812>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	          leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x63DB>;
+	          rightstr3 = <0x8F38><0x5165>;
+            scancode = 127;
+            }
+        };
+    }
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_stroke_composition_tra
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            rightstr1 = <0x4e00>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x4e28>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x4e3f>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x4e36>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x4e5b>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr2 = <0x901a><0x914d>;
+            rightstr3 = <0x7b26>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>; 
+            rightstr1 = <0x7B26><0x865F>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr2 = <0x5206><0x9694>;
+            rightstr3 = <0x7b26>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	          leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x63DB>;
+	          rightstr3 = <0x8F38><0x5165>;
+            scancode = 127;
+            }
+        };
+    }    
+    
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_zhuyin_standby_predict
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            rightstr2 = <0x3105><0x3106>;
+            rightstr3 = <0x3107><0x3108>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr2 = <0x3109><0x310a>;
+            rightstr3 =<0x310b><0x310c>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr3 = <0x310d><0x310e><0x310f>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr3 = <0x3110><0x3111><0x3112>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr2 = <0x3113><0x3114>;
+            rightstr3 =<0x3115><0x3116>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr3 = <0x3117><0x3118><0x3119>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr2 = <0x311a><0x311b>;
+            rightstr3 = <0x311c><0x311d>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr2 = <0x311e><0x311f>;
+            rightstr3 = <0x3120><0x3121>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr2 = <0x3122><0x3123>;
+            rightstr3 = <0x3124><0x3125><0x3126>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>; 
+            rightstr1 = <0x7B26><0x865F>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr3 = <0x3127><0x3128><0x3129>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	        leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x63DB>;
+	        rightstr3 = <0x8F38><0x5165>;
+            scancode = 127;
+            }
+        };
+    }
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_zhuyin_composition
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+            rightstr2 = <0x3105><0x3106>;
+            rightstr3 = <0x3107><0x3108>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr2 = <0x3109><0x310a>;
+            rightstr3 = <0x310b><0x310c>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr3 = <0x310d><0x310e><0x310f>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr3 = <0x3110><0x3111><0x3112>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr2 = <0x3113><0x3114>;
+            rightstr3 = <0x3115><0x3116>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr3 = <0x3117><0x3118><0x3119>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr2 = <0x311a><0x311b>;
+            rightstr3 = <0x311c><0x311d>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr2 = <0x311e><0x311f>;
+            rightstr3 = <0x3120><0x3121>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr2 = <0x3122><0x3123>;
+            rightstr3 = <0x3124><0x3125><0x3126>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            rightstr2 = <0x02C9><0x02CA>;
+	        rightstr3 = <0x02C7><0x02CB><0x02D9>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr3 = <0x3127><0x3128><0x3129>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+	        leftstr = <0x0023>;
+            rightstr2 = <0x5207><0x63DB>;
+	        rightstr3 = <0x8F38><0x5165>;
+            scancode = 127;
+            }
+        };
+    }
+    
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_abc_lowercase_chn
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+	    rightstr1 = <0x002E><0x002C>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x0061><0x0062><0x0063>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x0064><0x0065><0x0066>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x0067><0x0068><0x0069>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x006a><0x006b><0x006c>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr1 = <0x006d><0x006e><0x006f>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr1 = <0x0070><0x0071><0x0072><0x0073>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr1 = <0x0074><0x0075><0x0076>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr1 = <0x0077><0x0078><0x0079><0x007A>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>;
+            rightstr1 = <0x002b>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr1 = <0xf812>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x2191>;
+            rightstr1 = <0x0023>;
+            scancode = 127;
+            }
+        };
+    }
+
+RESOURCE VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_abc_uppercase_chn
+    {
+    keys = 
+        {
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0031>;
+			rightstr1 = <0x002E><0x002C>;
+            scancode = 49;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0032>;
+            rightstr1 = <0x0041><0x0042><0x0043>;
+            scancode = 50;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0033>;
+            rightstr1 = <0x0044><0x0045><0x0046>;
+            scancode = 51;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0034>;
+            rightstr1 = <0x0047><0x0048><0x0049>;
+            scancode = 52;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0035>;
+            rightstr1 = <0x004a><0x004b><0x004c>;
+            scancode = 53;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0036>;
+            rightstr1 = <0x004d><0x004e><0x004f>;
+            scancode = 54;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0037>;
+            rightstr1 = <0x0050><0x0051><0x0052><0x0053>;
+            scancode = 55;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0038>;
+            rightstr1 = <0x0054><0x0055><0x0056>;
+            scancode = 56;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0039>;
+            rightstr1 = <0x0057><0x0058><0x0059><0x005A>;
+            scancode = 57;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x002a>; 
+            rightstr1 = <0x002b>;
+            scancode = 133;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x0030>;
+            rightstr1 = <0xf812>;
+            scancode = 48;
+            },
+        VIRTUAL_ITUT_KEY
+            {
+            leftstr = <0x2191>;
+            rightstr1 = <0x0023>;
+            scancode = 127;
+            }
+        };
+    }
+
+// resource for candidate list
+
+RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_pinyin_spelling_drop_down_list
+    {
+    bmpfile=AKN_FEP_ITUT_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+
+		bmpListBg=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg;
+		bmpListBgMask=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg_mask;
+		bmpListBgskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+
+
+    //bmpPrimary=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell;
+    //bmpPrimaryMask=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell_mask;
+    //bmpPrimaryskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+
+    bmpHighlight=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight;
+    bmpHighlightMask=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight_mask;
+    bmpHighlightskinid=EAknsMinorGenericQgnGrafFepCandiListSel;
+
+    //bmpPenDown=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed;
+    //bmpPenDownMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed_mask;
+    //bmpPenDownskinid=EAknsMinorGenericQgnGrafFepCandiListPressed;
+
+    bmpNextDisable=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextDisableMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextDisableskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpNext=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+
+    bmpNextPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel;
+    bmpNextPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel_mask;
+    bmpNextPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+
+    bmpClose=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseMask=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseskinid=EAknsMinorGenericQgnGrafFepCandiListClose;
+
+    bmpClosePress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel;
+    bmpClosePressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel_mask;
+    bmpClosePressskinid=EAknsMinorGenericQgnGrafFepCandiListCloseSel;
+
+    bmpPrevious=EMbmPeninputgenericitutQgn_indi_input_list_collapse;
+    bmpPreviousMask=EMbmPeninputgenericitutQgn_indi_input_list_collapse_mask;
+    bmpPreviousskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+
+    bmpPreviousPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel;
+    bmpPreviousPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel_mask;
+    bmpPreviousPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+
+    bmpExpand=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpExpandMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpExpandskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpExpandPress=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel;
+    bmpExpandPressMask=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel_mask;
+    bmpExpandPressskinid=EAknsMinorGenericQgnIndiFepButtonExpandSel;
+
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp=EAknsMinorQsnTextColors;
+    textcoloridx=59;
+
+    bordercolormajorskinid=EAknsMajorSkin;
+    bordercolorgrp=EAknsMinorQsnOtherColors;
+    bordercoloridx=8;
+    }
+
+RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_punc_drop_down_list
+    {
+    bmpfile=AKN_FEP_ITUT_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+    
+		bmpListBg=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg;
+		bmpListBgMask=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg_mask;
+		bmpListBgskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+		
+    //bmpPrimary=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell;
+    //bmpPrimaryMask=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell_mask;
+    //bmpPrimaryskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+
+    bmpHighlight=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight;
+    bmpHighlightMask=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight_mask;
+    bmpHighlightskinid=EAknsMinorGenericQgnGrafFepBgColour;
+
+    //bmpPenDown=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed;
+    //bmpPenDownMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed_mask;
+    //bmpPenDownskinid=EAknsMinorGenericQgnGrafFepCandiListPressed;
+
+    bmpNextDisable=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextDisableMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextDisableskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpNext=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+
+    bmpNextPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel;
+    bmpNextPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel_mask;
+    bmpNextPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+
+    bmpClose=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseMask=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseskinid=EAknsMinorGenericQgnGrafFepCandiListClose;
+
+    bmpClosePress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel;
+    bmpClosePressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel_mask;
+    bmpClosePressskinid=EAknsMinorGenericQgnGrafFepCandiListCloseSel;
+
+    bmpPrevious=EMbmPeninputgenericitutQgn_indi_input_list_collapse;
+    bmpPreviousMask=EMbmPeninputgenericitutQgn_indi_input_list_collapse_mask;
+    bmpPreviousskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+
+    bmpPreviousPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel;
+    bmpPreviousPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel_mask;
+    bmpPreviousPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+
+    bmpExpand=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpExpandMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpExpandskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpExpandPress=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel;
+    bmpExpandPressMask=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel_mask;
+    bmpExpandPressskinid=EAknsMinorGenericQgnIndiFepButtonExpandSel;
+
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp=EAknsMinorQsnTextColors;
+    textcoloridx=59;
+
+    bordercolormajorskinid=EAknsMajorSkin;
+    bordercolorgrp=EAknsMinorQsnOtherColors;
+    bordercoloridx=8;
+    }
+
+RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_pinyin_cand_drop_down_list
+    {
+    bmpfile=AKN_FEP_ITUT_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+    
+		bmpListBg=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg;
+		bmpListBgMask=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg_mask;
+		bmpListBgskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+		
+
+    bmpPrimary=EMbmPeninputgenericitutQgn_graf_fep_bg_colour;
+    bmpPrimaryMask=EMbmPeninputgenericitutQgn_graf_fep_bg_colour_mask;
+    bmpPrimaryskinid=EAknsMinorGenericQgnGrafFepBgColour;
+
+    //bmpSecondary=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell;
+    //bmpSecondaryMask=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell_mask;
+    //bmpSecondaryskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+
+    bmpHighlight=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight;
+    bmpHighlightMask=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight_mask;
+    bmpHighlightskinid=EAknsMinorGenericQgnGrafFepBgColour;
+
+    //bmpPenDown=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed;
+    //bmpPenDownMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed_mask;
+    //bmpPenDownskinid=EAknsMinorGenericQgnGrafFepCandiListPressed;
+
+    bmpNextDisable=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextDisableMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextDisableskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpNext=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+
+    bmpNextPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel;
+    bmpNextPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel_mask;
+    bmpNextPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+
+    bmpClose=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseMask=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseskinid=EAknsMinorGenericQgnGrafFepCandiListClose;
+
+    bmpClosePress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel;
+    bmpClosePressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel_mask;
+    bmpClosePressskinid=EAknsMinorGenericQgnGrafFepCandiListCloseSel;
+
+    bmpPrevious=EMbmPeninputgenericitutQgn_indi_input_list_collapse;
+    bmpPreviousMask=EMbmPeninputgenericitutQgn_indi_input_list_collapse_mask;
+    bmpPreviousskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+
+    bmpPreviousPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel;
+    bmpPreviousPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel_mask;
+    bmpPreviousPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+
+    bmpExpand=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpExpandMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpExpandskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpExpandPress=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel;
+    bmpExpandPressMask=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel_mask;
+    bmpExpandPressskinid=EAknsMinorGenericQgnIndiFepButtonExpandSel;
+
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp=EAknsMinorQsnTextColors;
+    textcoloridx=59;
+
+    bordercolormajorskinid=EAknsMajorSkin;
+    bordercolorgrp=EAknsMinorQsnOtherColors;
+    bordercoloridx=8;
+    }
+
+// used for stroke, zhuyin candidate and predict candidate
+RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_normal_cand_drop_down_list
+    {
+    bmpfile=AKN_FEP_ITUT_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+    
+		bmpListBg=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg;
+		bmpListBgMask=EMbmPeninputgenericitutQsn_fr_itut_scroll_bg_mask;
+		bmpListBgskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+		
+
+    //bmpPrimary=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell;
+    //bmpPrimaryMask=EMbmPeninputgenericitutQgn_indi_vitut_dropdownlist_cell_mask;
+    //bmpPrimaryskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+
+    bmpHighlight=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight;
+    bmpHighlightMask=EMbmPeninputgenericitutQsn_fr_input_list_button_highlight_mask;
+    bmpHighlightskinid=EAknsMinorGenericQgnGrafFepBgColour;
+
+    //bmpPenDown=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed;
+    //bmpPenDownMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_pressed_mask;
+    //bmpPenDownskinid=EAknsMinorGenericQgnGrafFepCandiListPressed;
+
+    bmpNextDisable=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextDisableMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextDisableskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpNext=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpNextMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpNextskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+
+    bmpNextPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel;
+    bmpNextPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_down_sel_mask;
+    bmpNextPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+
+    bmpClose=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseMask=EMbmPeninputgenericitutQgn_indi_input_candi_list_close;
+    bmpCloseskinid=EAknsMinorGenericQgnGrafFepCandiListClose;
+
+    bmpClosePress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel;
+    bmpClosePressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_close_sel_mask;
+    bmpClosePressskinid=EAknsMinorGenericQgnGrafFepCandiListCloseSel;
+
+    bmpPrevious=EMbmPeninputgenericitutQgn_indi_input_list_collapse;
+    bmpPreviousMask=EMbmPeninputgenericitutQgn_indi_input_list_collapse_mask;
+    bmpPreviousskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+
+    bmpPreviousPress=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel;
+    bmpPreviousPressMask=EMbmPeninputgenericitutQgn_graf_fep_candi_list_scroll_up_sel_mask;
+    bmpPreviousPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+
+    bmpExpand=EMbmPeninputgenericitutQgn_indi_input_list_expand;
+    bmpExpandMask=EMbmPeninputgenericitutQgn_indi_input_list_expand_mask;
+    bmpExpandskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpExpandPress=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel;
+    bmpExpandPressMask=EMbmPeninputgenericitutQgn_indi_fep_button_expand_sel_mask;
+    bmpExpandPressskinid=EAknsMinorGenericQgnIndiFepButtonExpandSel;
+
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp=EAknsMinorQsnTextColors;
+    textcoloridx=59;
+
+    bordercolormajorskinid=EAknsMajorSkin;
+    bordercolorgrp=EAknsMinorQsnOtherColors;
+    bordercoloridx=8;
+    }
+
+RESOURCE VIRTUAL_ITUT_IMG r_finger_spell_bgimg
+    {
+    bgimg = EMbmPeninputgenericitutQgn_graf_fep_candi_list_sec;
+    bgmskimg = EMbmPeninputgenericitutQgn_graf_fep_candi_list_sec_mask;
+    bgimgskinid = EAknsMinorGenericQgnGrafFepCandiListSec;
+    }
+
+RESOURCE VIRTUAL_ITUT_SPELL r_finger_spell
+    {
+    spellbgimg = r_finger_spell_bgimg;
+    colormajorskinid = EAknsMajorSkin;
+    textcolorgrp = EAknsMinorQsnTextColors;
+    textcoloridx = 59;
+    }
+    
+// End Of File

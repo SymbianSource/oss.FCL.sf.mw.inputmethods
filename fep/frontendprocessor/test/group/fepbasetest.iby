@@ -1,0 +1,50 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+
+#ifndef __FEPBASETEST_IBY__
+#define __FEPBASETEST_IBY__
+
+#ifndef __APPFWK_TEST_FRAMEWORK_IBY__
+	#include <appfwk_test_framework.iby>
+#endif
+
+file=ABI_DIR\BUILD_DIR\fepswitch.exe				sys\bin\fepswitch.exe
+file=ABI_DIR\BUILD_DIR\tfepbasetestserver.exe		sys\bin\tfepbasetestserver.exe
+
+
+data=DATAZ_\fepbasetest\fepbasetest_run.bat	      				\fepbasetest_run.bat
+
+data=DATAZ_\fepbasetest\fepbasetest_t_appmorse.script 			\fepbasetest\fepbasetest_t_appmorse.script
+data=DATAZ_\fepbasetest\fepbasetest_t_defocusingedwin.script 	\fepbasetest\fepbasetest_t_defocusingedwin.script
+data=DATAZ_\fepbasetest\fepbasetest_t_fepgen.script 			\fepbasetest\fepbasetest_t_fepgen.script
+data=DATAZ_\fepbasetest\fepbasetest_t_fep1testtarget.script   	\fepbasetest\fepbasetest_t_fep1testtarget.script
+data=DATAZ_\fepbasetest\fepbasetest_t_keyboardlogger.script   	\fepbasetest\fepbasetest_t_keyboardlogger.script
+
+ECOM_PLUGIN(tfep1plugin.dll,tfep1plugin.rsc)
+data=DATAZ_\resource\data\tfep1_ui.r01 				resource\data\tfep1_ui.r01
+data=DATAZ_\resource\data\tfep1_ui.r10 				resource\data\tfep1_ui.r10
+ECOM_PLUGIN(tfep3plugin.dll,tfep3plugin.rsc)
+ECOM_PLUGIN(tfep4plugin.dll,tfep4plugin.rsc)
+data=DATAZ_\resource\data\tfep3_ui.r01                          resource\data\tfep3_ui.r01
+data=DATAZ_\resource\data\tfep3_ui.r10                          resource\data\tfep3_ui.r10
+data=DATAZ_\resource\data\tfep4_ui.r01                          resource\data\tfep4_ui.r01
+data=DATAZ_\resource\data\tfep4_ui.r10                          resource\data\tfep4_ui.r10
+
+data=DATAZ_\system\test\fepbasetest\tfep1testtarget.r01		System\test\fepbasetest\tfep1testtarget.r01
+data=DATAZ_\system\test\fepbasetest\tfep1testtarget.r10		System\test\fepbasetest\tfep1testtarget.r10
+
+#endif

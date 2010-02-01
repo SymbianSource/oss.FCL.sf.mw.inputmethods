@@ -1,0 +1,107 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project peninputvkbcn
+*
+*/
+
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET          peninputvkbcn.dll
+TARGETTYPE      plugin
+UID             0x10009D8D 0x1028185B
+
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../src
+
+// Plugin Framework
+SOURCE          peninputvkbdatamgr.cpp
+SOURCE          peninputvkblayout.cpp
+SOURCE          peninputvkbmain.cpp
+SOURCE          peninputvkbproxy.cpp
+SOURCE          peninputvkbuistate.cpp
+SOURCE          peninputvkbuistatemgr.cpp
+SOURCE          peninputvkbuistatestandby.cpp
+SOURCE          peninputvkbuistatestandbycn.cpp
+SOURCE          peninputvkbuistatestandbycnwithchars.cpp
+SOURCE          peninputvkbuistatecompositionnochars.cpp
+SOURCE          peninputvkbuistatecompositionwithchars.cpp
+SOURCE          peninputvkbnumerickeymappingmgr.cpp
+SOURCE          peninputvkbcnlafdatamgr.cpp
+
+SOURCEPATH      ../ctrlsrc
+
+// control implementation
+SOURCE          peninputvkbclientarea.cpp
+SOURCE          peninputvkbcompositionfield.cpp
+SOURCE          peninputvkbctrlpool.cpp
+SOURCE          peninputvkbImlayout.cpp
+SOURCE          peninputvkblayoutpool.cpp
+SOURCE          peninputvkbwindow.cpp
+SOURCE          AknFepVkbPinyinAnalyser.cpp
+SOURCE          AknFepVkbPinyinAnalyserDb.cpp
+
+
+USERINCLUDE     ../inc
+USERINCLUDE     ../ctrlinc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   /epoc32/include/ecom
+SYSTEMINCLUDE   ../../../inc
+SYSTEMINCLUDE   ../../inc
+
+SOURCEPATH      ../srcdata
+
+START RESOURCE 1028185B.rss
+    #ifdef SYMBIAN_SECURE_ECOM 
+        TARGET peninputvkbcn.rsc
+    #endif
+LANGUAGE_IDS
+END
+
+START RESOURCE  peninputvkbcn.rss
+HEADER
+TARGETPATH      RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
+LIBRARY         euser.lib 
+LIBRARY         ECom.lib 
+LIBRARY         efsrv.lib
+LIBRARY         gdi.lib 
+LIBRARY         bafl.lib 
+LIBRARY         avkon.lib
+LIBRARY         aknlayout.lib 
+LIBRARY         AknLayout2Scalable.lib 
+LIBRARY         aknicon.lib
+LIBRARY         centralrepository.lib 
+LIBRARY         ptiengine.lib 
+LIBRARY         cone.lib
+LIBRARY         ws32.lib
+LIBRARY         fbscli.lib
+
+LIBRARY         peninputlayoutinterface.lib 
+LIBRARY         peninputlayoutcontrol.lib
+LIBRARY         peninputpluginutils.lib
+LIBRARY         peninputcommonctrls.lib
+LIBRARY         aknskins.lib
+LIBRARY         estor.lib
+
+// End Of File

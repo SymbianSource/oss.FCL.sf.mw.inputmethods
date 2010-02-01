@@ -1,0 +1,206 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project peninputgenericitut
+*
+*/
+
+//  RESOURCE IDENTIFIER
+NAME PIMS
+
+#include <eikon.hrh>
+#include <badef.rh>
+#include <aknsconstants.hrh>
+#include <uikon.rh>
+
+#include <peninputcommonctrls.rh>
+#include <peninputmodeswitcher.mbg>
+#include <aknsconstants.hrh>
+#include <peninputcommonctrls.loc>
+
+STRUCT AKN_FEP_POPUP_WINDOW
+    {
+    LTEXT bmpfile="";
+    LONG imgmajorskinid=0xffff;
+    WORD bgbmp=0xffff;
+    WORD bgmaskbmp=0xffff;
+    WORD bgbmpskinid=0xffff;
+    
+    WORD focusbmp=0xffff;
+    WORD focusmaskbmp=0xffff;
+    WORD focusbmpskinid=0xffff;
+    }
+    
+
+//////////////////////////////////////////loc begin/////////////////////////////////
+//  LOCALISATION STRINGS
+
+//d:Text in touch input mode swither list
+//d:virtual ITUT touch input method
+//l:list_single_choice_list_pane_t1
+//r: 5.0   
+//#define qtn_input_switcher_itu_t "Virtual ITU-T"
+
+//d:Text in touch input mode swither list
+//d:full sreen qwerty touch input method
+//l:list_single_choice_list_pane_t1
+//r: 5.0   
+//#define qtn_input_switcher_fs_qwerty "Full Screen Qwerty"
+
+//d:Text in touch input mode swither list
+//d:small virtual key board touch input method
+//l:list_single_choice_list_pane_t1
+//r: 5.0   
+//#define qtn_input_switcher_vkb "VKB"
+
+//d:Text in touch input mode swither list
+//d:Handwritting Recognition touch input method
+//l:list_single_choice_list_pane_t1
+//r: 5.0   
+//#define qtn_input_switcher_hwr "HWR"
+
+//d:Text in touch input mode swither list
+//d:full screen HWR touch input method
+//l:list_single_choice_list_pane_t1
+//r: 5.0   
+//#define qtn_input_switcher_fs_hwr "Full Screen HWR"
+
+
+//d:Text in candidate match selection list
+//d:The last item meaning to enger the spell mode
+//l:list_vitu2_match_list_item_pane_t1
+//r: 5.0   
+//#define qtn_t9_match_selection_list "Spell"
+
+
+//d:column for ICF prompt text
+//l:field_vitu2_entry_pane_t1
+//r: 5.0   
+//#define qtn_colon_in_prompt ":"
+
+
+
+//d:Text in candidate listt
+//d:current page /total pages information
+//l:vitu2_page_scroll_pane_t1
+//r: 5.0   
+//#define qtn_paging_number_match_selection "%0N/%1N"
+
+
+//d:Text for T9 spelling prompt text
+//l:popup_vitu2_query_window_t1
+//r: 5.0   
+//#define qtn_t9_spell_query "Word"
+
+
+// End of File
+//////////////////////////////////////////loc end/////////////////////////////////
+
+#define AKN_FEP_VKB_BMP "z:\\resource\\apps\\peninputmodeswitcher.mbm"
+
+RESOURCE LBUF r_peninputmode_hwr
+    {
+    txt=qtn_input_switcher_hwr;
+    }
+
+RESOURCE LBUF r_peninputmode_fullhwr
+    {
+    txt=qtn_input_switcher_fs_hwr;
+    }
+    
+RESOURCE LBUF r_peninputmode_vkb
+    {
+    txt=qtn_input_switcher_vkb;
+    }
+
+RESOURCE LBUF r_peninputmode_fingeritut
+    {
+    txt=qtn_input_switcher_itu_t;
+    }
+
+RESOURCE LBUF r_peninputmode_fullqwerty
+    {
+    txt=qtn_input_switcher_fs_qwerty;
+    }
+    
+RESOURCE LBUF r_peninput_selection_list_page_num
+    {
+    txt=qtn_paging_number_match_selection;
+    }
+
+RESOURCE LBUF r_peninput_selection_list_spell
+    {
+    txt=qtn_t9_match_selection_list;
+    }
+    
+RESOURCE LBUF r_peninput_spelling_prompt
+    {
+    txt=qtn_t9_spell_query;
+    } 
+    
+RESOURCE LBUF r_peninput_prompt_colon
+    {
+    txt=qtn_colon_in_prompt;
+    }     
+    
+RESOURCE AKN_FEP_INPUTMODE_NAMEARRAY r_peninputmode_names
+    {
+    names=
+        {
+        AKN_FEP_INPUTMODE_NAME
+            {
+            modeid = EPluginInputModeHwr;
+            txt = qtn_input_switcher_hwr;
+            },
+        AKN_FEP_INPUTMODE_NAME
+            {
+            modeid = EPluginInputModeVkb;
+            txt = qtn_input_switcher_vkb;
+            },
+        AKN_FEP_INPUTMODE_NAME
+            {
+            modeid = EPluginInputModeFSQ;
+            txt = qtn_input_switcher_fs_qwerty;
+            },
+        AKN_FEP_INPUTMODE_NAME
+            {
+            modeid = EPluginInputModeItut;
+            txt = qtn_input_switcher_itu_t;
+            },
+        AKN_FEP_INPUTMODE_NAME
+            {
+            modeid = EPluginInputModeFSc;
+            txt = qtn_input_switcher_fs_hwr;
+            },
+        AKN_FEP_INPUTMODE_NAME
+            {
+            modeid = EPluginInputModeFingerHwr;
+            txt = qtn_input_switcher_hwr;
+            }
+        };   
+    }    
+
+RESOURCE AKN_FEP_POPUP_WINDOW peninputmode_switch_choicelist
+    {
+    bmpfile=AKN_FEP_VKB_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    bgbmp=EMbmPeninputmodeswitcherQgn_graf_fep_candi_list_sec;   
+    bgmaskbmp=EMbmPeninputmodeswitcherQgn_graf_fep_candi_list_sec_mask;
+    bgbmpskinid=EAknsMinorGenericQgnGrafFepCandiListSec;
+    
+    focusbmp=EMbmPeninputmodeswitcherQgn_graf_fep_candi_list_sel;
+    focusmaskbmp=EMbmPeninputmodeswitcherQgn_graf_fep_candi_list_sel_mask;
+    focusbmpskinid=EAknsMinorGenericQgnGrafFepCandiListSel;
+    }
+
+// End Of File

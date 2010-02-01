@@ -1,0 +1,52 @@
+EXPORTS
+	_ZN12CAknFepTimer4NewLEP19MAknFepTimerHandler @ 1 NONAME
+	_ZN12CAknFepTimer8SetTimerERK27TTimeIntervalMicroSeconds32 @ 2 NONAME
+	_ZN12CAknFepTimerD0Ev @ 3 NONAME
+	_ZN12CAknFepTimerD1Ev @ 4 NONAME
+	_ZN12CAknFepTimerD2Ev @ 5 NONAME
+	_ZN24CAknFepRepositoryWatcher10ChangedKeyEv @ 6 NONAME
+	_ZN24CAknFepRepositoryWatcher15HandleNotifyIntEmi @ 7 NONAME
+	_ZN24CAknFepRepositoryWatcher17HandleNotifyErrorEmiP20CCenRepNotifyHandler @ 8 NONAME
+	_ZN24CAknFepRepositoryWatcher19HandleNotifyGenericEm @ 9 NONAME
+	_ZN24CAknFepRepositoryWatcher4NewLE4TUid9TCallBackP11CRepository @ 10 NONAME
+	_ZN24CAknFepRepositoryWatcher4NewLE4TUidmN20CCenRepNotifyHandler14TCenRepKeyTypeE9TCallBackP11CRepository @ 11 NONAME
+	_ZN24CAknFepRepositoryWatcherD0Ev @ 12 NONAME
+	_ZN24CAknFepRepositoryWatcherD1Ev @ 13 NONAME
+	_ZN24CAknFepRepositoryWatcherD2Ev @ 14 NONAME
+	_ZTI12CAknFepTimer @ 15 NONAME ; #<TI>#
+	_ZTI24CAknFepRepositoryWatcher @ 16 NONAME ; #<TI>#
+	_ZTV12CAknFepTimer @ 17 NONAME ; #<VT>#
+	_ZTV24CAknFepRepositoryWatcher @ 18 NONAME ; #<VT>#
+	_ZThn4_N24CAknFepRepositoryWatcher15HandleNotifyIntEmi @ 19 NONAME ; #<thunk>#
+	_ZThn4_N24CAknFepRepositoryWatcher17HandleNotifyErrorEmiP20CCenRepNotifyHandler @ 20 NONAME ; #<thunk>#
+	_ZThn4_N24CAknFepRepositoryWatcher19HandleNotifyGenericEm @ 21 NONAME ; #<thunk>#
+	_ZN16AknPenInputUtils18GetISOLanguageCodeE9TLanguageR6TDes16 @ 22 NONAME
+	_ZN16AknPenImageUtils17CombineTwoImagesLEPK10CFbsBitmapS2_12TDisplayModei @ 23 NONAME
+	_ZN16AknPenInputUtils9StartAppLERK7TDesC16 @ 24 NONAME
+	_ZN20AknPenInputDrawUtils16Draw3PiecesFrameEP17MAknsSkinInstanceR9CFbsBitGcRK5TRectS6_RK11TAknsItemIDS9_S9_ @ 25 NONAME
+	_ZN20AknPenInputDrawUtils16Draw3PiecesFrameEP17MAknsSkinInstanceR9CFbsBitGcRK5TRectS6_S6_RK11TAknsItemIDS9_S9_ @ 26 NONAME
+	_ZN16AknPenImageUtils20CalculateGraphicRectERK5TRectRS0_ @ 27 NONAME
+	_ZN18CPenInputColorIcon22ConstructFromResourceLEi @ 28 NONAME
+	_ZN18CPenInputColorIcon4NewLEi @ 29 NONAME
+	_ZN18CPenInputColorIcon5NewLCEi @ 30 NONAME
+	_ZN18CPenInputColorIcon7ResizeLERK5TSize @ 31 NONAME
+	_ZN20AknPenInputDrawUtils13DrawColorIconEP18CPenInputColorIconR9CFbsBitGcRK5TRect @ 32 NONAME
+	_ZN20AknPenInputDrawUtils20Draw3PiecesColorIconEP26CPenInput3PiecesColorIconsR9CFbsBitGcRK5TRectS6_ @ 33 NONAME
+	_ZN26CPenInput3PiecesColorIcons4NewLEiii @ 34 NONAME
+	_ZN26CPenInput3PiecesColorIcons5NewLCEiii @ 35 NONAME
+	_ZTI18CPenInputColorIcon @ 36 NONAME ; #<TI>#
+	_ZTI26CPenInput3PiecesColorIcons @ 37 NONAME ; #<TI>#
+	_ZTV18CPenInputColorIcon @ 38 NONAME ; #<VT>#
+	_ZTV26CPenInput3PiecesColorIcons @ 39 NONAME ; #<VT>#
+	_ZN26CPenInput3PiecesColorIcons12ReConstructLEv @ 40 NONAME
+	_ZN26CPeninputSyncBitmapRotator4NewLEv @ 41 NONAME
+	_ZN26CPeninputSyncBitmapRotator6RotateER10CFbsBitmapN14CBitmapRotator14TRotationAngleE @ 42 NONAME
+	_ZN26CPeninputSyncBitmapRotator6RotateER10CFbsBitmapS1_N14CBitmapRotator14TRotationAngleE @ 43 NONAME
+	_ZTI26CPeninputSyncBitmapRotator @ 44 NONAME ; #<TI>#
+	_ZTV26CPeninputSyncBitmapRotator @ 45 NONAME ; #<VT>#
+	_ZN16AknPenImageUtils27CalculateLongBtnGraphicRectERK5TRectRS0_ @ 46 NONAME
+	_ZN26AknPenInputTrailColorUtils10ColorCountEv @ 47 NONAME
+	_ZN26AknPenInputTrailColorUtils20GetTrailColorByThemeEv @ 48 NONAME
+	_ZN26AknPenInputTrailColorUtils22CheckColorInColorTableEi @ 49 NONAME
+	_ZN26AknPenInputTrailColorUtils7ColorAtEi @ 50 NONAME
+

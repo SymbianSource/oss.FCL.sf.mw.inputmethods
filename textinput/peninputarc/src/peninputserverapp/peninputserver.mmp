@@ -1,0 +1,116 @@
+/*
+* Copyright (c) 2005-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project peninputserver
+*
+*/
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET                  peninputserver.exe
+TARGETTYPE              exe
+//UID
+MACRO 		__ALPHA_TRANCEPARENCY__
+UID             0x100039CE 0x10281855
+
+EPOCHEAPSIZE 0x00030000 0x00400000
+// add by jiawenjuan
+EPOCSTACKSIZE 0x5000
+CAPABILITY      CAP_APPLICATION
+VENDORID        VID_DEFAULT
+
+SOURCEPATH              .
+SOURCE              peninputserver.cpp
+SOURCE              rpeninputanim.cpp 
+SOURCE              peninputserversession.cpp
+SOURCE          	peninputserverapp.cpp
+SOURCE          	peninputserverappui.cpp
+SOURCE          	peninputserverdocument.cpp
+SOURCE              peninputanimclientobj.cpp
+SOURCE				peninputanimcommand.cpp
+SOURCE				peninputuilayoutowner.cpp
+SOURCE				penuiwndctrl.cpp
+SOURCE              keyrotator.cpp
+SOURCE              peninputcrpclient.cpp
+
+USERINCLUDE             . ../../inc/pensrvcliinc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE           /epoc32/include/ecom
+SYSTEMINCLUDE           ../../../../inc
+SYSTEMINCLUDE           ../../../inc
+
+LIBRARY                 euser.lib 
+LIBRARY                 apgrfx.lib
+LIBRARY                 ws32.lib
+LIBRARY                 fbscli.lib
+LIBRARY                 bafl.lib
+LIBRARY                 bitgdi.lib
+LIBRARY                 gdi.lib
+LIBRARY                 peninputlayouteng.lib
+LIBRARY                 centralrepository.lib
+
+LIBRARY         apparc.lib
+LIBRARY         cone.lib
+LIBRARY         eikcore.lib
+LIBRARY         eikcoctl.lib
+LIBRARY         avkon.lib
+LIBRARY         eikctl.lib
+LIBRARY         egul.lib
+LIBRARY         ptiengine.lib
+LIBRARY         estor.lib 
+LIBRARY         akncapserverclient.lib
+#ifdef RD_TACTILE_FEEDBACK     
+LIBRARY             FeatMgr.lib                // feature manager
+#endif // RD_TACTILE_FEEDBACK  
+LIBRARY         efsrv.lib
+LIBRARY                 AknLayout2Scalable.lib 
+LIBRARY                 aknskins.lib
+LIBRARY                 AknLayout2.lib
+LIBRARY                 CdlEngine.lib
+LIBRARY         AknIcon.lib
+LIBRARY					AknNotify.lib
+#ifdef RD_UI_TRANSITION_EFFECTS_LIST
+LIBRARY	 		aknlistloadertfx.lib
+LIBRARY         akntransitionutils.lib
+LIBRARY	    	gfxtrans.lib
+#endif //RD_UI_TRANSITION_EFFECTS_LIST
+
+
+START RESOURCE  ./data/peninputserver.rss
+HEADER
+#ifdef RD_APPS_TO_EXES
+TARGETPATH      APP_RESOURCE_DIR
+#endif
+LANGUAGE_IDS
+END  // RESOURCE
+
+#ifdef RD_SCALABLE_UI
+START RESOURCE  ./aif/peninputserver_reg.rss
+DEPENDS peninputserver.rsg
+// Do not change the UID below.
+TARGETPATH      /private/10003a3f/apps
+END
+#else
+START RESOURCE  ./data/peninputserver_caption.rss
+HEADER
+#ifdef RD_APPS_TO_EXES
+TARGETPATH      APP_RESOURCE_DIR
+#endif
+END  // RESOURCE
+
+#endif

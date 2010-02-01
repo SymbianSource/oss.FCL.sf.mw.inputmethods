@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="b5344a43fe25af2fcf54645b91bef572" dataversion="2.0">
+  <name>PtiEngine HWR API</name>
+  <description>Handwriting recognizer plug-in interface in PtiEngine. This is the Predective text input engine hwr recognizer interface.</description>
+  <type>c++</type>
+  <collection>domain</collection>
+  <libs>
+    <lib name="ptiengine.lib" />
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

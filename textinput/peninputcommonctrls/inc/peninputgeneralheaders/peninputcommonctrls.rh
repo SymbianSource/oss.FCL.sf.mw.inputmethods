@@ -1,0 +1,318 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource headers for project hwrboxbased
+*
+*/
+
+
+#ifndef AKNFEPCOMMONCTRLS_RH
+#define AKNFEPCOMMONCTRLS_RH
+
+//  INCLUDES
+#include <uikon.rh>
+#include "AknFepGlobalEnums.h"
+
+// CONSTANT DEFINE
+#define DEFAULT_ICON_COLOR_GROUP 29
+
+//  STRUCTURE DEFINITIONS
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_INPUTRANGE
+// Resource definition for input range
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_INPUTRANGE
+    {
+    WORD rangeid=0;
+    WORD rangetype=0;
+    WORD ctrlid=0;
+    WORD ctrltype=0;
+    LLINK indicator;
+    // only meaningful when whole range bar action style is ERangeBarUsingIndicatorStyle
+    // default is hided when actived
+    WORD actionstyle=0; 
+    // shown by default
+    WORD hide=0;  
+    // only meaningful when whole range bar action style is ERangeBarUsingIndicatorStyle,
+    // while every indicator's position is fixed, following value is position index in
+    // cellrect list
+    WORD posidx=0;
+    }
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_INPUTRANGE_LIST
+// Resource definition for input mode list
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_INPUTRANGE_LIST
+    {
+    STRUCT ranges[];
+    WORD default=0;
+    }
+    
+// -----------------------------------------------------------------------------
+// AKN_FEP_BUTTON_IMAGE
+// Resource definition for button
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_BUTTON_IMAGE
+    {
+    LTEXT bmpfile="";
+    LONG imgmajorskinid=0xffff;
+		WORD colorgroup=DEFAULT_ICON_COLOR_GROUP;
+		
+    WORD nactive=0xffff;
+    WORD nactivemsk=0xffff;
+    WORD nactiveskinid=0xffff;     
+    
+    WORD nactivep=0xffff;
+    WORD nactivepmsk=0xffff;
+    WORD nactivepskinid=0xffff;
+    
+    WORD active=0xffff;
+    WORD activemsk=0xffff;
+    WORD activeskinid=0xffff;
+    
+    WORD activep=0xffff;
+    WORD activepmsk=0xffff;
+    WORD activepskinid=0xffff;
+    
+    WORD disable=0xffff;
+    WORD disablemsk=0xffff;
+    WORD disableskinid=0xffff;    
+
+    WORD moveindicator=0xffff;
+    WORD moveindicatormsk=0xffff;
+    WORD moveindicatorskinid=0xffff;
+    }
+    
+// -----------------------------------------------------------------------------
+// AKN_FEP_COMMON_BUTTON_IMAGE
+// Resource definition for button
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_COMMON_BUTTON_IMAGE
+    {
+    LTEXT bmpfile="";
+    LONG imgmajorskinid=0xffff;
+		WORD colorgroup=DEFAULT_ICON_COLOR_GROUP;
+		
+    WORD forground=0xffff;
+    WORD forgroundmsk=0xffff;
+    WORD forgroundskinid=0xffff;     
+    }
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_RAWKEY_BUTTON
+// Resource definition of raw key buttons which can be used to simulate itut keys
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_RAWKEY_BUTTON
+    {
+    WORD scancode = 0xffff;
+    LLINK buttonimage; // link to AKN_FEP_BUTTON_IMAGE
+    }
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_MULTIPLE_MODE_BUTTON
+// Resource definition of image list for buttons which can have multiple images
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_MULTIPLE_MODE_BUTTON
+    {
+    LONG colormajorskinid=0xffff;
+    WORD textcolorgrp=0xffff;
+    WORD textcoloridx=0xffff;
+    WORD shadowtextcoloridx=0xffff;
+    STRUCT modes[];
+    WORD defaultmode = 0;
+    }
+    
+// -----------------------------------------------------------------------------
+// AKN_FEP_MULTI_IMAGE_BUTTON_IMAGE
+// Resource definition for button
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_MULTI_IMAGE_BUTTON_IMAGE
+    {
+    LTEXT bmpfile="";
+    LONG imgmajorskinid=0xffff;
+		WORD colorgroup=DEFAULT_ICON_COLOR_GROUP;
+		
+    WORD forground1=0xffff;
+    WORD forground1msk=0xffff;
+    WORD forground1skinid=0xffff;
+    
+    WORD forground2=0xffff;
+    WORD forground2msk=0xffff;
+    WORD forground2skinid=0xffff;     
+    }    
+    
+STRUCT AKN_FEP_BUTTON_MODE
+    {
+    LLINK modeimage;
+    LTEXT modestring="";
+    WORD rangeid=0xffff;
+    WORD modeid=0xffff;
+    }
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_SELECTION_LIST_IMAGE
+// Resource definition of selection list
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_SELECTION_LIST_IMAGE
+    {
+    LTEXT bmpfile="";
+    LONG imgmajorskinid = 0xffff;
+
+    WORD normalbmp = 0xffff;
+    WORD normalmsk = 0xffff;
+    WORD normalskinid = 0xffff;
+
+    WORD highlightbmp = 0xffff;
+    WORD highlightmsk = 0xffff;
+    WORD highlightskinid = 0xffff;
+    }
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_INPUTMODE_NAME
+// Resource definition of inputmode name
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_INPUTMODE_NAME
+    {
+    LONG modeid= EPluginInputModeNone;
+    LTEXT txt = "";
+    }
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_INPUTMODE_NAME_ARRAY
+// Resource definition of inputmode name ARRAY
+// -----------------------------------------------------------------------------
+//    
+STRUCT AKN_FEP_INPUTMODE_NAMEARRAY
+    {
+    STRUCT names[];
+    }  
+      
+STRUCT AKN_FEP_NONIRREGULAR_VKB_BITMAP
+    {
+    LTEXT bmpfile="";
+    LONG imgmajorskinid=0xffff;
+        
+    WORD normal=0xffff;
+    WORD normalmsk=0xffff;
+    WORD normalskinid=0xffff;     
+    
+    WORD highlight=0xffff;
+    WORD highlightmsk=0xffff;
+    WORD highlightskinid=0xffff;
+    
+    WORD dimmed=0xffff;
+    WORD dimmedmsk=0xffff;
+    WORD dimmedskinid=0xffff;
+    }        
+
+STRUCT AKN_FEP_IRREGULAR_VKB_BITMAP
+    {
+    LTEXT bmpfile="";
+    
+    WORD leftdownnormal=0xffff;
+    WORD leftdownnormalmask=0xffff;
+    WORD leftdownnormalskinid=0xffff;
+    WORD leftdownpressed=0xffff;
+    WORD leftdownpressedmask=0xffff;
+    WORD leftdownpressedkinid=0xffff;
+    WORD leftdowndimmed=0xffff;
+    WORD leftdowndimmedmask=0xffff;
+    WORD leftdowndimmedskinid=0xffff;
+
+    WORD middleupnormal=0xffff;
+    WORD middleupnormalmask=0xffff;
+    WORD middleupnormalskinid=0xffff;
+    WORD middleuppressed=0xffff;
+    WORD middleuppressedmask=0xffff;
+    WORD middleuppressedkinid=0xffff;
+    WORD middleupdimmed=0xffff;
+    WORD middleupdimmedmask=0xffff;
+    WORD middleupdimmedskinid=0xffff;
+
+    WORD middledownnormal=0xffff;
+    WORD middledownnormalmask=0xffff;
+    WORD middledownnormalskinid=0xffff;
+    WORD middledownpressed=0xffff;
+    WORD middledownpressedmask=0xffff;
+    WORD middledownpressedkinid=0xffff;
+    WORD middledowndimmed=0xffff;
+    WORD middledowndimmedmask=0xffff;
+    WORD middledowndimmedskinid=0xffff;
+
+    WORD rightdownnormal=0xffff;
+    WORD rightdownnormalmask=0xffff;
+    WORD rightdownnormalskinid=0xffff;
+    WORD rightdownpressed=0xffff;
+    WORD rightdownpressedmask=0xffff;
+    WORD rightdownpressedskinid=0xffff;
+    WORD rightdowndimmed=0xffff;
+    WORD rightdowndimmedmask=0xffff;
+    WORD rightdowndimmedskinid=0xffff;
+
+    WORD rightupnormal=0xffff;
+    WORD rightupnormalmask=0xffff;
+    WORD rightupnormalskinid=0xffff;
+    WORD rightuppressed=0xffff;
+    WORD rightuppressedmask=0xffff;
+    WORD rightuppressedskinid=0xffff;
+    WORD rightupwndimmed=0xffff;
+    WORD rightupwndimmedmask=0xffff;
+    WORD rightupwndimmedskinid=0xffff;
+    }        
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_SCROLLABLE_LIST_IMAGE
+// Resource definition for button
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_SCROLLABLE_LIST_IMAGE
+    {
+    LTEXT bmpfile="";
+    LONG imgmajorskinid=0xffff;
+
+    LLINK pageup;
+    LLINK pagedown;
+    WORD listsep=0xffff;
+    WORD listsepmsk=0xffff;
+    WORD listspeskinid=0xffff;
+    }
+
+// -----------------------------------------------------------------------------
+// AKN_FEP_COLOR_ICON_IMAGE
+// Resource definition for color icon
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_COLOR_ICON_IMAGE
+	 	{
+		LTEXT bmpfile="";
+    LONG imgmajorskinid=0xffff;
+    WORD colorgroup=DEFAULT_ICON_COLOR_GROUP;
+    
+		WORD iconimage=0xffff;
+		WORD iconimagemsk=0xffff;
+		WORD iconimageskinid=0xffff;    
+   	}
+#endif // AKNFEPCOMMONCTRLS_RH
+
+// End Of File

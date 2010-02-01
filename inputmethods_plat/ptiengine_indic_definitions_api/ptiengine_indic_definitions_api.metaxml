@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="4a5489588cee5cd69e36bd56a358161a" dataversion="2.0">
+  <name>PtiEngine Indic Definitions API</name>
+  <description>Contains Indic definitions used with PtiEngine. The various states for the indic Syllables are defined here.</description>
+  <type>c++</type>
+  <collection>domain</collection>
+  <libs>
+    <lib name="ptiengine.lib" />
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

@@ -1,0 +1,52 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project gspeninputplugin
+*
+*/
+
+
+#include <registryinfo.rh>
+
+RESOURCE REGISTRY_INFO theInfo
+        {
+        dll_uid = 0x1027510B;
+        interfaces =
+                {
+                INTERFACE_INFO
+                        {
+                        interface_uid   = 0x10207236;
+                        implementations = 
+                                {
+                                IMPLEMENTATION_INFO
+                                        {
+                                        implementation_uid  = 0x1027510C;
+                                        version_no = 1;
+                                        display_name = "Input Pen plugin"; // Debug name
+                                        default_data = "0x10207237";// Parent UID
+                                        opaque_data  = "60";// Order number
+                                        },
+                                IMPLEMENTATION_INFO
+                                        {
+                                        implementation_uid  = 0x1028185A;
+                                        version_no = 1;
+                                        display_name = "";  
+                                        default_data = ""; 
+                                        opaque_data  = ""; 
+                                        }
+                                };
+                        }
+                };
+        }
+
+// End Of File

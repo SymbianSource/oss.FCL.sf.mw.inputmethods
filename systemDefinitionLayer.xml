@@ -1,0 +1,252 @@
+<layer name="inputmethods">
+  <module name="group_inputmethods">
+    <component name="group_inputmethods">
+      <unit unitID="inputmethods" mrp="" name="inputmethods" bldFile="&layer_real_source_path;\group" />
+    </component>
+  </module>
+  <module name="inputmethods_dom">
+    <component name="inputmethods_dom">
+      <unit unitID="inputmethods_inputmethods_dom" mrp="" filter="not_build" name="inputmethods_dom" bldFile="&layer_real_source_path;\inputmethods_dom\group" />
+    </component>
+  </module>
+  <module name="aknfep_definitions_api">
+    <component name="aknfep_definitions_api">
+      <unit unitID="inputmethods_inputmethods_dom_aknfep_definitions_api" filter="not_build" mrp="" name="aknfep_definitions_api" bldFile="&layer_real_source_path;\inputmethods_dom\aknfep_definitions_api\group" />
+    </component>
+  </module>
+  <module name="aknfep_pen_support_api">
+    <component name="aknfep_pen_support_api">
+      <unit unitID="inputmethods_inputmethods_dom_aknfep_pen_support_api" filter="not_build" mrp="" name="aknfep_pen_support_api" bldFile="&layer_real_source_path;\inputmethods_dom\aknfep_pen_support_api\group" />
+    </component>
+  </module>
+  <module name="aknfep_settings_api">
+    <component name="aknfep_settings_api">
+      <unit unitID="inputmethods_inputmethods_dom_aknfep_settings_api" filter="not_build" mrp="" name="aknfep_settings_api" bldFile="&layer_real_source_path;\inputmethods_dom\aknfep_settings_api\group" />
+    </component>
+  </module>
+  <module name="pen_input_server_api">
+    <component name="pen_input_server_api">
+      <unit unitID="inputmethods_inputmethods_dom_pen_input_server_api" filter="not_build" mrp="" name="pen_input_server_api" bldFile="&layer_real_source_path;\inputmethods_dom\pen_input_server_api\group" />
+    </component>
+  </module>
+  <module name="ptiengine_hwr_api">
+    <component name="ptiengine_hwr_api">
+      <unit unitID="inputmethods_inputmethods_dom_ptiengine_hwr_api" filter="not_build" mrp="" name="ptiengine_hwr_api" bldFile="&layer_real_source_path;\inputmethods_dom\ptiengine_hwr_api\group" />
+    </component>
+  </module>
+  <module name="ptiengine_indic_definitions_api">
+    <component name="ptiengine_indic_definitions_api">
+      <unit unitID="inputmethods_inputmethods_dom_ptiengine_indic_definitions_api" filter="not_build" mrp="" name="ptiengine_indic_definitions_api" bldFile="&layer_real_source_path;\inputmethods_dom\ptiengine_indic_definitions_api\group" />
+    </component>
+  </module>
+  <module name="inputmethods_sdk">
+    <component name="inputmethods_sdk">
+      <unit unitID="inputmethods_inputmethods_sdk" mrp="" filter="not_build" name="inputmethods_sdk" bldFile="&layer_real_source_path;\inputmethods_sdk\group" />
+    </component>
+  </module>
+  <module name="input_language_info_api">
+    <component name="input_language_info_api">
+      <unit unitID="inputmethods_inputmethods_sdk_input_language_info_api" filter="not_build" mrp="" name="input_language_info_api" bldFile="&layer_real_source_path;\inputmethods_sdk\input_language_info_api\group" />
+    </component>
+  </module>
+  <module name="optical_character_recognition_api">
+    <component name="optical_character_recognition_api">
+      <unit unitID="inputmethods_inputmethods_sdk_optical_character_recognition_api" filter="not_build" mrp="" name="optical_character_recognition_api" bldFile="&layer_real_source_path;\inputmethods_sdk\optical_character_recognition_api\group" />
+    </component>
+  </module>
+  <module name="ptiengine_api">
+    <component name="ptiengine_api">
+      <unit unitID="inputmethods_inputmethods_sdk_ptiengine_api" filter="not_build" mrp="" name="ptiengine_api" bldFile="&layer_real_source_path;\inputmethods_sdk\ptiengine_api\group" />
+    </component>
+  </module>
+  <module name="textinput">
+    <component name="textinput">
+      <unit unitID="inputmethods_textinput" filter="not_build" mrp="" name="textinput" bldFile="&layer_real_source_path;\textinput\group" />
+    </component>
+  </module>
+  <module name="aknfep">
+    <component name="aknfep">
+      <unit unitID="inputmethods_textinput_aknfep" mrp="" filter="not_build" name="aknfep" bldFile="&layer_real_source_path;\textinput\aknfep\group" />
+    </component>
+  </module>
+  <module name="AknTaJFep">
+    <component name="AknTaJFep">
+      <unit unitID="inputmethods_textinput_aknfep_internal_AknTaJFep" filter="not_build,test_internal" mrp="" name="AknTaJFep" bldFile="&layer_real_source_path;\textinput\aknfep\internal\AknTaJFep\group" />
+    </component>
+  </module>
+  <module name="simulatorside">
+    <component name="simulatorside">
+      <unit unitID="inputmethods_textinput_aknfep_internal_fepautotestingtools_sourcecode_simulatorside" filter="not_build,test_internal" mrp="" name="simulatorside" bldFile="&layer_real_source_path;\textinput\aknfep\internal\fepautotestingtools\sourcecode\simulatorside\group" />
+    </component>
+  </module>
+  <module name="eventloganim">
+    <component name="eventloganim">
+      <unit unitID="inputmethods_textinput_aknfep_internal_fepautotestingtools_sourcecode_simulatorside_eventloganim" filter="not_build,test_internal" mrp="" name="eventloganim" bldFile="&layer_real_source_path;\textinput\aknfep\internal\fepautotestingtools\sourcecode\simulatorside\eventloganim\group" />
+    </component>
+  </module>
+  <module name="peninputimeplugincn">
+    <component name="peninputimeplugincn">
+      <unit unitID="inputmethods_textinput_aknfep_peninputplugins_peninputimeplugincn" filter="not_build" mrp="" name="peninputimeplugincn" bldFile="&layer_real_source_path;\textinput\aknfep\peninputplugins\peninputimeplugincn\group" />
+    </component>
+  </module>
+  <module name="peninputimeplugingeneric">
+    <component name="peninputimeplugingeneric">
+      <unit unitID="inputmethods_textinput_aknfep_peninputplugins_peninputimeplugingeneric" filter="not_build" mrp="" name="peninputimeplugingeneric" bldFile="&layer_real_source_path;\textinput\aknfep\peninputplugins\peninputimeplugingeneric\group" />
+    </component>
+  </module>
+  <module name="peninputimepluginjp">
+    <component name="peninputimepluginjp">
+      <unit unitID="inputmethods_textinput_aknfep_peninputplugins_peninputimepluginjp" filter="not_build" mrp="" name="peninputimepluginjp" bldFile="&layer_real_source_path;\textinput\aknfep\peninputplugins\peninputimepluginjp\group" />
+    </component>
+  </module>
+  <module name="AknFepUiInterface">
+    <component name="AknFepUiInterface">
+      <unit unitID="inputmethods_textinput_aknfep_UiPlugins_AknFepUiInterface" mrp="" filter="not_build" name="AknFepUiInterface" bldFile="&layer_real_source_path;\textinput\aknfep\UiPlugins\AknFepUiInterface\group" />
+    </component>
+  </module>
+  <module name="AlfControlsUiPlugin">
+    <component name="AlfControlsUiPlugin">
+      <unit unitID="inputmethods_textinput_aknfep_UiPlugins_internal_AlfControlsUiPlugin" filter="not_build,test_internal" mrp="" name="AlfControlsUiPlugin" bldFile="&layer_real_source_path;\textinput\aknfep\UiPlugins\internal\AlfControlsUiPlugin\group" />
+    </component>
+  </module>
+  <module name="AknInputLanguage">
+    <component name="AknInputLanguage">
+      <unit unitID="inputmethods_textinput_AknInputLanguage" mrp="" filter="not_build" name="AknInputLanguage" bldFile="&layer_real_source_path;\textinput\AknInputLanguage\group" />
+    </component>
+  </module>
+  <module name="Matsutake">
+    <component name="Matsutake">
+      <unit unitID="inputmethods_textinput_Matsutake" mrp="" filter="not_build" name="Matsutake" bldFile="&layer_real_source_path;\textinput\Matsutake\group" />
+    </component>
+  </module>
+  <module name="ocrsrv">
+    <component name="ocrsrv">
+      <unit unitID="inputmethods_textinput_ocrsrv" mrp="" filter="not_build" name="ocrsrv" bldFile="&layer_real_source_path;\textinput\ocrsrv\group" />
+    </component>
+  </module>
+  <module name="Ocrtest">
+    <component name="Ocrtest">
+      <unit unitID="inputmethods_textinput_ocrsrv_internal_Ocrtest" filter="not_build,test_internal" mrp="" name="Ocrtest" bldFile="&layer_real_source_path;\textinput\ocrsrv\internal\Ocrtest\group" />
+    </component>
+  </module>
+  <module name="peninputarc">
+    <component name="peninputarc">
+      <unit unitID="inputmethods_textinput_peninputarc" mrp="" filter="not_build" name="peninputarc" bldFile="&layer_real_source_path;\textinput\peninputarc\group" />
+    </component>
+  </module>
+  <module name="tsrc">
+    <component name="tsrc">
+      <unit unitID="inputmethods_textinput_peninputarc_internal_tsrc" filter="not_build,test_internal" mrp="" name="tsrc" bldFile="&layer_real_source_path;\textinput\peninputarc\internal\tsrc\group" />
+    </component>
+  </module>
+  <module name="utils">
+    <component name="utils">
+      <unit unitID="inputmethods_textinput_peninputarc_utils" filter="not_build" mrp="" name="utils" bldFile="&layer_real_source_path;\textinput\peninputarc\utils\group" />
+    </component>
+  </module>
+  <module name="peninputcommonctrls">
+    <component name="peninputcommonctrls">
+      <unit unitID="inputmethods_textinput_peninputcommonctrls" mrp="" filter="not_build" name="peninputcommonctrls" bldFile="&layer_real_source_path;\textinput\peninputcommonctrls\group" />
+    </component>
+  </module>
+  <module name="peninputcommonlayout">
+    <component name="peninputcommonlayout">
+      <unit unitID="inputmethods_textinput_peninputcommonlayout" mrp="" filter="not_build" name="peninputcommonlayout" bldFile="&layer_real_source_path;\textinput\peninputcommonlayout\group" />
+    </component>
+  </module>
+  <module name="peninputgenerichwr">
+    <component name="peninputgenerichwr">
+      <unit unitID="inputmethods_textinput_peninputgenerichwr" mrp="" filter="not_build" name="peninputgenerichwr" bldFile="&layer_real_source_path;\textinput\peninputgenerichwr\group" />
+    </component>
+  </module>
+  <module name="peninputgenericvkb">
+    <component name="peninputgenericvkb">
+      <unit unitID="inputmethods_textinput_peninputgenericvkb" mrp="" filter="not_build" name="peninputgenericvkb" bldFile="&layer_real_source_path;\textinput\peninputgenericvkb\group" />
+    </component>
+  </module>
+  <module name="peninputhwrboxcn">
+    <component name="peninputhwrboxcn">
+      <unit unitID="inputmethods_textinput_peninputhwrboxcn" mrp="" filter="not_build" name="peninputhwrboxcn" bldFile="&layer_real_source_path;\textinput\peninputhwrboxcn\group" />
+    </component>
+  </module>
+  <module name="peninputvkbcn">
+    <component name="peninputvkbcn">
+      <unit unitID="inputmethods_textinput_peninputvkbcn" mrp="" filter="not_build" name="peninputvkbcn" bldFile="&layer_real_source_path;\textinput\peninputvkbcn\group" />
+    </component>
+  </module>
+  <module name="PtiAtokCore">
+    <component name="PtiAtokCore">
+      <unit unitID="inputmethods_textinput_PtiAtokCore" mrp="" filter="not_build" name="PtiAtokCore" bldFile="&layer_real_source_path;\textinput\PtiAtokCore\group" />
+    </component>
+  </module>
+  <module name="AtokTest">
+    <component name="AtokTest">
+      <unit unitID="inputmethods_textinput_PtiAtokCore_internal_AtokTest" filter="not_build,test_internal" mrp="" name="AtokTest" bldFile="&layer_real_source_path;\textinput\PtiAtokCore\internal\AtokTest\group" />
+    </component>
+  </module>
+  <module name="pticpicore">
+    <component name="pticpicore">
+      <unit unitID="inputmethods_textinput_pticpicore" mrp="" filter="not_build" name="pticpicore" bldFile="&layer_real_source_path;\textinput\pticpicore\group" />
+    </component>
+  </module>
+  <module name="cpiengine">
+    <component name="cpiengine">
+      <unit unitID="inputmethods_textinput_pticpicore_cpiengine" filter="not_build" mrp="" name="cpiengine" bldFile="&layer_real_source_path;\textinput\pticpicore\cpiengine\group" />
+    </component>
+  </module>
+  <module name="PtiEngine">
+    <component name="PtiEngine">
+      <unit unitID="inputmethods_textinput_PtiEngine" mrp="" filter="not_build" name="PtiEngine" bldFile="&layer_real_source_path;\textinput\PtiEngine\group" />
+    </component>
+  </module>
+  <module name="PtiTest">
+    <component name="PtiTest">
+      <unit unitID="inputmethods_textinput_PtiEngine_internal_PtiTest" filter="not_build,test_internal" mrp="" name="PtiTest" bldFile="&layer_real_source_path;\textinput\PtiEngine\internal\PtiTest\group" />
+    </component>
+  </module>
+  <module name="ptihanwangcore">
+    <component name="ptihanwangcore">
+      <unit unitID="inputmethods_textinput_ptihanwangcore" mrp="" filter="not_build" name="ptihanwangcore" bldFile="&layer_real_source_path;\textinput\ptihanwangcore\group" />
+    </component>
+  </module>
+  <module name="ptiindicphoneticcore">
+    <component name="ptiindicphoneticcore">
+      <unit unitID="inputmethods_textinput_ptiindicphoneticcore" mrp="" filter="not_build" name="ptiindicphoneticcore" bldFile="&layer_real_source_path;\textinput\ptiindicphoneticcore\group" />
+    </component>
+  </module>
+  <module name="IndicPhoneticInputTest">
+    <component name="IndicPhoneticInputTest">
+      <unit unitID="inputmethods_textinput_ptiindicphoneticcore_internal_IndicPhoneticInputTest" filter="not_build,test_internal" mrp="" name="IndicPhoneticInputTest" bldFile="&layer_real_source_path;\textinput\ptiindicphoneticcore\internal\IndicPhoneticInputTest\group" />
+    </component>
+  </module>
+  <module name="PtiT9Core">
+    <component name="PtiT9Core">
+      <unit unitID="inputmethods_textinput_PtiT9Core" filter="not_build" mrp="" name="PtiT9Core" bldFile="&layer_real_source_path;\textinput\PtiT9Core\group" />
+    </component>
+  </module>
+  <module name="peninputcommonctrlsjp">
+    <component name="peninputcommonctrlsjp">
+      <unit unitID="inputmethods_textinput_peninputcommonctrlsjp" mrp="" filter="not_build,test_internal" bldFile="&layer_real_source_path;\textinput\peninputcommonctrlsjp\group" name="peninputcommonctrlsjp" />
+    </component>
+  </module>
+  <module name="peninputhwrboxjp">
+    <component name="peninputhwrboxjp">
+      <unit unitID="inputmethods_textinput_peninputhwrboxjp" mrp="" filter="not_build,test_internal" bldFile="&layer_real_source_path;\textinput\peninputhwrboxjp\group" name="peninputhwrboxjp" />
+    </component>
+  </module>
+  <module name="peninputvkbjp">
+    <component name="peninputvkbjp">
+      <unit unitID="inputmethods_textinput_peninputvkbjp" mrp="" filter="not_build,test_internal" bldFile="&layer_real_source_path;\textinput\peninputvkbjp\group" name="peninputvkbjp" />
+    </component>
+  </module>
+  <module name="PtiDecumaJpCore">
+    <component name="PtiDecumaJpCore">
+      <unit unitID="inputmethods_textinput_PtiDecumaJpCore" mrp="" filter="not_build,test_internal" bldFile="&layer_real_source_path;\textinput\PtiDecumaJpCore\group" name="PtiDecumaJpCore" />
+    </component>
+  </module>
+  <module name="dltjdbtest">
+    <component name="dltjdbtest">
+      <unit unitID="inputmethods_textinput_PtiDecumaJpCore_internal_dltjdbtest" mrp="" filter="not_build,test_internal" bldFile="&layer_real_source_path;\textinput\PtiDecumaJpCore\internal\dltjdbtest\group" name="dltjdbtest" />
+    </component>
+  </module>
+</layer>

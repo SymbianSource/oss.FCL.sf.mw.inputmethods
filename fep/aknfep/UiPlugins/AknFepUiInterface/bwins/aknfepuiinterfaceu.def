@@ -1,0 +1,8 @@
+EXPORTS
+	??1CAknFepUIInterface@@UAE@XZ @ 1 NONAME ; CAknFepUIInterface::~CAknFepUIInterface(void)
+	?DynInitMenuBarL@MAknFepUiInterfaceMenuObserver@@UAEXHPAVCAknFepUiInterfaceMenuBar@@@Z @ 2 NONAME ; void MAknFepUiInterfaceMenuObserver::DynInitMenuBarL(int, class CAknFepUiInterfaceMenuBar *)
+	?DynInitMenuPaneL@MAknFepUiInterfaceMenuObserver@@UAEXHPAVCAknFepUiInterfaceMenuPane@@@Z @ 3 NONAME ; void MAknFepUiInterfaceMenuObserver::DynInitMenuPaneL(int, class CAknFepUiInterfaceMenuPane *)
+	?NewL@CAknFepUIInterface@@SAPAV1@XZ @ 4 NONAME ; class CAknFepUIInterface * CAknFepUIInterface::NewL(void)
+	??1CAknFepIndicator@@UAE@XZ @ 5 NONAME ; CAknFepIndicator::~CAknFepIndicator(void)
+	?SetCopyMode@CAknFepIndicator@@QAEXH@Z @ 6 NONAME ; void CAknFepIndicator::SetCopyMode(int)
+

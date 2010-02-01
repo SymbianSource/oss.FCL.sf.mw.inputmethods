@@ -1,0 +1,53 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource headers for project peninputgenerichwr
+*
+*/
+
+
+#ifndef PENINPUTGENERICHWR_HRH
+#define PENINPUTGENERICHWR_HRH
+
+// System includes
+#include <AknFepGlobalEnums.h>
+#include <peninputcommonctrls.hrh>
+#include <peninputcommonlayoutglobalenum.h>
+
+/** peninput client layout type */
+enum TPeninutClientLayout
+    { 
+    EPeninutClientLayout10x5  = 1,
+    EPeninutClientLayout10x6  = 2
+    };
+
+/** peninput hwr event type */
+enum TPeninputLayoutHwrEvent
+    {
+    EPeninputLayoutHwrEventLanguageBtnText = EPeninputLayoutEventLast,
+    EPeninputLayoutHwrEventPenColorChange,
+    EPeninputLayoutHwrEventPenSizeChange,    
+    EPeninputLayoutHwrEventWritingSpeedChange,
+    EPeninputLayoutHwrEventGuideLineChanged, 
+    EPeninputLayoutHwrEventPopupClose
+    };
+
+/** peninput hwr ui state type */
+enum TPeninutHwrUiStateType
+    {
+    EPeninputHwrUiStateNone,
+    EPeninputHwrUiStateStandby,
+    EPeninputHwrUiStatePopup
+    };
+
+#endif // PENINPUTGENERICHWR_HRH

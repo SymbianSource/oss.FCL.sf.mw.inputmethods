@@ -1,0 +1,11 @@
+EXPORTS
+	?GetUiLayout@CFepLayoutEngine@@QAEPAVMFepLayoutBase@@VTUid@@PAVMLayoutOwner@@PBX@Z @ 1 NONAME ABSENT ; class MFepLayoutBase * CFepLayoutEngine::GetUiLayout(class TUid, class MLayoutOwner *, void const *)
+	?NewL@CFepLayoutEngine@@SAPAV1@XZ @ 2 NONAME ; class CFepLayoutEngine * CFepLayoutEngine::NewL(void)
+	?UiLayoutListL@CFepLayoutEngine@@QAEABV?$RArray@H@@H@Z @ 3 NONAME ; class RArray<int> const & CFepLayoutEngine::UiLayoutListL(int)
+	?ImePluginListL@CFepLayoutEngine@@QAEABV?$RArray@H@@HH@Z @ 4 NONAME ; class RArray<int> const & CFepLayoutEngine::ImePluginListL(int, int)
+	?NewL@CFepLayoutEngine@@SAPAV1@PAVCPtiEngine@@@Z @ 5 NONAME ; class CFepLayoutEngine * CFepLayoutEngine::NewL(class CPtiEngine *)
+	?TouchSupportLanguagesL@CFepLayoutEngine@@QAEABV?$RArray@H@@XZ @ 6 NONAME ; class RArray<int> const & CFepLayoutEngine::TouchSupportLanguagesL(void)
+	?GetUiLayout@CFepLayoutEngine@@QAEPAVMPenUiLayoutBase@@VTUid@@PAVMLayoutOwner@@PBX@Z @ 7 NONAME ; class MPenUiLayoutBase * CFepLayoutEngine::GetUiLayout(class TUid, class MLayoutOwner *, void const *)
+	?IsSupportPluginMode@CFepLayoutEngine@@QAEHW4TLanguage@@W4TPluginInputMode@@@Z @ 8 NONAME ; int CFepLayoutEngine::IsSupportPluginMode(enum TLanguage, enum TPluginInputMode)
+	?InitializeL@CFepLayoutEngine@@QAEXXZ @ 9 NONAME ; void CFepLayoutEngine::InitializeL(void)
+

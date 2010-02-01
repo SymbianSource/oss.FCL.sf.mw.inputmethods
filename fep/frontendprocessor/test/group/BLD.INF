@@ -1,0 +1,52 @@
+// Copyright (c) 1999-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+PRJ_PLATFORMS
+DEFAULT
+
+
+PRJ_EXPORTS
+
+PRJ_MMPFILES
+
+PRJ_TESTMMPFILES
+FepSwitch.mmp
+TFepBaseTestServer.mmp
+
+../feps/TFEP1PlugIn.MMP
+../feps/tfep2be.mmp
+../feps/TFEP2PlugIn.MMP
+../feps/TFEP3PlugIn.MMP
+../feps/TFEP4PlugIn.MMP
+
+
+
+PRJ_TESTEXPORTS
+
+../scripts/fepbasetest_run.bat	     	 z:/fepbasetest/fepbasetest_run.bat
+../scripts/fepbasetest_run.bat           /epoc32/release/winscw/udeb/fepbasetest_run.bat
+../scripts/fepbasetest_run.bat           /epoc32/release/winscw/urel/fepbasetest_run.bat
+
+../scripts/fepbasetest_T_AppMorse.script z:/fepbasetest/fepbasetest_t_appmorse.script
+../scripts/fepbasetest_T_DefocusingEdwin.script  z:/fepbasetest/fepbasetest_t_defocusingedwin.script
+../scripts/fepbasetest_T_FepGen.script   z:/fepbasetest/fepbasetest_t_fepgen.script
+../scripts/fepbasetest_T_Fep1TestTarget.script   z:/fepbasetest/fepbasetest_t_fep1testtarget.script
+../scripts/fepbasetest_T_KeyboardLogger.script   z:/fepbasetest/fepbasetest_t_keyboardlogger.script
+
+
+../group/fepbasetest.iby	/epoc32/rom/include/fepbasetest.iby
+
+
+

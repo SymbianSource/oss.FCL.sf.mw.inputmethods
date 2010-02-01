@@ -1,0 +1,36 @@
+// Copyright (c) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+// FEPSWITCH.EXE Exe for capturing the key-combinations that turn the FEP on/off
+// 
+//
+
+/**
+ @file
+*/
+
+target			fepswitch.exe
+capability		SwEvent WriteDeviceData
+targettype		exe
+uid				0 0x10272617
+vendorid		0x70000001
+sourcepath		../src
+source			FepSwitch.cpp
+
+MW_LAYER_SYSTEMINCLUDE 
+OS_LAYER_SYSTEMINCLUDE 
+
+userinclude		../inc
+library			euser.lib centralrepository.lib ws32.lib fepbase.lib apgrfx.lib
+
+SMPSAFE

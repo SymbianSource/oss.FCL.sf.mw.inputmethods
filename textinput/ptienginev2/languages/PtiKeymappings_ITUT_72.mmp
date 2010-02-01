@@ -1,0 +1,56 @@
+/*
+* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: Project file for  keymapping data dll.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <platform_paths.hrh>
+
+TARGET       PtiKeymappings_ITUT_72.dll
+CAPABILITY   CAP_ECOM_PLUGIN
+targettype   PLUGIN
+UID	     0x10009D8D 0x2000B17D 
+
+sourcepath . 
+
+userinclude . 
+
+MW_LAYER_SYSTEMINCLUDE
+
+
+source PtiKeymappings_ITUT_72.cpp
+source PtiFactory_ITUT_72.cpp
+
+START RESOURCE 2000B17D.rss
+TARGET PtiKeymappings_ITUT_72.rsc
+END
+
+library	EUSER.LIB BAFL.LIB EFSRV.LIB
+library PtiEngine.lib
+
+START WINS
+	baseaddress	0x7dd10000
+END
+

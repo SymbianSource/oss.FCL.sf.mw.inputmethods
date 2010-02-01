@@ -1,0 +1,391 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Localization strings for project TrainingUI
+*
+*/
+
+
+// d:Command in options list in mainview and shortcut edit view.
+// d:Perform the function of deleting character model
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_delete_model        "Delete a model"
+
+// d:Command in options list in mainview.
+// d:Perform the function of previewing character model
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_preview_model        "Preview model"
+
+// d:Command in options list in mainview.
+// d:Perform the function of changing character range.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_character_range     "Character range"
+
+// d:Command in options list in mainview.
+// d:Perform the function of openning sct dialog.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_character_grid      "Character grid"
+
+// d:Command in options list in mainview.
+// d:Perform the function of changing language script.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_select_language     "Language script"
+
+// d:Command in options list in mainview, shortcuts view and shortcut edit view.
+// d:Perform the function of openning help application.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_options_help                "Help"
+
+// d:Command in options list in mainview, shortcuts view and shortcut edit view.
+// d:Perform the function of exitting the application.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_options_exit                "Exit"
+
+// d:Command in options list in shortcuts view.
+// d:Perform the function of editting the old text of shortcut.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_edit_shortcut_text   "Edit text"
+
+// d:Command in options list in shortcuts view.
+// d:Perform the function of editting the old model of shortcut.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_edit_shortcut_symbol    "Edit model"
+
+// d:Command in options list in shortcuts view.
+// d:Perform the function of creating a new shortcut.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_new_shortcut        "Create shortcut"
+
+// d:Command in options list in shortcuts view.
+// d:The entry of deleting shortcuts
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_delete_shortcut "Delete shortcut"
+
+// d:Command in options list in shortcuts view.
+// d:Perform the function of switching to the main view.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_om_training    "Training view"
+
+// d:Command in options list in shortcuts view.
+// d:Perform the function of marking an old shortcut.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_options_list_mark_one       "Mark"
+
+// d:Command in options list in shortcuts view.
+// d:Perform the function of unmarking an old shortcut.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_options_list_unmark_one     "Unmark"
+
+// d:Tip text in shortcut text setting page.
+// d:Tip of shortcut text setting page.
+// l:list_single_pane_t1_cp2
+// r:5.0
+//
+#define qtn_hwrt_shortcut_assign_text   "Shortcut text:"
+
+// d:First item's text of ListBox in shortcuts view.
+// d:Perform the function of creating a new shortcut.
+// l:(none)
+// r:5.0
+//
+#define qtn_hwrt_list_item_new_shortcut "New shortcut"
+
+// d:Label's text in main view.
+// d:Information of which character being trained.
+// d:%U stands for the currently trained character
+// l:list_single_hwr_training_instruct_pane_t1
+// r:5.0
+//
+#define qtn_hwrt_text_teach_character   "Teach your own character '%U' for handwriting recognition"
+
+// d:Title pane text in main view and shortcuts view.
+// l:title_pane_t2/opt9
+// r:5.0
+//
+#define qtn_hwrt_title_pane             "Handwritting"
+
+// d:Title pane text in info message view.
+// l:title_pane_t2/opt9
+// r:5.0
+//
+#define qtn_hwrt_title_crete_new_shortcut  "Create new shortcut"
+
+// d:Tooltip text in confirmation banner.
+// d:Information of the character model being saved successfully.
+// l:popup_preview_text_window_t1
+// r:5.0
+//
+#define qtn_hwrt_confirmation_banner_saved  "Saved"
+
+// d:Tooltip text in confirmation banner.
+// d:Information of the character model being deleted.
+// l:popup_preview_text_window_t1
+// r:5.0
+//
+#define qtn_hwrt_confirmation_banner_deleted    "Deleted"
+
+// d:Command in options list of sub_menu language script in main view.
+// d:Perform the function of changing language script
+// l:list_single_popup_submenu_pane_t1
+// r:5.0
+//
+#define qtn_hwrt_submenu_western        "WESTERN"
+
+// d:Command in options list of sub_menu language script in main view.
+// d:Perform the function of changing language script
+// l:list_single_popup_submenu_pane_t1
+// r:5.0
+//
+#define qtn_hwrt_submenu_cyrillic       "CYRILLIC"
+
+// d:Command in options list of sub_menu language script in main view.
+// d:Perform the function of changing language script
+// l:list_single_popup_submenu_pane_t1
+// r:5.0
+//
+#define qtn_hwrt_submenu_greek          "GREEK"
+
+// d:Command in options list of sub_menu language script in main view.
+// d:Perform the function of changing language script
+// l:list_single_popup_submenu_pane_t1
+// r:5.0
+//
+#define qtn_hwrt_submenu_hebrew         "HEBREW"
+
+// d:Tooltip to clear current character model first in the state of drawing the unempty HWR box.
+// l:popup_preview_text_window/opt1
+// r:5.0
+//
+#define qtn_hwrt_note_clear_box         "Delete the current model first and then draw a new one"
+
+// d:Tooltip to clear current character model first in the state of saving a similar model.
+// d: %S stands for the similar character with which the newly inputed model is similar with.
+// l:popup_preview_text_window/opt1
+// r:5.0
+//
+#define qtn_hwrt_note_similar_model     "Character model is too similar to %S"
+
+// d:Tooltip of shortcut will being deleted before leave shortcut edit view with empty character model.
+// l:popup_note_window
+// r:5.0
+//
+#define qtn_hwrt_note_shortcut_not_assigned "Shortcut model missing. Shortcut will be deleted.\nExit anyway?"
+
+// d:Displayed in Query dialog, when press "Current shortcut" from menu.
+// d:Text in query dialog to query if delete the selected shortcut
+// l:popup_note_window
+// r:5.0
+//
+#define qtn_hwrt_query_delete_shortcut    "Delete shortcut?"
+
+// d:Displayed in context menu in shortcuts view.
+// d:Text in context emnu
+// l:list_single_pane_t1_cp2
+// r:5.0
+// 
+#define qtn_msk_edit_text "Edit text"
+
+// d:Displayed in context menu in shortcuts view.
+// d:Text in context emnu
+// l:list_single_pane_t1_cp2
+// r:5.0
+// 
+#define qtn_msk_edit_symbol "Edit symbol"
+
+// d:Tooltip text for edit text button in toolbar on shortcut main view
+// l:popup_preview_text_window_t1
+// r:5.0
+// 
+#define qtn_hwrt_tooltip_edit_shortcut_text "Edit Shortcut text"
+
+// d:Tooltip text for edit symbol button in toolbar on shortcut main view
+// l:popup_preview_text_window_t1
+// r:5.0
+// 
+#define qtn_hwrt_tooltip_edit_shortcut_symbol "Edit Shortcut Symbol"
+
+// d:Tooltip text for delete button in toolbar on shortcut main view
+// l:popup_preview_text_window_t1
+// r:5.0
+// 
+#define qtn_hwrt_tooltip_delete "Delete"
+
+// d:Tooltip text for own symbols in shortcut edit model view
+// l:list_single_hwr_training_instruct_pane/opt3
+// r:5.0
+// 
+#define qtn_hwrt_text_purpose_own_symbol "You can drow a symbol for the shortcut text and use it later to call the text. Please use maximum of six strokes."
+
+// d:Infomation message
+// l:list_single_hwr_training_instruct_pane/opt3
+// r:5.0
+// 
+#define qtn_hwrt_informative_message    "To create a new shortcut, please, first define the text (1/1). After that, select or draw your own symbol for the shortcut (2/2)."
+
+// d:Text for radio button in infomessage view
+// l:list_single_hwr_training_symbol_option_pane_t1
+// r:5.0
+// 
+#define qtn_hwrt_informative_message_check_box_label    "Don’t show this again"
+
+// d:Text of left softkey for Next
+// l:control_pane_t1/opt7
+// r:5.0
+// 
+#define text_softkey_next   "Next"
+
+// d:Text of left softkey for Back
+// l:control_pane_t1/opt7
+// r:5.0
+// 
+#define text_softkey_back   "Back"
+
+// d:Text of left softkey for Finish
+// l:control_pane_t1/opt7
+// r:5.0
+// 
+#define text_softkey_finish "Finish"
+
+// d:Error note for already in use of shortcut
+// l:None
+// r:5.0
+// 
+#define qtn_hwrt_note_shortcut_is_used  "Shortcut symbol is in use, select a new one."
+
+// d:Text on main view option menu
+// l:list_single_popup_submenu_pane_t1
+// r:5.0
+// 
+#define qtn_hwrt_submenu_delete_current_model   "Current model"
+
+// d:Text on main view option menu
+// l:list_single_popup_submenu_pane_t1
+// r:5.0
+// 
+#define qtn_hwrt_submenu_delete_all_models  "All Models"
+
+// d:Text on main view option menu
+// l:list_single_pane_t1_cp2
+// r:5.0
+// 
+#define qtn_hwrt_om_shortcuts  "Shortcuts view"
+
+// d:Text for LSK on infomessage view
+// l:control_pane_t1/opt7
+// r:5.0
+//
+#define text_softkey_start        "Start"
+
+// d:Text for LSK on infomessage view
+// l:control_pane_t1/opt7
+// r:5.0
+//
+#define text_softkey_cancel        "Cancel"
+
+// d:Tooltip text for grid buttont on training main view
+// l:popup_preview_text_window_t1
+// r:5.0
+// 
+#define qtn_hwrt_tooltip_select_character "Select character"
+
+// d:Tooltip text for preview buttont on training main view
+// l:popup_preview_text_window_t1
+// r:5.0
+// 
+#define qtn_hwrt_tooltip_preview_drawing "Preview drawing"
+
+// d:Tooltip text for delete buttont on training main view
+// l:popup_preview_text_window_t1
+// r:5.0
+// 
+#define qtn_hwrt_tooltip_delete_drawing "Delete drawing"
+
+// d:Query note for delete all models
+// l:popup_note_window
+// r:5.0
+//
+#define qtn_hwrt_note_delete_all_models "Are you sure you want to delete all models?"
+
+// d:Displayed in SCT dialog.
+// d:Text in sct dialog as the title
+// l:heading_pane_t1/opt1
+// r:5.0
+//
+#define qtn_hwrt_sct_select_character "Select a character"
+
+// d:Tooltip of HWR Training in Fast swap window
+// d:Text in sct dialog as the title
+// l:cell_app_pane_t1
+// r:5.0
+//
+#define qtn_apps_hwrt_grid "Training"
+
+// d:Last page number for title pane in shortcut edit text view
+// l:title_pane_t2/opt9
+// r:5.0
+// 
+#define qtn_hwrt_title_last_page_number "2(2)"
+
+// d:Text of query dialog for shortcut mail view when deleting mutiple shortcuts
+// d:%N is the number of marked list items.
+// l:popup_note_window
+// r:5.0
+// 
+#define qtn_hwrt_query_delete_several_shortcuts "Delete %N Shortcuts?"
+
+// d:Option menu item on shortcut main view.
+// d:To get the hided Informative Message View visible again.
+// l:list_single_pane_t1_cp2
+// r:5.0
+// 
+#define qtn_hwrt_om_reset_intro "Reset introduction"
+
+// d:Title pane text in shortcut edit view.
+// l:title_pane_t2/opt9
+// r:5.0
+//
+#define qtn_hwrt_title_wizard_hwr_shortcut "1(2) HWR shortcut"
+
+// d:Title pane text in shortcut edit view.
+// l:title_pane_t2/opt9
+// r:5.0
+//
+#define qtn_hwrt_title_hwr_shortcut    "HWR Shortcut"

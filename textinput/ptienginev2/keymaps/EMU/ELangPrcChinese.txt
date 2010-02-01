@@ -1,0 +1,629 @@
+#
+# Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+# All rights reserved.
+# This component and the accompanying materials are made available
+# under the terms of the License "Eclipse Public License v1.0"
+# which accompanies this distribution, and is available
+# at the URL "http://www.eclipse.org/legal/epl-v10.html".
+#
+# Initial Contributors:
+# Nokia Corporation - initial contribution.
+#
+# Contributors:
+#
+# Description:  PtiEngine keymapping file.
+#
+
+
+#
+# Multitapping keymap data.
+#
+[KEYBOARD BLOCK 12-KEY]
+
+key lower (1 1) 0x3002,0xFF0C,0xFF1F,0xFF01,0x3001,0xFF1A,0x0031,0x0040,0x002D,0x005F,0x0028,0x0029,0x300A,0x300B,0x002F,0x0025,0x00A5
+key upper (1 1) 0x3002,0xFF0C,0xFF1F,0xFF01,0x3001,0xFF1A,0x0031,0x0040,0x002D,0x005F,0x0028,0x0029,0x300A,0x300B,0x002F,0x0025,0x00A5
+key upper (3 1) 0xFF0C
+key upper (3 2) 0x3002
+key upper (3 3) 0xFF1F
+key lower (4 2) 0x0020,0x0030,0x21b2
+key upper (4 2) 0x0020,0x0030,0x21b2
+ 
+#    
+# Standard 4x12 qwerty keymap data.
+#
+# ForPinyin means the following character is used only for PinYin input mode
+# ForStroke means the following character is used only for Strokes input mode
+#
+[KEYBOARD BLOCK QWERTY STANDARD]
+
+key lower (1 2) 0x0031
+key upper (1 2) 0xff01
+key lower (1 3) 0x0032
+key upper (1 3) 0xff02
+key lower (1 4) 0x0033
+key upper (1 4) 0x0024
+key lower (1 5) 0x0034
+key upper (1 5) 0x20ac
+key lower (1 6) 0x0035
+key upper (1 6) 0x0025
+key lower (1 7) 0x0036
+key upper (1 7) 0x0026
+key lower (1 8) 0x0037
+key upper (1 8) 0x002a
+key lower (1 9) 0x0038
+key upper (1 9) 0xff08
+key lower (1 10) 0x0039
+key upper (1 10) 0xff09
+key lower (1 11) 0x0030
+# No data for upper (1 11) 
+key lower (3 2) ForPinyin,0x0061,ForStroke,0x4e36
+key upper (3 2) 0x0041
+key lower (4 6) ForPinyin,0x0062
+key upper (4 6) 0x0042
+key lower (4 4) ForPinyin,0x0063
+key upper (4 4) 0x0043
+key lower (3 4) ForPinyin,0x0064,ForStroke,0x003f
+key upper (3 4) 0x0044
+key lower (2 4) ForPinyin,0x0065,ForStroke,0x4e3f
+key upper (2 4) 0x0045
+key lower (3 5) ForPinyin,0x0066
+key upper (3 5) 0x0046
+key lower (3 6) ForPinyin,0x0067
+key upper (3 6) 0x0047
+key lower (3 7) ForPinyin,0x0068
+key upper (3 7) 0x0048
+key lower (2 9) ForPinyin,0x0069,ForStroke,0x4e00
+key upper (2 9) 0x0049
+key lower (3 8) ForPinyin,0x006a,ForStroke,0x003f
+key upper (3 8) 0x004a
+key lower (3 9) ForPinyin,0x006b,ForStroke,0x4e36 
+key upper (3 9) 0x004b
+key lower (3 10) ForPinyin,0x006c,ForStroke,0x4e5b
+key upper (3 10) 0x004c
+key lower (4 8) ForPinyin,0x006d
+key upper (4 8) 0x004d
+key lower (4 7) ForPinyin,0x006e
+key upper (4 7) 0x004e
+key lower (2 10) ForPinyin,0x006f,ForStroke,0x4e28
+key upper (2 10) 0x004f
+key lower (2 11) ForPinyin,0x0070,ForStroke,0x4e3f
+key upper (2 11) 0x0050
+key lower (2 2) ForPinyin,0x0071,ForStroke,0x4e00
+key upper (2 2) 0x0051
+key lower (2 5) ForPinyin,0x0072 
+key upper (2 5) 0x0052
+key lower (3 3) ForPinyin,0x0073,ForStroke,0x4e5b 
+key upper (3 3) 0x0053
+key lower (2 6) ForPinyin,0x0074 
+key upper (2 6) 0x0054
+key lower (2 8) ForPinyin,0x0075 
+key upper (2 8) 0x0055
+key lower (4 5) ForPinyin,0x0076 
+key upper (4 5) 0x0056
+key lower (2 3) ForPinyin,0x0077,ForStroke,0x4e28
+key upper (2 3) 0x0057
+key lower (4 3) ForPinyin,0x0078
+key upper (4 3) 0x0058
+key lower (2 7) ForPinyin,0x0079
+key upper (2 7) 0x0059
+key lower (4 2) ForPinyin,0x007a
+key upper (4 2) 0x005a
+key lower (2 1) ForPinyin,0x002b,ForPinyin,0x002b,ForStroke,0x002b,ForStroke,0x002b 
+key upper (2 1) 0xff1d
+key lower (2 12) ForPinyin,0xff0d,ForPinyin,0x002d,ForStroke,0xff0d,ForStroke,0x002d
+key upper (2 12) 0x3001
+key lower (4 9) ForPinyin,0xff0c,ForPinyin,0x002c,ForStroke,0xff0c,ForStroke,0x002c 
+key upper (4 9) 0xff1c
+key lower (3 11) ForPinyin,0xff1a,ForPinyin,0x003a,ForStroke,0xff1a,ForStroke,0x003a
+key upper (3 11) 0xff1b
+key lower (4 10) ForPinyin,0x3002,ForPinyin,0x002e,ForStroke,0x3002,ForStroke,0x002e
+key upper (4 10) 0xff1e
+key lower (3 1) ForPinyin,0x0023,ForPinyin,0x0023,ForStroke,0x0023,ForStroke,0x0023 
+key upper (3 1) 0x007e
+key lower (4 11) ForPinyin,0x002f,ForPinyin,0x002f,ForStroke,0x002f,ForStroke,0x002f 
+key upper (4 11) 0xff1f
+key lower (3 12) ForPinyin,0xff07,ForPinyin,0x0027,ForStroke,0xff07,ForStroke,0x0027 
+key upper (3 12) 0xff20
+
+#
+# This language can't be used in "latin only" editors.
+#
+latin_like_language = no
+
+
+#
+# Numeric mode keys missing from default mappings
+#
+numeric_mode_key p (2 11) lower
+numeric_mode_key w (2 3) lower
+numeric_mode_key E (2 4) upper
+numeric_mode_key ? (4 11) upper
+numeric_mode_key * (1 7) upper
+
+#
+# Four row mini qwerty keymap data. 
+#
+[KEYBOARD BLOCK QWERTY 4X10]
+
+key lower (1 1) ForPinyin,0x0071
+key upper (1 1) 0x0051
+key lower (1 2) ForPinyin,0x0077
+key upper (1 2) 0x0057
+key lower (1 3) ForPinyin,0x0065,ForStroke,0x4e00
+key upper (1 3) 0x0045
+key lower (1 4) ForPinyin,0x0072,ForStroke,0x4e00
+key upper (1 4) 0x0052
+key lower (1 5) ForPinyin,0x0074,ForStroke,0x4e28
+key upper (1 5) 0x0054
+key lower (1 6) ForPinyin,0x0079,ForStroke,0x4e28
+key upper (1 6) 0x0059
+key lower (1 7) ForPinyin,0x0075,ForStroke,0x4e3f
+key upper (1 7) 0x0055
+key lower (1 8) ForPinyin,0x0069,ForStroke,0x4e3f
+key upper (1 8) 0x0049
+key lower (1 9) ForPinyin,0x006F
+key upper (1 9) 0x004F
+key lower (1 10) ForPinyin,0x0070
+key upper (1 10) 0x0050
+
+key lower (2 1) ForPinyin,0x0061
+key upper (2 1) 0x0041
+key lower (2 2) ForPinyin,0x0073
+key upper (2 2) 0x0053
+key lower (2 3) ForPinyin,0x0064,ForStroke,0x4e36
+key upper (2 3) 0x0044
+key lower (2 4) ForPinyin,0x0066,ForStroke,0x4e36
+key upper (2 4) 0x0046
+key lower (2 5) ForPinyin,0x0067,ForStroke,0x4e5b
+key upper (2 5) 0x0047
+key lower (2 6) ForPinyin,0x0068,ForStroke,0x4e5b
+key upper (2 6) 0x0048
+key lower (2 7) ForPinyin,0x006A,ForStroke,0x003f
+key upper (2 7) 0x004A
+key lower (2 8) ForPinyin,0x006B,ForStroke,0x003f
+key upper (2 8) 0x004B
+key lower (2 9) ForPinyin,0x006C
+key upper (2 9) 0x004C
+# key lower (2 10) <no mappings>
+# key upper (2 10) <no mappinms>
+
+key lower (3 1) ForPinyin,0x007A
+key upper (3 1) 0x005A
+key lower (3 2) ForPinyin,0x0078
+key upper (3 2) 0x0058
+key lower (3 3) ForPinyin,0x0063
+key upper (3 3) 0x0043
+key lower (3 4) ForPinyin,0x0076
+key upper (3 4) 0x0056
+key lower (3 5) ForPinyin,0x0062
+key upper (3 5) 0x0042
+key lower (3 6) ForPinyin,0x006E
+key upper (3 6) 0x004E
+key lower (3 7) ForPinyin,0x006D
+key upper (3 7) 0x004D
+key lower (3 8) ForPinyin,0xFF0C,ForPinyin,0x002c,ForStroke,0xFF0C,ForStroke,0x002c
+key upper (3 8) ForPinyin,0xFF1B,ForPinyin,0x003b,ForStroke,0xff1b,ForStroke,0x003b
+key lower (3 9) ForPinyin,0x3002,ForPinyin,0x002e,ForStroke,0x3002,ForStroke,0x002e
+key upper (3 9) ForPinyin,0xFF1A,ForPinyin,0x003a,ForStroke,0xff1a,ForStroke,0x003a
+# key lower (3 10) <no mappings>
+# key upper (3 10) <no mappings>
+
+#key lower (4 1) <no mappings>
+#key upper (4 1) <no mappings>
+#key lower (4 2) <no mappings>
+#key upper (4 2) <no mappings>
+key lower (4 3) ForPinyin,0x002F,ForPinyin,0x002F,ForStroke,0x002F,ForStroke,0x002F
+key upper (4 3) ForPinyin,0xFF07,ForPinyin,0x0027,ForStroke,0xFF07,ForStroke,0x0027
+key lower (4 4) ForPinyin,0x0040,ForPinyin,0x0040,ForStroke,0x0040,ForStroke,0x0040
+key upper (4 4) ForPinyin,0xff02,ForPinyin,0x0022,ForStroke,0xff02,ForStroke,0x0022
+key lower (4 5) ForStroke,0x2022
+#key upper (4 5) <no mappings>
+key lower (4 6) ForPinyin,0x003F,ForPinyin,0x003F,ForStroke,0x003f,ForStroke,0x003f
+key upper (4 6) ForPinyin,0x005e,ForPinyin,0x005E,ForStroke,0x005e,ForStroke,0x005e
+#key lower (4 7) <no mappings>
+#key upper (4 7) <no mappings>
+#key lower (4 8) <no mappings>
+#key upper (4 8) <no mappings>
+#key lower (4 9) <no mappings>
+#key upper (4 9) <no mappings>
+#key ower (4 10) <no mappings>
+#key upper (4 10) <no mappings> 
+
+#key fn_lower (1 1) <no mappings> 
+#key fn_upper (1 1) <no mappings> 
+#key fn_lower (1 2) <no mappings> 
+#key fn_upper (1 2) <no mappings> 
+key fn_lower (1 3) 0x0031
+key fn_upper (1 3) 0x0031
+key fn_lower (1 4) 0x0031
+key fn_upper (1 4) 0x0031
+key fn_lower (1 5) 0x0032
+key fn_upper (1 5) 0x0032
+key fn_lower (1 6) 0x0032
+key fn_upper (1 6) 0x0032
+key fn_lower (1 7) 0x0033
+key fn_upper (1 7) 0x0033
+key fn_lower (1 8) 0x0033
+key fn_upper (1 8) 0x0033
+#key fn_lower (1 9) <no mappings> 
+#key fn_upper (1 9) <no mappings> 
+#key fn_lower (1 10) <no mappings> 
+#key fn_upper (1 10) <no mappings> 
+
+#key fn_lower (2 1) <no mappings> 
+#key fn_upper (2 1) <no mappings> 
+#key fn_lower (2 2) <no mappings> 
+#key fn_upper (2 2) <no mappings> 
+key fn_lower (2 3) 0x0034
+key fn_upper (2 3) 0x0034
+key fn_lower (2 4) 0x0034
+key fn_upper (2 4) 0x0034
+key fn_lower (2 5) 0x0035
+key fn_upper (2 5) 0x0035
+key fn_lower (2 6) 0x0035
+key fn_upper (2 6) 0x0035
+key fn_lower (2 7) 0x0036
+key fn_upper (2 7) 0x0036
+key fn_lower (2 8) 0x0036
+key fn_upper (2 8) 0x0036
+#key fn_lower (2 9) <no mappings> 
+#key fn_upper (2 9) <no mappings> 
+#key fn_lower (2 10) <no mappings> 
+#key fn_upper (2 10) <no mappings>
+
+#key fn_lower (3 1) <no mappings>
+#key fn_upper (3 1) <no mappings>
+#key fn_lower (3 2) <no mappings>
+#key fn_upper (3 2) <no mappings>
+key fn_lower (3 3) 0x0037
+key fn_upper (3 3) 0x0037
+key fn_lower (3 4) 0x0037
+key fn_upper (3 4) 0x0037
+key fn_lower (3 5) 0x0038
+key fn_upper (3 5) 0x0038
+key fn_lower (3 6) 0x0038
+key fn_upper (3 6) 0x0038
+key fn_lower (3 7) 0x0039
+key fn_upper (3 7) 0x0039
+key fn_lower (3 8) 0x0039
+key fn_upper (3 8) 0x0039
+#key fn_lower (3 9) <no mappings>
+#key fn_upper (3 9) <no mappings>
+#key fn_lower (3 10) <no mappings> 
+#key fn_upper (3 10) <no mappings>
+
+#key fn_lower (4 1) <no mappings>
+#key fn_upper (4 1) <no mappings>
+#key fn_lower (4 2) <no mappings>
+#key fn_upper (4 2) <no mappings>
+key fn_lower (4 3) 0x002A
+key fn_upper (4 3) 0x002A
+key fn_lower (4 4) 0x002A
+key fn_upper (4 4) 0x002A
+key fn_lower (4 5) 0x0030
+key fn_upper (4 5) 0x0030
+key fn_lower (4 6) 0x0023
+key fn_upper (4 6) 0x0023
+#key fn_lower (4 7)<no mappings>
+#key fn_upper (4 7) <no mappings>
+#key fn_lower (4 8) <no mappings>
+#key fn_upper (4 8) <no mappings>
+#key fn_lower (4 9) <no mappings>
+#key fn_upper (4 9) <no mappings>
+#key fn_lower (4 10) <no mappings> 
+#key fn_upper (4 10) <no mappings>
+
+# No fn key mappings for 4th row
+
+#
+# Three row mini qwerty keymap data. 
+#
+[KEYBOARD BLOCK QWERTY 3X11]
+
+key lower (1 1) ForPinyin,0x0071,ForStroke,0x4e00
+key upper (1 1) 0x0051 
+key lower (1 2) ForPinyin,0x0077,ForStroke,0x4e28
+key upper (1 2) 0x0057
+key lower (1 3) ForPinyin,0x0065,ForStroke,0x4e3f
+key upper (1 3) 0x0045
+key lower (1 4) ForPinyin,0x0072,ForStroke,0x4e36
+key upper (1 4) 0x0052
+key lower (1 5) ForPinyin,0x0074,ForStroke,0x4e5b
+key upper (1 5) 0x0054 
+key lower (1 6) ForPinyin,0x0079,ForStroke,0x003f
+key upper (1 6) 0x0059
+key lower (1 7) ForPinyin,0x0075
+key upper (1 7) 0x0055
+key lower (1 8) ForPinyin,0x0069
+key upper (1 8) 0x0049
+key lower (1 9) ForPinyin,0x006f
+key upper (1 9) 0x004f
+key lower (1 10) ForPinyin,0x0070
+key upper (1 10) 0x0050
+# No mapping for lower (1 11), it is backspace
+# No mapping for upper (1 11), it is backspace
+
+key lower (2 1) ForPinyin,0x0061
+key upper (2 1) 0x0041
+key lower (2 2) ForPinyin,0x0073
+key upper (2 2) 0x0053
+key lower (2 3) ForPinyin,0x0064
+key upper (2 3) 0x0044
+key lower (2 4) ForPinyin,0x0066
+key upper (2 4) 0x0046
+key lower (2 5) ForPinyin,0x0067
+key upper (2 5) 0x0047
+key lower (2 6) ForPinyin,0x0068
+key upper (2 6) 0x0048
+key lower (2 7) ForPinyin,0x006a
+key upper (2 7) 0x004a
+key lower (2 8) ForPinyin,0x006b
+key upper (2 8) 0x004b
+key lower (2 9) ForPinyin,0x006c
+key upper (2 9) 0x004c
+key lower (2 10) ForPinyin,0xFF0C,ForPinyin,0x002C,ForStroke,0xFF0C,ForStroke,0x002C
+key upper (2 10) ForPinyin,0x3002,ForPinyin,0x002E,ForStroke,0x3002,ForStroke,0x002E
+# No mapping for lower (2 11), it is enter
+# No mapping for upper (2 11), it is enter
+
+# No mapping for lower (3 1), it is shift
+# No mapping for upper (3 1), it is shift
+key lower (3 2) ForPinyin,0x007a
+key upper (3 2) 0x005a
+key lower (3 3) ForPinyin,0x0078
+key upper (3 3) 0x0058
+key lower (3 4) ForPinyin,0x0063
+key upper (3 4) 0x0043
+key lower (3 5) ForPinyin,0x0076
+key upper (3 5) 0x0056
+key lower (3 6) ForPinyin,0x0062
+key upper (3 6) 0x0042
+key lower (3 7) ForPinyin,0x006e
+key upper (3 7) 0x004e
+key lower (3 8) ForPinyin,0x006d
+key upper (3 8) 0x004d
+key lower (3 9) ForStroke,0x2022
+# No mapping for upper (3 9), it is space
+# No mapping for lower (3 10), it is space
+# No mapping for upper (3 10), it is space
+# No mapping for lower (3 11), it is fn
+# No mapping for upper (3 11), it is fn
+
+key fn_lower (1 1) 0x0031
+key fn_upper (1 1) 0x0031
+key fn_lower (1 2) 0x0032
+key fn_upper (1 2) 0x0032
+key fn_lower (1 3) 0x0033
+key fn_upper (1 3) 0x0033
+key fn_lower (1 4) 0x0034
+key fn_upper (1 4) 0x0034
+key fn_lower (1 5) 0x0035
+key fn_upper (1 5) 0x0035
+key fn_lower (1 6) 0x0036
+key fn_upper (1 6) 0x0036
+key fn_lower (1 7) 0x0037
+key fn_upper (1 7) 0x0037
+key fn_lower (1 8) 0x0038
+key fn_upper (1 8) 0x0038
+key fn_lower (1 9) 0x0039
+key fn_upper (1 9) 0x0039
+key fn_lower (1 10) 0x0030 
+key fn_upper (1 10) 0x0030  
+# No mapping for lower fn (1 11), it is backspace
+# No mapping for upper fn (1 11), it is backspace
+
+key fn_lower (2 1) 0x0040
+key fn_upper (2 1) 0x0040
+key fn_lower (2 2) 0x002f
+key fn_upper (2 2) 0x002f
+key fn_lower (2 3) 0x002b
+key fn_upper (2 3) 0x002b
+key fn_lower (2 4) 0x002d
+key fn_upper (2 4) 0x002d
+key fn_lower (2 5) 0x003d
+key fn_upper (2 5) 0x003d
+key fn_lower (2 6) 0x0023
+key fn_upper (2 6) 0x0023
+key fn_lower (2 7) 0x002a
+key fn_upper (2 7) 0x002a
+key fn_lower (2 8) 0xFF1B
+key fn_upper (2 8) 0xFF1B
+key fn_lower (2 9) 0xFF1A
+key fn_upper (2 9) 0xFF1A
+key fn_lower (2 10) 0x0027 
+key fn_upper (2 10) 0x0027  
+# No mapping for lower fn (2 11), it is enter
+# No mapping for upper fn (2 11), it is enter
+
+# No mapping for lower fn (3 1), it is shift
+# No mapping for upper fn (3 1), it is shift
+key fn_lower (3 2) 0x0028
+key fn_upper (3 2) 0x0028
+key fn_lower (3 3) 0x0029
+key fn_upper (3 3) 0x0029
+key fn_lower (3 4) 0x0025
+key fn_upper (3 4) 0x0025
+key fn_lower (3 5) 0x0026
+key fn_upper (3 5) 0x0026
+key fn_lower (3 6) 0x0022
+key fn_upper (3 6) 0x0022
+key fn_lower (3 7) 0x003f
+key fn_upper (3 7) 0x003f
+key fn_lower (3 8) 0x0021
+key fn_upper (3 8) 0x0021
+# No mapping for lower fn (3 9), it is space
+# No mapping for upper fn (3 9), it is space
+# No mapping for lower fn (3 10), it is space
+# No mapping for upper fn (3 10), it is space
+# No mapping for lower fn (3 11), it is fn
+# No mapping for upper fn (3 11), it is fn
+
+#
+# Half qwerty keymap data. (not real S60 mappings, created just for testing).
+#
+[KEYBOARD BLOCK QWERTY HALF]
+
+key lower (1 1) 0x0071,0x0077
+key lower (1 2) 0x0065,0x0072,ForStroke,0x4e00
+key lower (1 3) 0x0074,0x0079,ForStroke,0x4e28
+key lower (1 4) 0x0075,0x0069,ForStroke,0x4e3f
+key lower (1 5) 0x006f,0x0070
+
+key lower (2 1) 0x0061,0x0073
+key lower (2 2) 0x0064,0x0066,ForStroke,0x4e36
+key lower (2 3) 0x0067,0x0068,ForStroke,0x4e5b
+key lower (2 4) 0x006a,0x006b,ForStroke,0x003f
+key lower (2 5) 0x006c
+
+key lower (3 1) 0x007a,0x0078
+key lower (3 2) 0x0063,0x0076
+key lower (3 3) 0x0062,0x006e
+key lower (3 4) 0x006d
+key lower (3 5) 0x3002,0xFF0C,0xFF1A,0xFF1B
+
+# key lower (4 1) No mappings, it is fn-key
+# key lower (4 2) No mappings, it is sym key
+key lower (4 3) 0x0020
+key lower (4 4) 0x005e
+# key lower (4 5) No mappings, it is enter
+
+key upper (1 1) 0x0051,0x0057
+key upper (1 2) 0x0045,0x0052
+key upper (1 3) 0x0054,0x0059
+key upper (1 4) 0x0055,0x0049
+key upper (1 5) 0x004f,0x0050
+
+key upper (2 1) 0x0041,0x0053
+key upper (2 2) 0x0044,0x0046
+key upper (2 3) 0x0047,0x0048
+key upper (2 4) 0x004a,0x004b
+key upper (2 5) 0x004c
+
+key upper (3 1) 0x005a,0x0058
+key upper (3 2) 0x0043,0x0056
+key upper (3 3) 0x0042,0x004e
+key upper (3 4) 0x004d
+key upper (3 5) 0x3002,0xFF0C,0xFF1A,0xFF1B
+
+# key upper (4 1) No mappings, it is fn-key
+# key upper (4 2) No mappings, it is sym key
+key upper (4 3) 0x0020
+key upper (4 4) 0x005e
+# key upper (4 5) No mappings, it is enter
+
+key fn_lower (1 1) 0xFF01
+key fn_upper (1 1) 0xFF01
+key fn_lower (1 2) 0x0031
+key fn_upper (1 2) 0x0031
+key fn_lower (1 3) 0x0032
+key fn_upper (1 3) 0x0032
+key fn_lower (1 4) 0x0033
+key fn_upper (1 4) 0x0033
+key fn_lower (1 5) 0x002d
+key fn_upper (1 5) 0x002d
+
+key fn_lower (2 1) 0xFF1F
+key fn_upper (2 1) 0xFF1F
+key fn_lower (2 2) 0x0034
+key fn_upper (2 2) 0x0034
+key fn_lower (2 3) 0x0035
+key fn_upper (2 3) 0x0035
+key fn_lower (2 4) 0x0036
+key fn_upper (2 4) 0x0036
+key fn_lower (2 5) 0x0027
+key fn_upper (2 5) 0x0027
+
+key fn_lower (3 1) 0x0040
+key fn_upper (3 1) 0x0040
+key fn_lower (3 2) 0x0037
+key fn_upper (3 2) 0x0037
+key fn_lower (3 3) 0x0038
+key fn_upper (3 3) 0x0038
+key fn_lower (3 4) 0x0039
+key fn_upper (3 4) 0x0039
+key fn_lower (3 5) 0xFF1A, 0xFF1B, 0x3002, 0xFF0C
+key fn_upper (3 5) 0xFF1A, 0xFF1B, 0x3002, 0xFF0C
+
+# key fn_lower (4 1) fn
+# key fn_upper (4 1) fn
+key fn_lower (4 2) 0x002a, 0x002b
+key fn_upper (4 2) 0x002a, 0x002b
+key fn_lower (4 3) 0x0030
+key fn_upper (4 3) 0x0030
+key fn_lower (4 4) 0x0023, 0x002f
+key fn_upper (4 4) 0x0023, 0x002f
+# key fn_lower (4 5) enter
+# key fn_upper (4 5) enter
+
+#
+# Custom qwerty keymap data. (not real S60 mappings, created just for testing).
+#
+[KEYBOARD BLOCK QWERTY CUSTOM]
+
+# This defines 2x12 keyboard matrix
+matrix 2 12
+
+key lower (1 1) 0x0061
+key lower (1 2) 0x0062 
+key lower (1 3) 0x0063
+key lower (1 4) 0x0064
+key lower (1 5) 0x0065
+key lower (1 6) 0x0066
+key lower (1 7) 0x0067
+key lower (1 8) 0x0068
+key lower (1 9) 0x0069
+key lower (1 10) 0x006A
+key lower (1 11) 0x006B
+key lower (1 12) 0x006C
+
+key upper (1 1) 0x0041
+key upper (1 2) 0x0042
+key upper (1 3) 0x0043
+key upper (1 4) 0x0044
+key upper (1 5) 0x0045
+key upper (1 6) 0x0046
+key upper (1 7) 0x0047
+key upper (1 8) 0x0048
+key upper (1 9) 0x0049
+key upper (1 10) 0x004A
+key upper (1 11) 0x004B
+key upper (1 12) 0x004C
+
+key lower (2 1) 0x0031 
+key lower (2 2) 0x0032
+key lower (2 3) 0x0033
+key lower (2 4) 0x0034
+key lower (2 5) 0x0035
+key lower (2 6) 0x0036
+key lower (2 7) 0x0037
+key lower (2 8) 0x0038
+key lower (2 9) 0x0039
+key lower (2 10) 0x0030
+key lower (2 11) 0x003f
+key lower (2 12) 0x003e
+
+key upper (2 1) 0x0021 
+key upper (2 2) 0x0022
+key upper (2 3) 0x0023
+key upper (2 4) 0x0024
+key upper (2 5) 0x0025
+key upper (2 6) 0x0026
+key upper (2 7) 0x0027
+key upper (2 8) 0x0028
+key upper (2 9) 0x0029
+key upper (2 10) 0x002A
+key upper (2 11) 0x002B
+key upper (2 12) 0x002C
+
+scan_binding (1 1) EPtiKeyQwerty1
+scan_binding (1 2) EPtiKeyQwerty2
+scan_binding (1 3) EPtiKeyQwerty3
+scan_binding (1 4) EPtiKeyQwerty4
+scan_binding (1 5) EPtiKeyQwerty5
+scan_binding (1 6) EPtiKeyQwerty6
+scan_binding (1 7) EPtiKeyQwerty7
+scan_binding (1 8) EPtiKeyQwerty8
+scan_binding (1 9) EPtiKeyQwerty9
+scan_binding (1 10) EPtiKeyQwerty0
+
+# End of file

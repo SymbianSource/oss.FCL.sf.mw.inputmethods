@@ -1,0 +1,856 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project gspeninputplugin
+*
+*/
+
+
+// RESOURCE IDENTIFIER
+NAME GSHW
+
+// INCLUDES
+#include <gscommon.rh>
+#include <avkon.rsg>
+#include <eikon.rh>
+#include <avkon.rh>
+#include <avkon.loc>
+
+#include <gspeninputplugin.loc>
+#include "gspeninputplugin.hrh"
+
+RESOURCE RSS_SIGNATURE { }
+
+//----------------------------------------------------
+// EIK_APP_INFO
+// It contains application information.
+//----------------------------------------------------
+//
+RESOURCE EIK_APP_INFO
+    {
+    }
+    
+//----------------------------------------------------
+// r_gs_input_view
+// gspeninputplugin view.
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_gs_input_view
+    {
+    menubar=r_gs_input_change_exit;
+    cba=r_gs_options_back_change;
+    }
+
+//----------------------------------------------------
+// r_gs_inputpen_plugin_caption
+// View caption for plugin
+//----------------------------------------------------
+//
+RESOURCE TBUF r_gs_inputpen_plugin_caption
+    {
+    buf=qtn_gen_settings_pen_input;
+    }   
+
+//----------------------------------------------------
+// r_cp_inputpen_plugin_caption
+// Label text for control panel touch input item
+//----------------------------------------------------
+//
+RESOURCE TBUF r_cp_inputpen_plugin_caption
+    {
+    buf=qtn_cp_folder_pen_input;
+    } 
+
+//----------------------------------------------------
+// r_cp_inputpen_plugin_title
+// Title for Control Panel touch input view
+//----------------------------------------------------
+//
+RESOURCE TITLE_PANE r_cp_inputpen_plugin_title
+    {
+    txt=qtn_cp_title_pen_input;
+    }  
+
+//----------------------------------------------------
+// r_gs_vkb_default_inputmode
+// item name in list box
+//----------------------------------------------------
+//
+RESOURCE TBUF r_gs_vkb_default_inputmode
+    {
+    buf=qtn_chi_set_default_vkb;
+    }   
+
+//----------------------------------------------------
+// r_gs_guideLine_name
+// item name in list box
+//----------------------------------------------------
+//
+RESOURCE TBUF r_gs_guideLine_name
+    {
+    buf=qtn_tin_settings_guiding_line;
+    }  
+    
+//----------------------------------------------------
+// r_gs_inputpen_plugin_title
+// General settings view title.
+//----------------------------------------------------
+//
+RESOURCE TITLE_PANE r_gs_inputpen_plugin_title
+    {
+    txt=qtn_gen_settings_pen_input;
+    }
+
+//----------------------------------------------------
+// r_inputpen_lbx
+// Pen input listbox.
+//----------------------------------------------------
+//
+RESOURCE GS_FEATURE_ARRAY r_inputpen_lbx
+    {
+    items =
+        {
+        GS_FEATURE
+            {
+            txt=" \t"qtn_cp_hwr_training"\t\t";
+            item=EGSInputpenIdHwrTraining;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_language"\t\t";
+            item=EGSInputpenIdInputLanguage;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_option_menu_arabic_wdic"\t\t";
+            item=EGSInputpenIdRecognitionWithDictionary;
+            type=EGSListBoxItemTypeIsDynamic;
+            },            
+        GS_FEATURE
+            {
+            txt=" \t"qtn_chi_set_default_vkb"\t\t";
+            item=EGSDefaultChineseOnscreenKeyboard;
+            type=EGSListBoxItemTypeIsDynamic;
+            },            
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_writing_speed"\t\t";
+            item=EGSInputpenIdWritingSpeed;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_guiding_line"\t\t";
+            item=EGSInputpenIdGuidLine;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_pen_trail_width"\t\t";
+            item=EGSInputpenIdPenTrailWidth;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_pen_trail_colour"\t0";
+            item=EGSInputpenIdPenTrailColour;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_as_settings_input_method_for_find"\t\t";
+            item=EGSInputpenIdInputMethodForFind;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_ads_settings_chinese_find_method"\t\t";
+            item=EGSInputpenIdChineseFindMethod;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_set_touch_screen_calibration"\t\t";
+            item=EGSInputpenIdTouchScrCalib;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_weasten_inputpen_lbx
+// Pen input listbox.
+//----------------------------------------------------
+//
+/*RESOURCE GS_FEATURE_ARRAY r_weasten_inputpen_lbx
+    {
+    items =
+        {
+        GS_FEATURE
+            {
+            txt=" \t"qtn_cp_hwr_training"\t\t";
+            item=EGSInputpenIdHwrTraining;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_language"\t\t";
+            item=EGSInputpenIdInputLanguage;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_writing_speed"\t\t";
+            item=EGSInputpenIdWritingSpeed;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_pen_trail_width"\t\t";
+            item=EGSInputpenIdPenTrailWidth;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_pen_trail_colour"\t0";
+            item=EGSInputpenIdPenTrailColour;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_touch_screen_calibration"\t\t";
+            item=EGSInputpenIdTouchScrCalib;
+            }
+        };
+    }*/
+
+//----------------------------------------------------
+// r_weasten_nonejapaese_inputpen_lbx
+// Pen input listbox.
+//----------------------------------------------------
+//
+/*RESOURCE GS_FEATURE_ARRAY r_weasten_nonejapaese_inputpen_lbx
+    {
+    items =
+        {
+        GS_FEATURE
+            {
+            txt=" \t"qtn_cp_hwr_training"\t\t";
+            item=EGSInputpenIdHwrTraining;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_language"\t\t";
+            item=EGSInputpenIdInputLanguage;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_writing_speed"\t\t";
+            item=EGSInputpenIdWritingSpeed;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_guiding_line"\t\t";
+            item=EGSInputpenIdGuidLine;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_pen_trail_width"\t\t";
+            item=EGSInputpenIdPenTrailWidth;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_pen_trail_colour"\t0";
+            item=EGSInputpenIdPenTrailColour;
+            type=EGSListBoxItemTypeIsDynamic;
+            },
+        GS_FEATURE
+            {
+            txt=" \t"qtn_tin_settings_touch_screen_calibration"\t\t";
+            item=EGSInputpenIdTouchScrCalib;
+            }
+        };
+    }*/
+
+//----------------------------------------------------
+// r_gs_writingspeed_setting_page_lbx    
+// Array for writing speed
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_writingspeed_setting_page_lbx
+    {
+    items =
+        {
+        LBUF
+            {
+            txt=qtn_tin_settings_writing_speed_1;
+            },
+        LBUF
+            {
+            txt=qtn_tin_settings_writing_speed_2;
+            },
+        LBUF
+            {
+            txt=qtn_tin_settings_writing_speed_3;
+            },
+        LBUF
+            {
+            txt=qtn_tin_settings_writing_speed_4;
+            },
+        LBUF
+            {
+            txt=qtn_tin_settings_writing_speed_5;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_pentrail_setting_page_lbx    
+// Array for pen trail width
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_pentrail_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_tin_settings_pen_trail_width_2;
+            },
+        LBUF
+            {
+            txt=qtn_tin_settings_pen_trail_width_3;
+            },
+        LBUF
+            {
+            txt=qtn_tin_settings_pen_trail_width_4;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_guidline_setting_page_lbx    
+// Array for guid line
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_guidline_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_tin_settings_line_on;
+            },
+        LBUF
+            {
+            txt=qtn_tin_settings_line_off;
+            }
+        };
+    }
+//----------------------------------------------------
+// r_gs_guidline_setting_page_lbx    
+// Array for guid line
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_recognizewithdictionary_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_ads_settings_adaptive_grid;
+            },
+        LBUF
+            {
+            txt=qtn_ads_settings_basic_input_method;
+            }
+        };
+    }
+//----------------------------------------------------
+// r_gs_chinesefindmethod_hongkong_setting_page_lbx    
+// Array for chinese find method, hongkong
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_chinesefindmethod_hongkong_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_ads_settings_chinese_hongkong_stroke;
+            },
+        LBUF
+            {
+            txt=qtn_ads_settings_chinese_hongkong_cangjie;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_chinesefindmethod_simple_setting_page_lbx    
+// Array for chinese find method, simplified chinese
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_chinesefindmethod_simple_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_ads_settings_chinese_simple_pinyin;
+            },
+        LBUF
+            {
+            txt=qtn_ads_settings_chinese_simple_stroke;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_chinesefindmethod_simple_setting_page_lbx    
+// Array for chinese find method, taiwan
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_chinesefindmethod_taiwan_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_ads_settings_chinese_taiwan_zhuyin;
+            },
+        LBUF
+            {
+            txt=qtn_ads_settings_chinese_taiwan_stroke;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_guidline_setting_page_lbx    
+// Array for input method for find
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_inputmethodforfind_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            // adaptive search disabled
+            txt=qtn_ads_settings_basic_input_method;
+            },
+        LBUF
+            {
+            txt=qtn_ads_settings_adaptive_grid;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_osk_simplechinese_setting_page_lbx    
+// Array for pen trail width
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_osk_simplechinese_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_chi_vkb_pinyin_sc;
+            },
+        LBUF
+            {
+            txt=qtn_chi_vkb_stroke_sc;
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_osk_taiwanchinese_setting_page_lbx    
+// Array for pen trail width
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_osk_taiwanchinese_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_chi_vkb_zhuyin_tw;
+            },
+        LBUF
+            {
+            txt=qtn_chi_vkb_stroke_tw;
+            },
+        LBUF
+            {
+            txt=qtn_chi_vkb_pinyin_tw;
+            }            
+        };
+    }
+
+//----------------------------------------------------
+// r_gs_osk_hongkongchinese_setting_page_lbx    
+// Array for pen trail width
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_gs_osk_hongkongchinese_setting_page_lbx
+    {
+    items=
+        {
+        LBUF
+            {
+            txt=qtn_chi_vkb_stroke_hk;
+            },
+        LBUF
+            {
+            txt=qtn_chi_vkb_cangjie_hk;
+            }
+        };
+    }
+ 
+//----------------------------------------------------
+// r_peninputsetting_listbox
+// Common listbox editor resource for setting pages.
+//----------------------------------------------------
+//
+RESOURCE LISTBOX r_peninputsetting_listbox 
+    {
+    flags=EEikListBoxMultipleSelection;
+    }  
+
+//----------------------------------------------------
+// r_gs_writingspeed_text_setting_page    
+// Writing speed setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_writingspeed_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_tin_settings_writing_speed;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    }   
+
+//----------------------------------------------------
+// r_gs_trailwidth_text_setting_page    
+// Trail width setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_trailwidth_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_tin_settings_pen_trail_width;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    }  
+
+//----------------------------------------------------
+// r_gs_guidline_text_setting_page    
+// Trail width setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_guidline_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_tin_settings_guiding_line;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    } 
+
+//----------------------------------------------------
+// r_gs_recognitionwithdictionary_text_setting_page    
+// Trail width setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_recognitionwithdictionary_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_tin_option_menu_arabic_wdic;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    } 
+
+//----------------------------------------------------
+// r_gs_inputmethodforfind_text_setting_page    
+// Input method for find setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_inputmethodforfind_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_as_settings_input_method_for_find;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    } 
+
+
+//----------------------------------------------------
+// r_gs_inputmethodforfind_text_setting_page    
+// Input method for find setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_chinesefindmethod_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_ads_settings_chinese_find_method;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    } 
+
+
+//----------------------------------------------------
+// r_gs_inputlanguage_text_setting_page    
+// Input Language setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_inputlanguage_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_tin_settings_language;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    } 
+
+//----------------------------------------------------
+// r_gs_vkb_defaultchinese_osk_text_setting_page    
+// Input Language setting page.
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_gs_vkb_defaultchinese_osk_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_chi_set_default_vkb;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    } 
+
+//----------------------------------------------------
+// r_gs_setting_dialog    
+// Main view setting dialog.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_gs_setting_dialog
+    {
+    flags=EEikDialogFlagNoDrag | EEikDialogFlagFillAppClientRect | 
+          EEikDialogFlagCbaButtons | EEikDialogFlagWait;
+    buttons=r_gs_options_back_change;
+    title=qtn_gen_settings_pen_input ;
+    items=
+    	{
+        DLG_LINE
+            {
+            type=EGSSettingItemListBox;
+            itemflags=EEikDlgItemTakesEnterKey | EEikDlgItemOfferAllHotKeys;
+            id=EGSSettingItemListBox;
+            control=AVKON_SETTING_ITEM_LIST 
+                {
+                title=qtn_gen_settings_pen_input;
+                initial_number=11;
+                items =
+                    {
+	     	        AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdHwrTraining;
+                        name=qtn_cp_hwr_training;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdInputLanguage;
+                        name=qtn_tin_settings_language;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdRecognitionWithDictionary;
+                        name=qtn_tin_option_menu_arabic_wdic;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSDefaultChineseOnscreenKeyboard;
+                        name=qtn_chi_set_default_vkb;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdWritingSpeed;
+                        name=qtn_tin_settings_writing_speed;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdGuidLine;
+                        name=qtn_tin_settings_guiding_line;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdPenTrailWidth;
+                        name=qtn_tin_settings_pen_trail_width;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdPenTrailColour;
+                        name=qtn_tin_settings_pen_trail_colour;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdInputMethodForFind;
+                        name=qtn_as_settings_input_method_for_find;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdChineseFindMethod;
+                        name=qtn_ads_settings_chinese_find_method;
+                        },
+                    AVKON_SETTING_ITEM
+                        {
+                        identifier=EGSInputpenIdTouchScrCalib;
+                        name=qtn_tin_settings_touch_screen_calibration;
+                        }
+                    };
+              };
+          }
+      };
+    }
+
+// -----------------------------------------------------------------------------
+// r_gs_options_back_change
+// CBA.
+// -----------------------------------------------------------------------------
+//
+RESOURCE CBA r_gs_options_back_change
+    {
+    buttons =
+        {
+        CBA_BUTTON {id=EAknSoftkeyOptions; txt = text_softkey_option;},
+        CBA_BUTTON {id=EAknSoftkeyBack; txt = text_softkey_back; },
+        CBA_BUTTON {id=EGSMSKCmdAppChange; txt = qtn_set_options_change;}
+        };
+    }
+    
+// -----------------------------------------------------------------------------
+// r_gs_input_change_exit
+// Menu bar.
+// -----------------------------------------------------------------------------
+//
+RESOURCE MENU_BAR r_gs_input_change_exit
+    {
+    titles =
+        {
+        MENU_TITLE
+            {
+            menu_pane = r_gs_input_item_exit;
+            },
+        MENU_TITLE
+            {
+            menu_pane = r_gs_input_item_change;
+            }
+        };
+    }
+
+
+// -----------------------------------------------------------------------------
+// r_gs_input_item_exit
+// Options menu items 'Help' and 'Exit'. Used instead of plain 'Exit' when help
+// is wanted to be shown in UI.
+// -----------------------------------------------------------------------------
+//
+RESOURCE MENU_PANE r_gs_input_item_exit
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// r_gs_menu_item_change
+// Change item.
+// -----------------------------------------------------------------------------
+//
+RESOURCE MENU_PANE r_gs_input_item_change
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = EGSCmdAppChange;
+            txt = qtn_set_options_change;
+            flags = EEikMenuItemAction;
+            }
+        };
+    }
+    
+RESOURCE TBUF r_gs_input_item_txt_open
+	{
+	buf = qtn_options_open;
+	}
+
+RESOURCE TBUF r_gs_input_item_txt_change
+	{
+	buf = qtn_set_options_change;
+	}
+		
+// -----------------------------------------------------------------------------
+// r_gs_languages_list_query
+// List query for peninput language called by VKB.
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_gs_languages_list_query
+    {
+    flags=EGeneralQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtListQueryControl;
+            id=EListQueryControl;
+            control = AVKON_LIST_QUERY_CONTROL
+                {
+                listtype = EAknCtSingleGraphicPopupMenuListBox;
+                listbox = LISTBOX
+                    {
+                    flags = EAknListBoxMenuList;
+                    height = 3;
+                    width = 3;
+                    };
+                heading = qtn_tin_input_selection_menu_prompt;
+                };
+            }
+        };
+    }
+    
+// End Of File

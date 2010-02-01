@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="54f1bac83608767648275394193574a7" dataversion="2.0">
+  <name>Pen Input Server API</name>
+  <description>Client interface to pen input server. Contains the RpeninputServer class definition, various methods for opening and closing server connections, command handlers,  activation and deactivation of UI layout are available here. The peninput related opcodes and signal events, Peninput command data structure, interface for peninput server  event handler etc are available in these APIs.</description>
+  <type>c++</type>
+  <collection>domain</collection>
+  <libs>
+    <lib name="peninputclient.lib" />
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

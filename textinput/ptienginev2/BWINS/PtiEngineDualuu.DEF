@@ -1,0 +1,305 @@
+EXPORTS
+	??0CPtiUserDictionary@@IAE@XZ @ 1 NONAME ; protected: __thiscall CPtiUserDictionary::CPtiUserDictionary(void)
+	??1CPtiCoreLanguage@@UAE@XZ @ 2 NONAME ; public: virtual __thiscall CPtiCoreLanguage::~CPtiCoreLanguage(void)
+	??1CPtiKeyMappings@@UAE@XZ @ 3 NONAME ; public: virtual __thiscall CPtiKeyMappings::~CPtiKeyMappings(void)
+	??1CPtiUserDictionary@@UAE@XZ @ 4 NONAME ; public: virtual __thiscall CPtiUserDictionary::~CPtiUserDictionary(void)
+	?ActivateLanguageL@CPtiEngine@@QAEHHW4TPtiEngineInputMode@@@Z @ 5 NONAME ; public: int __thiscall CPtiEngine::ActivateLanguageL(int,enum TPtiEngineInputMode)
+	?AddCoreL@CPtiEngine@@QAEHABVTDesC16@@H@Z @ 6 NONAME ; public: int __thiscall CPtiEngine::AddCoreL(class TDesC16 const &,int)
+	?AddUserDictionaryEntry@CPtiEngine@@QAEHAAVMPtiUserDictionaryEntry@@@Z @ 7 NONAME ; public: int __thiscall CPtiEngine::AddUserDictionaryEntry(class MPtiUserDictionaryEntry &)
+	?AddUserDictionaryEntry@CPtiEngine@@QAEHAAVMPtiUserDictionaryEntry@@H@Z @ 8 NONAME ; public: int __thiscall CPtiEngine::AddUserDictionaryEntry(class MPtiUserDictionaryEntry &,int)
+	?AppendKeyPress@CPtiEngine@@QAE?AVTPtrC16@@W4TPtiKey@@@Z @ 9 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::AppendKeyPress(enum TPtiKey)
+	?AttachUserDictionaryL@CPtiEngine@@QAEPAVMPtiUserDictionary@@AAVTDesC16@@@Z @ 10 NONAME ; public: class MPtiUserDictionary * __thiscall CPtiEngine::AttachUserDictionaryL(class TDesC16 &)
+	?AvailableCharConversions@CPtiEngine@@QBEKXZ @ 11 NONAME ; public: unsigned long __thiscall CPtiEngine::AvailableCharConversions(void)const 
+	?CancelTimerActivity@CPtiEngine@@QAEHXZ @ 12 NONAME ; public: int __thiscall CPtiEngine::CancelTimerActivity(void)
+	?CandidatePage@CPtiEngine@@QAE?AVTPtrC16@@XZ @ 13 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::CandidatePage(void)
+	?CharConversion@CPtiEngine@@QAEHW4TPtiCharConversion@@PAXH1@Z @ 14 NONAME ; public: int __thiscall CPtiEngine::CharConversion(enum TPtiCharConversion,void *,int,void *)
+	?CharacterToKey@CPtiEngine@@QAE?AW4TPtiKey@@G@Z @ 15 NONAME ; public: enum TPtiKey  __thiscall CPtiEngine::CharacterToKey(unsigned short)
+	?ClearCurrentWord@CPtiEngine@@QAEXXZ @ 16 NONAME ; public: void __thiscall CPtiEngine::ClearCurrentWord(void)
+	?ClearMultitapping@CPtiCoreLanguage@@QAEXXZ @ 17 NONAME ; public: void __thiscall CPtiCoreLanguage::ClearMultitapping(void)
+	?CloseCurrentLanguageL@CPtiEngine@@QAEXXZ @ 18 NONAME ; public: void __thiscall CPtiEngine::CloseCurrentLanguageL(void)
+	?CommitCurrentWord@CPtiEngine@@QAEHXZ @ 19 NONAME ; public: int __thiscall CPtiEngine::CommitCurrentWord(void)
+	?CompositionData@CPtiEngine@@QAEPAVMPtiEngineCompositionDataInterface@@XZ @ 20 NONAME ; public: class MPtiEngineCompositionDataInterface * __thiscall CPtiEngine::CompositionData(void)
+	?CoreInfo@CPtiEngine@@QBEPAVMPtiCoreInfo@@W4TPtiEngineInputMode@@@Z @ 21 NONAME ; public: class MPtiCoreInfo * __thiscall CPtiEngine::CoreInfo(enum TPtiEngineInputMode)const 
+	?CreateUserDictionaryL@CPtiEngine@@QAEHAAVTDesC16@@PAVCDesC16ArrayFlat@@W4TPtiEngineInputMode@@@Z @ 22 NONAME ; public: int __thiscall CPtiEngine::CreateUserDictionaryL(class TDesC16 &,class CDesC16ArrayFlat *,enum TPtiEngineInputMode)
+	?DefaultUserDictionary@CPtiEngine@@QAEPAVMPtiUserDictionary@@W4TPtiEngineInputMode@@@Z @ 23 NONAME ; public: class MPtiUserDictionary * __thiscall CPtiEngine::DefaultUserDictionary(enum TPtiEngineInputMode)
+	?DeleteKeyPress@CPtiEngine@@QAE?AVTPtrC16@@XZ @ 24 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::DeleteKeyPress(void)
+	?DetachUserDictionary@CPtiEngine@@QAEHAAVTDesC16@@@Z @ 25 NONAME ; public: int __thiscall CPtiEngine::DetachUserDictionary(class TDesC16 &)
+	?DetachUserDictionary@CPtiEngine@@QAEHH@Z @ 26 NONAME ; public: int __thiscall CPtiEngine::DetachUserDictionary(int)
+	?EnableToneMarks@CPtiEngine@@QAEXH@Z @ 27 NONAME ; public: void __thiscall CPtiEngine::EnableToneMarks(int)
+	?FirstCandidate@CPtiEngine@@QAE?AVTPtrC16@@XZ @ 28 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::FirstCandidate(void)
+	?GetAvailableInputModesL@CPtiCoreLanguage@@UAEXPAV?$CArrayFix@H@@@Z @ 29 NONAME ; public: virtual void __thiscall CPtiCoreLanguage::GetAvailableInputModesL(class CArrayFix<int> *)
+	?GetAvailableLanguagesL@CPtiEngine@@QAEXPAV?$CArrayFix@H@@@Z @ 30 NONAME ; public: void __thiscall CPtiEngine::GetAvailableLanguagesL(class CArrayFix<int> *)
+	?GetCandidateListL@CPtiEngine@@QAEHAAVCDesC16Array@@@Z @ 31 NONAME ; public: int __thiscall CPtiEngine::GetCandidateListL(class CDesC16Array &)
+	?GetCore@CPtiCoreLanguage@@QAEPAVMPtiCore@@W4TPtiEngineInputMode@@@Z @ 32 NONAME ; public: class MPtiCore * __thiscall CPtiCoreLanguage::GetCore(enum TPtiEngineInputMode)
+	?GetDataForKey@CPtiKeyMappings@@QAEXW4TPtiKey@@AAVTDes16@@W4TPtiTextCase@@@Z @ 33 NONAME ; public: void __thiscall CPtiKeyMappings::GetDataForKey(enum TPtiKey,class TDes16 &,enum TPtiTextCase)
+	?GetKeymappings@CPtiCoreLanguage@@QBEPAVMPtiKeyMappings@@XZ @ 34 NONAME ; public: class MPtiKeyMappings * __thiscall CPtiCoreLanguage::GetKeymappings(void)const 
+	?GetLanguage@CPtiEngine@@QBEPAVMPtiLanguage@@H@Z @ 35 NONAME ; public: class MPtiLanguage * __thiscall CPtiEngine::GetLanguage(int)const 
+	?GetLocalizedLanguageName@CPtiEngine@@QAEXHAAVTDes16@@@Z @ 36 NONAME ; public: void __thiscall CPtiEngine::GetLocalizedLanguageName(int,class TDes16 &)
+	?GetModeNameIndexL@CPtiEngine@@QAEXW4TPtiChineseVariant@@AAV?$RArray@H@@@Z @ 37 NONAME ; public: void __thiscall CPtiEngine::GetModeNameIndexL(enum TPtiChineseVariant,class RArray<int> &)
+	?GetNextWordCandidateListL@CPtiEngine@@QAEHAAVCDesC16Array@@@Z @ 38 NONAME ; public: int __thiscall CPtiEngine::GetNextWordCandidateListL(class CDesC16Array &)
+	?GetPhoneticSpelling@CPtiEngine@@QBE?AVTPtrC16@@H@Z @ 39 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::GetPhoneticSpelling(int)const 
+	?GetSpelling@CPtiEngine@@QAEHGAAVTDes16@@W4TPtiSpelling@@@Z @ 40 NONAME ; public: int __thiscall CPtiEngine::GetSpelling(unsigned short,class TDes16 &,enum TPtiSpelling)
+	?GetUserDictionaryEntry@CPtiEngine@@QAEHHAAVMPtiUserDictionaryEntry@@@Z @ 41 NONAME ; public: int __thiscall CPtiEngine::GetUserDictionaryEntry(int,class MPtiUserDictionaryEntry &)
+	?HandleCommandL@CPtiEngine@@QAEHW4TPtiEngineCommand@@PAX@Z @ 42 NONAME ; public: int __thiscall CPtiEngine::HandleCommandL(enum TPtiEngineCommand,void *)
+	?HasCore@CPtiCoreLanguage@@QBEHPAVMPtiCore@@@Z @ 43 NONAME ; public: int __thiscall CPtiCoreLanguage::HasCore(class MPtiCore *)const 
+	?HasInputMode@CPtiCoreLanguage@@UBEHW4TPtiEngineInputMode@@@Z @ 44 NONAME ; public: virtual int __thiscall CPtiCoreLanguage::HasInputMode(enum TPtiEngineInputMode)const 
+	?IncrementToneMark@CPtiEngine@@QAEHH@Z @ 45 NONAME ; public: int __thiscall CPtiEngine::IncrementToneMark(int)
+	?IsToneMarkValidForSpelling@CPtiEngine@@QBEHXZ @ 46 NONAME ; public: int __thiscall CPtiEngine::IsToneMarkValidForSpelling(void)const 
+	?KeyForCharacter@CPtiKeyMappings@@UAE?AW4TPtiKey@@G@Z @ 47 NONAME ; public: virtual enum TPtiKey  __thiscall CPtiKeyMappings::KeyForCharacter(unsigned short)
+	?LocalizedNameDes@CPtiCoreLanguage@@QAEAAVTDes16@@XZ @ 48 NONAME ; public: class TDes16 & __thiscall CPtiCoreLanguage::LocalizedNameDes(void)
+	?MoreCandidatePages@CPtiEngine@@QAEHXZ @ 49 NONAME ; public: int __thiscall CPtiEngine::MoreCandidatePages(void)
+	?NewL@CPtiCoreLanguage@@SAPAV1@XZ @ 50 NONAME ; public: static class CPtiCoreLanguage * __cdecl CPtiCoreLanguage::NewL(void)
+	?NewL@CPtiEngine@@SAPAV1@ABVTDesC16@@H@Z @ 51 NONAME ; public: static class CPtiEngine * __cdecl CPtiEngine::NewL(class TDesC16 const &,int)
+	?NewL@CPtiEngine@@SAPAV1@H@Z @ 52 NONAME ; public: static class CPtiEngine * __cdecl CPtiEngine::NewL(int)
+	?NewL@CPtiKeyMappings@@SAPAV1@AAVTDesC16@@@Z @ 53 NONAME ; public: static class CPtiKeyMappings * __cdecl CPtiKeyMappings::NewL(class TDesC16 &)
+	?NewL@CPtiKeyMappings@@SAPAV1@PAF@Z @ 54 NONAME ; public: static class CPtiKeyMappings * __cdecl CPtiKeyMappings::NewL(short *)
+	?NewL@CPtiUserDictionary@@SAPAV1@AAVTDesC16@@H@Z @ 55 NONAME ; public: static class CPtiUserDictionary * __cdecl CPtiUserDictionary::NewL(class TDesC16 &,int)
+	?NewL@CPtiUserDictionary@@SAPAV1@H@Z @ 56 NONAME ; public: static class CPtiUserDictionary * __cdecl CPtiUserDictionary::NewL(int)
+	?NextCandidate@CPtiEngine@@QAE?AVTPtrC16@@XZ @ 57 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::NextCandidate(void)
+	?NextCandidatePage@CPtiEngine@@QAEHXZ @ 58 NONAME ; public: int __thiscall CPtiEngine::NextCandidatePage(void)
+	?NextKey@CPtiKeyMappings@@UAEGW4TPtiKey@@AAHW4TPtiTextCase@@@Z @ 59 NONAME ; public: virtual unsigned short __thiscall CPtiKeyMappings::NextKey(enum TPtiKey,int &,enum TPtiTextCase)
+	?NumberOfCandidates@CPtiEngine@@QAEHXZ @ 60 NONAME ; public: int __thiscall CPtiEngine::NumberOfCandidates(void)
+	?NumberOfEntriesInUserDictionary@CPtiEngine@@QAEHXZ @ 61 NONAME ; public: int __thiscall CPtiEngine::NumberOfEntriesInUserDictionary(void)
+	?OpenL@CPtiUserDictionary@@UAEHAAVTDesC16@@H@Z @ 62 NONAME ; public: virtual int __thiscall CPtiUserDictionary::OpenL(class TDesC16 &,int)
+	?PhoneticSpellingCount@CPtiEngine@@QBEHXZ @ 63 NONAME ; public: int __thiscall CPtiEngine::PhoneticSpellingCount(void)const 
+	?PreviousCandidate@CPtiEngine@@QAE?AVTPtrC16@@XZ @ 64 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::PreviousCandidate(void)
+	?PreviousCandidatePage@CPtiEngine@@QAEHXZ @ 65 NONAME ; public: int __thiscall CPtiEngine::PreviousCandidatePage(void)
+	?ReadingTextL@CPtiEngine@@QAE?AVTPtrC16@@XZ @ 66 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::ReadingTextL(void)
+	?RemoveEntryFromUserDictionary@CPtiEngine@@QAEHAAVMPtiUserDictionaryEntry@@@Z @ 67 NONAME ; public: int __thiscall CPtiEngine::RemoveEntryFromUserDictionary(class MPtiUserDictionaryEntry &)
+	?RemoveEntryFromUserDictionary@CPtiEngine@@QAEHAAVMPtiUserDictionaryEntry@@H@Z @ 68 NONAME ; public: int __thiscall CPtiEngine::RemoveEntryFromUserDictionary(class MPtiUserDictionaryEntry &,int)
+	?ReplaceKeyMapL@CPtiKeyMappings@@UAEHW4TPtiKey@@AAVTDesC16@@W4TPtiTextCase@@@Z @ 69 NONAME ; public: virtual int __thiscall CPtiKeyMappings::ReplaceKeyMapL(enum TPtiKey,class TDesC16 &,enum TPtiTextCase)
+	?ResetToneMark@CPtiEngine@@QAEXXZ @ 70 NONAME ; public: void __thiscall CPtiEngine::ResetToneMark(void)
+	?SelectPhoneticSpelling@CPtiEngine@@QAEHH@Z @ 71 NONAME ; public: int __thiscall CPtiEngine::SelectPhoneticSpelling(int)
+	?SelectedPhoneticSpelling@CPtiEngine@@QBEHXZ @ 72 NONAME ; public: int __thiscall CPtiEngine::SelectedPhoneticSpelling(void)const 
+	?SetCandidatePageLength@CPtiEngine@@QAEXH@Z @ 73 NONAME ; public: void __thiscall CPtiEngine::SetCandidatePageLength(int)
+	?SetCore@CPtiCoreLanguage@@QAEXPAVMPtiCore@@W4TPtiEngineInputMode@@@Z @ 74 NONAME ; public: void __thiscall CPtiCoreLanguage::SetCore(class MPtiCore *,enum TPtiEngineInputMode)
+	?SetCurrentWord@CPtiEngine@@QAEHVTPtrC16@@@Z @ 75 NONAME ; public: int __thiscall CPtiEngine::SetCurrentWord(class TPtrC16)
+	?SetDataL@CPtiUserDictionary@@UAEXPAXH@Z @ 76 NONAME ; public: virtual void __thiscall CPtiUserDictionary::SetDataL(void *,int)
+	?SetExternalKeyMapL@CPtiEngine@@QAEHW4TPtiEngineInputMode@@W4TPtiKey@@AAVTDesC16@@W4TPtiTextCase@@@Z @ 77 NONAME ; public: int __thiscall CPtiEngine::SetExternalKeyMapL(enum TPtiEngineInputMode,enum TPtiKey,class TDesC16 &,enum TPtiTextCase)
+	?SetInputMode@CPtiEngine@@QAEHW4TPtiEngineInputMode@@@Z @ 78 NONAME ; public: int __thiscall CPtiEngine::SetInputMode(enum TPtiEngineInputMode)
+	?SetKeyMappings@CPtiCoreLanguage@@QAEXPAVMPtiKeyMappings@@@Z @ 79 NONAME ; public: void __thiscall CPtiCoreLanguage::SetKeyMappings(class MPtiKeyMappings *)
+	?SetLanguageCode@CPtiCoreLanguage@@QAEXH@Z @ 80 NONAME ; public: void __thiscall CPtiCoreLanguage::SetLanguageCode(int)
+	?SetLocalizedName@CPtiCoreLanguage@@QAEXABVTDesC16@@@Z @ 81 NONAME ; public: void __thiscall CPtiCoreLanguage::SetLocalizedName(class TDesC16 const &)
+	?SetPredictiveChineseChar@CPtiEngine@@QAEHABVTDesC16@@@Z @ 82 NONAME ; public: int __thiscall CPtiEngine::SetPredictiveChineseChar(class TDesC16 const &)
+	?SetReordering@CPtiEngine@@QAEHH@Z @ 83 NONAME ; public: int __thiscall CPtiEngine::SetReordering(int)
+	?SpaceLeft@CPtiUserDictionary@@UBEHXZ @ 84 NONAME ; public: virtual int __thiscall CPtiUserDictionary::SpaceLeft(void)const 
+	?ToneMark@CPtiEngine@@QBEHAAG@Z @ 85 NONAME ; public: int __thiscall CPtiEngine::ToneMark(unsigned short &)const 
+	?WriteL@CPtiUserDictionary@@UAEHAAVTDesC16@@@Z @ 86 NONAME ; public: virtual int __thiscall CPtiUserDictionary::WriteL(class TDesC16 &)
+	?WriteL@CPtiUserDictionary@@UAEHXZ @ 87 NONAME ; public: virtual int __thiscall CPtiUserDictionary::WriteL(void)
+	??1CPtiQwertyKeyMappings@@UAE@XZ @ 88 NONAME ; public: virtual __thiscall CPtiQwertyKeyMappings::~CPtiQwertyKeyMappings(void)
+	?GetDataForKey@CPtiQwertyKeyMappings@@QAEXW4TPtiKey@@AAVTDes16@@W4TPtiTextCase@@@Z @ 89 NONAME ; public: void __thiscall CPtiQwertyKeyMappings::GetDataForKey(enum TPtiKey,class TDes16 &,enum TPtiTextCase)
+	?GetQwertyKeymappings@CPtiCoreLanguage@@QBEPAVMPtiKeyMappings@@XZ @ 90 NONAME ; public: class MPtiKeyMappings * __thiscall CPtiCoreLanguage::GetQwertyKeymappings(void)const 
+	?KeyForCharacter@CPtiQwertyKeyMappings@@UAE?AW4TPtiKey@@G@Z @ 91 NONAME ; public: virtual enum TPtiKey  __thiscall CPtiQwertyKeyMappings::KeyForCharacter(unsigned short)
+	?NewL@CPtiQwertyKeyMappings@@SAPAV1@AAVTDesC16@@@Z @ 92 NONAME ; public: static class CPtiQwertyKeyMappings * __cdecl CPtiQwertyKeyMappings::NewL(class TDesC16 &)
+	?NewL@CPtiQwertyKeyMappings@@SAPAV1@PAF@Z @ 93 NONAME ; public: static class CPtiQwertyKeyMappings * __cdecl CPtiQwertyKeyMappings::NewL(short *)
+	?NextKey@CPtiQwertyKeyMappings@@UAEGW4TPtiKey@@AAHW4TPtiTextCase@@@Z @ 94 NONAME ; public: virtual unsigned short __thiscall CPtiQwertyKeyMappings::NextKey(enum TPtiKey,int &,enum TPtiTextCase)
+	?ReplaceKeyMapL@CPtiQwertyKeyMappings@@UAEHW4TPtiKey@@AAVTDesC16@@W4TPtiTextCase@@@Z @ 95 NONAME ; public: virtual int __thiscall CPtiQwertyKeyMappings::ReplaceKeyMapL(enum TPtiKey,class TDesC16 &,enum TPtiTextCase)
+	?SetQwertyKeyMappings@CPtiCoreLanguage@@QAEXPAVMPtiKeyMappings@@@Z @ 96 NONAME ; public: void __thiscall CPtiCoreLanguage::SetQwertyKeyMappings(class MPtiKeyMappings *)
+	?ClearQwerty@CPtiCoreLanguage@@QAEXXZ @ 97 NONAME ; public: void __thiscall CPtiCoreLanguage::ClearQwerty(void)
+	?Case@CPtiEngine@@QBE?AW4TPtiTextCase@@XZ @ 98 NONAME ; public: enum TPtiTextCase  __thiscall CPtiEngine::Case(void)const 
+	?CoreInfo@CPtiEngineImpl@@QBEPAVMPtiCoreInfo@@W4TPtiEngineInputMode@@@Z @ 99 NONAME ; public: class MPtiCoreInfo * __thiscall CPtiEngineImpl::CoreInfo(enum TPtiEngineInputMode)const 
+	?CurrentLanguage@CPtiEngine@@QAEPAVMPtiLanguage@@XZ @ 100 NONAME ; public: class MPtiLanguage * __thiscall CPtiEngine::CurrentLanguage(void)
+	?CurrentWord@CPtiEngine@@QAE?AVTPtrC16@@XZ @ 101 NONAME ; public: class TPtrC16  __thiscall CPtiEngine::CurrentWord(void)
+	?InputMode@CPtiEngine@@QBE?AW4TPtiEngineInputMode@@XZ @ 102 NONAME ; public: enum TPtiEngineInputMode  __thiscall CPtiEngine::InputMode(void)const 
+	?LastEnteredKey@CPtiEngine@@QBE?AW4TPtiKey@@XZ @ 103 NONAME ; public: enum TPtiKey  __thiscall CPtiEngine::LastEnteredKey(void)const 
+	?NumberOfLanguages@CPtiEngine@@QBEHXZ @ 104 NONAME ; public: int __thiscall CPtiEngine::NumberOfLanguages(void)const 
+	?Observer@CPtiEngine@@QAEPAVMPtiObserver@@XZ @ 105 NONAME ; public: class MPtiObserver * __thiscall CPtiEngine::Observer(void)
+	?SetCase@CPtiEngine@@QAEXW4TPtiTextCase@@@Z @ 106 NONAME ; public: void __thiscall CPtiEngine::SetCase(enum TPtiTextCase)
+	?SetObserver@CPtiEngine@@QAEXPAVMPtiObserver@@@Z @ 107 NONAME ; public: void __thiscall CPtiEngine::SetObserver(class MPtiObserver *)
+	?CurrentInputSequence@CPtiEngine@@QBE?AVTPtrC8@@XZ @ 108 NONAME ; public: class TPtrC8  __thiscall CPtiEngine::CurrentInputSequence(void)const 
+	??1CPtiEngine@@UAE@XZ @ 109 NONAME ; public: virtual __thiscall CPtiEngine::~CPtiEngine(void)
+	?GetChinesePhraseCandidatesL@CPtiEngine@@QAEHAAVCDesC16Array@@@Z @ 110 NONAME ; public: int __thiscall CPtiEngine::GetChinesePhraseCandidatesL(class CDesC16Array &)
+	?GetPhoneticSpellingsL@CPtiEngine@@QAEHAAVCDesC16Array@@@Z @ 111 NONAME ; public: int __thiscall CPtiEngine::GetPhoneticSpellingsL(class CDesC16Array &)
+	??1CPtiCore@@UAE@XZ @ 112 NONAME ; public: virtual __thiscall CPtiCore::~CPtiCore(void)
+	?AddCoreL@CPtiEngine@@QAEHVTUid@@H@Z @ 113 NONAME ; public: int __thiscall CPtiEngine::AddCoreL(class TUid,int)
+	?AddUserDictionaryEntry@CPtiCore@@UAEHAAVMPtiUserDictionaryEntry@@PAVCPtiUserDictionary@@@Z @ 114 NONAME ; public: virtual int __thiscall CPtiCore::AddUserDictionaryEntry(class MPtiUserDictionaryEntry &,class CPtiUserDictionary *)
+	?AttachUserDictionary@CPtiCore@@UAEHPAVCPtiUserDictionary@@@Z @ 115 NONAME ; public: virtual int __thiscall CPtiCore::AttachUserDictionary(class CPtiUserDictionary *)
+	?CompositionData@CPtiCore@@UAEPAVMPtiEngineCompositionDataInterface@@XZ @ 116 NONAME ; public: virtual class MPtiEngineCompositionDataInterface * __thiscall CPtiCore::CompositionData(void)
+	?CreateCoreL@CPtiCore@@SAPAV1@VTUid@@@Z @ 117 NONAME ; public: static class CPtiCore * __cdecl CPtiCore::CreateCoreL(class TUid)
+	?CreateEmptyUserDictionaryL@CPtiCore@@UAEPAVCPtiUserDictionary@@H@Z @ 118 NONAME ; public: virtual class CPtiUserDictionary * __thiscall CPtiCore::CreateEmptyUserDictionaryL(int)
+	?DetachUserDictionary@CPtiCore@@UAEHPAVCPtiUserDictionary@@@Z @ 119 NONAME ; public: virtual int __thiscall CPtiCore::DetachUserDictionary(class CPtiUserDictionary *)
+	?GetCandidateListL@CPtiCore@@UAEHAAVCDesC16Array@@@Z @ 120 NONAME ; public: virtual int __thiscall CPtiCore::GetCandidateListL(class CDesC16Array &)
+	?GetCandidatePage@CPtiCore@@UAE?AVTPtrC16@@XZ @ 121 NONAME ; public: virtual class TPtrC16  __thiscall CPtiCore::GetCandidatePage(void)
+	?GetFirstCandidate@CPtiCore@@UAEHAAVTDes16@@@Z @ 122 NONAME ; public: virtual int __thiscall CPtiCore::GetFirstCandidate(class TDes16 &)
+	?GetNextCandidate@CPtiCore@@UAEHAAVTDes16@@@Z @ 123 NONAME ; public: virtual int __thiscall CPtiCore::GetNextCandidate(class TDes16 &)
+	?GetNextWordCandidateListL@CPtiCore@@UAEHAAVCDesC16Array@@@Z @ 124 NONAME ; public: virtual int __thiscall CPtiCore::GetNextWordCandidateListL(class CDesC16Array &)
+	?GetPhoneticSpelling@CPtiCore@@UBE?AVTPtrC16@@H@Z @ 125 NONAME ; public: virtual class TPtrC16  __thiscall CPtiCore::GetPhoneticSpelling(int)const 
+	?GetPreviousCandidate@CPtiCore@@UAEHAAVTDes16@@@Z @ 126 NONAME ; public: virtual int __thiscall CPtiCore::GetPreviousCandidate(class TDes16 &)
+	?GetUserDictionaryEntry@CPtiCore@@UAEHHAAVMPtiUserDictionaryEntry@@PAVCPtiUserDictionary@@@Z @ 127 NONAME ; public: virtual int __thiscall CPtiCore::GetUserDictionaryEntry(int,class MPtiUserDictionaryEntry &,class CPtiUserDictionary *)
+	?IsToneMarkValidForSpelling@CPtiCore@@UAEHXZ @ 128 NONAME ; public: virtual int __thiscall CPtiCore::IsToneMarkValidForSpelling(void)
+	?ListCoresLC@CPtiCore@@SAPAV?$CArrayFix@H@@XZ @ 129 NONAME ; public: static class CArrayFix<int> * __cdecl CPtiCore::ListCoresLC(void)
+	?MoreCandidatePages@CPtiCore@@UAEHXZ @ 130 NONAME ; public: virtual int __thiscall CPtiCore::MoreCandidatePages(void)
+	?NewL@CPtiEngine@@SAPAV1@VTUid@@H@Z @ 131 NONAME ; public: static class CPtiEngine * __cdecl CPtiEngine::NewL(class TUid,int)
+	?NextCandidatePage@CPtiCore@@UAEHXZ @ 132 NONAME ; public: virtual int __thiscall CPtiCore::NextCandidatePage(void)
+	?NumberOfCandidates@CPtiCore@@UAEHXZ @ 133 NONAME ; public: virtual int __thiscall CPtiCore::NumberOfCandidates(void)
+	?NumberOfEntriesInUserDictionary@CPtiCore@@UAEHPAVCPtiUserDictionary@@@Z @ 134 NONAME ; public: virtual int __thiscall CPtiCore::NumberOfEntriesInUserDictionary(class CPtiUserDictionary *)
+	?PhoneticSpellingCount@CPtiCore@@UBEHXZ @ 135 NONAME ; public: virtual int __thiscall CPtiCore::PhoneticSpellingCount(void)const 
+	?PreviousCandidatePage@CPtiCore@@UAEHXZ @ 136 NONAME ; public: virtual int __thiscall CPtiCore::PreviousCandidatePage(void)
+	?ReadingTextL@CPtiCore@@UAE?AVTPtrC16@@XZ @ 137 NONAME ; public: virtual class TPtrC16  __thiscall CPtiCore::ReadingTextL(void)
+	?RemoveUserDictionaryEntry@CPtiCore@@UAEHAAVMPtiUserDictionaryEntry@@PAVCPtiUserDictionary@@@Z @ 138 NONAME ; public: virtual int __thiscall CPtiCore::RemoveUserDictionaryEntry(class MPtiUserDictionaryEntry &,class CPtiUserDictionary *)
+	?SelectPhoneticSpelling@CPtiCore@@UAEHH@Z @ 139 NONAME ; public: virtual int __thiscall CPtiCore::SelectPhoneticSpelling(int)
+	?SelectedPhoneticSpelling@CPtiCore@@UBEHXZ @ 140 NONAME ; public: virtual int __thiscall CPtiCore::SelectedPhoneticSpelling(void)const 
+	?SetCandidatePageLength@CPtiCore@@UAEXH@Z @ 141 NONAME ; public: virtual void __thiscall CPtiCore::SetCandidatePageLength(int)
+	?SetPredictiveChineseChar@CPtiCore@@UAEHABVTDesC16@@@Z @ 142 NONAME ; public: virtual int __thiscall CPtiCore::SetPredictiveChineseChar(class TDesC16 const &)
+	?ToneMark@CPtiCore@@UBEHAAG@Z @ 143 NONAME ; public: virtual int __thiscall CPtiCore::ToneMark(unsigned short &)const 
+	?SetCurrentInputSequence@CPtiCore@@UAEHVTPtrC8@@@Z @ 144 NONAME ; public: virtual int __thiscall CPtiCore::SetCurrentInputSequence(class TPtrC8)
+	?Convert@CPtiCore@@UAEHW4TPtiCharConversion@@PAXH1@Z @ 145 NONAME ; public: virtual int __thiscall CPtiCore::Convert(enum TPtiCharConversion,void *,int,void *)
+	?GetSpelling@CPtiCore@@UAEHGAAVTDes16@@W4TPtiSpelling@@@Z @ 146 NONAME ; public: virtual int __thiscall CPtiCore::GetSpelling(unsigned short,class TDes16 &,enum TPtiSpelling)
+	?SetExternalKeyMapL@CPtiCore@@UAEHW4TPtiEngineInputMode@@W4TPtiKey@@AAVTDesC16@@W4TPtiTextCase@@@Z @ 147 NONAME ; public: virtual int __thiscall CPtiCore::SetExternalKeyMapL(enum TPtiEngineInputMode,enum TPtiKey,class TDesC16 &,enum TPtiTextCase)
+	?CommitCurrentWord@CPtiCore@@UAEHXZ @ 148 NONAME ; public: virtual int __thiscall CPtiCore::CommitCurrentWord(void)
+	?GetCurrentWord@CPtiCore@@UBE?AVTPtrC16@@XZ @ 149 NONAME ; public: virtual class TPtrC16  __thiscall CPtiCore::GetCurrentWord(void)const 
+	??1CPtiLanguageDatabase@@UAE@XZ @ 150 NONAME ; public: virtual __thiscall CPtiLanguageDatabase::~CPtiLanguageDatabase(void)
+	?CoreUID@CPtiLanguageDatabase@@UBEHXZ @ 151 NONAME ; public: virtual int __thiscall CPtiLanguageDatabase::CoreUID(void)const 
+	?CreateDatabaseL@CPtiLanguageDatabase@@SAPAV1@VTUid@@@Z @ 152 NONAME ; public: static class CPtiLanguageDatabase * __cdecl CPtiLanguageDatabase::CreateDatabaseL(class TUid)
+	?LangData@CPtiLanguageDatabase@@UBEPACH@Z @ 153 NONAME ; public: virtual signed char * __thiscall CPtiLanguageDatabase::LangData(int)const 
+	?LanguageCode@CPtiLanguageDatabase@@UBEHH@Z @ 154 NONAME ; public: virtual int __thiscall CPtiLanguageDatabase::LanguageCode(int)const 
+	?ListDatabasesLC@CPtiLanguageDatabase@@SAPAV?$CArrayFix@H@@H@Z @ 155 NONAME ; public: static class CArrayFix<int> * __cdecl CPtiLanguageDatabase::ListDatabasesLC(int)
+	?NumLanguages@CPtiLanguageDatabase@@UBEHXZ @ 156 NONAME ; public: virtual int __thiscall CPtiLanguageDatabase::NumLanguages(void)const 
+	?PinyinPhraseData@CPtiLanguageDatabase@@UBEPACXZ @ 157 NONAME ; public: virtual signed char * __thiscall CPtiLanguageDatabase::PinyinPhraseData(void)const 
+	?SubLanguageCode@CPtiLanguageDatabase@@UBEHH@Z @ 158 NONAME ; public: virtual int __thiscall CPtiLanguageDatabase::SubLanguageCode(int)const 
+	?ZhuyinPhraseData@CPtiLanguageDatabase@@UBEPACXZ @ 159 NONAME ; public: virtual signed char * __thiscall CPtiLanguageDatabase::ZhuyinPhraseData(void)const 
+	?CreateMappingTableL@CPtiLanguageDatabase@@SAHHAAV?$RArray@VTPtiLangDatabaseMapping@@@@@Z @ 160 NONAME ; public: static int __cdecl CPtiLanguageDatabase::CreateMappingTableL(int,class RArray<class TPtiLangDatabaseMapping> &)
+	?LanguageCodeForUid@CPtiLanguageDatabase@@SAHH@Z @ 161 NONAME ; public: static int __cdecl CPtiLanguageDatabase::LanguageCodeForUid(int)
+	?SetToneMark@CPtiCore@@UAEHH@Z @ 162 NONAME ; public: virtual int __thiscall CPtiCore::SetToneMark(int)
+	?SetToneMark@CPtiEngine@@QAEHH@Z @ 163 NONAME ; public: int __thiscall CPtiEngine::SetToneMark(int)
+	?StartMapping@CPtiKeyMappings@@UAEGW4TPtiKey@@W4TPtiTextCase@@W4TPtiEngineInputMode@@@Z @ 164 NONAME ; unsigned short CPtiKeyMappings::StartMapping(enum TPtiKey, enum TPtiTextCase, enum TPtiEngineInputMode)
+	?StartMapping@CPtiQwertyKeyMappings@@UAEGW4TPtiKey@@W4TPtiTextCase@@W4TPtiEngineInputMode@@@Z @ 165 NONAME ; unsigned short CPtiQwertyKeyMappings::StartMapping(enum TPtiKey, enum TPtiTextCase, enum TPtiEngineInputMode)
+	?LangData@CPtiLanguageDatabase@@UBEPACHPAX@Z @ 166 NONAME ; signed char * CPtiLanguageDatabase::LangData(int, void *) const
+	?NativeId@CPtiLanguageDatabase@@UBEHH@Z @ 167 NONAME ; int CPtiLanguageDatabase::NativeId(int) const
+	?GetAvailableLanguagesL@CPtiEngine@@QAEXAAV?$RArray@H@@@Z @ 168 NONAME ; void CPtiEngine::GetAvailableLanguagesL(class RArray<int> &)
+	?GetAvailableInputModesL@CPtiCoreLanguage@@QAEXAAV?$RArray@H@@@Z @ 169 NONAME ; void CPtiCoreLanguage::GetAvailableInputModesL(class RArray<int> &)
+	?CreateDefaultUserDictionaryFileL@CPtiEngine@@QAEXVTUid@@H@Z @ 170 NONAME ; void CPtiEngine::CreateDefaultUserDictionaryFileL(class TUid, int)
+	?AttachDefaultUserDictionaryL@CPtiEngine@@QAEPAVMPtiUserDictionary@@VTUid@@H@Z @ 171 NONAME ; class MPtiUserDictionary * CPtiEngine::AttachDefaultUserDictionaryL(class TUid, int)
+	?RemoveCore@CPtiCoreLanguage@@QAEXPAVMPtiCore@@@Z @ 172 NONAME ; void CPtiCoreLanguage::RemoveCore(class MPtiCore *)
+	?ReadSecondaryDataFileL@CPtiEngine@@QAEPAVHBufC8@@VTUid@@H@Z @ 173 NONAME ; class HBufC8 * CPtiEngine::ReadSecondaryDataFileL(class TUid, int)
+	?WriteSecondaryDataFileL@CPtiEngine@@QAEXVTUid@@HPAVHBufC8@@@Z @ 174 NONAME ; void CPtiEngine::WriteSecondaryDataFileL(class TUid, int, class HBufC8 *)
+	?MappingDataForKey@CPtiEngine@@QAEXW4TPtiKey@@AAVTDes16@@W4TPtiTextCase@@@Z @ 175 NONAME ; void CPtiEngine::MappingDataForKey(enum TPtiKey, class TDes16 &, enum TPtiTextCase)
+	?GetNumericModeKeysForQwertyL@CPtiEngine@@QAEXHAAV?$RArray@VTPtiNumericKeyBinding@@@@@Z @ 176 NONAME ; void CPtiEngine::GetNumericModeKeysForQwertyL(int, class RArray<class TPtiNumericKeyBinding> &)
+	??1CHwrRecognizer@@UAE@XZ @ 177 NONAME ; CHwrRecognizer::~CHwrRecognizer(void)
+	?AddAuxiliaryRange@CHwrRecognizer@@UAEHABUTRecognitionRangeTag@@@Z @ 178 NONAME ; int CHwrRecognizer::AddAuxiliaryRange(struct TRecognitionRangeTag const &)
+	?EnableWordRecognition@CHwrRecognizer@@UAEXH@Z @ 179 NONAME ; void CHwrRecognizer::EnableWordRecognition(int)
+	?GetCandidateNum@CHwrRecognizer@@UBEHXZ @ 180 NONAME ; int CHwrRecognizer::GetCandidateNum(void) const
+	?GetDictVersion@CHwrRecognizer@@UAEHAAVTDes16@@@Z @ 181 NONAME ; int CHwrRecognizer::GetDictVersion(class TDes16 &)
+	?GetEngineVersion@CHwrRecognizer@@UAEHAAVTDes16@@@Z @ 182 NONAME ; int CHwrRecognizer::GetEngineVersion(class TDes16 &)
+	?GetHwrAvailableLanguagesL@CPtiEngine@@QAEXAAV?$RArray@H@@@Z @ 183 NONAME ; void CPtiEngine::GetHwrAvailableLanguagesL(class RArray<int> &)
+	?GetHwrRecognizerL@CPtiEngine@@QAEPAVMPtiHwrRecognizer@@H@Z @ 184 NONAME ; class MPtiHwrRecognizer * CPtiEngine::GetHwrRecognizerL(int)
+	?GetHwrRecognizerL@CPtiEngine@@QAEPAVMPtiHwrRecognizer@@W4TLanguage@@@Z @ 185 NONAME ; class MPtiHwrRecognizer * CPtiEngine::GetHwrRecognizerL(enum TLanguage)
+	?GetRange@CHwrRecognizer@@UAE?AUTRecognitionRangeTag@@XZ @ 186 NONAME ; struct TRecognitionRangeTag CHwrRecognizer::GetRange(void)
+	?ListAvailableLanguagesL@CHwrRecognizer@@SAXAAV?$RArray@H@@@Z @ 187 NONAME ; void CHwrRecognizer::ListAvailableLanguagesL(class RArray<int> &)
+	?ListGivenAvailableLanguagesL@CHwrRecognizer@@SAXVTUid@@AAV?$RArray@H@@@Z @ 188 NONAME ; void CHwrRecognizer::ListGivenAvailableLanguagesL(class TUid, class RArray<int> &)
+	?ListHwrRecognizerL@CPtiEngine@@QAEAAV?$RArray@VTUid@@@@W4TLanguage@@@Z @ 189 NONAME ; class RArray<class TUid> & CPtiEngine::ListHwrRecognizerL(enum TLanguage)
+	?ListImplementationsL@CHwrRecognizer@@SAXW4TLanguage@@AAV?$RArray@VTUid@@@@@Z @ 190 NONAME ; void CHwrRecognizer::ListImplementationsL(enum TLanguage, class RArray<class TUid> &)
+	?NewL@CHwrRecognizer@@SAPAV1@H@Z @ 191 NONAME ; class CHwrRecognizer * CHwrRecognizer::NewL(int)
+	?NewL@CHwrRecognizer@@SAPAV1@W4TLanguage@@AAVTUid@@@Z @ 192 NONAME ; class CHwrRecognizer * CHwrRecognizer::NewL(enum TLanguage, class TUid &)
+	?Recognize@CHwrRecognizer@@UAEHABV?$RArray@VTPoint@@@@AAV?$RPointerArray@VHBufC16@@@@@Z @ 193 NONAME ; int CHwrRecognizer::Recognize(class RArray<class TPoint> const &, class RPointerArray<class HBufC16> &)
+	?RemoveAllAuxRange@CHwrRecognizer@@UAEXXZ @ 194 NONAME ; void CHwrRecognizer::RemoveAllAuxRange(void)
+	?RemoveAuxiliaryRange@CHwrRecognizer@@UAEHH@Z @ 195 NONAME ; int CHwrRecognizer::RemoveAuxiliaryRange(int)
+	?SetCandidateNum@CHwrRecognizer@@UAEHH@Z @ 196 NONAME ; int CHwrRecognizer::SetCandidateNum(int)
+	?SetFirstLetterOrder@CHwrRecognizer@@UAEXW4TLatinLetterOrder@@@Z @ 197 NONAME ; void CHwrRecognizer::SetFirstLetterOrder(enum TLatinLetterOrder)
+	?SetInputAreaSize@CHwrRecognizer@@UAEHAAVTSize@@@Z @ 198 NONAME ; int CHwrRecognizer::SetInputAreaSize(class TSize &)
+	?SetNumberMode@CHwrRecognizer@@UAEXW4TAknEditorNumericKeymap@@@Z @ 199 NONAME ; void CHwrRecognizer::SetNumberMode(enum TAknEditorNumericKeymap)
+	?SetRange@CHwrRecognizer@@UAEHABUTRecognitionRangeTag@@@Z @ 200 NONAME ; int CHwrRecognizer::SetRange(struct TRecognitionRangeTag const &)
+	?StrokeEndMark@CHwrRecognizer@@UBE?AVTPoint@@XZ @ 201 NONAME ; class TPoint CHwrRecognizer::StrokeEndMark(void) const
+	?GetCandidatesByInputString@CPtiCore@@UAEPAVHBufC16@@ABVTDesC16@@AAV?$RPointerArray@VHBufC16@@@@H@Z @ 202 NONAME ; class HBufC16 * CPtiCore::GetCandidatesByInputString(class TDesC16 const &, class RPointerArray<class HBufC16> &, int)
+	?GetCandidatesByInputString@CPtiEngine@@QAEPAVHBufC16@@ABVTDesC16@@AAV?$RPointerArray@VHBufC16@@@@H@Z @ 203 NONAME ; class HBufC16 * CPtiEngine::GetCandidatesByInputString(class TDesC16 const &, class RPointerArray<class HBufC16> &, int)
+	?GetCandidatesByInputString@CPtiEngineImpl@@QAEPAVHBufC16@@ABVTDesC16@@AAV?$RPointerArray@VHBufC16@@@@H@Z @ 204 NONAME ; class HBufC16 * CPtiEngineImpl::GetCandidatesByInputString(class TDesC16 const &, class RPointerArray<class HBufC16> &, int)
+	?GetBottomGuideLinePos@CHwrRecognizer@@UAEXAAH@Z @ 205 NONAME ; void CHwrRecognizer::GetBottomGuideLinePos(int &)
+	?GetTopGuideLinePos@CHwrRecognizer@@UAEXAAH@Z @ 206 NONAME ; void CHwrRecognizer::GetTopGuideLinePos(int &)
+	?SetPermittedSymbolSet@CHwrRecognizer@@UAEXABVTDesC16@@@Z @ 207 NONAME ; void CHwrRecognizer::SetPermittedSymbolSet(class TDesC16 const &)
+	?GetAuxCandidateNum@CHwrRecognizer@@UBEHXZ @ 208 NONAME ; int CHwrRecognizer::GetAuxCandidateNum(void) const
+	?RecognizeWithCharSet@CHwrRecognizer@@UAEHABV?$RArray@VTPoint@@@@AAV?$RPointerArray@VHBufC16@@@@ABVTDesC16@@@Z @ 209 NONAME ; int CHwrRecognizer::RecognizeWithCharSet(class RArray<class TPoint> const &, class RPointerArray<class HBufC16> &, class TDesC16 const &)
+	?SetAuxCandidateNum@CHwrRecognizer@@UAEHH@Z @ 210 NONAME ; int CHwrRecognizer::SetAuxCandidateNum(int)
+	?GetModelIndexListL@CHwrRecognizer@@IAEXW4TUdmType@@AAV?$RArray@H@@ABUTHwrUdmRange@@@Z @ 211 NONAME ; void CHwrRecognizer::GetModelIndexListL(enum TUdmType, class RArray<int> &, struct THwrUdmRange const &)
+	?GetSymbolModelL@CHwrRecognizer@@IAEXW4TUdmType@@HAAVTPtrC16@@AAV?$RArray@VTPoint@@@@AAH3@Z @ 212 NONAME ; void CHwrRecognizer::GetSymbolModelL(enum TUdmType, int, class TPtrC16 &, class RArray<class TPoint> &, int &, int &)
+	?IsSupportUdm@CHwrRecognizer@@MBEHXZ @ 213 NONAME ; int CHwrRecognizer::IsSupportUdm(void) const
+	?LoadUdmL@CHwrRecognizer@@IAEXW4TUdmType@@@Z @ 214 NONAME ; void CHwrRecognizer::LoadUdmL(enum TUdmType)
+	?McrAddStrokesL@CHwrRecognizer@@UAEXABV?$RArray@VTPoint@@@@AAV?$RPointerArray@VHBufC16@@@@@Z @ 215 NONAME ; void CHwrRecognizer::McrAddStrokesL(class RArray<class TPoint> const &, class RPointerArray<class HBufC16> &)
+	?McrBeginSessionL@CHwrRecognizer@@UAEXXZ @ 216 NONAME ; void CHwrRecognizer::McrBeginSessionL(void)
+	?McrEndSessionL@CHwrRecognizer@@UAEXAAV?$RPointerArray@VHBufC16@@@@@Z @ 217 NONAME ; void CHwrRecognizer::McrEndSessionL(class RPointerArray<class HBufC16> &)
+	?QueryUdmInterfaceL@CHwrRecognizer@@UAEPAVMTruiEngine@@XZ @ 218 NONAME ; class MTruiEngine * CHwrRecognizer::QueryUdmInterfaceL(void)
+	?UnLoadUdmL@CHwrRecognizer@@IAEXW4TUdmType@@@Z @ 219 NONAME ; void CHwrRecognizer::UnLoadUdmL(enum TUdmType)
+	?SymbolModelValid@CHwrRecognizer@@UAEHABVTDesC16@@ABV?$RArray@VTPoint@@@@UTHwrUdmRange@@AAVTDes16@@@Z @ 220 NONAME ; int CHwrRecognizer::SymbolModelValid(class TDesC16 const &, class RArray<class TPoint> const &, struct THwrUdmRange, class TDes16 &)
+	?ListAvailablePhysicalKeyboardsL@CPtiEngine@@SAXAAV?$RArray@W4TPtiKeyboardType@@@@@Z @ 221 NONAME ; void CPtiEngine::ListAvailablePhysicalKeyboardsL(class RArray<enum TPtiKeyboardType> &)
+	?EnableRecognitionDictionary@CHwrRecognizer@@UAEHH@Z @ 222 NONAME ; int CHwrRecognizer::EnableRecognitionDictionary(int)
+	?SetScreenSize@CHwrRecognizer@@UAEHAAVTSize@@@Z @ 223 NONAME ; int CHwrRecognizer::SetScreenSize(class TSize &)
+	?Reserved_2@CPtiKeyboardDatabaseFactory@@UAEXXZ @ 224 NONAME ; void CPtiKeyboardDatabaseFactory::Reserved_2(void)
+	?DeadKeyDataForKey@CPtiKeyMapData@@UBE?AVTPtrC16@@W4TPtiKeyboardType@@W4TPtiKey@@W4TPtiTextCase@@@Z @ 225 NONAME ; class TPtrC16 CPtiKeyMapData::DeadKeyDataForKey(enum TPtiKeyboardType, enum TPtiKey, enum TPtiTextCase) const
+	??1CPtiHalfQwertyKeyMappings@@UAE@XZ @ 226 NONAME ; CPtiHalfQwertyKeyMappings::~CPtiHalfQwertyKeyMappings(void)
+	?StartMapping@CPtiHalfQwertyKeyMappings@@UAEGW4TPtiKey@@W4TPtiTextCase@@W4TPtiEngineInputMode@@@Z @ 227 NONAME ; unsigned short CPtiHalfQwertyKeyMappings::StartMapping(enum TPtiKey, enum TPtiTextCase, enum TPtiEngineInputMode)
+	?DataFactory@CPtiCoreLanguage@@QBEPAVCPtiKeyMapDataFactory@@XZ @ 228 NONAME ; class CPtiKeyMapDataFactory * CPtiCoreLanguage::DataFactory(void) const
+	?NumberOfKeys@CPtiKeyMapData@@UBEHW4TPtiKeyboardType@@@Z @ 229 NONAME ; int CPtiKeyMapData::NumberOfKeys(enum TPtiKeyboardType) const
+	?IsDeadKey@CPtiKeyMapData@@UBEHW4TPtiKeyboardType@@W4TPtiKey@@W4TPtiTextCase@@@Z @ 230 NONAME ; int CPtiKeyMapData::IsDeadKey(enum TPtiKeyboardType, enum TPtiKey, enum TPtiTextCase) const
+	?ReplaceKeyMapL@CPtiHalfQwertyKeyMappings@@UAEHW4TPtiKey@@AAVTDesC16@@W4TPtiTextCase@@@Z @ 231 NONAME ; int CPtiHalfQwertyKeyMappings::ReplaceKeyMapL(enum TPtiKey, class TDesC16 &, enum TPtiTextCase)
+	?SetHalfQwertyKeyMappings@CPtiCoreLanguage@@QAEXPAVMPtiKeyMappings@@@Z @ 232 NONAME ; void CPtiCoreLanguage::SetHalfQwertyKeyMappings(class MPtiKeyMappings *)
+	?IsValidKey@CPtiEngine@@QBEHW4TPtiKey@@@Z @ 233 NONAME ; int CPtiEngine::IsValidKey(enum TPtiKey) const
+	?SetMaxLengthForAutoCompletedCandidates@CPtiEngine@@QAEHH@Z @ 234 NONAME ; int CPtiEngine::SetMaxLengthForAutoCompletedCandidates(int)
+	?GetNumericModeKeysForQwertyL@CPtiEngine@@QAEXHAAV?$RArray@VTPtiNumericKeyBinding@@@@W4TPtiKeyboardType@@@Z @ 235 NONAME ; void CPtiEngine::GetNumericModeKeysForQwertyL(int, class RArray<class TPtiNumericKeyBinding> &, enum TPtiKeyboardType)
+	?ClearHalfQwerty@CPtiCoreLanguage@@QAEXXZ @ 236 NONAME ; void CPtiCoreLanguage::ClearHalfQwerty(void)
+	?RawKeyMapData@CPtiCoreLanguage@@QBEPAVCPtiKeyMapData@@XZ @ 237 NONAME ; class CPtiKeyMapData * CPtiCoreLanguage::RawKeyMapData(void) const
+	??1CPtiKeyMapData@@UAE@XZ @ 238 NONAME ; CPtiKeyMapData::~CPtiKeyMapData(void)
+	?IsNumberModeKey@CPtiKeyMapData@@UBEHW4TPtiKeyboardType@@AAVTPtiNumericKeyBinding@@@Z @ 239 NONAME ; int CPtiKeyMapData::IsNumberModeKey(enum TPtiKeyboardType, class TPtiNumericKeyBinding &) const
+	?CaseBasedIndexInBindingTable@CPtiKeyMapData@@QBEHW4TPtiKeyboardType@@W4TPtiKey@@W4TPtiTextCase@@@Z @ 240 NONAME ; int CPtiKeyMapData::CaseBasedIndexInBindingTable(enum TPtiKeyboardType, enum TPtiKey, enum TPtiTextCase) const
+	?GetDataForKey@CPtiHalfQwertyKeyMappings@@QAEXW4TPtiKey@@AAVTDes16@@W4TPtiTextCase@@@Z @ 241 NONAME ; void CPtiHalfQwertyKeyMappings::GetDataForKey(enum TPtiKey, class TDes16 &, enum TPtiTextCase)
+	?Reserved_1@CPtiKeyboardDatabase@@UAEXXZ @ 242 NONAME ; void CPtiKeyboardDatabase::Reserved_1(void)
+	?Reserved_3@CPtiKeyMapData@@UAEXXZ @ 243 NONAME ; void CPtiKeyMapData::Reserved_3(void)
+	?HasKeyData@CPtiKeyMapData@@UBEHW4TPtiKeyboardType@@@Z @ 244 NONAME ; int CPtiKeyMapData::HasKeyData(enum TPtiKeyboardType) const
+	?AddPhrase@CPtiEngine@@QAEHABVTDesC16@@@Z @ 245 NONAME ; int CPtiEngine::AddPhrase(class TDesC16 const &)
+	?IsQwertyBasedMode@CPtiEngine@@QBEHW4TPtiEngineInputMode@@@Z @ 246 NONAME ; int CPtiEngine::IsQwertyBasedMode(enum TPtiEngineInputMode) const
+	?DataForKey@CPtiKeyMapData@@UBE?AVTPtrC16@@W4TPtiKeyboardType@@H@Z @ 247 NONAME ; class TPtrC16 CPtiKeyMapData::DataForKey(enum TPtiKeyboardType, int) const
+	?NewL@CPtiKeyMappings@@SAPAV1@PAVCPtiKeyMapData@@@Z @ 248 NONAME ; class CPtiKeyMappings * CPtiKeyMappings::NewL(class CPtiKeyMapData *)
+	?SetAutoSubstitution@CPtiEngine@@QAEHH@Z @ 249 NONAME ; int CPtiEngine::SetAutoSubstitution(int)
+	?Reserved_1@CPtiKeyboardDatabaseFactory@@UAEXXZ @ 250 NONAME ; void CPtiKeyboardDatabaseFactory::Reserved_1(void)
+	?CreateImplementationL@CPtiKeyboardDatabaseFactory@@SAPAV1@VTUid@@@Z @ 251 NONAME ; class CPtiKeyboardDatabaseFactory * CPtiKeyboardDatabaseFactory::CreateImplementationL(class TUid)
+	?DeadKeyDataArray@CPtiKeyMapData@@UBEPBGW4TPtiKeyboardType@@AAH@Z @ 252 NONAME ; unsigned short const * CPtiKeyMapData::DeadKeyDataArray(enum TPtiKeyboardType, int &) const
+	?GetAutoSubstitutionEntry@CPtiEngine@@QAEHHAAVTDes16@@0@Z @ 253 NONAME ; int CPtiEngine::GetAutoSubstitutionEntry(int, class TDes16 &, class TDes16 &)
+	?NewL@CPtiQwertyKeyMappings@@SAPAV1@PAVCPtiKeyMapData@@@Z @ 254 NONAME ; class CPtiQwertyKeyMappings * CPtiQwertyKeyMappings::NewL(class CPtiKeyMapData *)
+	?CreateMappingTableWithOpaqueL@CPtiLanguageDatabase@@SAHHAAV?$RArray@VTPtiLangDatabaseMappingOpaque@@@@@Z @ 255 NONAME ; int CPtiLanguageDatabase::CreateMappingTableWithOpaqueL(int, class RArray<class TPtiLangDatabaseMappingOpaque> &)
+	?CaseSequence@CPtiEngine@@QAE?AVTPtrC8@@XZ @ 256 NONAME ; class TPtrC8 CPtiEngine::CaseSequence(void)
+	?SetKeyboardType@CPtiQwertyKeyMappings@@QAEHW4TPtiKeyboardType@@@Z @ 257 NONAME ; int CPtiQwertyKeyMappings::SetKeyboardType(enum TPtiKeyboardType)
+	?HasDataBlockForKeyboardType@CPtiQwertyKeyMappings@@QBEHW4TPtiKeyboardType@@@Z @ 258 NONAME ; int CPtiQwertyKeyMappings::HasDataBlockForKeyboardType(enum TPtiKeyboardType) const
+	?GetNumericModeKeysL@CPtiKeyMapData@@UBEXW4TPtiKeyboardType@@AAV?$RArray@VTPtiNumericKeyBinding@@@@@Z @ 259 NONAME ; void CPtiKeyMapData::GetNumericModeKeysL(enum TPtiKeyboardType, class RArray<class TPtiNumericKeyBinding> &) const
+	?Reserved_2@CPtiKeyboardDatabase@@UAEXXZ @ 260 NONAME ; void CPtiKeyboardDatabase::Reserved_2(void)
+	?SuitableForLatinOnlyMode@CPtiKeyMapData@@UBEHXZ @ 261 NONAME ; int CPtiKeyMapData::SuitableForLatinOnlyMode(void) const
+	?KdbData@CPtiKeyboardDatabase@@UBEPACHPAX@Z @ 262 NONAME ; signed char * CPtiKeyboardDatabase::KdbData(int, void *) const
+	?KeyForCharacter@CPtiHalfQwertyKeyMappings@@UAE?AW4TPtiKey@@G@Z @ 263 NONAME ; enum TPtiKey CPtiHalfQwertyKeyMappings::KeyForCharacter(unsigned short)
+	?KeyBindingTable@CPtiKeyMapData@@UBEPBVTPtiKeyBinding@@W4TPtiKeyboardType@@AAH@Z @ 264 NONAME ; class TPtiKeyBinding const * CPtiKeyMapData::KeyBindingTable(enum TPtiKeyboardType, int &) const
+	?NativeId@CPtiKeyboardDatabase@@UBEHXZ @ 265 NONAME ; int CPtiKeyboardDatabase::NativeId(void) const
+	?NumericModeKeysTable@CPtiKeyMapData@@UBEPBVTPtiNumericKeyBinding@@W4TPtiKeyboardType@@AAH@Z @ 266 NONAME ; class TPtiNumericKeyBinding const * CPtiKeyMapData::NumericModeKeysTable(enum TPtiKeyboardType, int &) const
+	?DeleteAutoSubstitutionEntry@CPtiEngine@@QAEHABVTDesC16@@@Z @ 267 NONAME ; int CPtiEngine::DeleteAutoSubstitutionEntry(class TDesC16 const &)
+	?Reserved_4@CPtiKeyMapData@@UAEXXZ @ 268 NONAME ; void CPtiKeyMapData::Reserved_4(void)
+	?ListImplementationsL@CPtiKeyMapDataFactory@@SAXAAV?$RArray@H@@@Z @ 269 NONAME ; void CPtiKeyMapDataFactory::ListImplementationsL(class RArray<int> &)
+	?SetNumberCandidateStatus@CPtiEngine@@QAEHH@Z @ 270 NONAME ; int CPtiEngine::SetNumberCandidateStatus(int)
+	?SetKeyboardType@CPtiEngine@@QAEHW4TPtiKeyboardType@@@Z @ 271 NONAME ; int CPtiEngine::SetKeyboardType(enum TPtiKeyboardType)
+	?KeyboardType@CPtiMappings@@QBE?AW4TPtiKeyboardType@@XZ @ 272 NONAME ; enum TPtiKeyboardType CPtiMappings::KeyboardType(void) const
+	?KeyData@CPtiKeyMapData@@UBEPBGW4TPtiKeyboardType@@AAH@Z @ 273 NONAME ; unsigned short const * CPtiKeyMapData::KeyData(enum TPtiKeyboardType, int &) const
+	?ListImplementationsL@CPtiKeyboardDatabaseFactory@@SAXHAAV?$RArray@H@@@Z @ 274 NONAME ; void CPtiKeyboardDatabaseFactory::ListImplementationsL(int, class RArray<int> &)
+	?Reserved_1@CPtiKeyMapData@@UAEXXZ @ 275 NONAME ; void CPtiKeyMapData::Reserved_1(void)
+	?ExtendedNumericModeKeysForQwertyL@CPtiEngine@@QAEABV?$RArray@VTPtiNumericKeyBinding@@@@HW4TPtiKeyboardType@@@Z @ 276 NONAME ; class RArray<class TPtiNumericKeyBinding> const & CPtiEngine::ExtendedNumericModeKeysForQwertyL(int, enum TPtiKeyboardType)
+	?VowelSequenceTable@CPtiKeyMapData@@UBEPBVTVowelSequence@@W4TPtiKeyboardType@@AAH@Z @ 277 NONAME ; class TVowelSequence const * CPtiKeyMapData::VowelSequenceTable(enum TPtiKeyboardType, int &) const
+	?HasVowelSequences@CPtiKeyMapData@@UBEHW4TPtiKeyboardType@@@Z @ 278 NONAME ; int CPtiKeyMapData::HasVowelSequences(enum TPtiKeyboardType) const
+	?LanguageCode@CPtiKeyMapData@@UBEHXZ @ 279 NONAME ; int CPtiKeyMapData::LanguageCode(void) const
+	?Reserved_1@CPtiKeyMapDataFactory@@UAEXXZ @ 280 NONAME ; void CPtiKeyMapDataFactory::Reserved_1(void)
+	??1CPtiKeyboardDatabaseFactory@@UAE@XZ @ 281 NONAME ; CPtiKeyboardDatabaseFactory::~CPtiKeyboardDatabaseFactory(void)
+	?GetHalfQwertyKeymappings@CPtiCoreLanguage@@QBEPAVMPtiKeyMappings@@XZ @ 282 NONAME ; class MPtiKeyMappings * CPtiCoreLanguage::GetHalfQwertyKeymappings(void) const
+	?KeyboardTypesSupportedByLanguageL@CPtiEngine@@QAEXHAAV?$RArray@W4TPtiKeyboardType@@@@@Z @ 283 NONAME ; void CPtiEngine::KeyboardTypesSupportedByLanguageL(int, class RArray<enum TPtiKeyboardType> &)
+	?KeyboardType@CPtiEngine@@QBE?AW4TPtiKeyboardType@@XZ @ 284 NONAME ; enum TPtiKeyboardType CPtiEngine::KeyboardType(void) const
+	?LanguageCode@CPtiKeyboardDatabase@@UBEHXZ @ 285 NONAME ; int CPtiKeyboardDatabase::LanguageCode(void) const
+	?CreateImplementationL@CPtiKeyMapDataFactory@@SAPAV1@VTUid@@@Z @ 286 NONAME ; class CPtiKeyMapDataFactory * CPtiKeyMapDataFactory::CreateImplementationL(class TUid)
+	?CreateMappingTableWithOpaqueL@CPtiKeyboardDatabaseFactory@@SAHHAAV?$RArray@VTPtiKeyboardDatabaseMappingOpaque@@@@@Z @ 287 NONAME ; int CPtiKeyboardDatabaseFactory::CreateMappingTableWithOpaqueL(int, class RArray<class TPtiKeyboardDatabaseMappingOpaque> &)
+	?HasFnKeyBindings@CPtiKeyMapData@@UBEHW4TPtiKeyboardType@@@Z @ 288 NONAME ; int CPtiKeyMapData::HasFnKeyBindings(enum TPtiKeyboardType) const
+	?Reserved_2@CPtiKeyMapDataFactory@@UAEXXZ @ 289 NONAME ; void CPtiKeyMapDataFactory::Reserved_2(void)
+	?GetAll@CPtiHalfQwertyKeyMappings@@UAE?AVTPtrC16@@W4TPtiTextCase@@@Z @ 290 NONAME ; class TPtrC16 CPtiHalfQwertyKeyMappings::GetAll(enum TPtiTextCase)
+	?DataForKey@CPtiKeyMapData@@UBE?AVTPtrC16@@W4TPtiKeyboardType@@W4TPtiKey@@W4TPtiTextCase@@@Z @ 291 NONAME ; class TPtrC16 CPtiKeyMapData::DataForKey(enum TPtiKeyboardType, enum TPtiKey, enum TPtiTextCase) const
+	?AddAutoSubstitutionEntry@CPtiEngine@@QAEHABVTDesC16@@0@Z @ 292 NONAME ; int CPtiEngine::AddAutoSubstitutionEntry(class TDesC16 const &, class TDesC16 const &)
+	?MarkAutoCapitalized@CPtiEngine@@QAEXXZ @ 293 NONAME ; void CPtiEngine::MarkAutoCapitalized(void)
+	?KeyForBindingTableIndex@CPtiKeyMapData@@QBE?AW4TPtiKey@@W4TPtiKeyboardType@@HAAW4TPtiTextCase@@@Z @ 294 NONAME ; enum TPtiKey CPtiKeyMapData::KeyForBindingTableIndex(enum TPtiKeyboardType, int, enum TPtiTextCase &) const
+	?NewL@CPtiHalfQwertyKeyMappings@@SAPAV1@PAVCPtiKeyMapData@@@Z @ 295 NONAME ; class CPtiHalfQwertyKeyMappings * CPtiHalfQwertyKeyMappings::NewL(class CPtiKeyMapData *)
+	??1CPtiKeyMapDataFactory@@UAE@XZ @ 296 NONAME ; CPtiKeyMapDataFactory::~CPtiKeyMapDataFactory(void)
+	?Reserved_2@CPtiKeyMapData@@UAEXXZ @ 297 NONAME ; void CPtiKeyMapData::Reserved_2(void)
+	?NumberOfAutoSubstitutionEntries@CPtiEngine@@QBEHXZ @ 298 NONAME ; int CPtiEngine::NumberOfAutoSubstitutionEntries(void) const
+	?HasDeadKeys@CPtiKeyMapData@@UBEHW4TPtiKeyboardType@@@Z @ 299 NONAME ; int CPtiKeyMapData::HasDeadKeys(enum TPtiKeyboardType) const
+	?ExtendedNumericModeKeysForQwertyL@CPtiEngine@@QAEABV?$RArray@VTPtiNumericKeyBinding@@@@H@Z @ 300 NONAME ; class RArray<class TPtiNumericKeyBinding> const & CPtiEngine::ExtendedNumericModeKeysForQwertyL(int)
+	?EnableGuideline@CHwrRecognizer@@UAEHH@Z @ 301 NONAME ; int CHwrRecognizer::EnableGuideline(int)
+	?NextKey@CPtiHalfQwertyKeyMappings@@UAEGW4TPtiKey@@AAHW4TPtiTextCase@@@Z @ 302 NONAME ; unsigned short CPtiHalfQwertyKeyMappings::NextKey(enum TPtiKey, int &, enum TPtiTextCase)
+	?SetSecondaryInputL@CPtiEngine@@QAEHH@Z @ 303 NONAME ; int CPtiEngine::SetSecondaryInputL(int)
+

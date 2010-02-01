@@ -1,0 +1,718 @@
+EXPORTS
+	_ZN11CButtonBase10SetBitmapLEP10CFbsBitmap14TButtonBmpType @ 1 NONAME
+	_ZN11CButtonBase11SetCaptionLERK7TDesC16 @ 2 NONAME
+	_ZN11CButtonBase12ResetBmpPoolEv @ 3 NONAME
+	_ZN11CButtonBase14SetMaskBitmapLEP10CFbsBitmap14TButtonBmpType @ 4 NONAME
+	_ZN11CButtonBase18HandlePointerEnterERK6TPoint @ 5 NONAME
+	_ZN11CButtonBase18HandlePointerLeaveERK6TPoint @ 6 NONAME
+	_ZN11CButtonBase21HandlePointerUpEventLERK6TPoint @ 7 NONAME
+	_ZN11CButtonBase23HandlePointerDownEventLERK6TPoint @ 8 NONAME
+	_ZN11CButtonBase23HandlePointerMoveEventLERK6TPoint @ 9 NONAME
+	_ZN11CButtonBase4DrawEv @ 10 NONAME
+	_ZN11CButtonBase4NewLERK5TRectP12CFepUiLayouti @ 11 NONAME
+	_ZN11CButtonBase6BitmapE14TButtonBmpTypei @ 12 NONAME
+	_ZN11CButtonBase7SetFontEPK5CFont @ 13 NONAME
+	_ZN11CButtonBase7SetFontERK9TFontSpec @ 14 NONAME
+	_ZN11CButtonBase9SetActiveEi @ 15 NONAME
+	_ZN11CButtonBase9SetDimmedEi @ 16 NONAME
+	_ZN11CButtonBaseC1ERK5TRectP12CFepUiLayouti @ 17 NONAME
+	_ZN11CButtonBaseC2ERK5TRectP12CFepUiLayouti @ 18 NONAME
+	_ZN11CButtonBaseD0Ev @ 19 NONAME
+	_ZN11CButtonBaseD1Ev @ 20 NONAME
+	_ZN11CButtonBaseD2Ev @ 21 NONAME
+	_ZN11CHwrWndBase10ConstructLEv @ 22 NONAME
+	_ZN11CHwrWndBase10DrawStrokeEi @ 23 NONAME
+	_ZN11CHwrWndBase11ClearStrokeEv @ 24 NONAME
+	_ZN11CHwrWndBase12OnDeActivateEv @ 25 NONAME
+	_ZN11CHwrWndBase14AddGuidingLineERK6TPointS2_ @ 26 NONAME
+	_ZN11CHwrWndBase14HandleTimerOutEi @ 27 NONAME
+	_ZN11CHwrWndBase17CancelCharWritingEv @ 28 NONAME
+	_ZN11CHwrWndBase19OnLayoutDraggingEndEv @ 29 NONAME
+	_ZN11CHwrWndBase21HandlePointerUpEventLERK6TPoint @ 30 NONAME
+	_ZN11CHwrWndBase21OnLayoutDraggingStartEv @ 31 NONAME
+	_ZN11CHwrWndBase23HandlePointerDownEventLERK6TPoint @ 32 NONAME
+	_ZN11CHwrWndBase23HandlePointerMoveEventLERK6TPoint @ 33 NONAME
+	_ZN11CHwrWndBase4DrawEv @ 34 NONAME
+	_ZN11CHwrWndBaseC2ERK5TRectP12CFepUiLayouti @ 35 NONAME
+	_ZN11CHwrWndBaseD0Ev @ 36 NONAME
+	_ZN11CHwrWndBaseD1Ev @ 37 NONAME
+	_ZN11CHwrWndBaseD2Ev @ 38 NONAME
+	_ZN11CVirtualKey10SetLatchedEi @ 39 NONAME
+	_ZN11CVirtualKey11SetKeyEventEjj @ 40 NONAME ABSENT
+	_ZN11CVirtualKey4NewLERK7TDesC16iRK5TRectS5_iii @ 41 NONAME
+	_ZN11CVirtualKey4NewLEjiRK5TRectS2_iii @ 42 NONAME
+	_ZN11CVirtualKey7SetFontEPK5CFont @ 43 NONAME ABSENT
+	_ZN11CVirtualKey7SetFontERK9TFontSpec @ 44 NONAME ABSENT
+	_ZN11CVirtualKeyD0Ev @ 45 NONAME
+	_ZN11CVirtualKeyD1Ev @ 46 NONAME
+	_ZN11CVirtualKeyD2Ev @ 47 NONAME
+	_ZN12CFepUiLayout10OnActivateEv @ 48 NONAME
+	_ZN12CFepUiLayout10UnLockAreaERK5TRectP14CFepUiBaseCtrl @ 49 NONAME
+	_ZN12CFepUiLayout10UpdateAreaEPK14CFepUiBaseCtrlRK5TRectii @ 50 NONAME
+	_ZN12CFepUiLayout11AddControlLEP11CCoeControli @ 51 NONAME
+	_ZN12CFepUiLayout11AddControlLEP14CFepUiBaseCtrli @ 52 NONAME
+	_ZN12CFepUiLayout11SignalOwnerEiRK7TDesC16 @ 53 NONAME
+	_ZN12CFepUiLayout11SizeChangedEPKv @ 54 NONAME
+	_ZN12CFepUiLayout12HandleEventLE10TEventTypePKv @ 55 NONAME
+	_ZN12CFepUiLayout12OnDeActivateEv @ 56 NONAME
+	_ZN12CFepUiLayout12OnSkinChangeEv @ 57 NONAME
+	_ZN12CFepUiLayout12SetLayoutPosERK6TPoint @ 58 NONAME
+	_ZN12CFepUiLayout12SetShadowBmpEP10CFbsBitmapS1_18TShadowBitmapIndex @ 59 NONAME
+	_ZN12CFepUiLayout13HandleCommandEiPh @ 60 NONAME
+	_ZN12CFepUiLayout13RemoveControlEP14CFepUiBaseCtrl @ 61 NONAME
+	_ZN12CFepUiLayout13SetShadowRectERK5TRect @ 62 NONAME
+	_ZN12CFepUiLayout14BaseConstructLEv @ 63 NONAME
+	_ZN12CFepUiLayout16OnResourceChangeEi @ 64 NONAME
+	_ZN12CFepUiLayout17SetShadowAreaRectERK5TRect18TShadowBitmapIndex @ 65 NONAME
+	_ZN12CFepUiLayout18EnableLayoutMovingEP8CDragBar @ 66 NONAME
+	_ZN12CFepUiLayout18HandleRawKeyEventLERK9TRawEvent @ 67 NONAME
+	_ZN12CFepUiLayout18IsValidDestinationERK5TRectP8CDragBarRiS5_i @ 68 NONAME
+	_ZN12CFepUiLayout18SetAppEditorCursorERK16TCursorSelectioni @ 69 NONAME
+	_ZN12CFepUiLayout21OnAppEditorTextComingERK25TFepInputContextFieldData @ 70 NONAME
+	_ZN12CFepUiLayout24SemiTransparencyRequiredEv @ 71 NONAME
+	_ZN12CFepUiLayout26GetInputContextFieldMaxLenEv @ 72 NONAME
+	_ZN12CFepUiLayout27OnPointerEventOutsideLayoutERK9TRawEvent @ 73 NONAME
+	_ZN12CFepUiLayout4DrawEv @ 74 NONAME
+	_ZN12CFepUiLayout4InitEv @ 75 NONAME
+	_ZN12CFepUiLayout4RectEv @ 76 NONAME
+	_ZN12CFepUiLayout7DestroyEv @ 77 NONAME
+	_ZN12CFepUiLayout7SetRectERK5TRect @ 78 NONAME
+	_ZN12CFepUiLayout8LockAreaERK5TRectP14CFepUiBaseCtrl @ 79 NONAME
+	_ZN12CFepUiLayout8PositionEv @ 80 NONAME
+	_ZN12CFepUiLayoutC2EP12MLayoutOwner @ 81 NONAME
+	_ZN12CFepUiLayoutD0Ev @ 82 NONAME
+	_ZN12CFepUiLayoutD1Ev @ 83 NONAME
+	_ZN12CFepUiLayoutD2Ev @ 84 NONAME
+	_ZN13CCandidateWnd10ConstructLEv @ 85 NONAME
+	_ZN13CCandidateWnd10OnActivateEv @ 86 NONAME
+	_ZN13CCandidateWnd12OnDeActivateEv @ 87 NONAME
+	_ZN13CCandidateWnd13SetCandidateLERK13RPointerArrayI7HBufC16E @ 88 NONAME
+	_ZN13CCandidateWnd14HandleTimerOutEi @ 89 NONAME
+	_ZN13CCandidateWnd15GetSelCandidateEv @ 90 NONAME
+	_ZN13CCandidateWnd16SetAutoHideDelayE27TTimeIntervalMicroSeconds32 @ 91 NONAME
+	_ZN13CCandidateWnd16SetCandidateNumLEi @ 92 NONAME
+	_ZN13CCandidateWnd16SetCandidateNumLEiRK5TSizeRK5TRect @ 93 NONAME
+	_ZN13CCandidateWnd18HandlePointerLeaveERK6TPoint @ 94 NONAME
+	_ZN13CCandidateWnd19OnLayoutDraggingEndEv @ 95 NONAME
+	_ZN13CCandidateWnd21HandlePointerUpEventLERK6TPoint @ 96 NONAME
+	_ZN13CCandidateWnd21OnLayoutDraggingStartEv @ 97 NONAME
+	_ZN13CCandidateWnd23HandlePointerDownEventLERK6TPoint @ 98 NONAME
+	_ZN13CCandidateWnd23HandlePointerMoveEventLERK6TPoint @ 99 NONAME
+	_ZN13CCandidateWnd4DrawEv @ 100 NONAME
+	_ZN13CCandidateWnd4MoveERK6TPoint @ 101 NONAME
+	_ZN13CCandidateWnd4NewLERK5TRectiP12CFepUiLayouti27TTimeIntervalMicroSeconds32 @ 102 NONAME
+	_ZN13CCandidateWnd7SetFontEPK5CFont @ 103 NONAME
+	_ZN13CCandidateWnd7SetFontERK9TFontSpec @ 104 NONAME
+	_ZN13CCandidateWndC1ERK5TRectiP12CFepUiLayouti27TTimeIntervalMicroSeconds32 @ 105 NONAME
+	_ZN13CCandidateWndC2ERK5TRectiP12CFepUiLayouti27TTimeIntervalMicroSeconds32 @ 106 NONAME
+	_ZN13CCandidateWndD0Ev @ 107 NONAME
+	_ZN13CCandidateWndD1Ev @ 108 NONAME
+	_ZN13CCandidateWndD2Ev @ 109 NONAME
+	_ZN13CControlGroup10ConstructLEv @ 110 NONAME
+	_ZN13CControlGroup10OnActivateEv @ 111 NONAME
+	_ZN13CControlGroup10ReDrawRectERK5TRect @ 112 NONAME
+	_ZN13CControlGroup11AddControlLEP11CCoeControl @ 113 NONAME
+	_ZN13CControlGroup11AddControlLEP14CFepUiBaseCtrli @ 114 NONAME
+	_ZN13CControlGroup11ControlByIdEi @ 115 NONAME
+	_ZN13CControlGroup11HideControlEP14CFepUiBaseCtrli @ 116 NONAME
+	_ZN13CControlGroup11HideControlEii @ 117 NONAME
+	_ZN13CControlGroup12OnDeActivateEv @ 118 NONAME
+	_ZN13CControlGroup13ActiveControlEv @ 119 NONAME
+	_ZN13CControlGroup13ControlByTypeEii @ 120 NONAME ABSENT
+	_ZN13CControlGroup13NumOfControlsEv @ 121 NONAME
+	_ZN13CControlGroup13RemoveControlEP14CFepUiBaseCtrl @ 122 NONAME
+	_ZN13CControlGroup13SetActiveCtrlEP14CFepUiBaseCtrl @ 123 NONAME
+	_ZN13CControlGroup13SetActiveCtrlEi @ 124 NONAME
+	_ZN13CControlGroup18CancelPointerDownLEv @ 125 NONAME
+	_ZN13CControlGroup18HandlePointerEnterERK6TPoint @ 126 NONAME
+	_ZN13CControlGroup18HandlePointerLeaveERK6TPoint @ 127 NONAME
+	_ZN13CControlGroup19OnLayoutDraggingEndEv @ 128 NONAME
+	_ZN13CControlGroup20ControlForKindOfTypeE18TStockBaseCtrlTypei @ 129 NONAME
+	_ZN13CControlGroup21HandlePointerUpEventLERK6TPoint @ 130 NONAME
+	_ZN13CControlGroup21OnLayoutDraggingStartEv @ 131 NONAME
+	_ZN13CControlGroup22ConstructFromResourceLEv @ 132 NONAME
+	_ZN13CControlGroup23HandlePointerDownEventLERK6TPoint @ 133 NONAME
+	_ZN13CControlGroup23HandlePointerMoveEventLERK6TPoint @ 134 NONAME
+	_ZN13CControlGroup2AtEi @ 135 NONAME
+	_ZN13CControlGroup4DrawEv @ 136 NONAME
+	_ZN13CControlGroup4HideEi @ 137 NONAME
+	_ZN13CControlGroup4MoveERK6TPoint @ 138 NONAME
+	_ZN13CControlGroup4NewLEP12CFepUiLayouti @ 139 NONAME ABSENT
+	_ZN13CControlGroupC1EP12CFepUiLayouti @ 140 NONAME
+	_ZN13CControlGroupC2EP12CFepUiLayouti @ 141 NONAME
+	_ZN13CControlGroupD0Ev @ 142 NONAME
+	_ZN13CControlGroupD1Ev @ 143 NONAME
+	_ZN13CControlGroupD2Ev @ 144 NONAME
+	_ZN14CFepUiBaseCtrl10DrawBitmapEPK10CFbsBitmapi @ 145 NONAME
+	_ZN14CFepUiBaseCtrl10DrawShadowEv @ 146 NONAME
+	_ZN14CFepUiBaseCtrl10MovingAreaEv @ 147 NONAME
+	_ZN14CFepUiBaseCtrl10OnActivateEv @ 148 NONAME
+	_ZN14CFepUiBaseCtrl10ReDrawRectERK5TRect @ 149 NONAME
+	_ZN14CFepUiBaseCtrl10UpdateAreaERK5TRecti @ 150 NONAME
+	_ZN14CFepUiBaseCtrl11ReportEventEiRK7TDesC16 @ 151 NONAME
+	_ZN14CFepUiBaseCtrl12OnDeActivateEv @ 152 NONAME
+	_ZN14CFepUiBaseCtrl12SetShadowBmpEP10CFbsBitmapS1_18TShadowBitmapIndex @ 153 NONAME
+	_ZN14CFepUiBaseCtrl13SetResourceIdEl @ 154 NONAME
+	_ZN14CFepUiBaseCtrl13SetShadowRectERK5TRect @ 155 NONAME
+	_ZN14CFepUiBaseCtrl14BaseConstructLEv @ 156 NONAME
+	_ZN14CFepUiBaseCtrl14CapturePointerEi @ 157 NONAME
+	_ZN14CFepUiBaseCtrl16AddEventObserverEP14MEventObserver @ 158 NONAME
+	_ZN14CFepUiBaseCtrl16IsFepBaseControlEv @ 159 NONAME
+	_ZN14CFepUiBaseCtrl17SetShadowAreaRectERK5TRect18TShadowBitmapIndex @ 160 NONAME
+	_ZN14CFepUiBaseCtrl17UpdateValidRegionEPS_i @ 161 NONAME
+	_ZN14CFepUiBaseCtrl18CancelPointerDownLEv @ 162 NONAME
+	_ZN14CFepUiBaseCtrl18HandlePointerEnterERK6TPoint @ 163 NONAME
+	_ZN14CFepUiBaseCtrl18HandlePointerLeaveERK6TPoint @ 164 NONAME
+	_ZN14CFepUiBaseCtrl19OnLayoutDraggingEndEv @ 165 NONAME
+	_ZN14CFepUiBaseCtrl19RemoveEventObserverEP14MEventObserver @ 166 NONAME
+	_ZN14CFepUiBaseCtrl20HandlePositionChangeERK6TPoint @ 167 NONAME
+	_ZN14CFepUiBaseCtrl20RequireRegionUpdateLEi @ 168 NONAME
+	_ZN14CFepUiBaseCtrl20SetBackgroundBitmapLEP10CFbsBitmap @ 169 NONAME
+	_ZN14CFepUiBaseCtrl21HandlePointerUpEventLERK6TPoint @ 170 NONAME
+	_ZN14CFepUiBaseCtrl21OnLayoutDraggingStartEv @ 171 NONAME
+	_ZN14CFepUiBaseCtrl22ConstructFromResourceLEv @ 172 NONAME
+	_ZN14CFepUiBaseCtrl23HandlePointerDownEventLERK6TPoint @ 173 NONAME
+	_ZN14CFepUiBaseCtrl23HandlePointerMoveEventLERK6TPoint @ 174 NONAME
+	_ZN14CFepUiBaseCtrl24SetBackgroundMaskBitmapLEP10CFbsBitmap @ 175 NONAME
+	_ZN14CFepUiBaseCtrl4DrawEv @ 176 NONAME
+	_ZN14CFepUiBaseCtrl4HideEi @ 177 NONAME
+	_ZN14CFepUiBaseCtrl4MoveERK6TPoint @ 178 NONAME
+	_ZN14CFepUiBaseCtrl5ClearEv @ 179 NONAME
+	_ZN14CFepUiBaseCtrl7SetRectERK5TRect @ 180 NONAME
+	_ZN14CFepUiBaseCtrl8ContainsERK6TPoint @ 181 NONAME
+	_ZN14CFepUiBaseCtrl9ClearRectERK5TRect @ 182 NONAME
+	_ZN14CFepUiBaseCtrl9SetActiveEi @ 183 NONAME
+	_ZN14CFepUiBaseCtrlC1ERK5TRectP12CFepUiLayouti @ 184 NONAME
+	_ZN14CFepUiBaseCtrlC2ERK5TRectP12CFepUiLayouti @ 185 NONAME
+	_ZN14CFepUiBaseCtrlD0Ev @ 186 NONAME
+	_ZN14CFepUiBaseCtrlD1Ev @ 187 NONAME
+	_ZN14CFepUiBaseCtrlD2Ev @ 188 NONAME
+	_ZN15CInsertionPoint11SetPositionERK6TPoint @ 189 NONAME
+	_ZN15CInsertionPoint4DrawEP14CBitmapContexti @ 190 NONAME
+	_ZN16CVirtualKeyboard10ConstructLEv @ 191 NONAME
+	_ZN16CVirtualKeyboard10CreateKeyLERK7TDesC16jRK5TRectS5_iii @ 192 NONAME
+	_ZN16CVirtualKeyboard10CreateKeyLEjjRK5TRectS2_iii @ 193 NONAME
+	_ZN16CVirtualKeyboard12SetFontColorE4TRgb @ 194 NONAME
+	_ZN16CVirtualKeyboard18HandlePointerLeaveERK6TPoint @ 195 NONAME ABSENT
+	_ZN16CVirtualKeyboard21HandlePointerUpEventLERK6TPoint @ 196 NONAME ABSENT
+	_ZN16CVirtualKeyboard22AddKeyHighLightBitmapLEP10CFbsBitmap @ 197 NONAME
+	_ZN16CVirtualKeyboard23HandlePointerDownEventLERK6TPoint @ 198 NONAME ABSENT
+	_ZN16CVirtualKeyboard23HandlePointerMoveEventLERK6TPoint @ 199 NONAME
+	_ZN16CVirtualKeyboard26AddKeyHighLightMaskBitmapLEP10CFbsBitmap @ 200 NONAME
+	_ZN16CVirtualKeyboard4DrawEv @ 201 NONAME
+	_ZN16CVirtualKeyboard4NewLERK5TRectP12CFepUiLayoutiP5CFont @ 202 NONAME ABSENT
+	_ZN16CVirtualKeyboard4NewLERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 203 NONAME ABSENT
+	_ZN16CVirtualKeyboard6DimKeyEP11CVirtualKeyi @ 204 NONAME
+	_ZN16CVirtualKeyboard7AddKeyLEP11CVirtualKey @ 205 NONAME
+	_ZN16CVirtualKeyboard7SetFontEPK5CFont @ 206 NONAME
+	_ZN16CVirtualKeyboard7SetFontERK9TFontSpec @ 207 NONAME
+	_ZN16CVirtualKeyboardC1ERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 208 NONAME ABSENT
+	_ZN16CVirtualKeyboardC2ERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 209 NONAME ABSENT
+	_ZN16CVirtualKeyboardD0Ev @ 210 NONAME
+	_ZN16CVirtualKeyboardD1Ev @ 211 NONAME
+	_ZN16CVirtualKeyboardD2Ev @ 212 NONAME
+	_ZN18CFepLayoutPopupWnd10ConstructLEv @ 213 NONAME
+	_ZN18CFepLayoutPopupWnd11CloseWindowEv @ 214 NONAME
+	_ZN18CFepLayoutPopupWnd7DisplayERK6TPoint @ 215 NONAME
+	_ZN18CFepLayoutPopupWnd7SetRectERK5TRect @ 216 NONAME
+	_ZN18CFepLayoutPopupWnd9OnDisplayEv @ 217 NONAME
+	_ZN18CFepLayoutPopupWndC1ERK5TSizeP12CFepUiLayouti @ 218 NONAME
+	_ZN18CFepLayoutPopupWndC2ERK5TSizeP12CFepUiLayouti @ 219 NONAME
+	_ZN18CFepLayoutPopupWndD0Ev @ 220 NONAME
+	_ZN18CFepLayoutPopupWndD1Ev @ 221 NONAME
+	_ZN18CFepLayoutPopupWndD2Ev @ 222 NONAME
+	_ZN18CTransparentHwrWnd10DrawStrokeEi @ 223 NONAME
+	_ZN18CTransparentHwrWnd17UpdateValidRegionEP14CFepUiBaseCtrli @ 224 NONAME
+	_ZN18CTransparentHwrWnd21HandlePointerUpEventLERK6TPoint @ 225 NONAME
+	_ZN18CTransparentHwrWnd23HandlePointerDownEventLERK6TPoint @ 226 NONAME
+	_ZN18CTransparentHwrWnd23HandlePointerMoveEventLERK6TPoint @ 227 NONAME
+	_ZN18CTransparentHwrWnd24EnableTraceOutsideWindowEi @ 228 NONAME
+	_ZN18CTransparentHwrWnd24SetWndTransparencyFactorEh @ 229 NONAME
+	_ZN18CTransparentHwrWnd4DrawEv @ 230 NONAME
+	_ZN18CTransparentHwrWnd4NewLERK5TRectP12CFepUiLayoutii @ 231 NONAME
+	_ZN18CTransparentHwrWndC1ERK5TRectP12CFepUiLayoutii @ 232 NONAME
+	_ZN18CTransparentHwrWndC2ERK5TRectP12CFepUiLayoutii @ 233 NONAME
+	_ZN18CTransparentHwrWndD0Ev @ 234 NONAME
+	_ZN18CTransparentHwrWndD1Ev @ 235 NONAME
+	_ZN18CTransparentHwrWndD2Ev @ 236 NONAME
+	_ZN20CFepFullScreenLayout12HandleEventLE10TEventTypePKv @ 237 NONAME
+	_ZN20CFepFullScreenLayout13IsValidStrokeEv @ 238 NONAME
+	_ZN20CFepFullScreenLayout14BaseConstructLEv @ 239 NONAME
+	_ZN20CFepFullScreenLayout14HandleTimerOutEi @ 240 NONAME
+	_ZN20CFepFullScreenLayout17IsHwrNewCharacterEv @ 241 NONAME
+	_ZN20CFepFullScreenLayout24SemiTransparencyRequiredEv @ 242 NONAME
+	_ZN20CFepFullScreenLayout4InitEv @ 243 NONAME
+	_ZN20CFepFullScreenLayoutC2EP12MLayoutOwneri @ 244 NONAME
+	_ZN20CFepFullScreenLayoutD0Ev @ 245 NONAME
+	_ZN20CFepFullScreenLayoutD1Ev @ 246 NONAME
+	_ZN20CFepFullScreenLayoutD2Ev @ 247 NONAME
+	_ZN20CFepLayoutChoiceList11ClearItemsLEv @ 248 NONAME
+	_ZN20CFepLayoutChoiceList11InsertItemLEiRKNS_5SItemE @ 249 NONAME
+	_ZN20CFepLayoutChoiceList11ItemByIndexEi @ 250 NONAME
+	_ZN20CFepLayoutChoiceList11SetFocusBmpEP10CFbsBitmap @ 251 NONAME
+	_ZN20CFepLayoutChoiceList11SetItemRectERK5TRectS2_ @ 252 NONAME
+	_ZN20CFepLayoutChoiceList13ItemByCommandEi @ 253 NONAME ABSENT
+	_ZN20CFepLayoutChoiceList15SetFocusBmpMaskEP10CFbsBitmap @ 254 NONAME
+	_ZN20CFepLayoutChoiceList17RemoveItemByIndexEi @ 255 NONAME
+	_ZN20CFepLayoutChoiceList19RemoveItemByCommandEi @ 256 NONAME
+	_ZN20CFepLayoutChoiceList21HandlePointerUpEventLERK6TPoint @ 257 NONAME
+	_ZN20CFepLayoutChoiceList23HandlePointerDownEventLERK6TPoint @ 258 NONAME
+	_ZN20CFepLayoutChoiceList23HandlePointerMoveEventLERK6TPoint @ 259 NONAME
+	_ZN20CFepLayoutChoiceList4NewLEP12CFepUiLayouti @ 260 NONAME
+	_ZN20CFepLayoutChoiceList5NewLCEP12CFepUiLayouti @ 261 NONAME ABSENT
+	_ZN20CFepLayoutChoiceList7HitTestERK6TPoint @ 262 NONAME
+	_ZN20CFepLayoutChoiceList8AddItemLERKNS_5SItemE @ 263 NONAME
+	_ZN20CFepLayoutChoiceList9SetItemsLERK13RPointerArrayINS_5SItemEE @ 264 NONAME
+	_ZN20CFepLayoutChoiceListC1EP12CFepUiLayouti @ 265 NONAME
+	_ZN20CFepLayoutChoiceListC2EP12CFepUiLayouti @ 266 NONAME
+	_ZN20CFepLayoutChoiceListD0Ev @ 267 NONAME
+	_ZN20CFepLayoutChoiceListD1Ev @ 268 NONAME
+	_ZN20CFepLayoutChoiceListD2Ev @ 269 NONAME
+	_ZN20CFepUiLayoutRootCtrl10OnActivateEv @ 270 NONAME
+	_ZN20CFepUiLayoutRootCtrl12OnDeActivateEv @ 271 NONAME
+	_ZN20CFepUiLayoutRootCtrl20RequireRegionUpdateLEP14CFepUiBaseCtrli @ 272 NONAME
+	_ZN21CFepInputContextField10ConstructLEv @ 273 NONAME
+	_ZN21CFepInputContextField13UpdateContentERK16TCursorSelection @ 274 NONAME
+	_ZN21CFepInputContextField21HandlePointerUpEventLERK6TPoint @ 275 NONAME
+	_ZN21CFepInputContextField23HandlePointerDownEventLERK6TPoint @ 276 NONAME
+	_ZN21CFepInputContextField4NewLE5TRectP12CFepUiLayouti @ 277 NONAME
+	_ZN21CFepInputContextField8SetTextLERK25TFepInputContextFieldData @ 278 NONAME
+	_ZN21CFepInputContextFieldC1E5TRectP12CFepUiLayouti @ 279 NONAME
+	_ZN21CFepInputContextFieldC2E5TRectP12CFepUiLayouti @ 280 NONAME
+	_ZN21CFepInputContextFieldD0Ev @ 281 NONAME
+	_ZN21CFepInputContextFieldD1Ev @ 282 NONAME
+	_ZN21CFepInputContextFieldD2Ev @ 283 NONAME
+	_ZN21CFepLayoutLatchButton16SetLatchedBitmapEP10CFbsBitmapS1_ @ 284 NONAME
+	_ZN21CFepLayoutLatchButton18HandlePointerEnterERK6TPoint @ 285 NONAME
+	_ZN21CFepLayoutLatchButton18HandlePointerLeaveERK6TPoint @ 286 NONAME
+	_ZN21CFepLayoutLatchButton18SetUnLatchedBitmapEP10CFbsBitmapS1_ @ 287 NONAME
+	_ZN21CFepLayoutLatchButton21HandlePointerUpEventLERK6TPoint @ 288 NONAME
+	_ZN21CFepLayoutLatchButton23HandlePointerDownEventLERK6TPoint @ 289 NONAME
+	_ZN21CFepLayoutLatchButton4DrawEv @ 290 NONAME
+	_ZN21CFepLayoutLatchButton4NewLERK5TRectP12CFepUiLayouti @ 291 NONAME
+	_ZN21CFepLayoutLatchButtonC1ERK5TRectP12CFepUiLayouti @ 292 NONAME
+	_ZN21CFepLayoutLatchButtonC2ERK5TRectP12CFepUiLayouti @ 293 NONAME
+	_ZN21CFepLayoutLatchButtonD0Ev @ 294 NONAME
+	_ZN21CFepLayoutLatchButtonD1Ev @ 295 NONAME
+	_ZN21CFepLayoutLatchButtonD2Ev @ 296 NONAME
+	_ZN21CTransparentHwrWndExt13HideGuideLineEi @ 297 NONAME
+	_ZN21CTransparentHwrWndExt17SetGuideLineColorERK4TRgb @ 298 NONAME
+	_ZN21CTransparentHwrWndExt17SetGuideLineStyleEi @ 299 NONAME
+	_ZN21CTransparentHwrWndExt17SetGuideLineWidthEi @ 300 NONAME
+	_ZN21CTransparentHwrWndExt23SetTopGuideLinePositionERK6TPointS2_ @ 301 NONAME
+	_ZN21CTransparentHwrWndExt26SetBottomGuideLinePositionERK6TPointS2_ @ 302 NONAME
+	_ZN21CTransparentHwrWndExt4DrawEv @ 303 NONAME
+	_ZN21CTransparentHwrWndExt4NewLERK5TRectP12CFepUiLayoutiii @ 304 NONAME
+	_ZN21CTransparentHwrWndExt9RefreshUIEv @ 305 NONAME
+	_ZN21CTransparentHwrWndExtC1ERK5TRectP12CFepUiLayoutiii @ 306 NONAME
+	_ZN21CTransparentHwrWndExtC2ERK5TRectP12CFepUiLayoutiii @ 307 NONAME
+	_ZN21CTransparentHwrWndExtD0Ev @ 308 NONAME
+	_ZN21CTransparentHwrWndExtD1Ev @ 309 NONAME
+	_ZN21CTransparentHwrWndExtD2Ev @ 310 NONAME
+	_ZN22CFepLayoutEditAreaBase10OnActivateEv @ 311 NONAME
+	_ZN22CFepLayoutEditAreaBase11DrawContentEP14CBitmapContextRK5TRect @ 312 NONAME
+	_ZN22CFepLayoutEditAreaBase12OnDeActivateEv @ 313 NONAME
+	_ZN22CFepLayoutEditAreaBase12SetTextColorE4TRgb @ 314 NONAME
+	_ZN22CFepLayoutEditAreaBase14BaseConstructLEv @ 315 NONAME
+	_ZN22CFepLayoutEditAreaBase16PositionInWindowEi @ 316 NONAME
+	_ZN22CFepLayoutEditAreaBase16SetCursorVisibleEii @ 317 NONAME
+	_ZN22CFepLayoutEditAreaBase18CancelPointerDownLEv @ 318 NONAME
+	_ZN22CFepLayoutEditAreaBase18HandlePointerLeaveERK6TPoint @ 319 NONAME
+	_ZN22CFepLayoutEditAreaBase19OnLayoutDraggingEndEv @ 320 NONAME
+	_ZN22CFepLayoutEditAreaBase19PrepareForFocusGainEv @ 321 NONAME
+	_ZN22CFepLayoutEditAreaBase19PrepareForFocusLossEv @ 322 NONAME
+	_ZN22CFepLayoutEditAreaBase20GetEditorFieldMaxLenEv @ 323 NONAME
+	_ZN22CFepLayoutEditAreaBase21HandlePointerUpEventLERK6TPoint @ 324 NONAME
+	_ZN22CFepLayoutEditAreaBase21OnLayoutDraggingStartEv @ 325 NONAME
+	_ZN22CFepLayoutEditAreaBase21UpdateCursorSelectionERK16TCursorSelection @ 326 NONAME
+	_ZN22CFepLayoutEditAreaBase23HandlePointerDownEventLERK6TPoint @ 327 NONAME
+	_ZN22CFepLayoutEditAreaBase23HandlePointerMoveEventLERK6TPoint @ 328 NONAME
+	_ZN22CFepLayoutEditAreaBase29AdjustSelectedCompositionTextERi @ 329 NONAME
+	_ZN22CFepLayoutEditAreaBase32PositionOfInsertionPointOnWindowEv @ 330 NONAME
+	_ZN22CFepLayoutEditAreaBase35SetPositionOfInsertionPointInBufferERi @ 331 NONAME
+	_ZN22CFepLayoutEditAreaBase4DrawEv @ 332 NONAME
+	_ZN22CFepLayoutEditAreaBase4MoveERK6TPoint @ 333 NONAME
+	_ZN22CFepLayoutEditAreaBase7SetFontEPK5CFont @ 334 NONAME
+	_ZN22CFepLayoutEditAreaBase7SetFontERK9TFontSpec @ 335 NONAME
+	_ZN22CFepLayoutEditAreaBase7SetRectE5TRect @ 336 NONAME
+	_ZN22CFepLayoutEditAreaBase8SetFocusEi @ 337 NONAME
+	_ZN22CFepLayoutEditAreaBase8SetTextLERK16TCursorSelectionRK7TDesC16 @ 338 NONAME ABSENT
+	_ZN22CFepLayoutEditAreaBase9IsFocusedEv @ 339 NONAME
+	_ZN22CFepLayoutEditAreaBase9SetDimmedEi @ 340 NONAME
+	_ZN22CFepLayoutEditAreaBaseC2E5TRectP12CFepUiLayouti @ 341 NONAME
+	_ZN22CFepLayoutEditAreaBaseD0Ev @ 342 NONAME
+	_ZN22CFepLayoutEditAreaBaseD1Ev @ 343 NONAME
+	_ZN22CFepLayoutEditAreaBaseD2Ev @ 344 NONAME
+	_ZN8CDragBar10ConstructLEv @ 345 NONAME
+	_ZN8CDragBar10SetBitmapLEP10CFbsBitmap14TButtonBmpType @ 346 NONAME
+	_ZN8CDragBar12OnDeActivateEv @ 347 NONAME
+	_ZN8CDragBar14HandleTimerOutEi @ 348 NONAME
+	_ZN8CDragBar14SetMaskBitmapLEP10CFbsBitmap14TButtonBmpType @ 349 NONAME
+	_ZN8CDragBar17SetLongpressTimerE27TTimeIntervalMicroSeconds32 @ 350 NONAME
+	_ZN8CDragBar18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 351 NONAME
+	_ZN8CDragBar18IsValidDestinationERK6TPointRiS3_ @ 352 NONAME
+	_ZN8CDragBar19AddPositionObserverEP17MPositionObserver @ 353 NONAME
+	_ZN8CDragBar19IsDraggingComponentEP14CFepUiBaseCtrl @ 354 NONAME
+	_ZN8CDragBar21HandlePointerUpEventLERK6TPoint @ 355 NONAME
+	_ZN8CDragBar22RemovePositionObserverEP17MPositionObserver @ 356 NONAME
+	_ZN8CDragBar23HandlePointerDownEventLERK6TPoint @ 357 NONAME
+	_ZN8CDragBar23HandlePointerMoveEventLERK6TPoint @ 358 NONAME
+	_ZN8CDragBar4MoveERK6TPoint @ 359 NONAME
+	_ZN8CDragBar4NewLERK5TRectP12CFepUiLayouti @ 360 NONAME
+	_ZN8CDragBarC1ERK5TRectP12CFepUiLayouti @ 361 NONAME
+	_ZN8CDragBarC2ERK5TRectP12CFepUiLayouti @ 362 NONAME
+	_ZN8CDragBarD0Ev @ 363 NONAME
+	_ZN8CDragBarD1Ev @ 364 NONAME
+	_ZN8CDragBarD2Ev @ 365 NONAME
+	_ZNK22CFepLayoutEditAreaBase13CursorVisibleEv @ 366 NONAME
+	_ZNK22CFepLayoutEditAreaBase21PositionInDisplayTextEi @ 367 NONAME
+	_ZTI11CButtonBase @ 368 NONAME ; #<TI>#
+	_ZTI11CHwrWndBase @ 369 NONAME ; #<TI>#
+	_ZTI11CVirtualKey @ 370 NONAME ; #<TI>#
+	_ZTI12CFepUiLayout @ 371 NONAME ; #<TI>#
+	_ZTI12CLayoutTimer @ 372 NONAME ABSENT ; #<TI>#
+	_ZTI13CCandidateWnd @ 373 NONAME ; #<TI>#
+	_ZTI13CControlGroup @ 374 NONAME ; #<TI>#
+	_ZTI14CFepUiBaseCtrl @ 375 NONAME ; #<TI>#
+	_ZTI15CInsertionPoint @ 376 NONAME ABSENT ; #<TI>#
+	_ZTI16CVirtualKeyboard @ 377 NONAME ; #<TI>#
+	_ZTI18CFepLayoutPopupWnd @ 378 NONAME ; #<TI>#
+	_ZTI18CTransparentHwrWnd @ 379 NONAME ; #<TI>#
+	_ZTI20CFepFullScreenLayout @ 380 NONAME ; #<TI>#
+	_ZTI20CFepLayoutChoiceList @ 381 NONAME ; #<TI>#
+	_ZTI20CFepUiLayoutRootCtrl @ 382 NONAME ABSENT ; #<TI>#
+	_ZTI21CFepInputContextField @ 383 NONAME ; #<TI>#
+	_ZTI21CFepLayoutLatchButton @ 384 NONAME ; #<TI>#
+	_ZTI21CTransparentHwrWndExt @ 385 NONAME ; #<TI>#
+	_ZTI22CFepLayoutEditAreaBase @ 386 NONAME ; #<TI>#
+	_ZTI8CDragBar @ 387 NONAME ; #<TI>#
+	_ZTV11CButtonBase @ 388 NONAME ; #<VT>#
+	_ZTV11CHwrWndBase @ 389 NONAME ; #<VT>#
+	_ZTV11CVirtualKey @ 390 NONAME ; #<VT>#
+	_ZTV12CFepUiLayout @ 391 NONAME ; #<VT>#
+	_ZTV12CLayoutTimer @ 392 NONAME ABSENT ; #<VT>#
+	_ZTV13CCandidateWnd @ 393 NONAME ; #<VT>#
+	_ZTV13CControlGroup @ 394 NONAME ; #<VT>#
+	_ZTV14CFepUiBaseCtrl @ 395 NONAME ; #<VT>#
+	_ZTV15CInsertionPoint @ 396 NONAME ABSENT ; #<VT>#
+	_ZTV16CVirtualKeyboard @ 397 NONAME ; #<VT>#
+	_ZTV18CFepLayoutPopupWnd @ 398 NONAME ; #<VT>#
+	_ZTV18CTransparentHwrWnd @ 399 NONAME ; #<VT>#
+	_ZTV20CFepFullScreenLayout @ 400 NONAME ; #<VT>#
+	_ZTV20CFepLayoutChoiceList @ 401 NONAME ; #<VT>#
+	_ZTV20CFepUiLayoutRootCtrl @ 402 NONAME ABSENT ; #<VT>#
+	_ZTV21CFepInputContextField @ 403 NONAME ; #<VT>#
+	_ZTV21CFepLayoutLatchButton @ 404 NONAME ; #<VT>#
+	_ZTV21CTransparentHwrWndExt @ 405 NONAME ; #<VT>#
+	_ZTV22CFepLayoutEditAreaBase @ 406 NONAME ; #<VT>#
+	_ZTV8CDragBar @ 407 NONAME ; #<VT>#
+	_ZThn388_N11CHwrWndBase14HandleTimerOutEi @ 408 NONAME ABSENT ; #<thunk>#
+	_ZThn388_N13CCandidateWnd13SetCandidateLERK13RPointerArrayI7HBufC16E @ 409 NONAME ABSENT ; #<thunk>#
+	_ZThn392_N13CCandidateWnd14HandleTimerOutEi @ 410 NONAME ABSENT ; #<thunk>#
+	_ZThn4_N12CFepUiLayout10OnActivateEv @ 411 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout12HandleEventLE10TEventTypePKv @ 412 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout12OnDeActivateEv @ 413 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout13HandleCommandEiPh @ 414 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout16OnResourceChangeEi @ 415 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout21OnAppEditorTextComingERK29TFepInputContextFieldData @ 416 NONAME ABSENT ; #<thunk>#
+	_ZThn4_N12CFepUiLayout24SemiTransparencyRequiredEv @ 417 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout26GetInputContextFieldMaxLenEv @ 418 NONAME ABSENT ; #<thunk>#
+	_ZThn4_N12CFepUiLayout4DrawEv @ 419 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout4InitEv @ 420 NONAME ; #<thunk>#
+	_ZThn4_N12CFepUiLayout7DestroyEv @ 421 NONAME ; #<thunk>#
+	_ZThn4_N14CFepUiBaseCtrl10MovingAreaEv @ 422 NONAME ; #<thunk>#
+	_ZThn4_N14CFepUiBaseCtrl16IsFepBaseControlEv @ 423 NONAME ; #<thunk>#
+	_ZThn4_N14CFepUiBaseCtrl20HandlePositionChangeERK6TPoint @ 424 NONAME ; #<thunk>#
+	_ZThn4_N20CFepFullScreenLayout12HandleEventLE10TEventTypePKv @ 425 NONAME ; #<thunk>#
+	_ZThn4_N20CFepFullScreenLayout24SemiTransparencyRequiredEv @ 426 NONAME ; #<thunk>#
+	_ZThn4_N20CFepFullScreenLayout4InitEv @ 427 NONAME ; #<thunk>#
+	_ZThn576_N8CDragBar14HandleTimerOutEi @ 428 NONAME ABSENT ; #<thunk>#
+	_ZThn580_N8CDragBar18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 429 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N20CFepFullScreenLayout14HandleTimerOutEi @ 430 NONAME ABSENT ; #<thunk>#
+	_ZThn8_N13CControlGroup22ConstructFromResourceLEv @ 431 NONAME ; #<thunk>#
+	_ZThn8_N14CFepUiBaseCtrl13SetResourceIdEl @ 432 NONAME ; #<thunk>#
+	_ZThn8_N14CFepUiBaseCtrl22ConstructFromResourceLEv @ 433 NONAME ; #<thunk>#
+	_ZN11CButtonBase20SetBackgroundBitmapLEP10CFbsBitmap @ 434 NONAME
+	_ZN11CButtonBase24SetBackgroundMaskBitmapLEP10CFbsBitmap @ 435 NONAME
+	_ZN14CFepUiBaseCtrl14DrawBackgroundEi @ 436 NONAME
+	_ZN14CFepUiBaseCtrl18DrawMaskBackgroundEi @ 437 NONAME
+	_ZN14CFepUiBaseCtrl24DrawOpaqueMaskBackgroundEi @ 438 NONAME
+	_ZN14CFepUiBaseCtrl29DrawTransparentMaskBackgroundERK5TRecti @ 439 NONAME
+	_ZN16CVirtualKeyboard14ReportKeyEventENS_16TVirtualKeyEventE @ 440 NONAME ABSENT
+	_ZN18CVirtualItutKeypad10ConstructLEv @ 441 NONAME ABSENT
+	_ZN18CVirtualItutKeypad21HandlePointerUpEventLERK6TPoint @ 442 NONAME ABSENT
+	_ZN18CVirtualItutKeypad23HandlePointerDownEventLERK6TPoint @ 443 NONAME ABSENT
+	_ZN18CVirtualItutKeypad23HandlePointerMoveEventLERK6TPoint @ 444 NONAME ABSENT
+	_ZN18CVirtualItutKeypad4NewLERK5TRectP12CFepUiLayoutiP5CFont @ 445 NONAME ABSENT
+	_ZN18CVirtualItutKeypad4NewLERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 446 NONAME ABSENT
+	_ZN18CVirtualItutKeypadC1ERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 447 NONAME ABSENT
+	_ZN18CVirtualItutKeypadC2ERK5TRectP12CFepUiLayoutiRK9TFontSpec @ 448 NONAME ABSENT
+	_ZN18CVirtualItutKeypadD0Ev @ 449 NONAME ABSENT
+	_ZN18CVirtualItutKeypadD1Ev @ 450 NONAME ABSENT
+	_ZN18CVirtualItutKeypadD2Ev @ 451 NONAME ABSENT
+	_ZTI18CVirtualItutKeypad @ 452 NONAME ABSENT ; #<TI>#
+	_ZTV18CVirtualItutKeypad @ 453 NONAME ABSENT ; #<VT>#
+	_ZN11CButtonBase4HideEi @ 454 NONAME
+	_ZN11CButtonBase7SetRectERK5TRect @ 455 NONAME ABSENT
+	_ZN11CVirtualKey7SetRectERK5TRect @ 456 NONAME
+	_ZN16CVirtualKeyboard24RemoveKeyHighLightBitmapEi @ 457 NONAME
+	_ZN16CVirtualKeyboard28RemoveKeyHighLightMaskBitmapEi @ 458 NONAME
+	_ZN16CVirtualKeyboard9RemoveKeyEP11CVirtualKey @ 459 NONAME
+	_ZN14CFepUiBaseCtrl10DrawBitmapE5TRectPK10CFbsBitmapi @ 460 NONAME
+	_ZN14CFepUiBaseCtrl14DrawBackgroundE5TRecti @ 461 NONAME
+	_ZN14CFepUiBaseCtrl24DrawOpaqueMaskBackgroundE5TRecti @ 462 NONAME
+	_ZN18CFepLayoutPopupWnd12OnDeActivateEv @ 463 NONAME
+	_ZN11CVirtualKey12SetUnicodesLER13RPointerArrayI7HBufC16E @ 464 NONAME
+	_ZN11CVirtualKey4NewLER13RPointerArrayI7HBufC16EiRK5TRect @ 465 NONAME
+	_ZN13CControlGroup13ControlByTypeExi @ 466 NONAME
+	_ZN13CControlGroup17UpdateValidRegionEP14CFepUiBaseCtrli @ 467 NONAME
+	_ZN14CFepUiBaseCtrl10Extension_EjRPvS0_ @ 468 NONAME
+	_ZN16CVirtualKeyboard10AddRawKeyLEP11CVirtualKey @ 469 NONAME
+	_ZN16CVirtualKeyboard13CreateRawKeyLER13RPointerArrayI7HBufC16EiRK5TRect @ 470 NONAME
+	_ZN16CVirtualKeyboard13CreateRawKeyLERK7TDesC16jRK5TRectS5_iii @ 471 NONAME
+	_ZN16CVirtualKeyboard13CreateRawKeyLEjjRK5TRectS2_iii @ 472 NONAME
+	_ZN16CVirtualKeyboard7SetRectERK5TRect @ 473 NONAME
+	_ZN21CTransparentHwrWndExt10ConstructLEv @ 474 NONAME
+	_ZN21CTransparentHwrWndExt10DrawStrokeEi @ 475 NONAME
+	_ZN21CTransparentHwrWndExt12OnDeActivateEv @ 476 NONAME
+	_ZN21CTransparentHwrWndExt21HandlePointerUpEventLERK6TPoint @ 477 NONAME
+	_ZN21CTransparentHwrWndExt21OnLayoutDraggingStartEv @ 478 NONAME
+	_ZN21CTransparentHwrWndExt23HandlePointerDownEventLERK6TPoint @ 479 NONAME
+	_ZN21CTransparentHwrWndExt23HandlePointerMoveEventLERK6TPoint @ 480 NONAME
+	_ZN22CFepLayoutEditAreaBase17UpdateValidRegionEP14CFepUiBaseCtrli @ 481 NONAME
+	_ZN22CFepLayoutEditAreaBase8SetTextLERK25TFepInputContextFieldData @ 482 NONAME
+	_ZN20CFepLayoutChoiceList10ItemsCountEv @ 483 NONAME
+	_ZN22CFepLayoutMultiLineIcf10OnActivateEv @ 484 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcf12OnDeActivateEv @ 485 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcf12SizeChangedLERK5TRectii @ 486 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcf13SetTextColorLE4TRgb @ 487 NONAME
+	_ZN22CFepLayoutMultiLineIcf14SetFontHeightLEii @ 488 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcf15SetOverLapStateEi5TRect @ 489 NONAME
+	_ZN22CFepLayoutMultiLineIcf16SetCursorVisibleEi @ 490 NONAME
+	_ZN22CFepLayoutMultiLineIcf16SetTextSelColorLE4TRgb @ 491 NONAME
+	_ZN22CFepLayoutMultiLineIcf18CancelPointerDownLEv @ 492 NONAME
+	_ZN22CFepLayoutMultiLineIcf18HandlePointerLeaveERK6TPoint @ 493 NONAME
+	_ZN22CFepLayoutMultiLineIcf19PrepareForFocusGainEv @ 494 NONAME
+	_ZN22CFepLayoutMultiLineIcf19PrepareForFocusLossEv @ 495 NONAME
+	_ZN22CFepLayoutMultiLineIcf20GetEditorFieldMaxLenEv @ 496 NONAME
+	_ZN22CFepLayoutMultiLineIcf20HandleArrowBtnEventLENS_14TArrowBtnEventE @ 497 NONAME
+	_ZN22CFepLayoutMultiLineIcf21HandlePointerUpEventLERK6TPoint @ 498 NONAME
+	_ZN22CFepLayoutMultiLineIcf23HandlePointerDownEventLERK6TPoint @ 499 NONAME
+	_ZN22CFepLayoutMultiLineIcf23HandlePointerMoveEventLERK6TPoint @ 500 NONAME
+	_ZN22CFepLayoutMultiLineIcf24SetAutoCompleteTextColorE4TRgb @ 501 NONAME
+	_ZN22CFepLayoutMultiLineIcf4DrawEv @ 502 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcf4MoveERK6TPoint @ 503 NONAME
+	_ZN22CFepLayoutMultiLineIcf4NewLE5TRectP12CFepUiLayoutiii @ 504 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcf7SetRectERK5TRect @ 505 NONAME
+	_ZN22CFepLayoutMultiLineIcf8ContainsERK6TPoint @ 506 NONAME
+	_ZN22CFepLayoutMultiLineIcf8SetFocusEi @ 507 NONAME
+	_ZN22CFepLayoutMultiLineIcf8SetTextLERK25TFepInputContextFieldData @ 508 NONAME
+	_ZN22CFepLayoutMultiLineIcf9IsFocusedEv @ 509 NONAME
+	_ZN22CFepLayoutMultiLineIcf9SetDimmedEi @ 510 NONAME
+	_ZN22CFepLayoutMultiLineIcfD0Ev @ 511 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcfD1Ev @ 512 NONAME ABSENT
+	_ZN22CFepLayoutMultiLineIcfD2Ev @ 513 NONAME ABSENT
+	_ZNK22CFepLayoutMultiLineIcf13CursorVisibleEv @ 514 NONAME
+	_ZTI22CFepLayoutMultiLineIcf @ 515 NONAME ; #<TI>#
+	_ZTI24CFepLayoutMIcfCustomDraw @ 516 NONAME ; #<TI>#
+	_ZTIN13CControlGroup14CSubRegionAreaE @ 517 NONAME ; #<TI>#
+	_ZTV22CFepLayoutMultiLineIcf @ 518 NONAME ; #<VT>#
+	_ZTV24CFepLayoutMIcfCustomDraw @ 519 NONAME ; #<VT>#
+	_ZTVN13CControlGroup14CSubRegionAreaE @ 520 NONAME ; #<VT>#
+	_ZN11CVirtualKey16IrregualrKeyTypeEv @ 521 NONAME
+	_ZN11CVirtualKey19SetIrregualrKeyTypeE27TVirtualKeyIrregularKeyType @ 522 NONAME
+	_ZN12CFepUiLayout20GetEnabledPluginModeEv @ 523 NONAME
+	_ZN14CFepUiBaseCtrl10AbleToDrawEv @ 524 NONAME
+	_ZN14CFepUiBaseCtrl10BringToTopEv @ 525 NONAME
+	_ZN14CFepUiBaseCtrl10WholeHidenEv @ 526 NONAME
+	_ZN14CFepUiBaseCtrl15ValidClipRegionEv @ 527 NONAME
+	_ZN16CVirtualKeyboard18IrregularKeyBitmapE27TVirtualKeyIrregularKeyType28TVirtualKeyIrregularKeyState @ 528 NONAME
+	_ZN16CVirtualKeyboard19IsIrregularKeyBoardEv @ 529 NONAME
+	_ZN16CVirtualKeyboard20SetIrregularKeyBoardEi @ 530 NONAME
+	_ZN16CVirtualKeyboard21NonIrregularKeyBitmapE18TVirtualKeyBmpType @ 531 NONAME
+	_ZN16CVirtualKeyboard22AddIrregularKeyBitmapLE27TVirtualKeyIrregularKeyType28TVirtualKeyIrregularKeyStateP10CFbsBitmap @ 532 NONAME
+	_ZN16CVirtualKeyboard25RemoveIrregularKeyBitmapLE27TVirtualKeyIrregularKeyType28TVirtualKeyIrregularKeyState @ 533 NONAME
+	_ZN16CVirtualKeyboard25SetNonIrregularKeyBitmapLE18TVirtualKeyBmpTypeP10CFbsBitmap @ 534 NONAME
+	_ZN16CVirtualKeyboard4NewLERK5TRectP12CFepUiLayoutiP5CFonti @ 535 NONAME
+	_ZN16CVirtualKeyboard4NewLERK5TRectP12CFepUiLayoutiRK9TFontSpeci @ 536 NONAME
+	_ZN16CVirtualKeyboardC1ERK5TRectP12CFepUiLayoutiRK9TFontSpeci @ 537 NONAME
+	_ZN16CVirtualKeyboardC2ERK5TRectP12CFepUiLayoutiRK9TFontSpeci @ 538 NONAME
+	_ZN18CFepLayoutPopupWnd7DisplayERK5TRect @ 539 NONAME
+	_ZN20CFepLayoutChoiceList11FindCommandEi @ 540 NONAME
+	_ZN20CFepLayoutChoiceList12ReCalcLayoutEv @ 541 NONAME
+	_ZN20CFepLayoutChoiceList4DrawEv @ 542 NONAME
+	_ZN20CFepLayoutChoiceList9OnDisplayEv @ 543 NONAME
+	_ZN22CFepLayoutMultiLineIcf12SizeChangedLERK5TRectiiPK5CFont @ 544 NONAME
+	_ZN22CFepLayoutMultiLineIcf14SetPromptTextLERK7TDesC16i @ 545 NONAME
+	_ZN22CFepLayoutMultiLineIcf15AddOverLapStateE5TRect @ 546 NONAME
+	_ZN22CFepLayoutMultiLineIcf17SetTextAlignmentLEii @ 547 NONAME
+	_ZN22CFepLayoutMultiLineIcf4NewLE5TRectP12CFepUiLayoutiiiPK5CFont @ 548 NONAME
+	_ZN22CFepLayoutMultiLineIcf7IsEmptyEv @ 549 NONAME
+	_ZN22CFepLayoutMultiLineIcf8SetFontLEiiPK5CFont @ 550 NONAME
+	_ZN23CFepLayoutAknChoiceList10ConstructLEv @ 551 NONAME
+	_ZN23CFepLayoutAknChoiceList10ItemsCountEv @ 552 NONAME
+	_ZN23CFepLayoutAknChoiceList11ClearItemsLEv @ 553 NONAME
+	_ZN23CFepLayoutAknChoiceList11InsertItemLEiRKN20CFepLayoutChoiceList5SItemE @ 554 NONAME
+	_ZN23CFepLayoutAknChoiceList11SetItemRectERK5TRectS2_ @ 555 NONAME
+	_ZN23CFepLayoutAknChoiceList12ReCalcLayoutEv @ 556 NONAME
+	_ZN23CFepLayoutAknChoiceList16ScrollbarVisibleEv @ 557 NONAME
+	_ZN23CFepLayoutAknChoiceList17RemoveItemByIndexEi @ 558 NONAME
+	_ZN23CFepLayoutAknChoiceList19FormatedCellListBoxEv @ 559 NONAME
+	_ZN23CFepLayoutAknChoiceList19RemoveItemByCommandEi @ 560 NONAME
+	_ZN23CFepLayoutAknChoiceList20MinItemWidthInPixelsEv @ 561 NONAME
+	_ZN23CFepLayoutAknChoiceList21HandlePointerUpEventLERK6TPoint @ 562 NONAME
+	_ZN23CFepLayoutAknChoiceList23HandlePointerDownEventLERK6TPoint @ 563 NONAME
+	_ZN23CFepLayoutAknChoiceList23HandlePointerMoveEventLERK6TPoint @ 564 NONAME
+	_ZN23CFepLayoutAknChoiceList4DrawEv @ 565 NONAME
+	_ZN23CFepLayoutAknChoiceList4NewLEP12CFepUiLayoutiP11CCoeControl @ 566 NONAME
+	_ZN23CFepLayoutAknChoiceList7ListBoxEv @ 567 NONAME
+	_ZN23CFepLayoutAknChoiceList7SetRectERK5TRect @ 568 NONAME
+	_ZN23CFepLayoutAknChoiceList8AddItemLERKN20CFepLayoutChoiceList5SItemE @ 569 NONAME
+	_ZN23CFepLayoutAknChoiceList9OnDisplayERK6TPoint @ 570 NONAME
+	_ZN23CFepLayoutAknChoiceList9SetItemsLERK13RPointerArrayIN20CFepLayoutChoiceList5SItemEE @ 571 NONAME
+	_ZN23CFepLayoutAknChoiceListC1EP12CFepUiLayoutiP11CCoeControl @ 572 NONAME
+	_ZN23CFepLayoutAknChoiceListC2EP12CFepUiLayoutiP11CCoeControl @ 573 NONAME
+	_ZN23CFepLayoutAknChoiceListD0Ev @ 574 NONAME
+	_ZN23CFepLayoutAknChoiceListD1Ev @ 575 NONAME
+	_ZN23CFepLayoutAknChoiceListD2Ev @ 576 NONAME
+	_ZTI23CFepLayoutAknChoiceList @ 577 NONAME ; #<TI>#
+	_ZTV23CFepLayoutAknChoiceList @ 578 NONAME ; #<VT>#
+	_ZThn448_N11CHwrWndBase14HandleTimerOutEi @ 579 NONAME ; #<thunk>#
+	_ZThn448_N13CCandidateWnd13SetCandidateLERK13RPointerArrayI7HBufC16E @ 580 NONAME ; #<thunk>#
+	_ZThn452_N13CCandidateWnd14HandleTimerOutEi @ 581 NONAME ; #<thunk>#
+	_ZThn636_N8CDragBar14HandleTimerOutEi @ 582 NONAME ; #<thunk>#
+	_ZThn640_N8CDragBar18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 583 NONAME ; #<thunk>#
+	_ZN12CFepUiLayout17DoTactileFeedbackE21TTouchLogicalFeedback @ 584 NONAME ABSENT
+	_ZN12CFepUiLayout22SupportTactileFeedbackEv @ 585 NONAME
+	_ZN16CVirtualKeyboard10ShowBubbleEi @ 586 NONAME
+	_ZN16CVirtualKeyboard13SetBubbleSizeERK5TSize @ 587 NONAME
+	_ZN16CVirtualKeyboard13SetTextFormatE18TAknTextLineLayout @ 588 NONAME
+	_ZN16CVirtualKeyboard17GowithPointerDownEv @ 589 NONAME
+	_ZN16CVirtualKeyboard20SetBubbleBitmapParamEP10CFbsBitmapS1_11TAknsItemID @ 590 NONAME
+	_ZN16CVirtualKeyboard20SetGowithPointerDownEi @ 591 NONAME
+	_ZN16CVirtualKeyboard23SetBubbleVerticalMarginEi @ 592 NONAME
+	_ZN20CFepLayoutChoiceList9SetSkinIDE11TAknsItemIDS0_ @ 593 NONAME
+	_ZTI11CBubbleCtrl @ 594 NONAME ; #<TI>#
+	_ZTV11CBubbleCtrl @ 595 NONAME ; #<VT>#
+	_ZN20CFepLayoutChoiceList17ReportChoiceEventERNS_6SEventE @ 596 NONAME
+	_ZN22CFepLayoutMultiLineIcf13InlineTextPosER6TPointS1_ @ 597 NONAME
+	_ZNK20CFepLayoutChoiceList19CurrentFocusedIndexEv @ 598 NONAME
+	_ZN12CFepUiLayout19HandleAppInfoChangeERK7TDesC1616TPeninputAppInfo @ 599 NONAME
+	_ZThn4_N12CFepUiLayout19HandleAppInfoChangeERK7TDesC1616TPeninputAppInfo @ 600 NONAME ; #<thunk>#
+	_ZN11CBubbleCtrl13SetTextFormatE18TAknTextLineLayout @ 601 NONAME
+	_ZN11CBubbleCtrl14SetBitmapParamEP10CFbsBitmapS1_11TAknsItemID @ 602 NONAME
+	_ZN11CBubbleCtrl4DrawEv @ 603 NONAME
+	_ZN11CBubbleCtrl4HideEi @ 604 NONAME
+	_ZN11CBubbleCtrl4NewLERK5TRectP12CFepUiLayouti @ 605 NONAME
+	_ZN11CBubbleCtrl5PopupERK5TRect @ 606 NONAME
+	_ZN11CBubbleCtrl8SetTextLERK7TDesC16 @ 607 NONAME
+	_ZN11CBubbleCtrl9IsShowingEv @ 608 NONAME
+	_ZN11CBubbleCtrlC1ERK5TRectP12CFepUiLayouti @ 609 NONAME
+	_ZN11CBubbleCtrlC2ERK5TRectP12CFepUiLayouti @ 610 NONAME
+	_ZN11CBubbleCtrlD0Ev @ 611 NONAME
+	_ZN11CBubbleCtrlD1Ev @ 612 NONAME
+	_ZN11CBubbleCtrlD2Ev @ 613 NONAME
+	_ZN22CFepLayoutMultiLineIcf13MsgBubbleCtrlEv @ 614 NONAME
+	_ZN22CFepLayoutMultiLineIcf20SetMsgBubbleCtrlSizeERK5TSize @ 615 NONAME
+	_ZN22CFepLayoutMultiLineIcf10PromptTextEv @ 616 NONAME
+	_ZN13CControlGroup20HandleResourceChangeEi @ 617 NONAME
+	_ZN14CFepUiBaseCtrl20HandleResourceChangeEi @ 618 NONAME
+	_ZN14CFepUiBaseCtrl16SimulateRawEventERK9TRawEvent @ 619 NONAME
+	_ZN18CFepLayoutPopupWnd7DisplayERK5TRectNS_16TDisplayPositionE @ 620 NONAME
+	_ZN22CFepLayoutMultiLineIcf10HideBubbleEv @ 621 NONAME
+	_ZN22CFepLayoutMultiLineIcf10ShowBubbleERK7TDesC16RK5TRect @ 622 NONAME
+	_ZN20CFepLayoutChoiceList22SetCurrentFocusedIndexEi @ 623 NONAME
+	_ZTI24CFepLayoutMIcfCustomWrap @ 624 NONAME ; #<TI>#
+	_ZTV24CFepLayoutMIcfCustomWrap @ 625 NONAME ; #<VT>#
+	_ZN13CControlGroup24GraphicDeviceSizeChangedEv @ 626 NONAME
+	_ZN14CFepUiBaseCtrl24GraphicDeviceSizeChangedEv @ 627 NONAME
+	_ZN22CFepLayoutMultiLineIcf24GraphicDeviceSizeChangedEv @ 628 NONAME ABSENT
+	_ZN11CBubbleCtrl12SetFrameDiffEiiii @ 629 NONAME
+	_ZN16CVirtualKeyboard12SetFrameDiffEiiii @ 630 NONAME
+	_ZN12CFepUiLayout18ChangeFeedbackAreaEiRK5TRectS2_ @ 631 NONAME
+	_ZN12CFepUiLayout20RegisterFeedbackAreaEiRK5TRect @ 632 NONAME
+	_ZN12CFepUiLayout22DeRegisterFeedbackAreaEiRK5TRect @ 633 NONAME
+	_ZN12CFepUiLayout17DoTactileFeedbackEi @ 634 NONAME
+	_ZN22CFepLayoutMultiLineIcf11ExtractTextER6TDes16ii @ 635 NONAME
+	_ZN21CTransparentHwrWndExt17CancelCharWritingEv @ 636 NONAME
+	_ZThn88_N20CFepFullScreenLayout14HandleTimerOutEi @ 637 NONAME ; #<thunk>#
+	_ZN11CBubbleCtrl14SetBitmapParamEP10CFbsBitmapS1_11TAknsItemIDS2_S2_ @ 638 NONAME
+	_ZN18CFepLayoutPopupWnd14AfterDisplayedEv @ 639 NONAME
+	_ZN20CFepLayoutChoiceList14AfterDisplayedEv @ 640 NONAME
+	_ZN22CFepLayoutEditAreaBase17SetTextAlignmentLEi @ 641 NONAME
+	_ZN11CBubbleCtrl5CloseEv @ 642 NONAME
+	_ZN12CFepUiCursor11SetPositionERK6TPoint @ 643 NONAME
+	_ZN12CFepUiCursor17UpdateValidRegionEP14CFepUiBaseCtrli @ 644 NONAME
+	_ZN12CFepUiCursor6ReDrawEi @ 645 NONAME
+	_ZN12CFepUiLayout12CreateCursorEv @ 646 NONAME
+	_ZN13CControlGroup17BringToTopInGroupEP14CFepUiBaseCtrl @ 647 NONAME
+	_ZN13CControlGroup18BringToBackInGroupEP14CFepUiBaseCtrl @ 648 NONAME
+	_ZN14CFepUiBaseCtrl11AbsOrderPosEv @ 649 NONAME
+	_ZN14CFepUiBaseCtrl11BringToBackEv @ 650 NONAME
+	_ZN14CFepUiBaseCtrl15UpdateAreaImmedERK5TRecti @ 651 NONAME
+	_ZN14CFepUiBaseCtrl9SetParentEPS_ @ 652 NONAME
+	_ZN22CFepLayoutMultiLineIcf12NomatchStateEv @ 653 NONAME
+	_ZN22CFepLayoutMultiLineIcf12SetLineSpaceEi @ 654 NONAME
+	_ZN22CFepLayoutMultiLineIcf13InlineStateOnEv @ 655 NONAME
+	_ZN22CFepLayoutMultiLineIcf13SetLanguageIdEi @ 656 NONAME
+	_ZN22CFepLayoutMultiLineIcf13SetTextMarginEiiii @ 657 NONAME
+	_ZN22CFepLayoutMultiLineIcf14BaseConstructLE5TRectiiPK5CFont @ 658 NONAME
+	_ZN22CFepLayoutMultiLineIcf14SetBgImgSkinIdE11TAknsItemID @ 659 NONAME
+	_ZN22CFepLayoutMultiLineIcf15SetTextIsSecretEi @ 660 NONAME
+	_ZN22CFepLayoutMultiLineIcf18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 661 NONAME
+	_ZN22CFepLayoutMultiLineIcf19EnableTextSelectionEi @ 662 NONAME
+	_ZN22CFepLayoutMultiLineIcf27SetLineSeparatorAfterPromptEi @ 663 NONAME
+	_ZN22CFepLayoutMultiLineIcfC1EP12CFepUiLayouti @ 664 NONAME
+	_ZN22CFepLayoutMultiLineIcfC2EP12CFepUiLayouti @ 665 NONAME
+	_ZN28CFepLayoutMultiLineIcfEditor4NewLE5TRectP12CFepUiLayoutiiiPK5CFont @ 666 NONAME
+	_ZNK22CFepLayoutMultiLineIcf12TextIsSecretEv @ 667 NONAME
+	_ZThn616_N22CFepLayoutMultiLineIcf18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 668 NONAME ; #<thunk>#
+	_ZN22CFepLayoutMultiLineIcf20SetBackgroundBitmapLEP10CFbsBitmap @ 669 NONAME
+	_ZN22CFepLayoutMultiLineIcf17UpdateSecretTextLEv @ 670 NONAME
+	_ZN12CFepUiLayout22SetPositionFromOutsideERK6TPoint @ 671 NONAME
+	_ZThn4_N12CFepUiLayout22SetPositionFromOutsideERK6TPoint @ 672 NONAME ; #<thunk>#
+	_ZN18CFepLayoutPopupWnd10ReDrawRectERK5TRect @ 673 NONAME
+	_ZN22CFepLayoutMultiLineIcf10ReDrawRectERK5TRect @ 674 NONAME
+	_ZN11CVirtualKey18SetDisplayUnicodeLERK7TDesC16 @ 675 NONAME
+	_ZN13CControlGroup26DrawControlGroupBackgroundERK5TRect @ 676 NONAME
+	_ZN8CDragBar18CancelPointerDownLEv @ 677 NONAME
+	_ZN16CVirtualKeyboard18SetVirtualKeyImgIDE19TVirtualKeyDrawInfo @ 678 NONAME
+	_ZN12CFepUiCursor23DelayCursorWhileDragingEv @ 679 NONAME
+	_ZN12CFepUiCursor5SetOnEii @ 680 NONAME
+	_ZN12CFepUiCursor8PositionEv @ 681 NONAME
+	_ZN12CFepUiCursor9SetHeightEi @ 682 NONAME
+	_ZN15CInsertionPoint23DelayCursorWhileDragingEv @ 683 NONAME
+	_ZN15CInsertionPoint4NewLEP14CFepUiBaseCtrlP16CFbsBitmapDeviceP14CBitmapContexti @ 684 NONAME
+	_ZN15CInsertionPoint5SetOnEi @ 685 NONAME
+	_ZN15CInsertionPoint9SetHeightEi @ 686 NONAME
+	_ZN14CFepUiBaseCtrl13SetOrdinalPosEi @ 687 NONAME
+	_ZN16CVirtualKeyboard12SetShiftIconEP18CPenInputColorIcon @ 688 NONAME
+	_ZN13CControlGroup4NewLEP12CFepUiLayoutii @ 689 NONAME
+	_ZN13CControlGroupC1EP12CFepUiLayoutii @ 690 NONAME
+	_ZN13CControlGroupC2EP12CFepUiLayoutii @ 691 NONAME
+	_ZN22CFepLayoutMultiLineIcf17SetNumberGroupingEi @ 692 NONAME
+	_ZN12CFepUiCursor16DelayCursorShownEv @ 693 NONAME
+	_ZN11CVirtualKey11HideKeyCtrlEi @ 694 NONAME
+	_ZN16CVirtualKeyboard17EnableKeyFeedbackEP11CVirtualKeyi @ 695 NONAME
+	_ZN18CTransparentHwrWnd11ClearStrokeEv @ 696 NONAME
+	_ZN18CTransparentHwrWnd25InstallPenTraceDecoratorLERK7TDesC16i @ 697 NONAME
+	_ZN18CTransparentHwrWnd25SupportPenTraceDecorationEv @ 698 NONAME
+	_ZN18CTransparentHwrWnd26ActivatePenTraceDecorationEii @ 699 NONAME
+	_ZN18CTransparentHwrWnd27PenTraceDecorationActivatedEv @ 700 NONAME
+	_ZTI26CPeninputPenTraceDecorator @ 701 NONAME ; #<TI>#
+	_ZTV26CPeninputPenTraceDecorator @ 702 NONAME ; #<VT>#
+        _ZN22CFepLayoutMultiLineIcf17TooltipBubbleCtrlEv @ 703 NONAME
+        _ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16 @ 704 NONAME
+        _ZN22CFepLayoutMultiLineIcf11HideTooltipEv @ 705 NONAME        
+	_ZTI18CTooltipBubbleCtrl @ 706 NONAME
+	_ZTV18CTooltipBubbleCtrl @ 707 NONAME
+	_ZN12CFepUiLayout20RegisterFeedbackAreaEiRK5TRecti @ 708 NONAME
+	_ZN12CFepUiLayout18ChangeFeedbackTypeEii @ 709 NONAME
+	_ZN14CFepUiBaseCtrl22SetTactileFeedbackTypeEi @ 710 NONAME
+	_ZN14CFepUiBaseCtrl23CFepUiBaseCtrlExtension19TactileFeedbackTypeEv @ 711 NONAME
+	_ZN12CFepUiLayout17DoTactileFeedbackEiii @ 712 NONAME
+	_ZN22CFepLayoutMultiLineIcf14HideInfoBubbleEv @ 713 NONAME
+	_ZN22CFepLayoutMultiLineIcf14InfoBubbleCtrlEv @ 714 NONAME
+	_ZN22CFepLayoutMultiLineIcf21SetInfoBubbleCtrlSizeERK5TSize @ 715 NONAME
+	_ZN22CFepLayoutMultiLineIcf21ShowByteWarningBubbleERK7TDesC16 @ 716 NONAME
+

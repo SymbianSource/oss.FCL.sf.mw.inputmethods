@@ -1,0 +1,45 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:            Image description file for project peninputimeplugincn
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#ifndef PENINPUTIMEPLUGINCN_VARIANT_IBY
+#define PENINPUTIMEPLUGINCN_VARIANT_IBY
+
+#include <data_caging_paths_for_iby.hrh>
+#include <bldvariant.hrh>
+
+#ifdef __PEN_SUPPORT
+#ifdef RD_SCALABLE_UI_V2 
+#ifdef __CHINESE
+
+ECOM_PLUGIN(peninputimeplugincn.dll,peninputimeplugincn.rsc)
+
+#endif // __CHINESE
+#endif // RD_SCALABLE_UI_V2
+#endif // __PEN_SUPPORT
+
+#endif // PENINPUTIMEPLUGINCN_VARIANT_IBY

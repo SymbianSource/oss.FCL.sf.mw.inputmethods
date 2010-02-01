@@ -1,0 +1,233 @@
+#
+# Copyright (c)2007 Nokia Corporation and/or its subsidiary(-ies).
+# All rights reserved.
+# This component and the accompanying materials are made available
+# under the terms of the License "Eclipse Public License v1.0"
+# which accompanies this distribution, and is available
+# at the URL "http://www.eclipse.org/legal/epl-v10.html".
+#
+# Initial Contributors:
+# Nokia Corporation - initial contribution.
+#
+# Contributors:
+#
+# Description:
+#
+
+###########################################################
+#
+# Default scan code <-> coordinate bindings for 12-key
+# (these can be overrided with scan_binding keyword).
+#
+###########################################################
+
+[KEYBOARD BLOCK 12-KEY]
+
+scan_binding (1 1)EPtiKey1
+scan_binding (1 2)EPtiKey2
+scan_binding (1 3)EPtiKey3
+scan_binding (2 1)EPtiKey4
+scan_binding (2 2)EPtiKey5
+scan_binding (2 3)EPtiKey6
+scan_binding (3 1)EPtiKey7
+scan_binding (3 2)EPtiKey8
+scan_binding (3 3)EPtiKey9
+scan_binding (4 1)EPtiKeyStar
+scan_binding (4 2)EPtiKey0
+scan_binding (4 3)EPtiKeyHash
+
+###########################################################
+#
+# Default scan code <-> coordinate bindings for std qwerty
+# (these can be overrided with scan_binding keyword).
+#
+###########################################################
+
+[KEYBOARD BLOCK QWERTY STANDARD]
+
+# no binding for (1 1), it is backlight key in E70
+scan_binding (1 2)EPtiKeyQwerty1
+scan_binding (1 3)EPtiKeyQwerty2
+scan_binding (1 4)EPtiKeyQwerty3
+scan_binding (1 5)EPtiKeyQwerty4
+scan_binding (1 6)EPtiKeyQwerty5
+scan_binding (1 7)EPtiKeyQwerty6
+scan_binding (1 8)EPtiKeyQwerty7
+scan_binding (1 9)EPtiKeyQwerty8
+scan_binding (1 10)EPtiKeyQwerty9
+scan_binding (1 11)EPtiKeyQwerty0
+# no binding for (1 12), it is backspace in E70
+
+scan_binding (2 1)EPtiKeyQwertyPlus
+scan_binding (2 2)EPtiKeyQwertyQ
+scan_binding (2 3)EPtiKeyQwertyW
+scan_binding (2 4)EPtiKeyQwertyE
+scan_binding (2 5)EPtiKeyQwertyR
+scan_binding (2 6)EPtiKeyQwertyT
+scan_binding (2 7)EPtiKeyQwertyY
+scan_binding (2 8)EPtiKeyQwertyU
+scan_binding (2 9)EPtiKeyQwertyI
+scan_binding (2 10)EPtiKeyQwertyO
+scan_binding (2 11)EPtiKeyQwertyP
+scan_binding (2 12)EPtiKeyQwertyMinus
+
+scan_binding (3 1)EPtiKeyQwertyHash
+scan_binding (3 2)EPtiKeyQwertyA
+scan_binding (3 3)EPtiKeyQwertyS
+scan_binding (3 4)EPtiKeyQwertyD
+scan_binding (3 5)EPtiKeyQwertyF
+scan_binding (3 6)EPtiKeyQwertyG
+scan_binding (3 7)EPtiKeyQwertyH
+scan_binding (3 8)EPtiKeyQwertyJ
+scan_binding (3 9)EPtiKeyQwertyK
+scan_binding (3 10)EPtiKeyQwertyL
+scan_binding (3 11)EPtiKeyQwertySemicolon
+scan_binding (3 12)EPtiKeyQwertyApostrophe
+
+# no binding for (4 1)
+scan_binding (4 2)EPtiKeyQwertyZ
+scan_binding (4 3)EPtiKeyQwertyX
+scan_binding (4 4)EPtiKeyQwertyC
+scan_binding (4 5)EPtiKeyQwertyV
+scan_binding (4 6)EPtiKeyQwertyB
+scan_binding (4 7)EPtiKeyQwertyN
+scan_binding (4 8)EPtiKeyQwertyM
+scan_binding (4 9)EPtiKeyQwertyComma
+scan_binding (4 10)EPtiKeyQwertyFullstop
+scan_binding (4 11)EPtiKeyQwertySlash
+# no binding for (4 12), it is enter in E70
+
+###########################################################
+#
+# Default scan code <-> coordinate bindings for 4x10 qwerty
+# (these can be overrided with scan_binding keyword).
+#
+###########################################################
+
+[KEYBOARD BLOCK QWERTY 4X10]
+
+scan_binding (1 1)EPtiKeyQwerty1
+scan_binding (1 2)EPtiKeyQwerty2
+scan_binding (1 3)EPtiKeyQwerty3
+scan_binding (1 4)EPtiKeyQwerty4
+scan_binding (1 5)EPtiKeyQwerty5
+scan_binding (1 6)EPtiKeyQwerty6
+scan_binding (1 7)EPtiKeyQwerty7
+scan_binding (1 8)EPtiKeyQwerty8
+scan_binding (1 9)EPtiKeyQwerty9
+scan_binding (1 10)EPtiKeyQwerty0
+
+scan_binding (2 1)EPtiKeyQwertyA
+scan_binding (2 2)EPtiKeyQwertyS
+scan_binding (2 3)EPtiKeyQwertyD
+scan_binding (2 4)EPtiKeyQwertyF
+scan_binding (2 5)EPtiKeyQwertyG
+scan_binding (2 6)EPtiKeyQwertyH
+scan_binding (2 7)EPtiKeyQwertyJ
+scan_binding (2 8)EPtiKeyQwertyK
+scan_binding (2 9)EPtiKeyQwertyL
+# No binding for (2 10), it is backspace
+
+scan_binding (3 1)EPtiKeyQwertyZ
+scan_binding (3 2)EPtiKeyQwertyX
+scan_binding (3 3)EPtiKeyQwertyC
+scan_binding (3 4)EPtiKeyQwertyV
+scan_binding (3 5)EPtiKeyQwertyB
+scan_binding (3 6)EPtiKeyQwertyN
+scan_binding (3 7)EPtiKeyQwertyM
+scan_binding (3 8)EPtiKeyQwertyComma
+scan_binding (3 9)EPtiKeyQwertyFullstop
+# No binding for (3 10), it is enter
+
+# No binding for (4 1)
+# No binding for (4 2), it is shift
+#scan_binding (4 3)EPtiKeyQwertySlash
+#scan_binding (4 4)EStdKeySquareBracketRight
+#scan_binding (4 5)EStdKeySpace
+#scan_binding (4 6)EStdKeySpace
+# No binding for (4 5), it is space
+# No binding for (4 6), it is space
+#scan_binding (4 7)EStdKeySquareBracketLeft
+#scan_binding (4 8)EStdKeySingleQuote
+# No binding for (4 8), it is ctrl;
+# No binding for (4 9), it is shift
+# No binding for (4 10), it is chr
+
+###########################################################
+#
+# Default scan code <-> coordinate bindings for 3x11 qwerty
+# (these can be overrided with scan_binding keyword).
+#
+###########################################################
+
+[KEYBOARD BLOCK QWERTY 3X11]
+
+scan_binding (1 1)EPtiKeyQwertyQ
+scan_binding (1 2)EPtiKeyQwertyW
+scan_binding (1 3)EPtiKeyQwertyE
+scan_binding (1 4)EPtiKeyQwertyR
+scan_binding (1 5)EPtiKeyQwertyT
+scan_binding (1 6)EPtiKeyQwertyY
+scan_binding (1 7)EPtiKeyQwertyU
+scan_binding (1 8)EPtiKeyQwertyI
+scan_binding (1 9)EPtiKeyQwertyO
+scan_binding (1 10)EPtiKeyQwertyP
+# no binding for (3 11), it is backspace
+
+scan_binding (2 1)EPtiKeyQwertyA
+scan_binding (2 2)EPtiKeyQwertyS
+scan_binding (2 3)EPtiKeyQwertyD
+scan_binding (2 4)EPtiKeyQwertyF
+scan_binding (2 5)EPtiKeyQwertyG
+scan_binding (2 6)EPtiKeyQwertyH
+scan_binding (2 7)EPtiKeyQwertyJ
+scan_binding (2 8)EPtiKeyQwertyK
+scan_binding (2 9)EPtiKeyQwertyL
+scan_binding (2 10)EPtiKeyQwertyComma
+# No binding for (2 11), it is enter
+
+# No binding for (3 1), it is shift
+scan_binding (3 2)EPtiKeyQwertyZ
+scan_binding (3 3)EPtiKeyQwertyX
+scan_binding (3 4)EPtiKeyQwertyC
+scan_binding (3 5)EPtiKeyQwertyV
+scan_binding (3 6)EPtiKeyQwertyB
+scan_binding (3 7)EPtiKeyQwertyN
+scan_binding (3 8)EPtiKeyQwertyM
+scan_binding (3 9)EStdKeySpace
+# No binding for (3 10), it is space
+# No binding for (3 11), it is fn
+
+###########################################################
+#
+# Default scan code <-> coordinate bindings for half qwerty
+# (these can be overrided with scan_binding keyword). 
+#
+###########################################################
+
+[KEYBOARD BLOCK QWERTY HALF]
+
+scan_binding (1 1)EPtiKeyQwertyQ
+scan_binding (1 2)EPtiKeyQwerty1
+scan_binding (1 3)EPtiKeyQwerty2
+scan_binding (1 4)EPtiKeyQwerty3
+scan_binding (1 5)EPtiKeyQwertyO
+
+scan_binding (2 1)EPtiKeyQwertyA
+scan_binding (2 2)EPtiKeyQwerty4
+scan_binding (2 3)EPtiKeyQwerty5
+scan_binding (2 4)EPtiKeyQwerty6
+scan_binding (2 5)EPtiKeyQwertyL
+
+scan_binding (3 1)EPtiKeyQwertyZ
+scan_binding (3 2)EPtiKeyQwerty7
+scan_binding (3 3)EPtiKeyQwerty8
+scan_binding (3 4)EPtiKeyQwerty9
+scan_binding (3 5)EPtiKeyQwertyFullstop
+
+# No binding
+scan_binding (4 2)EPtiKeyQwertyChr
+scan_binding (4 3)EPtiKeyQwertySpace
+scan_binding (4 4)EPtiKeyQwertyLeftShift
+
+#End of file

@@ -1,0 +1,58 @@
+// Copyright (c) 1997-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+#include <techview/eikon.rh>
+#include <techview/eikon.rsg>
+#include "tfep1.hrh"
+
+NAME TFP1
+
+RESOURCE RSS_SIGNATURE
+	{
+	}
+
+RESOURCE ARRAY r_tfp_input_method_array
+	{
+	items=
+		{
+		// these must be in the same order as the enum in TFEP1.H
+		LBUF {txt="Plain";},
+		LBUF {txt="Hexadecimal character code";}
+		};
+	}
+
+RESOURCE DIALOG r_tfp_settings_dialog
+    {
+    flags=EEikDialogFlagWait;
+    title="TFEP1 settings";
+    buttons=R_EIK_BUTTONS_CANCEL_OK;
+	items=
+		{
+		DLG_LINE
+			{
+			type=EEikCtCheckBox;
+			prompt="Inline editing enabled";
+			id=EControlIdInlineEditingEnabled;
+			},
+		DLG_LINE
+			{
+			type=EEikCtChoiceList;
+			prompt="Input method";
+			id=EControlIdInputMethod;
+			control=CHOICELIST {array_id=r_tfp_input_method_array;};
+			}
+		};
+    }
+

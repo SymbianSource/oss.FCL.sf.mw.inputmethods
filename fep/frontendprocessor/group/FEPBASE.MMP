@@ -1,0 +1,45 @@
+// Copyright (c) 1997-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+// fepbase.dll Base classes for complex text input
+// 
+//
+
+/**
+ @file
+*/
+
+target			fepbase.dll
+capability		All -Tcb
+targettype		dll
+uid				0x1000008d 0x10003b14
+vendorid		0x70000001
+
+MW_LAYER_SYSTEMINCLUDE_SYMBIAN
+userinclude		../include
+userinclude		../../../../../os/graphics/fbs/fontandbitmapserver/inc
+userinclude		../../../../../mw/classicui/lafagnosticuifoundation/cone/inc
+
+sourcepath		../source
+source			FEPBASE.CPP
+source			FEPBPRIV.CPP
+source			FEPBCONFIG.CPP
+
+library			euser.lib efsrv.lib estor.lib ws32.lib cone.lib centralrepository.lib
+deffile			FEPBAS.DEF
+start WINS
+				baseaddress 0x70400000
+end
+
+
+SMPSAFE

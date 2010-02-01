@@ -1,0 +1,107 @@
+/*
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file.
+*
+*/
+
+#include            <data_caging_paths.hrh>    // For RESOURCE_FILES_DIR
+#include            <platform_paths.hrh>
+
+CAPABILITY          CAP_ECOM_PLUGIN
+TARGET              GSLangPlugin.dll
+TARGETTYPE          PLUGIN
+UID                 0x10009D8D 0x10275066
+VENDORID            VID_DEFAULT
+
+MACRO    __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
+SOURCEPATH          src
+SOURCE              GSLangPlugin.cpp
+SOURCE              GSLangContainer.cpp
+SOURCE              GSLangModel.cpp
+SOURCE              GSLangPluginImplementationTable.cpp
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+SOURCE              PredictiveSettingData.cpp
+SOURCE              PredictiveSettingDialog.cpp
+SOURCE              PredictiveSettingList.cpp
+#ifdef FF_DUAL_LANGUAGE_SUPPORT 
+SOURCE              DualLanguageDialog.cpp
+SOURCE              DualLanguageList.cpp
+SOURCE              DualLanguageData.cpp
+#endif //FF_DUAL_LANGUAGE_SUPPORT 
+#endif
+
+USERINCLUDE         inc
+USERINCLUDE         data
+//USERINCLUDE         ../Logger
+
+// Default system include paths for middleware layer modules.
+APP_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE       /epoc32/include/ecom
+SYSTEMINCLUDE 	    /epoc32/include/cshelp
+
+SOURCEPATH          data
+
+START RESOURCE      10275066.rss
+TARGET              GSLangPlugin.rsc
+END
+//Rafter changes
+// View resources 
+START RESOURCE      GSLangPluginRsc.rss
+DEPENDS gsapp.rsg
+HEADER
+TARGETPATH          RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END // View resources
+
+
+LIBRARY             aknskins.lib // AknsUtils.h
+LIBRARY             avkon.lib
+LIBRARY             bafl.lib
+LIBRARY             centralrepository.lib
+LIBRARY             commonengine.lib// For RConeResourceLoader
+LIBRARY             cone.lib
+LIBRARY             ecom.lib
+LIBRARY             efsrv.lib
+LIBRARY             egul.lib // CGulIcon
+LIBRARY             eikcoctl.lib
+LIBRARY             eikcore.lib
+LIBRARY             euser.lib
+LIBRARY             FeatMgr.lib                // feature manager
+LIBRARY             flogger.lib // For GSLogger
+LIBRARY             GSEcomPlugin.lib
+LIBRARY             GSFramework.lib
+LIBRARY             GSListBox.lib// For CGSListBoxItemTextArray
+LIBRARY             hal.lib // For HAL
+LIBRARY             hlplch.lib // HlpLauncher
+LIBRARY             ptiengine.lib              // for Chinese variant
+LIBRARY             SysLangUtil.lib// For SysLangUtil
+LIBRARY             SysUtil.lib // For SysStartup
+LIBRARY             ws32.lib // For RWsSession
+LIBRARY             CenRepNotifHandler.lib
+LIBRARY             eikdlg.lib
+
+#ifdef RD_STARTUP_CHANGE
+    LIBRARY StarterClient.lib
+#endif // RD_STARTUP_CHANGE
+
+//Documents. Defining these is optional. Used only by IDE's file browser.
+SOURCEPATH          data
+DOCUMENT            10275066.rss
+DOCUMENT            GSLangPluginRsc.rss
+DOCUMENT            ../GSLangPluginIcons.mk
+
+//SOURCEPATH          inc
+//DOCUMENT            GSLangPlugin.loc
+
+// End of File

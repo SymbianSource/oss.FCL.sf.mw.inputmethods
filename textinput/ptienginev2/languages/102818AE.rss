@@ -1,0 +1,55 @@
+/*
+* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: PtiEngine language keymapping ecom resource file.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <eikon.rh>
+#include <ecom/registryinfo.rh>
+
+
+RESOURCE REGISTRY_INFO theInfo
+	{
+	dll_uid = 0x102818AE;
+ 	interfaces = 
+		{
+		INTERFACE_INFO
+			{
+			interface_uid = 0x10281896;
+			implementations =
+				{
+				IMPLEMENTATION_INFO 
+					{
+					implementation_uid = 0x102818A0;  // Variant ITUT_13
+					version_no = 1;
+					display_name = "PtiEngine keymappings";
+					}
+				};
+			}
+		};
+	}
+
+// End of file
+

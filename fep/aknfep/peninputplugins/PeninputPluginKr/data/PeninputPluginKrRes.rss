@@ -1,0 +1,148 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project peninputgenericvkb
+*
+*/
+
+
+// Resource identifier
+NAME PIPK
+
+// System includes
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <eikon.rh>
+#include <appinfo.rh>
+#include "PeninputPluginKr.loc"
+
+RESOURCE RSS_SIGNATURE
+    {
+    }
+
+RESOURCE TBUF
+    {
+    buf = "PeninputPluginKr";
+    }
+
+
+RESOURCE LBUF r_peninput_plugin_kr_doubleconsonent_setting
+    {
+    txt=qtn_peninput_plugin_kr_doubleconsonent_setting;
+    }
+
+//-----------------------------------------------------------------------------
+//
+//    r_aknexquery_multi_selection_query
+//    Resource of Multi Selection Query.
+//
+//-----------------------------------------------------------------------------
+//
+
+#define AKNEXQUERY_LISTBOX_HEIGHT 3
+#define AKNEXQUERY_LISTBOX_WIDTH 3
+
+RESOURCE DIALOG r_aknexquery_multi_selection_query
+    {
+    flags = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtListQueryControl;
+            id = EListQueryControl;
+            control = AVKON_LIST_QUERY_CONTROL
+                {
+                listtype = EAknCtSingleGraphicPopupMenuListBox;
+                listbox = LISTBOX
+                    {
+                    flags = EAknListBoxMultiselectionList;
+                    height = AKNEXQUERY_LISTBOX_HEIGHT;
+                    width = AKNEXQUERY_LISTBOX_WIDTH;
+                    array_id = r_aknexquery_multi_selection_query_list_item;
+                    };
+                heading = STRING_r_aknexquery_selection_title;
+                };
+            }
+        };
+    }
+
+//-----------------------------------------------------------------------------
+//
+//    r_aknexquery_multi_selection_query_list_item
+//    Items array for Multi Selection Query
+//
+//-----------------------------------------------------------------------------
+//
+RESOURCE ARRAY r_aknexquery_multi_selection_query_list_item
+    {
+    items =
+        {
+        LBUF
+            {
+            txt = qtn_peninput_plugin_kr_item1;
+            },
+        LBUF
+            {
+            txt = qtn_peninput_plugin_kr_item2;
+            },
+        LBUF
+            {
+            txt = qtn_peninput_plugin_kr_item3;
+            },
+        LBUF
+            {
+            txt = qtn_peninput_plugin_kr_item4;
+            },
+        LBUF
+            {
+            txt = qtn_peninput_plugin_kr_item5;
+            },
+        LBUF
+            {
+            txt = qtn_peninput_plugin_kr_item6;
+            },
+        LBUF
+            {
+            txt = qtn_peninput_plugin_kr_item7;
+            }
+        };
+    }
+
+//-----------------------------------------------------------------------------
+//
+//    r_aknexquery_multi_selection_list_query
+//
+//-----------------------------------------------------------------------------
+//
+RESOURCE AVKON_MULTISELECTION_LIST_QUERY r_aknexquery_multi_selection_list_query
+    {
+    flags = EGeneralQueryFlags;
+    softkeys = R_AVKON_SOFTKEYS_SELECT_CANCEL;
+    items =
+        {
+        AVKON_MULTISELECTION_LIST_QUERY_DLG_LINE 
+            {
+            control = AVKON_LIST_QUERY_CONTROL
+                {
+                listtype = EAknCtSingleGraphicPopupMenuListBox;
+                listbox = AVKON_MULTISELECTION_LIST_QUERY_LIST
+                    {
+                    array_id=r_aknexquery_multi_selection_query_list_item;
+                    };
+                heading = STRING_r_aknexquery_selection_title;
+                };
+            }
+        };
+    }

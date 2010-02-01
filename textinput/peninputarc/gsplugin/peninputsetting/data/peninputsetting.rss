@@ -1,0 +1,74 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project Peninput Setting
+*
+*/
+
+
+NAME PENS
+
+#include <eikon.rh>
+#include <eikon.rsg>
+#include <avkon.rh>
+#include <avkon.rsg>
+#include <appinfo.rh>
+
+#define qtn_apps_peninputsetting_grid   "Peninput Setting"
+
+
+// ---------------------------------------------------------
+//   
+//    Define the resource file signature 
+//    This resource should be empty.
+//
+// ---------------------------------------------------------
+//
+RESOURCE RSS_SIGNATURE { }
+
+// ---------------------------------------------------------
+//   
+//    Default Document Name
+//
+// ---------------------------------------------------------
+//
+RESOURCE TBUF r_default_document_name { buf=""; }
+
+// ---------------------------------------------------------
+//   
+//    Define default menu and CBA key.
+//
+// ---------------------------------------------------------
+//
+RESOURCE EIK_APP_INFO
+    {
+    cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;
+    }
+
+// ---------------------------------------------------------------------------
+//   r_trui_localisable_app_info
+//   Trainui localisable app info.
+//
+// ---------------------------------------------------------------------------
+//
+RESOURCE LOCALISABLE_APP_INFO r_peninputsetting_localisable_app_info 
+    { 
+    short_caption = qtn_apps_peninputsetting_grid; 
+    caption_and_icon = 
+        {
+        CAPTION_AND_ICON_INFO 
+            { 
+            caption = qtn_apps_peninputsetting_grid;
+            }        
+        };
+    }

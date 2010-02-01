@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<api id="9778f0ceb926561ecfa37ac4454e9a05" dataversion="2.0">
+  <name>Aknfep Settings API</name>
+  <description>This provides constant definitions for FEP's internal central repository keys. An example of Centrep key:-
+        KAknFepInputTxtLang - contains Symbian language OS code.
+  </description>
+  <type>c++</type>
+  <collection>textinput</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

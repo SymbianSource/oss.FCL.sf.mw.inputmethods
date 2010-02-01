@@ -1,0 +1,63 @@
+#
+# Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+# All rights reserved.
+# This component and the accompanying materials are made available
+# under the terms of the License "Eclipse Public License v1.0"
+# which accompanies this distribution, and is available
+# at the URL "http://www.eclipse.org/legal/epl-v10.html".
+#
+# Initial Contributors:
+# Nokia Corporation - initial contribution.
+#
+# Contributors:
+#
+# Description:  PtiEngine keymapping file.
+#
+
+
+# Package definition syntax:
+#
+# [PACKAGE AAA BBB CCC DDD EEE]
+# Language1    Filename1
+# Language2    Filename2
+#    .             .
+#    .             .
+# LanguageN    FilenameN
+#
+# Where:
+#    AAA = RM Code for the product.
+#    BBB = Package name. Usually either language id or variant id 
+#          depending on configuration.
+#    CCC = Implementation uid for resulting ecom dll.
+#    DDD = Dll uid for resultin ecom dll.
+#    EEE = can be one of these:
+#            <empty>    If not given, the dll will be built for both wins and armv5
+#            NOWINS     The dll will be built only for armv5
+#            WINSONLY   The dll will be built only for emulator
+#
+# If EEE = WINSONLY, then AAA = 000
+#
+
+
+#
+# USE BLOCK keyword specifies which data -blocks are built as part of
+# resulting keymapping dlls. S60 enables all blocks by default. Comment
+# out blocks not applicable to your product to optimize data size.
+#
+
+
+USE BLOCK 12-KEY
+USE BLOCK QWERTY HALF
+
+# PtiKeymappings_variant_XX.dll    
+[PACKAGE AAA BBB CCC DDD]
+English         ELangEnglish.txt
+French          ELangFrench.txt
+German          ELangGerman.txt
+Spanish         ELangSpanish.txt
+Italian         ELangItalian.txt
+Portuguese      ELangPortuguese.txt
+
+
+
+# End of file.

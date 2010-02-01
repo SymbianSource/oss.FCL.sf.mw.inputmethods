@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<relnotes schema="1.0.0" name="FEP Base" purpose="" type="component">
+  <revision major="1" functional="0" minor="0" date="20070724">
+    <ref name="109489" type="defect"/>
+    <description>Corrected  in-source Comments of virtual  MCoeFepLayDocExtension* GetFepLayDocExtension(TBool&amp; aSetToTrue) function in Fepbase.h .</description>
+  </revision>
+  <purpose>
+    Front End Processor (FEP) framework and base classes, enables preprocessing of complex text and other input forms e.g. handwriting and voice recognition with processed input being passed to applications.
+  </purpose>
+  <defect number="DEF106422" title="FebBase needs code cleanup for improved maintainability" revision="001">
+    1) Moved KCoeFepMaxAttribDataSize, TFepOnOrOffKeyData, CFepGenericGlobalSettings, MFepAttributeStorer from fepbase.h into new fepbconfig.h.
+    2) Moved FEP_START_KEY_EVENT_HANDLER_L, FEP_END_KEY_EVENT_HANDLER_L, FEP_START_KEY_EVENT_HANDLER_NO_DOWN_UP_FILTER_L, FEP_END_KEY_EVENT_HANDLER_NO_DOWN_UP_FILTER_L macros from fepbase.h into new fepbutils.h.
+    3) Moved the implementations of TFepOnOrOffKeyData, CFepGenericGlobalSettings, MFepAttributeStorer from fepbase.cpp to new fepbconfig.cpp.
+    4) Moved the FebBase panic codes from fepbase.cpp into new exported fepbpanic.h.
+    5) Moved CSettingsTracker from fepbase.cpp into fepbpriv.h/cpp as it is used in both fepbase.cpp and fepbconfig.cpp (renamed it CFepSettingsTracker).
+    6) Removed the deprecated internalComponent CFepFastFileAccessor class not actually in use since v7.0.
+    7) Removed the internalComponent CFepGlobalDynamicFrequencyTable API that has not been in use since v7.0 (in app-framework_fepchina component that does not exist any more).
+    8) Removed all test code for CFepGlobalDynamicFrequencyTable.
+    9) Removed the otherpro.exe only needed for EKA1 support and testing of CFepGlobalDynamicFrequencyTable that has now been removed.
+    10) Updated fepbasetest.iby file.
+  </defect>
+</relnotes>

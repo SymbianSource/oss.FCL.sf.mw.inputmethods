@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<api id="57ce353f8db13b8e8108210ead8f25ce" dataversion="2.0">
+<name>aknfep status api</name>
+<description>Contains the FEP's Publish and Subscribe values defined. Currently it just contains FEP's Function key state (Value not used)</description>
+<type>c++</type>
+<collection>textinput</collection>
+<libs></libs>
+<release category="platform" sinceversion="0"/>
+<attributes>
+<htmldocprovided>no</htmldocprovided>
+<adaptation>no</adaptation>
+</attributes>
+</api>

@@ -1,0 +1,741 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project peninputhwrboxcn
+*
+*/
+
+//  RESOURCE IDENTIFIER
+NAME BXHW
+
+//  system includes
+#include <peninputhwrboxcn.mbg>
+
+#include <aknfeppeninputenums.h>
+#include <peninputcommonlayout.rh>
+#include "peninputhwrbxcn.rh"
+#include "peninputcommonctrls.hrh"
+#include "peninputhwrctrlid.h"
+#include <peninputdropdownlist.rh>
+#include <aknsconstants.hrh>
+
+//  MACROS  
+#define AKN_FEP_HWRBX_BMP "z:\\resource\\apps\\peninputhwrboxcn.mbm"
+
+// button caption text in PRC chinese button
+#define R_STRING_PRC_CHINESE <0x7B80>
+
+// button caption text in Taiwan chinese button
+#define R_STRING_TW_CHINESE <0x81FA>
+
+// button caption text in HongKong chinese button
+#define R_STRING_HK_CHINESE <0x6E2F>
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_range_list
+// InputRange resource for the boxed hwr input range list
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_INPUTRANGE_LIST r_akn_fep_hwr_range_list
+    {
+    ranges=
+        {
+        AKN_FEP_INPUTRANGE
+            {
+            rangeid=ERangeNative;
+            ctrlid=EHwrCtrlIdChineseButton;
+            indicator=r_akn_fep_hwr_range_chinese;
+            },
+        AKN_FEP_INPUTRANGE
+            {
+            rangeid=ERangeEnglish;
+            ctrlid=EHwrCtrlIdEnglishButton;
+            ctrltype=EButtonTypeMultiMode;
+            indicator=r_akn_fep_hwr_range_english;
+            },
+        AKN_FEP_INPUTRANGE
+            {
+            rangeid=ERangeNumber;
+            ctrlid=EHwrCtrlIdNumberButton;
+            indicator=r_akn_fep_hwr_range_number;
+            },
+        AKN_FEP_INPUTRANGE
+            {
+            rangeid=ERangeSymbol;
+            ctrlid=EHwrCtrlIdSymbolButton;
+            indicator=r_akn_fep_hwr_range_symbol;
+            }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_range_chinese
+// Button resource for chinese range indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_range_chinese
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_chinese;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_chinese_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+       
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_chinese;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_chinese_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    
+    active=EMbmPeninputhwrboxcnQgn_indi_input_chinese;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_chinese_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+        
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_chinese;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_chinese_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_chinese;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_chinese_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_range_english
+// Button resource for latin range indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_MULTIPLE_MODE_BUTTON r_akn_fep_hwr_range_english
+    {
+    modes=
+        {
+        AKN_FEP_BUTTON_MODE
+            {
+            modeimage = r_akn_fep_hwr_english_uppercase;
+            rangeid=ERangeEnglish;
+            modeid=ECaseUpper;
+            },
+                     
+        AKN_FEP_BUTTON_MODE
+            {
+            modeimage = r_akn_fep_hwr_english_lowercase;
+            rangeid=ERangeEnglish;
+            modeid=ECaseLower;
+            },
+
+        AKN_FEP_BUTTON_MODE
+            {
+            modeimage = r_akn_fep_hwr_english_textcase;
+            rangeid=ERangeEnglish;
+            modeid=ECaseText;
+            }
+        };    
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_english_uppercase
+// Image resource for latin range indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_english_uppercase
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_case_capital;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_capital_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseCapital;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_case_capital;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_capital_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseCapital;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_case_capital;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_capital_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseCapitalSel;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_case_capital;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_capital_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseCapitalSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_case_capital;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_capital_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseCapital;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_english_lowercase
+// Image resource for latin range indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_english_lowercase
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_case_small;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_small_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseSmall;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_case_small;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_small_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseSmall;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_case_small;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_small_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseSmallSel;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_case_small;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_small_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseSmallSel;
+
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_case_small;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_small_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseSmall;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_english_textcase
+// Image resource for latin range indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_english_textcase
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_case_text;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_text_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseText;
+    
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_case_text;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_text_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseText;
+    
+    active=EMbmPeninputhwrboxcnQgn_indi_input_case_text;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_text_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseTextSel;
+    
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_case_text;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_text_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseTextSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_case_text;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_text_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseText;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_range_number
+// Button resource for number range indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_range_number
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumeric;
+        
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumeric;
+    
+    active=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumericSel;
+        
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumericSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_numeric_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumeric;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_language_switch
+// Button resource for language indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_language_switch
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+    
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonSwitchSel;
+    
+    active=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+    
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonSwitchSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_language_switch
+// Button resource for language indicator
+// -----------------------------------------------------------------------------
+//
+//RESOURCE AKN_FEP_MULTIPLE_MODE_BUTTON r_akn_fep_hwr_language_switch
+//    {
+//    colormajorskinid=EAknsMajorSkin;
+//    textcolorgrp=EAknsMinorQsnTextColors;
+//    textcoloridx=58;
+//    shadowtextcoloridx=61;
+//    modes=
+//        {
+//        AKN_FEP_BUTTON_MODE
+//            {
+//            modeimage = r_akn_fep_hwr_language_switch_bgimg;
+//            modestring = R_STRING_PRC_CHINESE;
+//            },
+//                     
+//        AKN_FEP_BUTTON_MODE
+//            {
+//            modeimage = r_akn_fep_hwr_language_switch_bgimg;
+//            modestring = R_STRING_TW_CHINESE;
+//            },
+//
+//        AKN_FEP_BUTTON_MODE
+//            {
+//            modeimage = r_akn_fep_hwr_language_switch_bgimg;
+//            modestring = R_STRING_HK_CHINESE;
+//            }
+//        };    
+//    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_moveimg
+// Image resource for move indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_moveimg
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_move;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_move_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonMove2;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_move;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_move_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonMove2Sel;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_move;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_move_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonMove2;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_move;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_move_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonMove2Sel;
+
+    moveindicator=EMbmPeninputhwrboxcnQgn_indi_input_move;
+    moveindicatormsk=EMbmPeninputhwrboxcnQgn_indi_input_move_mask;
+    moveindicatorskinid=EAknsMinorGenericQgnIndiFepButtonMove2Sel;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_closeimg
+// Image resource for close indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_closeimg
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+    colorgroup=0xffff;
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_close;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_close_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonClose;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_close;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_close_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCloseSel;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_close;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_close_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonClose;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_close;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_close_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCloseSel;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_optionimg
+// Image resource for option indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_optionimg
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_options;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_options_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonOptions;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_options;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_options_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonOptionsSel;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_options;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_options_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonOptions;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_options;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_options_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonOptionsSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_options;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_options_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonOptions;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_backspaceimg
+// Image resource for backspace indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_backspaceimg
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_backspace;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_backspace_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonBackspace1;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_backspace;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_backspace_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonBackspace1Sel;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_backspace;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_backspace_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonBackspace1;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_backspace;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_backspace_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonBackspace1Sel;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_backspaceimg
+// Image resource for backspace indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_spaceimg
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_space_middle;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_space_middle_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonSpace1;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_space_middle;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_space_middle_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonSpace1Sel;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_space_middle;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_space_middle_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonSpace1;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_space_middle;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_space_middle_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonSpace1Sel;
+    }
+    
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_language_switch_bgimg
+// Image resource for language switch indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_language_switch_bgimg
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+    
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonSwitchSel;
+    
+    active=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+    
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonSwitchSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_vkb
+// Image resource for vkb indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_vkb
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_switcher_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonVkb;
+
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonVkbSel;
+
+    active=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonVkb;
+
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_switcher;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonVkbSel;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_window
+// window resource
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_HWR_WINDOW r_akn_fep_hwr_window
+    {
+    supportskin = 1;
+
+    bmpfile=AKN_FEP_HWRBX_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+
+    shadowimgtl=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_tl;
+    shadowimgtlmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_tl_mask;
+    shadowimgtlskinid=EAknsMinorGenericQgnGrafFepPopupShadowTl;
+
+    shadowimgt=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_t;
+    shadowimgtmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_t_mask;
+    shadowimgtskinid=EAknsMinorGenericQgnGrafFepPopupShadowT;
+
+    shadowimgtr=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_tr;
+    shadowimgtrmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_tr_mask;
+    shadowimgtrskinid=EAknsMinorGenericQgnGrafFepPopupShadowTr;
+
+    shadowimgl=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_l;
+    shadowimglmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_l_mask;
+    shadowimglskinid=EAknsMinorGenericQgnGrafFepPopupShadowL;
+
+    shadowimgr=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_r;
+    shadowimgrmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_r_mask;
+    shadowimgrskinid=EAknsMinorGenericQgnGrafFepPopupShadowR;
+
+    shadowimgbl=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_bl;
+    shadowimgblmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_bl_mask;
+    shadowimgblskinid=EAknsMinorGenericQgnGrafFepPopupShadowBl;
+
+    shadowimgb=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_b;
+    shadowimgbmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_b_mask;
+    shadowimgbskinid=EAknsMinorGenericQgnGrafFepPopupShadowB;
+
+    shadowimgbr=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_br;
+    shadowimgbrmask=EMbmPeninputhwrboxcnQgn_graf_fep_popup_shadow_br_mask;
+    shadowimgbrskinid=EAknsMinorGenericQgnGrafFepPopupShadowBr;
+    
+    icfbg = EMbmPeninputhwrboxcnQgn_graf_input_icf_bg;
+    icfbgskinid = EAknsMinorGenericQgnGrafFepInputBg;
+    
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp = EAknsMinorQsnTextColors;
+    textcoloridx = 59;
+
+    movebtn=r_akn_fep_hwr_moveimg;
+    closebtn=r_akn_fep_hwr_closeimg;
+    backbtn=r_akn_fep_hwr_backspaceimg;
+    optionbtn=r_akn_fep_hwr_optionimg;
+    ctrlbar=r_akn_fep_hwr_ctrlbar;
+    boxgroup=r_akn_fep_hwr_boxgroup;
+    bgimage=r_peninput_layout_window_background;
+    }
+    
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_boxgroup
+// box group resource
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_HWR_BOXGROUP r_akn_fep_hwr_boxgroup
+    {
+    colormajorskinid=EAknsMajorSkin;
+    boxbgcolorgrp = EAknsMinorQsnOtherColors;
+    boxbgcoloridx = 8;
+    boxframecolorgrp = EAknsMinorQsnOtherColors;
+    boxframecoloridx = 8;
+    }
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_ctrlbar
+// control bar resource
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_HWR_CTRLBAR r_akn_fep_hwr_ctrlbar
+    {
+    rangebar=r_akn_fep_hwr_range_list;
+    vkbbtn=r_akn_fep_hwr_vkb;
+    }
+    
+RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_drop_down_list
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+    
+    imgmajorskinid=EAknsMajorGeneric;
+
+		bmpListBg=EMbmPeninputhwrboxcnQsn_fr_itut_scroll_bg;
+		bmpListBgMask=EMbmPeninputhwrboxcnQsn_fr_itut_scroll_bg_mask;
+		bmpListBgskinid=EAknsMinorGenericQgnGrafFepCandiListPri;    
+
+    bmpPrimary=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_pri;
+    bmpPrimaryMask=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_pri_mask;
+    bmpPrimaryskinid=EAknsMinorGenericQgnGrafFepCandiListPri;
+
+    bmpSecondary=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_sec;
+    bmpSecondaryMask=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_sec_mask;
+    bmpSecondaryskinid=EAknsMinorGenericQgnGrafFepCandiListSec;
+    
+    bmpHighlight=EMbmPeninputhwrboxcnQsn_fr_input_list_button_highlight;
+    bmpHighlightMask=EMbmPeninputhwrboxcnQsn_fr_input_list_button_highlight_mask;
+    bmpHighlightskinid=EAknsMinorGenericQgnGrafFepCandiListSel;
+    
+    bmpPenDown=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_pressed;
+    bmpPenDownMask=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_pressed_mask;
+    bmpPenDownskinid=EAknsMinorGenericQgnGrafFepCandiListPressed;
+    
+    bmpNextDisable=EMbmPeninputhwrboxcnQgn_indi_fep_button_expand;
+    bmpNextDisableMask=EMbmPeninputhwrboxcnQgn_indi_fep_button_expand_mask;
+    bmpNextDisableskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+    
+    bmpNext=EMbmPeninputhwrboxcnQgn_indi_input_list_expand;
+    bmpNextMask=EMbmPeninputhwrboxcnQgn_indi_input_list_expand_mask;
+    bmpNextskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+    
+    bmpNextPress=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_scroll_down_sel;
+    bmpNextPressMask=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_scroll_down_sel_mask;
+    bmpNextPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+    
+    bmpClose=EMbmPeninputhwrboxcnQgn_indi_input_candi_list_close;
+    bmpCloseMask=EMbmPeninputhwrboxcnQgn_indi_input_candi_list_close_mask;
+    bmpCloseskinid=EAknsMinorGenericQgnGrafFepCandiListClose;
+    
+    bmpClosePress=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_close_sel;
+    bmpClosePressMask=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_close_sel_mask;
+    bmpClosePressskinid=EAknsMinorGenericQgnGrafFepCandiListCloseSel;
+    
+    bmpPrevious=EMbmPeninputhwrboxcnQgn_indi_input_list_collapse;
+    bmpPreviousMask=EMbmPeninputhwrboxcnQgn_indi_input_list_collapse_mask;
+    bmpPreviousskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+    
+    bmpPreviousPress=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_scroll_up_sel;
+    bmpPreviousPressMask=EMbmPeninputhwrboxcnQgn_graf_fep_candi_list_scroll_up_sel_mask;
+    bmpPreviousPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+    
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp=EAknsMinorQsnTextColors;
+    textcoloridx=59;
+    
+    bordercolormajorskinid=EAknsMajorSkin;
+    bordercolorgrp=EAknsMinorQsnOtherColors;
+    bordercoloridx=8;
+    }
+        
+
+// -----------------------------------------------------------------------------
+// r_akn_fep_hwr_range_symbol
+// Button resource for symbol range indicator
+// -----------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_range_symbol
+    {
+    bmpfile=AKN_FEP_HWRBX_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxcnQgn_indi_input_case_special;
+    nactivemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_special_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecial;
+        
+    nactivep=EMbmPeninputhwrboxcnQgn_indi_input_case_special;
+    nactivepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_special_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecial;
+    
+    active=EMbmPeninputhwrboxcnQgn_indi_input_case_special;
+    activemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_special_mask;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecialSel;
+        
+    activep=EMbmPeninputhwrboxcnQgn_indi_input_case_special;
+    activepmsk=EMbmPeninputhwrboxcnQgn_indi_input_case_special_mask;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecialSel;
+    
+    disable=EMbmPeninputhwrboxcnQgn_indi_input_case_special;
+    disablemsk=EMbmPeninputhwrboxcnQgn_indi_input_case_special_mask;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecial;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_window_background
+// background of base window
+// ---------------------------------------------------------------------------
+//
+RESOURCE PENINPUT_LAYOUT_WINDOW_BG r_peninput_layout_window_background
+	{
+  bmpfile=AKN_FEP_HWRBX_BMP;
+  imgmajorskinid=EAknsMajorGeneric;
+  
+  bgimg = EMbmPeninputhwrboxcnQgn_graf_input_bg;
+  bgimgskinid = EAknsMinorGenericQgnGrafInputBg;
+	}			 	
+// End Of File

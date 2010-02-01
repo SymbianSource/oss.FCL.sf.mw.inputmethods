@@ -1,0 +1,316 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Localization strings for gspeninputplugin
+*
+*/
+
+
+// d:Label's text for touch input in device view
+// l:list_single_large_graphic_pane_t1
+// r:5.0
+//
+#define qtn_cp_folder_pen_input "Touch input"
+
+// d:It is title text in touch input view
+// l:title_pane_t2/opt9
+// r:5.0
+//
+#define qtn_cp_title_pen_input "Touch input"
+
+// d:Text of a list item in touch input view
+// d:Item opens Touch Screen Calibration
+// l:list_setting_pane_t1
+// r:5.0
+//
+#define qtn_set_touch_screen_calibration "Touch screen calibration"
+
+// d:It is caption text for pen input settings in general settings
+// l:title_pane_t2/opt9
+// r:3.2
+//
+#define qtn_gen_settings_pen_input "Pen input settings"
+
+// d:It is text for selecting pen input language in pen input settings 
+// l:list_setting_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_language "Change language"
+
+// d:It is text for selecting input mode in pen input settings
+// l:list_setting_pane_t1
+// r:3.2
+//
+#define qtn_chi_set_default_vkb "Default Chinese On-screen Keyboard"
+
+// d:It is text for selecting the speed of pen input in pen input settings 
+// l:list_setting_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_writing_speed "Writing speed"
+
+// d:It is text for selecting the width of pen input in pen input settings  
+// l:list_setting_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_pen_trail_width "Pen trail width"
+
+// d:It is text for selecting the colour of pen input in pen input settings  
+// l:list_setting_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_pen_trail_colour "Pen trail colour"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing speed
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_writing_speed_1 "Very fast"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing speed
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_writing_speed_2 "Fast"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing speed
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_writing_speed_3 "Normal"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing speed
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_writing_speed_4 "Slow"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing speed
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_writing_speed_5 "Very slow"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing width
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_pen_trail_width_2 "Thin"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing width
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_pen_trail_width_3 "Normal"
+
+// d:Text in setting list item's current value field
+// d:It indicate current pen writing width
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_pen_trail_width_4 "Thick"
+
+// d:Text in setting list item's current value field
+// d:It indicate current vkb input mode
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_chi_vkb_pinyin_sc "Pin Yin"
+
+// d:Text in setting list item's current value field
+// d:It indicate current vkb input mode
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_chi_vkb_stroke_sc "Stroke"
+
+// d:Text in setting list item's current value field
+// d:It indicate current vkb input mode
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_chi_vkb_zhuyin_tw "Zhu Yin"
+
+// d:Text in setting list item's current value field
+// d:It indicate current vkb input mode
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_chi_vkb_stroke_tw "Stroke"
+
+// d:Text in setting list item's current value field
+// d:It indicate current vkb input mode
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_chi_vkb_pinyin_tw "Hanyu Pinyin"
+
+// d:Text in setting list item's current value field
+// d:It indicate current vkb input mode
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_chi_vkb_stroke_hk "Stroke"
+
+// d:Text in setting list item's current value field
+// d:It indicate current vkb input mode
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_chi_vkb_cangjie_hk "Cang Jie"
+
+// d:Command in options list for display user introduction
+// l:list_single_pane_t1_cp2
+// r:3.2
+//
+#define qtn_options_help "Help"
+ 
+// d:Command in options list for exiting seneral setting
+// l:list_single_pane_t1_cp2
+// r:3.2
+//
+#define qtn_options_exit "Exit"
+
+// d:Command in options list for changing current setting
+// l:list_single_pane_t1_cp2
+// r:3.2
+//
+#define qtn_set_options_change "Change"
+
+// d:It is text for setting up guid line in pen input settings
+// l:list_setting_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_guiding_line "Guiding Line"
+
+// d:Text in setting list item's current value field
+// d:It indicate current guid line on or off
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_line_on "On"
+
+// d:Text in setting list item's current value field
+// d:It indicate current guid line on or off
+// l:list_set_graphic_pane_t1
+// r:3.2
+//
+#define qtn_tin_settings_line_off "Off"
+
+// d: Text of the language setting menu item
+// d: Setting item for language setting menu promote
+// l: heading_pane_t1
+// r: 3.2
+#define qtn_tin_input_selection_menu_prompt "Select a language"
+
+// d:Text of a list item in Display setting list view's list
+// d:Item opens Touch Screen Calibration
+// l:list_setting_pane_t1
+// w:
+// r:3.2
+//
+#define qtn_tin_settings_touch_screen_calibration "Touch screen calibration"
+
+
+// d: Setting name for selecting input method for find pane 
+// l: list_setting_pane_t1 
+// w:
+// r:5.0
+//
+#define qtn_as_settings_input_method_for_find "Input method for find"
+
+// d: Default option for find pane find. Use the adaptive search, designed for 
+// D: find pane.
+// l: list_set_graphic_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_adaptive_grid "Adaptive grid"
+
+// d: Basic option. Use normal editor finger input method 
+// l: list_set_graphic_pane_t1 
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_basic_input_method "Basic input method"
+
+// d: Chinese find method
+// l: list_setting_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_chinese_find_method "Chinese find method"
+
+// d: Default option for Hong Kong traditional Chinese find method.
+// l: list_set_graphic_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_chinese_hongkong_stroke "Stroke"
+
+// d: Option for Hong Kong traditional Chinese find method.
+// l: list_set_graphic_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_chinese_hongkong_cangjie "Cangjie"
+
+// d: Default option for Taiwan traditional Chinese find method.
+// l: list_set_graphic_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_chinese_taiwan_zhuyin "Zhuyin"
+
+// d: Option for Taiwan traditional Chinese find method.
+// l: list_set_graphic_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_chinese_taiwan_stroke "Stroke"
+
+// d: Default option for Simplified Chinese find method.
+// l: list_set_graphic_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_chinese_simple_pinyin "Pinyin"
+
+// d: Option for Simplified Chinese find method.
+// l: list_set_graphic_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_ads_settings_chinese_simple_stroke "Stroke"
+
+// d:Text of a list item in Display setting list view's list
+// d:Item opens Hwr Training UI
+// l:list_setting_pane_t1
+// w:
+// r:5.0
+//
+#define qtn_cp_hwr_training "HWR training"
+
+// d:Text of a list item in touch input view
+// l:list_setting_pane_t1
+// r:5.0
+//
+#define qtn_tin_option_menu_arabic_wdic "Recognition with dictionary"
+// End Of File

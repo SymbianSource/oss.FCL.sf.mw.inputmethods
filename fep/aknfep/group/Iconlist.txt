@@ -1,0 +1,4 @@
+/c8,1 qgn_indi_fep_arrow_left.bmp
+/c8,1 qgn_indi_fep_arrow_right.bmp
+/c8,1 qgn_indi_fep_arrow_up.bmp
+/c8,1 qgn_indi_fep_arrow_down.bmp

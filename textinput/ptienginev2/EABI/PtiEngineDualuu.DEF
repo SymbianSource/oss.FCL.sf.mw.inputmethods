@@ -1,0 +1,477 @@
+EXPORTS
+	_ZN10CPtiEngine11CurrentWordEv @ 1 NONAME
+	_ZN10CPtiEngine11GetSpellingEtR6TDes1612TPtiSpelling @ 2 NONAME
+	_ZN10CPtiEngine11SetObserverEP12MPtiObserver @ 3 NONAME
+	_ZN10CPtiEngine11SetToneMarkEi @ 4 NONAME
+	_ZN10CPtiEngine12ReadingTextLEv @ 5 NONAME
+	_ZN10CPtiEngine12SetInputModeE19TPtiEngineInputMode @ 6 NONAME
+	_ZN10CPtiEngine13CandidatePageEv @ 7 NONAME
+	_ZN10CPtiEngine13NextCandidateEv @ 8 NONAME
+	_ZN10CPtiEngine13ResetToneMarkEv @ 9 NONAME
+	_ZN10CPtiEngine13SetReorderingEi @ 10 NONAME
+	_ZN10CPtiEngine14AppendKeyPressE7TPtiKey @ 11 NONAME
+	_ZN10CPtiEngine14CharConversionE18TPtiCharConversionPviS1_ @ 12 NONAME
+	_ZN10CPtiEngine14CharacterToKeyEt @ 13 NONAME
+	_ZN10CPtiEngine14DeleteKeyPressEv @ 14 NONAME
+	_ZN10CPtiEngine14FirstCandidateEv @ 15 NONAME
+	_ZN10CPtiEngine14HandleCommandLE17TPtiEngineCommandPv @ 16 NONAME
+	_ZN10CPtiEngine14SetCurrentWordE7TPtrC16 @ 17 NONAME
+	_ZN10CPtiEngine15CompositionDataEv @ 18 NONAME
+	_ZN10CPtiEngine15CurrentLanguageEv @ 19 NONAME
+	_ZN10CPtiEngine15EnableToneMarksEi @ 20 NONAME
+	_ZN10CPtiEngine16ClearCurrentWordEv @ 21 NONAME
+	_ZN10CPtiEngine17ActivateLanguageLEi19TPtiEngineInputMode @ 22 NONAME
+	_ZN10CPtiEngine17CommitCurrentWordEv @ 23 NONAME
+	_ZN10CPtiEngine17GetCandidateListLER12CDesC16Array @ 24 NONAME
+	_ZN10CPtiEngine17GetModeNameIndexLE18TPtiChineseVariantR6RArrayIiE @ 25 NONAME
+	_ZN10CPtiEngine17IncrementToneMarkEi @ 26 NONAME
+	_ZN10CPtiEngine17NextCandidatePageEv @ 27 NONAME
+	_ZN10CPtiEngine17PreviousCandidateEv @ 28 NONAME
+	_ZN10CPtiEngine18MoreCandidatePagesEv @ 29 NONAME
+	_ZN10CPtiEngine18NumberOfCandidatesEv @ 30 NONAME
+	_ZN10CPtiEngine18SetExternalKeyMapLE19TPtiEngineInputMode7TPtiKeyR7TDesC1612TPtiTextCase @ 31 NONAME
+	_ZN10CPtiEngine19CancelTimerActivityEv @ 32 NONAME
+	_ZN10CPtiEngine20DetachUserDictionaryER7TDesC16 @ 33 NONAME
+	_ZN10CPtiEngine20DetachUserDictionaryEi @ 34 NONAME
+	_ZN10CPtiEngine21AttachUserDictionaryLER7TDesC16 @ 35 NONAME
+	_ZN10CPtiEngine21CloseCurrentLanguageLEv @ 36 NONAME
+	_ZN10CPtiEngine21CreateUserDictionaryLER7TDesC16P16CDesC16ArrayFlat19TPtiEngineInputMode @ 37 NONAME
+	_ZN10CPtiEngine21DefaultUserDictionaryE19TPtiEngineInputMode @ 38 NONAME
+	_ZN10CPtiEngine21GetPhoneticSpellingsLER12CDesC16Array @ 39 NONAME
+	_ZN10CPtiEngine21PreviousCandidatePageEv @ 40 NONAME
+	_ZN10CPtiEngine22AddUserDictionaryEntryER23MPtiUserDictionaryEntry @ 41 NONAME
+	_ZN10CPtiEngine22AddUserDictionaryEntryER23MPtiUserDictionaryEntryi @ 42 NONAME
+	_ZN10CPtiEngine22GetAvailableLanguagesLEP9CArrayFixIiE @ 43 NONAME
+	_ZN10CPtiEngine22GetUserDictionaryEntryEiR23MPtiUserDictionaryEntry @ 44 NONAME
+	_ZN10CPtiEngine22SelectPhoneticSpellingEi @ 45 NONAME
+	_ZN10CPtiEngine22SetCandidatePageLengthEi @ 46 NONAME
+	_ZN10CPtiEngine24GetLocalizedLanguageNameEiR6TDes16 @ 47 NONAME
+	_ZN10CPtiEngine24SetPredictiveChineseCharERK7TDesC16 @ 48 NONAME
+	_ZN10CPtiEngine25GetNextWordCandidateListLER12CDesC16Array @ 49 NONAME
+	_ZN10CPtiEngine27GetChinesePhraseCandidatesLER12CDesC16Array @ 50 NONAME
+	_ZN10CPtiEngine29RemoveEntryFromUserDictionaryER23MPtiUserDictionaryEntry @ 51 NONAME
+	_ZN10CPtiEngine29RemoveEntryFromUserDictionaryER23MPtiUserDictionaryEntryi @ 52 NONAME
+	_ZN10CPtiEngine31NumberOfEntriesInUserDictionaryEv @ 53 NONAME
+	_ZN10CPtiEngine4NewLE4TUidi @ 54 NONAME
+	_ZN10CPtiEngine4NewLERK7TDesC16i @ 55 NONAME
+	_ZN10CPtiEngine4NewLEi @ 56 NONAME
+	_ZN10CPtiEngine7SetCaseE12TPtiTextCase @ 57 NONAME
+	_ZN10CPtiEngine8AddCoreLE4TUidi @ 58 NONAME
+	_ZN10CPtiEngine8AddCoreLERK7TDesC16i @ 59 NONAME
+	_ZN10CPtiEngine8ObserverEv @ 60 NONAME
+	_ZN10CPtiEngineD0Ev @ 61 NONAME
+	_ZN10CPtiEngineD1Ev @ 62 NONAME
+	_ZN10CPtiEngineD2Ev @ 63 NONAME
+	_ZN15CPtiKeyMappings12StartMappingE7TPtiKey12TPtiTextCase19TPtiEngineInputMode @ 64 NONAME
+	_ZN15CPtiKeyMappings13GetDataForKeyE7TPtiKeyR6TDes1612TPtiTextCase @ 65 NONAME
+	_ZN15CPtiKeyMappings14ReplaceKeyMapLE7TPtiKeyR7TDesC1612TPtiTextCase @ 66 NONAME
+	_ZN15CPtiKeyMappings15KeyForCharacterEt @ 67 NONAME
+	_ZN15CPtiKeyMappings4NewLEPs @ 68 NONAME
+	_ZN15CPtiKeyMappings4NewLER7TDesC16 @ 69 NONAME
+	_ZN15CPtiKeyMappings7NextKeyE7TPtiKeyRi12TPtiTextCase @ 70 NONAME
+	_ZN15CPtiKeyMappingsD0Ev @ 71 NONAME
+	_ZN15CPtiKeyMappingsD1Ev @ 72 NONAME
+	_ZN15CPtiKeyMappingsD2Ev @ 73 NONAME
+	_ZN16CPtiCoreLanguage11ClearQwertyEv @ 74 NONAME
+	_ZN16CPtiCoreLanguage14SetKeyMappingsEP15MPtiKeyMappings @ 75 NONAME
+	_ZN16CPtiCoreLanguage15SetLanguageCodeEi @ 76 NONAME
+	_ZN16CPtiCoreLanguage16LocalizedNameDesEv @ 77 NONAME
+	_ZN16CPtiCoreLanguage16SetLocalizedNameERK7TDesC16 @ 78 NONAME
+	_ZN16CPtiCoreLanguage17ClearMultitappingEv @ 79 NONAME
+	_ZN16CPtiCoreLanguage20SetQwertyKeyMappingsEP15MPtiKeyMappings @ 80 NONAME
+	_ZN16CPtiCoreLanguage23GetAvailableInputModesLEP9CArrayFixIiE @ 81 NONAME
+	_ZN16CPtiCoreLanguage4NewLEv @ 82 NONAME
+	_ZN16CPtiCoreLanguage7GetCoreE19TPtiEngineInputMode @ 83 NONAME
+	_ZN16CPtiCoreLanguage7SetCoreEP8MPtiCore19TPtiEngineInputMode @ 84 NONAME
+	_ZN18CPtiUserDictionary4NewLER7TDesC16i @ 85 NONAME
+	_ZN18CPtiUserDictionary4NewLEi @ 86 NONAME
+	_ZN18CPtiUserDictionary5OpenLER7TDesC16i @ 87 NONAME
+	_ZN18CPtiUserDictionary6WriteLER7TDesC16 @ 88 NONAME
+	_ZN18CPtiUserDictionary6WriteLEv @ 89 NONAME
+	_ZN18CPtiUserDictionary8SetDataLEPvi @ 90 NONAME
+	_ZN18CPtiUserDictionaryC1Ev @ 91 NONAME
+	_ZN18CPtiUserDictionaryC2Ev @ 92 NONAME
+	_ZN18CPtiUserDictionaryD0Ev @ 93 NONAME
+	_ZN18CPtiUserDictionaryD1Ev @ 94 NONAME
+	_ZN18CPtiUserDictionaryD2Ev @ 95 NONAME
+	_ZN20CPtiLanguageDatabase15CreateDatabaseLE4TUid @ 96 NONAME
+	_ZN20CPtiLanguageDatabase15ListDatabasesLCEi @ 97 NONAME
+	_ZN20CPtiLanguageDatabase18LanguageCodeForUidEi @ 98 NONAME
+	_ZN20CPtiLanguageDatabase19CreateMappingTableLEiR6RArrayI23TPtiLangDatabaseMappingE @ 99 NONAME
+	_ZN20CPtiLanguageDatabaseD0Ev @ 100 NONAME
+	_ZN20CPtiLanguageDatabaseD1Ev @ 101 NONAME
+	_ZN20CPtiLanguageDatabaseD2Ev @ 102 NONAME
+	_ZN21CPtiQwertyKeyMappings12StartMappingE7TPtiKey12TPtiTextCase19TPtiEngineInputMode @ 103 NONAME
+	_ZN21CPtiQwertyKeyMappings13GetDataForKeyE7TPtiKeyR6TDes1612TPtiTextCase @ 104 NONAME
+	_ZN21CPtiQwertyKeyMappings14ReplaceKeyMapLE7TPtiKeyR7TDesC1612TPtiTextCase @ 105 NONAME
+	_ZN21CPtiQwertyKeyMappings15KeyForCharacterEt @ 106 NONAME
+	_ZN21CPtiQwertyKeyMappings4NewLEPs @ 107 NONAME
+	_ZN21CPtiQwertyKeyMappings4NewLER7TDesC16 @ 108 NONAME
+	_ZN21CPtiQwertyKeyMappings7NextKeyE7TPtiKeyRi12TPtiTextCase @ 109 NONAME
+	_ZN21CPtiQwertyKeyMappingsD0Ev @ 110 NONAME
+	_ZN21CPtiQwertyKeyMappingsD1Ev @ 111 NONAME
+	_ZN21CPtiQwertyKeyMappingsD2Ev @ 112 NONAME
+	_ZN8CPtiCore11CreateCoreLE4TUid @ 113 NONAME
+	_ZN8CPtiCore11GetSpellingEtR6TDes1612TPtiSpelling @ 114 NONAME
+	_ZN8CPtiCore11ListCoresLCEv @ 115 NONAME
+	_ZN8CPtiCore11SetToneMarkEi @ 116 NONAME
+	_ZN8CPtiCore12ReadingTextLEv @ 117 NONAME
+	_ZN8CPtiCore15CompositionDataEv @ 118 NONAME
+	_ZN8CPtiCore16GetCandidatePageEv @ 119 NONAME
+	_ZN8CPtiCore16GetNextCandidateER6TDes16 @ 120 NONAME
+	_ZN8CPtiCore17CommitCurrentWordEv @ 121 NONAME
+	_ZN8CPtiCore17GetCandidateListLER12CDesC16Array @ 122 NONAME
+	_ZN8CPtiCore17GetFirstCandidateER6TDes16 @ 123 NONAME
+	_ZN8CPtiCore17NextCandidatePageEv @ 124 NONAME
+	_ZN8CPtiCore18MoreCandidatePagesEv @ 125 NONAME
+	_ZN8CPtiCore18NumberOfCandidatesEv @ 126 NONAME
+	_ZN8CPtiCore18SetExternalKeyMapLE19TPtiEngineInputMode7TPtiKeyR7TDesC1612TPtiTextCase @ 127 NONAME
+	_ZN8CPtiCore20AttachUserDictionaryEP18CPtiUserDictionary @ 128 NONAME
+	_ZN8CPtiCore20DetachUserDictionaryEP18CPtiUserDictionary @ 129 NONAME
+	_ZN8CPtiCore20GetPreviousCandidateER6TDes16 @ 130 NONAME
+	_ZN8CPtiCore21PreviousCandidatePageEv @ 131 NONAME
+	_ZN8CPtiCore22AddUserDictionaryEntryER23MPtiUserDictionaryEntryP18CPtiUserDictionary @ 132 NONAME
+	_ZN8CPtiCore22GetUserDictionaryEntryEiR23MPtiUserDictionaryEntryP18CPtiUserDictionary @ 133 NONAME
+	_ZN8CPtiCore22SelectPhoneticSpellingEi @ 134 NONAME
+	_ZN8CPtiCore22SetCandidatePageLengthEi @ 135 NONAME
+	_ZN8CPtiCore23SetCurrentInputSequenceE6TPtrC8 @ 136 NONAME
+	_ZN8CPtiCore24SetPredictiveChineseCharERK7TDesC16 @ 137 NONAME
+	_ZN8CPtiCore25GetNextWordCandidateListLER12CDesC16Array @ 138 NONAME
+	_ZN8CPtiCore25RemoveUserDictionaryEntryER23MPtiUserDictionaryEntryP18CPtiUserDictionary @ 139 NONAME
+	_ZN8CPtiCore26CreateEmptyUserDictionaryLEi @ 140 NONAME
+	_ZN8CPtiCore26IsToneMarkValidForSpellingEv @ 141 NONAME
+	_ZN8CPtiCore31NumberOfEntriesInUserDictionaryEP18CPtiUserDictionary @ 142 NONAME
+	_ZN8CPtiCore7ConvertE18TPtiCharConversionPviS1_ @ 143 NONAME
+	_ZN8CPtiCoreD0Ev @ 144 NONAME
+	_ZN8CPtiCoreD1Ev @ 145 NONAME
+	_ZN8CPtiCoreD2Ev @ 146 NONAME
+	_ZNK10CPtiEngine11GetLanguageEi @ 147 NONAME
+	_ZNK10CPtiEngine14LastEnteredKeyEv @ 148 NONAME
+	_ZNK10CPtiEngine17NumberOfLanguagesEv @ 149 NONAME
+	_ZNK10CPtiEngine19GetPhoneticSpellingEi @ 150 NONAME
+	_ZNK10CPtiEngine20CurrentInputSequenceEv @ 151 NONAME
+	_ZNK10CPtiEngine21PhoneticSpellingCountEv @ 152 NONAME
+	_ZNK10CPtiEngine24AvailableCharConversionsEv @ 153 NONAME
+	_ZNK10CPtiEngine24SelectedPhoneticSpellingEv @ 154 NONAME
+	_ZNK10CPtiEngine26IsToneMarkValidForSpellingEv @ 155 NONAME
+	_ZNK10CPtiEngine4CaseEv @ 156 NONAME
+	_ZNK10CPtiEngine8CoreInfoE19TPtiEngineInputMode @ 157 NONAME
+	_ZNK10CPtiEngine8ToneMarkERt @ 158 NONAME
+	_ZNK10CPtiEngine9InputModeEv @ 159 NONAME
+	_ZNK16CPtiCoreLanguage12HasInputModeE19TPtiEngineInputMode @ 160 NONAME
+	_ZNK16CPtiCoreLanguage14GetKeymappingsEv @ 161 NONAME
+	_ZNK16CPtiCoreLanguage20GetQwertyKeymappingsEv @ 162 NONAME
+	_ZNK16CPtiCoreLanguage7HasCoreEP8MPtiCore @ 163 NONAME
+	_ZNK18CPtiUserDictionary9SpaceLeftEv @ 164 NONAME
+	_ZNK20CPtiLanguageDatabase12LanguageCodeEi @ 165 NONAME
+	_ZNK20CPtiLanguageDatabase12NumLanguagesEv @ 166 NONAME
+	_ZNK20CPtiLanguageDatabase15SubLanguageCodeEi @ 167 NONAME
+	_ZNK20CPtiLanguageDatabase16PinyinPhraseDataEv @ 168 NONAME
+	_ZNK20CPtiLanguageDatabase16ZhuyinPhraseDataEv @ 169 NONAME
+	_ZNK20CPtiLanguageDatabase7CoreUIDEv @ 170 NONAME
+	_ZNK20CPtiLanguageDatabase8LangDataEi @ 171 NONAME
+	_ZNK8CPtiCore14GetCurrentWordEv @ 172 NONAME
+	_ZNK8CPtiCore19GetPhoneticSpellingEi @ 173 NONAME
+	_ZNK8CPtiCore21PhoneticSpellingCountEv @ 174 NONAME
+	_ZNK8CPtiCore24SelectedPhoneticSpellingEv @ 175 NONAME
+	_ZNK8CPtiCore8ToneMarkERt @ 176 NONAME
+	_ZTI12CPtiMappings @ 177 NONAME ; #<TI>#
+	_ZTI18CPtiUserDictionary @ 178 NONAME ; #<TI>#
+	_ZTI20CPtiLanguageDatabase @ 179 NONAME ; #<TI>#
+	_ZTI8CPtiCore @ 180 NONAME ; #<TI>#
+	_ZTV12CPtiMappings @ 181 NONAME ; #<VT>#
+	_ZTV18CPtiUserDictionary @ 182 NONAME ; #<VT>#
+	_ZTV20CPtiLanguageDatabase @ 183 NONAME ; #<VT>#
+	_ZTV8CPtiCore @ 184 NONAME ; #<VT>#
+	_ZThn56_N15CPtiKeyMappings12StartMappingE7TPtiKey12TPtiTextCase19TPtiEngineInputMode @ 185 NONAME ; #<thunk>#
+	_ZThn56_N15CPtiKeyMappings14ReplaceKeyMapLE7TPtiKeyR7TDesC1612TPtiTextCase @ 186 NONAME ; #<thunk>#
+	_ZThn56_N15CPtiKeyMappings15KeyForCharacterEt @ 187 NONAME ; #<thunk>#
+	_ZThn56_N15CPtiKeyMappings7NextKeyE7TPtiKeyRi12TPtiTextCase @ 188 NONAME ; #<thunk>#
+	_ZThn56_N15CPtiKeyMappingsD0Ev @ 189 NONAME ; #<thunk>#
+	_ZThn56_N15CPtiKeyMappingsD1Ev @ 190 NONAME ; #<thunk>#
+	_ZThn56_N21CPtiQwertyKeyMappings12StartMappingE7TPtiKey12TPtiTextCase19TPtiEngineInputMode @ 191 NONAME ; #<thunk>#
+	_ZThn56_N21CPtiQwertyKeyMappings14ReplaceKeyMapLE7TPtiKeyR7TDesC1612TPtiTextCase @ 192 NONAME ; #<thunk>#
+	_ZThn56_N21CPtiQwertyKeyMappings15KeyForCharacterEt @ 193 NONAME ; #<thunk>#
+	_ZThn56_N21CPtiQwertyKeyMappings7NextKeyE7TPtiKeyRi12TPtiTextCase @ 194 NONAME ; #<thunk>#
+	_ZThn56_N21CPtiQwertyKeyMappingsD0Ev @ 195 NONAME ; #<thunk>#
+	_ZThn56_N21CPtiQwertyKeyMappingsD1Ev @ 196 NONAME ; #<thunk>#
+	_ZThn4_N16CPtiCoreLanguage23GetAvailableInputModesLEP9CArrayFixIiE @ 197 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore11GetSpellingEtR6TDes1612TPtiSpelling @ 198 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore11SetToneMarkEi @ 199 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore12ReadingTextLEv @ 200 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore15CompositionDataEv @ 201 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore16GetCandidatePageEv @ 202 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore16GetNextCandidateER6TDes16 @ 203 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore17CommitCurrentWordEv @ 204 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore17GetCandidateListLER12CDesC16Array @ 205 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore17GetFirstCandidateER6TDes16 @ 206 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore17NextCandidatePageEv @ 207 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore18MoreCandidatePagesEv @ 208 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore18NumberOfCandidatesEv @ 209 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore18SetExternalKeyMapLE19TPtiEngineInputMode7TPtiKeyR7TDesC1612TPtiTextCase @ 210 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore20AttachUserDictionaryEP18CPtiUserDictionary @ 211 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore20DetachUserDictionaryEP18CPtiUserDictionary @ 212 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore20GetPreviousCandidateER6TDes16 @ 213 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore21PreviousCandidatePageEv @ 214 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore22AddUserDictionaryEntryER23MPtiUserDictionaryEntryP18CPtiUserDictionary @ 215 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore22GetUserDictionaryEntryEiR23MPtiUserDictionaryEntryP18CPtiUserDictionary @ 216 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore22SelectPhoneticSpellingEi @ 217 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore22SetCandidatePageLengthEi @ 218 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore23SetCurrentInputSequenceE6TPtrC8 @ 219 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore24SetPredictiveChineseCharERK7TDesC16 @ 220 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore25GetNextWordCandidateListLER12CDesC16Array @ 221 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore25RemoveUserDictionaryEntryER23MPtiUserDictionaryEntryP18CPtiUserDictionary @ 222 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore26CreateEmptyUserDictionaryLEi @ 223 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore26IsToneMarkValidForSpellingEv @ 224 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore31NumberOfEntriesInUserDictionaryEP18CPtiUserDictionary @ 225 NONAME ; #<thunk>#
+	_ZThn4_N8CPtiCore7ConvertE18TPtiCharConversionPviS1_ @ 226 NONAME ; #<thunk>#
+	_ZThn4_NK16CPtiCoreLanguage12HasInputModeE19TPtiEngineInputMode @ 227 NONAME ; #<thunk>#
+	_ZThn4_NK18CPtiUserDictionary9SpaceLeftEv @ 228 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase7CoreUIDEv @ 229 NONAME ; #<thunk>#
+	_ZThn4_NK8CPtiCore14GetCurrentWordEv @ 230 NONAME ; #<thunk>#
+	_ZThn4_NK8CPtiCore19GetPhoneticSpellingEi @ 231 NONAME ; #<thunk>#
+	_ZThn4_NK8CPtiCore21PhoneticSpellingCountEv @ 232 NONAME ; #<thunk>#
+	_ZThn4_NK8CPtiCore24SelectedPhoneticSpellingEv @ 233 NONAME ; #<thunk>#
+	_ZThn4_NK8CPtiCore8ToneMarkERt @ 234 NONAME ; #<thunk>#
+	_ZNK20CPtiLanguageDatabase8LangDataEiPv @ 235 NONAME
+	_ZNK20CPtiLanguageDatabase8NativeIdEi @ 236 NONAME
+	_ZThn4_NK20CPtiLanguageDatabase12LanguageCodeEi @ 237 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase12NumLanguagesEv @ 238 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase15SubLanguageCodeEi @ 239 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase16PinyinPhraseDataEv @ 240 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase16ZhuyinPhraseDataEv @ 241 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase8LangDataEi @ 242 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase8LangDataEiPv @ 243 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiLanguageDatabase8NativeIdEi @ 244 NONAME ; #<thunk>#
+	_ZN10CPtiEngine22GetAvailableLanguagesLER6RArrayIiE @ 245 NONAME
+	_ZN16CPtiCoreLanguage23GetAvailableInputModesLER6RArrayIiE @ 246 NONAME
+	_ZN10CPtiEngine32CreateDefaultUserDictionaryFileLE4TUidi @ 247 NONAME
+	_ZN10CPtiEngine28AttachDefaultUserDictionaryLE4TUidi @ 248 NONAME
+	_ZN16CPtiCoreLanguage10RemoveCoreEP8MPtiCore @ 249 NONAME
+	_ZN10CPtiEngine22ReadSecondaryDataFileLE4TUidi @ 250 NONAME
+	_ZN10CPtiEngine23WriteSecondaryDataFileLE4TUidiP6HBufC8 @ 251 NONAME
+	_ZN10CPtiEngine17MappingDataForKeyE7TPtiKeyR6TDes1612TPtiTextCase @ 252 NONAME
+	_ZN10CPtiEngine28GetNumericModeKeysForQwertyLEiR6RArrayI21TPtiNumericKeyBindingE @ 253 NONAME
+	_ZN10CPtiEngine17GetHwrRecognizerLE9TLanguage @ 254 NONAME
+	_ZN10CPtiEngine17GetHwrRecognizerLEi @ 255 NONAME
+	_ZN10CPtiEngine18ListHwrRecognizerLE9TLanguage @ 256 NONAME
+	_ZN10CPtiEngine25GetHwrAvailableLanguagesLER6RArrayIiE @ 257 NONAME
+	_ZN14CHwrRecognizer13SetNumberModeE23TAknEditorNumericKeymap @ 258 NONAME
+	_ZN14CHwrRecognizer14GetDictVersionER6TDes16 @ 259 NONAME
+	_ZN14CHwrRecognizer15SetCandidateNumEi @ 260 NONAME
+	_ZN14CHwrRecognizer16GetEngineVersionER6TDes16 @ 261 NONAME
+	_ZN14CHwrRecognizer16SetInputAreaSizeER5TSize @ 262 NONAME
+	_ZN14CHwrRecognizer17AddAuxiliaryRangeERK20TRecognitionRangeTag @ 263 NONAME
+	_ZN14CHwrRecognizer17RemoveAllAuxRangeEv @ 264 NONAME
+	_ZN14CHwrRecognizer19SetFirstLetterOrderE17TLatinLetterOrder @ 265 NONAME
+	_ZN14CHwrRecognizer20ListImplementationsLE9TLanguageR6RArrayI4TUidE @ 266 NONAME
+	_ZN14CHwrRecognizer20RemoveAuxiliaryRangeEi @ 267 NONAME
+	_ZN14CHwrRecognizer21EnableWordRecognitionEi @ 268 NONAME
+	_ZN14CHwrRecognizer23ListAvailableLanguagesLER6RArrayIiE @ 269 NONAME
+	_ZN14CHwrRecognizer28ListGivenAvailableLanguagesLE4TUidR6RArrayIiE @ 270 NONAME
+	_ZN14CHwrRecognizer4NewLE9TLanguageR4TUid @ 271 NONAME
+	_ZN14CHwrRecognizer4NewLEi @ 272 NONAME
+	_ZN14CHwrRecognizer8GetRangeEv @ 273 NONAME
+	_ZN14CHwrRecognizer8SetRangeERK20TRecognitionRangeTag @ 274 NONAME
+	_ZN14CHwrRecognizer9RecognizeERK6RArrayI6TPointER13RPointerArrayI7HBufC16E @ 275 NONAME
+	_ZN14CHwrRecognizerD0Ev @ 276 NONAME
+	_ZN14CHwrRecognizerD1Ev @ 277 NONAME
+	_ZN14CHwrRecognizerD2Ev @ 278 NONAME
+	_ZNK14CHwrRecognizer13StrokeEndMarkEv @ 279 NONAME
+	_ZNK14CHwrRecognizer15GetCandidateNumEv @ 280 NONAME
+	_ZTI14CHwrRecognizer @ 281 NONAME ; #<TI>#
+	_ZTI17CPtiHwrRecognizer @ 282 NONAME ; #<TI>#
+	_ZTV14CHwrRecognizer @ 283 NONAME ; #<VT>#
+	_ZTV17CPtiHwrRecognizer @ 284 NONAME ; #<VT>#
+	_ZThn4_N14CHwrRecognizer13SetNumberModeE23TAknEditorNumericKeymap @ 285 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer14GetDictVersionER6TDes16 @ 286 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer15SetCandidateNumEi @ 287 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer16GetEngineVersionER6TDes16 @ 288 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer16SetInputAreaSizeER5TSize @ 289 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer17AddAuxiliaryRangeERK20TRecognitionRangeTag @ 290 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer17RemoveAllAuxRangeEv @ 291 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer19SetFirstLetterOrderE17TLatinLetterOrder @ 292 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer20RemoveAuxiliaryRangeEi @ 293 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer21EnableWordRecognitionEi @ 294 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer8GetRangeEv @ 295 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer8SetRangeERK20TRecognitionRangeTag @ 296 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer9RecognizeERK6RArrayI6TPointER13RPointerArrayI7HBufC16E @ 297 NONAME ; #<thunk>#
+	_ZThn4_NK14CHwrRecognizer13StrokeEndMarkEv @ 298 NONAME ; #<thunk>#
+	_ZThn4_NK14CHwrRecognizer15GetCandidateNumEv @ 299 NONAME ; #<thunk>#
+	_ZN10CPtiEngine26GetCandidatesByInputStringERK7TDesC16R13RPointerArrayI7HBufC16Ei @ 300 NONAME
+	_ZN14CPtiEngineImpl26GetCandidatesByInputStringERK7TDesC16R13RPointerArrayI7HBufC16Ei @ 301 NONAME
+	_ZN8CPtiCore26GetCandidatesByInputStringERK7TDesC16R13RPointerArrayI7HBufC16Ei @ 302 NONAME
+	_ZThn4_N8CPtiCore26GetCandidatesByInputStringERK7TDesC16R13RPointerArrayI7HBufC16Ei @ 303 NONAME ; #<thunk>#
+	_ZN14CHwrRecognizer18GetTopGuideLinePosERi @ 304 NONAME
+	_ZN14CHwrRecognizer21GetBottomGuideLinePosERi @ 305 NONAME
+	_ZThn4_N14CHwrRecognizer18GetTopGuideLinePosERi @ 306 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer21GetBottomGuideLinePosERi @ 307 NONAME ; #<thunk>#
+	_ZN14CHwrRecognizer21SetPermittedSymbolSetERK7TDesC16 @ 308 NONAME
+	_ZThn4_N14CHwrRecognizer21SetPermittedSymbolSetERK7TDesC16 @ 309 NONAME ; #<thunk>#
+	_ZN14CHwrRecognizer18SetAuxCandidateNumEi @ 310 NONAME
+	_ZN14CHwrRecognizer20RecognizeWithCharSetERK6RArrayI6TPointER13RPointerArrayI7HBufC16ERK7TDesC16 @ 311 NONAME
+	_ZNK14CHwrRecognizer18GetAuxCandidateNumEv @ 312 NONAME
+	_ZThn4_N14CHwrRecognizer18SetAuxCandidateNumEi @ 313 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer20RecognizeWithCharSetERK6RArrayI6TPointER13RPointerArrayI7HBufC16ERK7TDesC16 @ 314 NONAME ; #<thunk>#
+	_ZThn4_NK14CHwrRecognizer18GetAuxCandidateNumEv @ 315 NONAME ; #<thunk>#
+	_ZN14CHwrRecognizer10UnLoadUdmLE8TUdmType @ 316 NONAME
+	_ZN14CHwrRecognizer14McrAddStrokesLERK6RArrayI6TPointER13RPointerArrayI7HBufC16E @ 317 NONAME
+	_ZN14CHwrRecognizer14McrEndSessionLER13RPointerArrayI7HBufC16E @ 318 NONAME
+	_ZN14CHwrRecognizer15GetSymbolModelLE8TUdmTypeiR7TPtrC16R6RArrayI6TPointERiS7_ @ 319 NONAME
+	_ZN14CHwrRecognizer16McrBeginSessionLEv @ 320 NONAME
+	_ZN14CHwrRecognizer18GetModelIndexListLE8TUdmTypeR6RArrayIiERK12THwrUdmRange @ 321 NONAME
+	_ZN14CHwrRecognizer18QueryUdmInterfaceLEv @ 322 NONAME
+	_ZN14CHwrRecognizer8LoadUdmLE8TUdmType @ 323 NONAME
+	_ZNK14CHwrRecognizer12IsSupportUdmEv @ 324 NONAME
+	_ZTI11CSymbolList @ 325 NONAME ; #<TI>#
+	_ZTI14CTruiPtiEngine @ 326 NONAME ; #<TI>#
+	_ZTI7CSymbol @ 327 NONAME ; #<TI>#
+	_ZTV11CSymbolList @ 328 NONAME ; #<VT>#
+	_ZTV14CTruiPtiEngine @ 329 NONAME ; #<VT>#
+	_ZTV7CSymbol @ 330 NONAME ; #<VT>#
+	_ZThn4_N14CHwrRecognizer14McrAddStrokesLERK6RArrayI6TPointER13RPointerArrayI7HBufC16E @ 331 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer14McrEndSessionLER13RPointerArrayI7HBufC16E @ 332 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer16McrBeginSessionLEv @ 333 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer18QueryUdmInterfaceLEv @ 334 NONAME ; #<thunk>#
+	_ZN14CHwrRecognizer16SymbolModelValidERK7TDesC16RK6RArrayI6TPointE12THwrUdmRangeR6TDes16 @ 335 NONAME
+	_ZN10CPtiEngine31ListAvailablePhysicalKeyboardsLER6RArrayI16TPtiKeyboardTypeE @ 336 NONAME
+	_ZN16CPtiCoreLanguageD0Ev @ 337 NONAME
+	_ZN16CPtiCoreLanguageD1Ev @ 338 NONAME
+	_ZN16CPtiCoreLanguageD2Ev @ 339 NONAME
+	_ZN14CHwrRecognizer13SetScreenSizeER5TSize @ 340 NONAME
+	_ZN14CHwrRecognizer27EnableRecognitionDictionaryEi @ 341 NONAME
+	_ZThn4_N14CHwrRecognizer13SetScreenSizeER5TSize @ 342 NONAME ; #<thunk>#
+	_ZThn4_N14CHwrRecognizer27EnableRecognitionDictionaryEi @ 343 NONAME ; #<thunk>#
+	_ZN10CPtiEngine12CaseSequenceEv @ 344 NONAME
+	_ZN10CPtiEngine15SetKeyboardTypeE16TPtiKeyboardType @ 345 NONAME
+	_ZN10CPtiEngine19MarkAutoCapitalizedEv @ 346 NONAME
+	_ZN10CPtiEngine19SetAutoSubstitutionEi @ 347 NONAME
+	_ZN10CPtiEngine24AddAutoSubstitutionEntryERK7TDesC16S2_ @ 348 NONAME
+	_ZN10CPtiEngine24GetAutoSubstitutionEntryEiR6TDes16S1_ @ 349 NONAME
+	_ZN10CPtiEngine24SetNumberCandidateStatusEi @ 350 NONAME
+	_ZN10CPtiEngine27DeleteAutoSubstitutionEntryERK7TDesC16 @ 351 NONAME
+	_ZN10CPtiEngine28GetNumericModeKeysForQwertyLEiR6RArrayI21TPtiNumericKeyBindingE16TPtiKeyboardType @ 352 NONAME
+	_ZN10CPtiEngine33ExtendedNumericModeKeysForQwertyLEi @ 353 NONAME
+	_ZN10CPtiEngine33ExtendedNumericModeKeysForQwertyLEi16TPtiKeyboardType @ 354 NONAME
+	_ZN10CPtiEngine33KeyboardTypesSupportedByLanguageLEiR6RArrayI16TPtiKeyboardTypeE @ 355 NONAME
+	_ZN10CPtiEngine38SetMaxLengthForAutoCompletedCandidatesEi @ 356 NONAME
+	_ZN10CPtiEngine9AddPhraseERK7TDesC16 @ 357 NONAME
+	_ZN14CPtiKeyMapData10Reserved_1Ev @ 358 NONAME
+	_ZN14CPtiKeyMapData10Reserved_2Ev @ 359 NONAME
+	_ZN14CPtiKeyMapData10Reserved_3Ev @ 360 NONAME
+	_ZN14CPtiKeyMapData10Reserved_4Ev @ 361 NONAME
+	_ZN14CPtiKeyMapDataD0Ev @ 362 NONAME
+	_ZN14CPtiKeyMapDataD1Ev @ 363 NONAME
+	_ZN14CPtiKeyMapDataD2Ev @ 364 NONAME
+	_ZN15CPtiKeyMappings4NewLEP14CPtiKeyMapData @ 365 NONAME
+	_ZN16CPtiCoreLanguage15ClearHalfQwertyEv @ 366 NONAME
+	_ZN16CPtiCoreLanguage24SetHalfQwertyKeyMappingsEP15MPtiKeyMappings @ 367 NONAME
+	_ZN20CPtiKeyboardDatabase10Reserved_1Ev @ 368 NONAME
+	_ZN20CPtiKeyboardDatabase10Reserved_2Ev @ 369 NONAME
+	_ZN20CPtiLanguageDatabase29CreateMappingTableWithOpaqueLEiR6RArrayI29TPtiLangDatabaseMappingOpaqueE @ 370 NONAME
+	_ZN21CPtiKeyMapDataFactory10Reserved_1Ev @ 371 NONAME
+	_ZN21CPtiKeyMapDataFactory10Reserved_2Ev @ 372 NONAME
+	_ZN21CPtiKeyMapDataFactory20ListImplementationsLER6RArrayIiE @ 373 NONAME
+	_ZN21CPtiKeyMapDataFactory21CreateImplementationLE4TUid @ 374 NONAME
+	_ZN21CPtiKeyMapDataFactoryD0Ev @ 375 NONAME
+	_ZN21CPtiKeyMapDataFactoryD1Ev @ 376 NONAME
+	_ZN21CPtiKeyMapDataFactoryD2Ev @ 377 NONAME
+	_ZN21CPtiQwertyKeyMappings15SetKeyboardTypeE16TPtiKeyboardType @ 378 NONAME
+	_ZN21CPtiQwertyKeyMappings4NewLEP14CPtiKeyMapData @ 379 NONAME
+	_ZN25CPtiHalfQwertyKeyMappings12StartMappingE7TPtiKey12TPtiTextCase19TPtiEngineInputMode @ 380 NONAME
+	_ZN25CPtiHalfQwertyKeyMappings13GetDataForKeyE7TPtiKeyR6TDes1612TPtiTextCase @ 381 NONAME
+	_ZN25CPtiHalfQwertyKeyMappings14ReplaceKeyMapLE7TPtiKeyR7TDesC1612TPtiTextCase @ 382 NONAME
+	_ZN25CPtiHalfQwertyKeyMappings15KeyForCharacterEt @ 383 NONAME
+	_ZN25CPtiHalfQwertyKeyMappings4NewLEP14CPtiKeyMapData @ 384 NONAME
+	_ZN25CPtiHalfQwertyKeyMappings6GetAllE12TPtiTextCase @ 385 NONAME
+	_ZN25CPtiHalfQwertyKeyMappingsD0Ev @ 386 NONAME
+	_ZN25CPtiHalfQwertyKeyMappingsD1Ev @ 387 NONAME
+	_ZN25CPtiHalfQwertyKeyMappingsD2Ev @ 388 NONAME
+	_ZN27CPtiKeyboardDatabaseFactory10Reserved_1Ev @ 389 NONAME
+	_ZN27CPtiKeyboardDatabaseFactory10Reserved_2Ev @ 390 NONAME
+	_ZN27CPtiKeyboardDatabaseFactory20ListImplementationsLEiR6RArrayIiE @ 391 NONAME
+	_ZN27CPtiKeyboardDatabaseFactory21CreateImplementationLE4TUid @ 392 NONAME
+	_ZN27CPtiKeyboardDatabaseFactory29CreateMappingTableWithOpaqueLEiR6RArrayI33TPtiKeyboardDatabaseMappingOpaqueE @ 393 NONAME
+	_ZN27CPtiKeyboardDatabaseFactoryD0Ev @ 394 NONAME
+	_ZN27CPtiKeyboardDatabaseFactoryD1Ev @ 395 NONAME
+	_ZN27CPtiKeyboardDatabaseFactoryD2Ev @ 396 NONAME
+	_ZNK10CPtiEngine10IsValidKeyE7TPtiKey @ 397 NONAME
+	_ZNK10CPtiEngine12KeyboardTypeEv @ 398 NONAME
+	_ZNK10CPtiEngine17IsQwertyBasedModeE19TPtiEngineInputMode @ 399 NONAME
+	_ZNK10CPtiEngine31NumberOfAutoSubstitutionEntriesEv @ 400 NONAME
+	_ZNK12CPtiMappings12KeyboardTypeEv @ 401 NONAME
+	_ZNK14CPtiKeyMapData10DataForKeyE16TPtiKeyboardType7TPtiKey12TPtiTextCase @ 402 NONAME
+	_ZNK14CPtiKeyMapData10DataForKeyE16TPtiKeyboardTypei @ 403 NONAME
+	_ZNK14CPtiKeyMapData10HasKeyDataE16TPtiKeyboardType @ 404 NONAME
+	_ZNK14CPtiKeyMapData11HasDeadKeysE16TPtiKeyboardType @ 405 NONAME
+	_ZNK14CPtiKeyMapData12LanguageCodeEv @ 406 NONAME
+	_ZNK14CPtiKeyMapData12NumberOfKeysE16TPtiKeyboardType @ 407 NONAME
+	_ZNK14CPtiKeyMapData15IsNumberModeKeyE16TPtiKeyboardTypeR21TPtiNumericKeyBinding @ 408 NONAME
+	_ZNK14CPtiKeyMapData15KeyBindingTableE16TPtiKeyboardTypeRi @ 409 NONAME
+	_ZNK14CPtiKeyMapData16DeadKeyDataArrayE16TPtiKeyboardTypeRi @ 410 NONAME
+	_ZNK14CPtiKeyMapData16HasFnKeyBindingsE16TPtiKeyboardType @ 411 NONAME
+	_ZNK14CPtiKeyMapData17DeadKeyDataForKeyE16TPtiKeyboardType7TPtiKey12TPtiTextCase @ 412 NONAME
+	_ZNK14CPtiKeyMapData17HasVowelSequencesE16TPtiKeyboardType @ 413 NONAME
+	_ZNK14CPtiKeyMapData18VowelSequenceTableE16TPtiKeyboardTypeRi @ 414 NONAME
+	_ZNK14CPtiKeyMapData19GetNumericModeKeysLE16TPtiKeyboardTypeR6RArrayI21TPtiNumericKeyBindingE @ 415 NONAME
+	_ZNK14CPtiKeyMapData20NumericModeKeysTableE16TPtiKeyboardTypeRi @ 416 NONAME
+	_ZNK14CPtiKeyMapData23KeyForBindingTableIndexE16TPtiKeyboardTypeiR12TPtiTextCase @ 417 NONAME
+	_ZNK14CPtiKeyMapData24SuitableForLatinOnlyModeEv @ 418 NONAME
+	_ZNK14CPtiKeyMapData28CaseBasedIndexInBindingTableE16TPtiKeyboardType7TPtiKey12TPtiTextCase @ 419 NONAME
+	_ZNK14CPtiKeyMapData7KeyDataE16TPtiKeyboardTypeRi @ 420 NONAME
+	_ZNK14CPtiKeyMapData9IsDeadKeyE16TPtiKeyboardType7TPtiKey12TPtiTextCase @ 421 NONAME
+	_ZNK16CPtiCoreLanguage11DataFactoryEv @ 422 NONAME
+	_ZNK16CPtiCoreLanguage13RawKeyMapDataEv @ 423 NONAME
+	_ZNK16CPtiCoreLanguage24GetHalfQwertyKeymappingsEv @ 424 NONAME
+	_ZNK20CPtiKeyboardDatabase12LanguageCodeEv @ 425 NONAME
+	_ZNK20CPtiKeyboardDatabase7KdbDataEiPv @ 426 NONAME
+	_ZNK20CPtiKeyboardDatabase8NativeIdEv @ 427 NONAME
+	_ZNK21CPtiQwertyKeyMappings27HasDataBlockForKeyboardTypeE16TPtiKeyboardType @ 428 NONAME
+	_ZTI14CPtiKeyMapData @ 429 NONAME ; #<TI>#
+	_ZTI20CPtiKeyboardDatabase @ 430 NONAME ; #<TI>#
+	_ZTI21CPtiKeyMapDataFactory @ 431 NONAME ; #<TI>#
+	_ZTI22CPtiNumberModeDataImpl @ 432 NONAME ; #<TI>#
+	_ZTI27CPtiKeyboardDatabaseFactory @ 433 NONAME ; #<TI>#
+	_ZTV14CPtiKeyMapData @ 434 NONAME ; #<VT>#
+	_ZTV20CPtiKeyboardDatabase @ 435 NONAME ; #<VT>#
+	_ZTV21CPtiKeyMapDataFactory @ 436 NONAME ; #<VT>#
+	_ZTV22CPtiNumberModeDataImpl @ 437 NONAME ; #<VT>#
+	_ZTV27CPtiKeyboardDatabaseFactory @ 438 NONAME ; #<VT>#
+	_ZThn4_N14CPtiKeyMapData10Reserved_1Ev @ 439 NONAME ; #<thunk>#
+	_ZThn4_N14CPtiKeyMapData10Reserved_2Ev @ 440 NONAME ; #<thunk>#
+	_ZThn4_N14CPtiKeyMapData10Reserved_3Ev @ 441 NONAME ; #<thunk>#
+	_ZThn4_N14CPtiKeyMapData10Reserved_4Ev @ 442 NONAME ; #<thunk>#
+	_ZThn4_N20CPtiKeyboardDatabase10Reserved_1Ev @ 443 NONAME ; #<thunk>#
+	_ZThn4_N20CPtiKeyboardDatabase10Reserved_2Ev @ 444 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData10DataForKeyE16TPtiKeyboardType7TPtiKey12TPtiTextCase @ 445 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData10DataForKeyE16TPtiKeyboardTypei @ 446 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData10HasKeyDataE16TPtiKeyboardType @ 447 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData11HasDeadKeysE16TPtiKeyboardType @ 448 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData12LanguageCodeEv @ 449 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData12NumberOfKeysE16TPtiKeyboardType @ 450 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData15IsNumberModeKeyE16TPtiKeyboardTypeR21TPtiNumericKeyBinding @ 451 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData15KeyBindingTableE16TPtiKeyboardTypeRi @ 452 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData16DeadKeyDataArrayE16TPtiKeyboardTypeRi @ 453 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData16HasFnKeyBindingsE16TPtiKeyboardType @ 454 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData17DeadKeyDataForKeyE16TPtiKeyboardType7TPtiKey12TPtiTextCase @ 455 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData17HasVowelSequencesE16TPtiKeyboardType @ 456 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData18VowelSequenceTableE16TPtiKeyboardTypeRi @ 457 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData19GetNumericModeKeysLE16TPtiKeyboardTypeR6RArrayI21TPtiNumericKeyBindingE @ 458 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData20NumericModeKeysTableE16TPtiKeyboardTypeRi @ 459 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData24SuitableForLatinOnlyModeEv @ 460 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData7KeyDataE16TPtiKeyboardTypeRi @ 461 NONAME ; #<thunk>#
+	_ZThn4_NK14CPtiKeyMapData9IsDeadKeyE16TPtiKeyboardType7TPtiKey12TPtiTextCase @ 462 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiKeyboardDatabase12LanguageCodeEv @ 463 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiKeyboardDatabase7KdbDataEiPv @ 464 NONAME ; #<thunk>#
+	_ZThn4_NK20CPtiKeyboardDatabase8NativeIdEv @ 465 NONAME ; #<thunk>#
+	_ZThn56_N25CPtiHalfQwertyKeyMappings12StartMappingE7TPtiKey12TPtiTextCase19TPtiEngineInputMode @ 466 NONAME ; #<thunk>#
+	_ZThn56_N25CPtiHalfQwertyKeyMappings14ReplaceKeyMapLE7TPtiKeyR7TDesC1612TPtiTextCase @ 467 NONAME ; #<thunk>#
+	_ZThn56_N25CPtiHalfQwertyKeyMappings15KeyForCharacterEt @ 468 NONAME ; #<thunk>#
+	_ZThn56_N25CPtiHalfQwertyKeyMappings6GetAllE12TPtiTextCase @ 469 NONAME ; #<thunk>#
+	_ZThn56_N25CPtiHalfQwertyKeyMappingsD0Ev @ 470 NONAME ; #<thunk>#
+	_ZThn56_N25CPtiHalfQwertyKeyMappingsD1Ev @ 471 NONAME ; #<thunk>#
+	_ZN14CHwrRecognizer15EnableGuidelineEi @ 472 NONAME
+	_ZThn4_N14CHwrRecognizer15EnableGuidelineEi @ 473 NONAME ; #<thunk>#
+	_ZN25CPtiHalfQwertyKeyMappings7NextKeyE7TPtiKeyRi12TPtiTextCase @ 474 NONAME
+	_ZThn56_N25CPtiHalfQwertyKeyMappings7NextKeyE7TPtiKeyRi12TPtiTextCase @ 475 NONAME ; #<thunk>#
+	_ZN10CPtiEngine18SetSecondaryInputLEi @ 476 NONAME

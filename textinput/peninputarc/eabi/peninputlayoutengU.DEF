@@ -1,0 +1,16 @@
+EXPORTS
+	_ZN16CFepLayoutEngine11GetUiLayoutE4TUidP12MLayoutOwnerPKv @ 1 NONAME
+	_ZN16CFepLayoutEngine13UiLayoutListLEi @ 2 NONAME
+	_ZN16CFepLayoutEngine4NewLEv @ 3 NONAME
+	_ZTI16CFepLayoutEngine @ 4 NONAME ; #<TI>#
+	_ZTV16CFepLayoutEngine @ 5 NONAME ; #<VT>#
+	_ZN16CFepLayoutEngine14ImePluginListLEii @ 6 NONAME
+	_ZN16CFepLayoutEngine22TouchSupportLanguagesLEv @ 7 NONAME
+	_ZN16CFepLayoutEngine4NewLEP10CPtiEngine @ 8 NONAME
+	_ZTI14CImePluginList @ 9 NONAME ; #<TI>#
+	_ZTI16CImePluginFinder @ 10 NONAME ; #<TI>#
+	_ZTV14CImePluginList @ 11 NONAME ; #<VT>#
+	_ZTV16CImePluginFinder @ 12 NONAME ; #<VT>#
+	_ZN16CFepLayoutEngine19IsSupportPluginModeE9TLanguage16TPluginInputMode @ 13 NONAME
+	_ZN16CFepLayoutEngine11InitializeLEv @ 14 NONAME
+

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<api id="51e3b6f81bc0d3dea64db5fe9a33c7bb" dataversion="2.0">
+  <name>Aknfep Pen Support API</name>
+  <description>
+  These APIs contain peninput related definitions like:-
+        The various peninput commands, 
+        The various peninput signal events, 
+        Japanese specific enums, 
+        Peninput mode case modes, 
+        Japanese peninput settings enums, 
+        Enums specifying writing speed.
+  </description>
+  <type>c++</type>
+  <collection>textinput</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

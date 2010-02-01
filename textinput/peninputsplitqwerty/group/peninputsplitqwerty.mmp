@@ -1,0 +1,137 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project peninputsplitqwerty
+*
+*/
+
+
+#include <bldvariant.hrh>
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET          peninputsplitqwerty.dll
+TARGETTYPE      plugin
+UID             0x10009D8D 0x2001E2BB
+
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../src
+SOURCE          peninputsplitqwertymain.cpp
+SOURCE          peninputsplitqwertyproxy.cpp
+SOURCE          peninputsplitqwertylayout.cpp
+SOURCE          peninputsplitqwertydatamgr.cpp
+SOURCE          peninputsplitqwertywindow.cpp
+SOURCE          peninputsplitqwertyuistatestandby.cpp
+SOURCE          peninputsplitqwertyuistatepopup.cpp
+SOURCE          peninputsplitqwertylafdatamgr.cpp
+
+USERINCLUDE     ../inc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   /epoc32/include/ecom
+SYSTEMINCLUDE   ../../../inc
+SYSTEMINCLUDE   ../../inc
+
+SOURCEPATH      ../srcdata
+
+START RESOURCE 2001E2BB.rss
+    #ifdef SYMBIAN_SECURE_ECOM 
+        TARGET peninputsplitqwerty.rsc
+    #endif
+END
+
+// Resource file for VKB window      
+START RESOURCE peninputssqwin.rss
+HEADER
+LANGUAGE_IDS
+END
+
+RESOURCE  peninputssqwinconfiginfo_01.rss
+RESOURCE  peninputssqwinconfiginfo_02.rss
+RESOURCE  peninputssqwinconfiginfo_03.rss
+RESOURCE  peninputssqwinconfiginfo_04.rss
+RESOURCE  peninputssqwinconfiginfo_05.rss
+RESOURCE  peninputssqwinconfiginfo_06.rss
+RESOURCE  peninputssqwinconfiginfo_07.rss
+RESOURCE  peninputssqwinconfiginfo_08.rss
+RESOURCE  peninputssqwinconfiginfo_09.rss
+RESOURCE  peninputssqwinconfiginfo_10.rss
+RESOURCE  peninputssqwinconfiginfo_13.rss
+RESOURCE  peninputssqwinconfiginfo_14.rss
+RESOURCE  peninputssqwinconfiginfo_15.rss
+RESOURCE  peninputssqwinconfiginfo_16.rss
+RESOURCE  peninputssqwinconfiginfo_17.rss
+RESOURCE  peninputssqwinconfiginfo_18.rss
+RESOURCE  peninputssqwinconfiginfo_25.rss
+RESOURCE  peninputssqwinconfiginfo_26.rss
+RESOURCE  peninputssqwinconfiginfo_27.rss
+RESOURCE  peninputssqwinconfiginfo_28.rss
+RESOURCE  peninputssqwinconfiginfo_33.rss
+RESOURCE  peninputssqwinconfiginfo_37.rss
+RESOURCE  peninputssqwinconfiginfo_39.rss
+RESOURCE  peninputssqwinconfiginfo_42.rss
+RESOURCE  peninputssqwinconfiginfo_44.rss
+RESOURCE  peninputssqwinconfiginfo_45.rss
+RESOURCE  peninputssqwinconfiginfo_49.rss
+RESOURCE  peninputssqwinconfiginfo_50.rss
+RESOURCE  peninputssqwinconfiginfo_51.rss
+RESOURCE  peninputssqwinconfiginfo_54.rss
+RESOURCE  peninputssqwinconfiginfo_57.rss
+RESOURCE  peninputssqwinconfiginfo_58.rss
+RESOURCE  peninputssqwinconfiginfo_59.rss
+RESOURCE  peninputssqwinconfiginfo_67.rss
+RESOURCE  peninputssqwinconfiginfo_68.rss
+RESOURCE  peninputssqwinconfiginfo_70.rss
+#ifdef RD_MARATHI
+RESOURCE  peninputssqwinconfiginfo_72.rss
+#endif
+RESOURCE  peninputssqwinconfiginfo_76.rss
+RESOURCE  peninputssqwinconfiginfo_78.rss
+RESOURCE  peninputssqwinconfiginfo_79.rss
+RESOURCE  peninputssqwinconfiginfo_83.rss
+RESOURCE  peninputssqwinconfiginfo_93.rss
+RESOURCE  peninputssqwinconfiginfo_94.rss
+RESOURCE  peninputssqwinconfiginfo_96.rss
+RESOURCE  peninputssqwinconfiginfo_102.rss
+RESOURCE  peninputssqwinconfiginfo_103.rss
+  
+  
+  
+  
+LIBRARY         euser.lib 
+LIBRARY         ws32.lib 
+LIBRARY         ecom.lib 
+LIBRARY         efsrv.lib
+LIBRARY         gdi.lib 
+LIBRARY         bafl.lib 
+LIBRARY         avkon.lib
+LIBRARY         aknlayout.lib 
+LIBRARY         aknlayout2scalable.lib 
+LIBRARY         aknicon.lib
+LIBRARY         centralrepository.lib 
+LIBRARY         cone.lib 
+LIBRARY         ptiengine.lib 
+
+LIBRARY         peninputlayoutinterface.lib 
+LIBRARY         peninputlayoutcontrol.lib
+LIBRARY         peninputpluginutils.lib
+LIBRARY         peninputcommonctrls.lib
+LIBRARY         peninputcommonlayout.lib
+LIBRARY         aknskins.lib
+LIBRARY         fbscli.lib 
+LIBRARY         estor.lib 

@@ -1,0 +1,125 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project peninputgenericitut
+*
+*/
+
+#include <bldvariant.hrh>
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET          peninputgenericitut.dll
+TARGETTYPE      plugin
+UID             0x10009D8D 0x2000B0FF
+
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../src
+
+// Plugin Framework
+SOURCE          peninputgenericitutmain.cpp
+SOURCE          peninputgenericitutproxy.cpp
+SOURCE          peninputgenericitutlayoutimp.cpp
+SOURCE          peninputgenericitutdatamgr.cpp
+SOURCE          peninputgenericitutlayout.cpp
+
+SOURCE          peninputgenericitutuimgrbase.cpp
+SOURCE          peninputitutchnuimgr.cpp
+
+SOURCE          peninputgenericitutuistatebase.cpp
+SOURCE          peninputitutchnuistatestandby.cpp
+SOURCE          peninputitutchnuistatepredict.cpp
+SOURCE          peninputitutchnuistatestrokezhuyincomposition.cpp
+SOURCE          peninputitutchnuistatepinyincomposition.cpp
+
+SOURCE          peninputitutwesternuimgr.cpp
+SOURCE          peninputitutwesternuistatenonpredict.cpp
+SOURCE          peninputitutwesternuistatecusotmization.cpp
+SOURCE          peninputitutwesternuistatematchselection.cpp
+
+SOURCE          peninputgenericitutconverter.cpp
+SOURCE          peninputitutcustomizationresourcemgr.cpp
+SOURCE          peninputcommonbgctrl.cpp
+SOURCE          peninputrepeatbuttonex.cpp
+SOURCE          peninputitutwesternuistatespelling.cpp
+SOURCE          peninputgenericitutwindow.cpp
+SOURCE          peninputgenericitutwindowmanager.cpp
+
+USERINCLUDE     ../inc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   /epoc32/include/ecom
+SYSTEMINCLUDE   ../../../inc
+SYSTEMINCLUDE   ../../inc
+
+SOURCEPATH      ../srcdata
+
+START RESOURCE 2000b0ff.rss
+    #ifdef SYMBIAN_SECURE_ECOM 
+        TARGET peninputgenericitut.rsc
+    #endif
+END
+
+// general resource file
+
+// common for all languages
+//RESOURCE        peninputgeneralitut.rss
+START RESOURCE peninputgeneralitutnew.rss
+HEADER
+LANGUAGE_IDS
+END
+
+// chinese specific resources
+RESOURCE        peninputitutconfig_chinese.rss
+
+// western specific resources
+RESOURCE        peninputitutconfig_latin.rss
+RESOURCE        peninputitutconfig_cyrillic.rss
+RESOURCE        peninputitutconfig_greek.rss
+RESOURCE        peninputitutconfig_hebrew.rss
+RESOURCE        peninputitutconfig_arabic.rss
+RESOURCE        peninputitutconfig_farsi.rss
+RESOURCE        peninputitutconfig_urdu.rss
+RESOURCE        peninputitutconfig_thai.rss
+RESOURCE        peninputitutconfig_devanagari.rss
+RESOURCE        peninputitutconfig_korean.rss
+
+// remember to remove uncessary libs
+LIBRARY         euser.lib
+LIBRARY         ECom.lib
+LIBRARY         gdi.lib
+LIBRARY         bafl.lib
+LIBRARY         aknlayout.lib
+LIBRARY         AknLayout2Scalable.lib
+LIBRARY         aknicon.lib 
+LIBRARY         avkon.lib
+LIBRARY         ptiengine.lib 
+LIBRARY         peninputlayoutinterface.lib 
+LIBRARY         peninputlayoutcontrol.lib
+LIBRARY         peninputcommonctrls.lib
+LIBRARY         cone.lib
+LIBRARY         peninputpluginutils.lib
+LIBRARY         ws32.lib
+LIBRARY         aknskins.lib
+LIBRARY         efsrv.lib
+LIBRARY         estor.lib
+LIBRARY         fbscli.lib
+LIBRARY 		bitgdi.lib 
+LIBRARY         commonengine.lib
+
+// End Of File

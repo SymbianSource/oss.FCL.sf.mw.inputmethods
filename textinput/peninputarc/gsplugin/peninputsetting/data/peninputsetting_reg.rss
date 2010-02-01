@@ -1,0 +1,51 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project Peninput setting
+*
+*/
+//trui application's registration resource file 
+
+
+#include <appinfo.rh>
+#include <peninputsetting.rsg>
+#include <data_caging_paths_strings.hrh>
+
+UID2 KUidAppRegistrationResourceFile
+UID3 0x2001959B
+
+// d:Peninputsetting app resource name
+// l:(none)
+// r:5.0
+// 
+#define qtn_peninputsetting_app_localisable_resource_file "peninputsetting"
+
+// d:Peninputsetting app file name
+// l:(none)
+// r:5.0
+//
+#define qtn_peninputsetting_app_file "peninputsetting"
+
+// d:Peninputsetting localisable resource file name
+// l:(none)
+// r:5.0
+//
+#define qtn_peninputsetting_app_localisable_resource_file "peninputsetting"
+
+RESOURCE APP_REGISTRATION_INFO 
+	{
+	app_file = qtn_peninputsetting_app_file;	
+	localisable_resource_file = APP_RESOURCE_DIR"\\"qtn_peninputsetting_app_localisable_resource_file;
+	localisable_resource_id = R_PENINPUTSETTING_LOCALISABLE_APP_INFO;
+	hidden = KAppIsHidden;
+	}

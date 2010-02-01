@@ -1,0 +1,99 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+#ifndef T_AKNFEPVKB_HRH
+#define T_AKNFEPVKB_HRH
+
+#include <AknFepGlobalEnums.h>    
+
+enum TAknFepVkbIMLayout
+    { 
+    EAknFepVkbImCnPinyin  = EPinyin,
+    EAknFepVkbImCnZhuyin  = EZhuyin, 
+    EAknFepVkbImCnStroke  = EStroke,
+    EAknFepVkbImCnCangjie = ECangJie,
+    EAknFepVkbImLatin     = ELatin,
+    EAknFepVkbImNumber    = ENumber
+    };
+
+enum TAknFepSymbolTableLayout
+    {
+    EAknFepVkbSymbolFullWidth = 0,
+    EAknFepVkbSymbolHalfWidth
+    };
+  
+enum TAknFepVkbCtrlId
+    {
+    EAknFepVkbCtrlIdVkbWindow,
+    
+    // Controls in the first line
+    EAknFepVkbCtrlIdInputContextField,
+    EAknFepVkbCtrlIdTouchInputOption,
+           
+    // Controls in the next line
+    EAknFepVkbCtrlIdCandidateList,
+    EAknFepVkbCtrlIdCompositionField,
+    
+    // Controls in the next line
+    EAknFepVkbCtrlIdVkbCtrl,        
+    EAknFepVkbCtrlIdBackspaceBtn,
+    EAknFepVkbCtrlIdEnterBtn,    
+    EAknFepVkbCtrlIdInputLangSwitcherBtn,
+
+    // Controls in the next line    
+    EAknFepVkbCtrlIdTabBtn,
+    EAknFepVkbCtrlIdCapslockBtn,
+    EAknFepVkbCtrlIdShiftBtn,
+    EAknFepVkbCtrlIdSpaceBtn,
+    EAknFepVkbCtrlIdSwitchToHwrBtn,
+    
+    EAknFepVkbCtrlIdRangeBar,    
+    // Button Id in range bar
+    EAknFepVkbCtrlIdChineseButton,
+    EAknFepVkbCtrlIdEnglishButton,
+    EAknFepVkbCtrlIdNumberButton,
+    EAknFepVkbCtrlIdSymbolButton,
+    EAknFepVkbCtrlIdAccentedButton,
+    // Control id for the client area group
+    EAknFepVkbCtrlIdClientArea,
+    
+    EAknFepVkbPopupWindow
+    };     
+
+enum TNofityWhoWillGetFocus
+    {
+    EInputContextFieldGetFocus = 1,
+    ECompotisionFieldGetFocus
+    };
+
+enum TVkbShiftType
+    {
+    EVkbShift = 1,
+    EVkbCapslock = 2,
+    EVkbBoth = 3
+    };
+
+enum TVkbPositionChangeStyle
+    {
+    EVkbPositionChangeNone      = 0,
+    EVkbPositionChangeTlJustify = 1,
+    EVkbPositionChangeBrJustify = 2,
+    EVkbPositionChangeDataQuery = 3    
+    };        
+    
+#endif //T_AKNFEPVKB_HRH
+
+//End Of File

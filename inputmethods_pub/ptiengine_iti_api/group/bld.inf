@@ -1,0 +1,54 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:               File that exports the files belonging to 
+:                PtiEngine API
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+
+../inc/PtiCore.h               MW_LAYER_PUBLIC_EXPORT_PATH(PtiCore.h)
+../inc/PtiLanguageDatabase.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiLanguageDatabase.h)
+../inc/PtiUserDicEntry.inl     MW_LAYER_PUBLIC_EXPORT_PATH(PtiUserDicEntry.inl)
+../inc/PtiUids.hrh     MW_LAYER_PUBLIC_EXPORT_PATH(PtiUids.hrh)
+../inc/PtiUserDictionary.inl     MW_LAYER_PUBLIC_EXPORT_PATH(PtiUserDictionary.inl)
+../inc/PtiEngine.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiEngine.h)
+../inc/PtiUserDicEntry.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiUserDicEntry.h)
+../inc/PtiObserver.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiObserver.h)
+../inc/PtiDefs.inl     MW_LAYER_PUBLIC_EXPORT_PATH(PtiDefs.inl)
+../inc/PtiDefs.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiDefs.h)
+../inc/PtiUserDictionary.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiUserDictionary.h)
+../inc/PtiCompositionDataIF.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiCompositionDataIF.h)
+../inc/PtiKeyMappings.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiKeyMappings.h)
+../inc/PtiLanguage.inl     MW_LAYER_PUBLIC_EXPORT_PATH(PtiLanguage.inl)
+../inc/PtiLanguage.h     MW_LAYER_PUBLIC_EXPORT_PATH(PtiLanguage.h)

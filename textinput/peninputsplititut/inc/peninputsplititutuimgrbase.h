@@ -20,7 +20,7 @@
 #define C_SPLITITUTUIMGRBASE_H
 
 #include <e32base.h>
-#include <ptidefs.h>
+#include <PtiDefs.h>
 
 class CSplitItutUiStateBase;
 class MSplitItutLayoutContext;

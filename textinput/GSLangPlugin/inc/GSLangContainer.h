@@ -140,6 +140,8 @@ class CGSLangContainer : public CGSBaseContainer
         void MakeCangJieItemL();
 #ifdef RD_INTELLIGENT_TEXT_INPUT
         void MakePredictiveOptionsItemL();
+        
+        void HandleResourceChangeL( TInt aType );
 #endif
 
     private: // New

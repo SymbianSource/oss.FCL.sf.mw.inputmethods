@@ -245,7 +245,7 @@ void CPeninputCommonChoiceList::DrawItem( TInt aIndex, TBool aIsFocus )
 
 EXPORT_C void CPeninputCommonChoiceList::SetListColumnNumWithLafL( TInt aMaxCount)
 	{
-	if( iLastColumnNum == aMaxCount )
+	if( iLastColumnNum == aMaxCount || aMaxCount < 1 )
 		return;
 	
 	iLastColumnNum  = aMaxCount;

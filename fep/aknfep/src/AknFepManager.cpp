@@ -3361,7 +3361,7 @@ TBool CAknFepManager::HandleQwertyKeyEventL(const TKeyEvent& aKeyEvent, TKeyResp
          (keyScanCode == EPtiKeyQwertyApostrophe) )
          && !( iFepPluginManager && iFepPluginManager->EnableITIOnFSQ() ) )          
         {
-        SendEventsToPluginManL( EPluginCloseMode, EFalse );
+        //SendEventsToPluginManL( EPluginCloseMode, EFalse );
         //iFepPluginManager->ClosePluginInputModeL(ETrue);
         }
     else if( keyHandled )
@@ -3728,6 +3728,7 @@ void CAknFepManager::HandleAknEdwinStateEventL(CAknEdwinState* aAknEdwinState,
             case EAknClosePenInputRequest:
                 if ( iFepPluginManager )
                     {
+                    // Fix bug ou1cimx1#225126, editor team asks that the parameter is EFalse.
                     iFepPluginManager->ClosePluginInputModeL( EFalse );
                     }
                 break;
@@ -3752,6 +3753,27 @@ void CAknFepManager::HandleAknEdwinStateEventL(CAknEdwinState* aAknEdwinState,
                 break;
             }
         }
+#ifdef RD_SCALABLE_UI_V2
+    else
+        {
+        // Close touch input when inMenu is opened. When inMenu is opened, 
+        // editor loses focus, and inMenu gets focus. After touch input has 
+        // been force closed, menu state should be restored and last focused
+        // window ,which launches touch input, should be removed.
+        if( aEventType == EAknClosePenInputRequest  
+                && iFepPluginManager  
+                && iFepPluginManager->IsInMenuOpen() )
+            {
+            CCoeEnv* env = CCoeEnv::Static();
+            TKeyEvent keyEvent = {EKeyCBA2, EStdKeyNull, 0, 0};
+            env->SimulateKeyEventL(keyEvent,EEventKey);            
+            iFepPluginManager->ResetMenuState();            
+            iFepPluginManager->RemoveLastFocusedWinFromOpenList();
+            // Fix bug ou1cimx1#225126, editor team asks that the parameter is EFalse.
+            iFepPluginManager->ClosePluginInputModeL( EFalse );
+            }
+        }
+#endif // RD_SCALABLE_UI_V2  
     }
 
 
@@ -4067,6 +4089,7 @@ void CAknFepManager::ExitPluginSpellModeByOkL()
 #ifdef RD_SCALABLE_UI_V2        		    
     if (iFepPluginManager->IsSpellVisible())
         {
+        CommitInlineEditL();
         HBufC* spell = iFepPluginManager->SpellTextInput();
         
         iFepPluginManager->SetITUTSpellingStateL(EFalse); 
@@ -8720,7 +8743,8 @@ void CAknFepManager::LaunchFepQueryDialogL(TInt aResourceId, const TDesC& aIniti
 	    iSpellInitCurSel = aTextSpanToReplace;
 
         iFepPluginManager->SetCaseUpdatesSupressed(isCaseUpdatesSupressed);
-        iFepPluginManager->SetITUTSpellingStateL(ETrue);    
+		//add to avoid text update late when open spell.
+        //iFepPluginManager->SetITUTSpellingStateL(ETrue);    
         iFepPluginManager->SetCursorSelection(aTextSpanToReplace);
         CleanupStack::PopAndDestroy();
         
@@ -12011,7 +12035,7 @@ void CAknFepManager::ChangeInputLanguageL(TInt aInputLanguage)
     	// When FSQ is opened with the ITI-supported input language, 
     	// if switch to another language which doesn't support ITI, such as Korean,
     	// need to restore the previous configuration on FEP
-        if ( iFepPluginManager )
+        if ( iFepPluginManager && !iFepPluginManager->IsSupportITIOnFSQ() )
         	{    	
         	iFepPluginManager->ResetItiStateL();
         	}    	
@@ -15568,10 +15592,10 @@ void CAknFepManager::LaunchLanguagesPopupListL(TBool aLaunchedByTouchWin)
     CleanupStack::Pop( icons );	// iUiInterface->LaunchListPopupL takes ownership immediately
 #ifdef RD_SCALABLE_UI_V2 
     /* tp teleca fix 17.9.2009 to IKIM-7VK8GG*/
-    /*if( iFepFullyConstructed && iFepPluginManager)
+    if( iFepFullyConstructed && iFepPluginManager)
             {
             iFepPluginManager->SetMenuState();            
-            }*/
+            }
     // tp teleca fix end
 #endif              
     // Fire up the dialog
@@ -20597,27 +20621,29 @@ void CAknFepManager::ConvertCharToKey(TChar aChar, TUint16& aKey) const
 	if (!iPtiEngine)
 		return;
 		
-    CPtiCoreLanguage* lang = (CPtiCoreLanguage*)iPtiEngine->GetLanguage(iLanguageCapabilities.iInputLanguageCode);
-    TPtiEngineInputMode inputMode = iPtiEngine->InputMode();
-    
+    CPtiCoreLanguage* lang = (CPtiCoreLanguage*)iPtiEngine->GetLanguage(iLanguageCapabilities.iInputLanguageCode);    
     if (!lang)
         return;
 
     const TBool vietnamese = (iLanguageCapabilities.iInputLanguageCode == ELangVietnamese);
-
+    
     MPtiKeyMappings* map;
-    if (inputMode == EPtiEngineQwerty || inputMode == EPtiEngineQwertyPredictive)
-        {
-        map = lang->GetQwertyKeymappings();
-        }
-    else if( inputMode == EPtiEngineHalfQwerty || inputMode == EPtiEngineHalfQwertyPredictive )
-        {
-        map = lang->GetHalfQwertyKeymappings();
-        }
-    else    
-        {
-        map = lang->GetKeymappings();
-        }
+    TPtiKeyboardType keyboardLayout = KeyboardLayout();
+	if ( keyboardLayout == EPtiKeyboardQwerty4x12 
+		 || keyboardLayout == EPtiKeyboardQwerty4x10
+		 || keyboardLayout == EPtiKeyboardQwerty3x11
+		 || keyboardLayout == EPtiKeyboardCustomQwerty )
+		{
+		map = lang->GetQwertyKeymappings();
+		}
+	else if( keyboardLayout == EPtiKeyboardHalfQwerty )
+		{
+		map = lang->GetHalfQwertyKeymappings();
+		}
+	else    
+		{
+		map = lang->GetKeymappings();
+		}          
 
     if (!map)
         {
@@ -20626,7 +20652,8 @@ void CAknFepManager::ConvertCharToKey(TChar aChar, TUint16& aKey) const
 
     TUint16 ch;
     ch = (TUint16)map->KeyForCharacter(aChar); 
-    if (!ch && vietnamese)
+    if ( !ch && vietnamese 
+         && !( iFepPluginManager && iFepPluginManager->IsSupportITIOnFSQ() ) )
         {
         // This may be Vietnamese tone mark or an accented character which isn't listed
         // in keymappings. 

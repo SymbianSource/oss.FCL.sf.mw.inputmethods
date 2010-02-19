@@ -1,0 +1,22 @@
+/*
+* Copyright (c) 2005,2006 Choe Hwanjin
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+#ifndef libhangul_hangulinternals_h
+#define libhangul_hangulinternals_h
+
+#define N_ELEMENTS(array) (sizeof (array) / sizeof ((array)[0]))
+
+#endif /* libhangul_hangulinternals_h */

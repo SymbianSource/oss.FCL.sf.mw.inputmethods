@@ -19,8 +19,8 @@
 // System includes
 #include <peninputdataconverter.h>
 #include <peninputcommonlayoutglobalenum.h>
-#include <aknutils.h> 
-#include <AknLayoutScalable_Avkon.cdl.h>
+#include <AknUtils.h> 
+#include <aknlayoutscalable_avkon.cdl.h>
 #include <peninputpluginutils.h>
 
 // User includes

@@ -702,7 +702,7 @@ EXPORTS
 	_ZTI26CPeninputPenTraceDecorator @ 701 NONAME ; #<TI>#
 	_ZTV26CPeninputPenTraceDecorator @ 702 NONAME ; #<VT>#
         _ZN22CFepLayoutMultiLineIcf17TooltipBubbleCtrlEv @ 703 NONAME
-        _ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16 @ 704 NONAME
+        _ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16RK5TRect @ 704 NONAME
         _ZN22CFepLayoutMultiLineIcf11HideTooltipEv @ 705 NONAME        
 	_ZTI18CTooltipBubbleCtrl @ 706 NONAME
 	_ZTV18CTooltipBubbleCtrl @ 707 NONAME

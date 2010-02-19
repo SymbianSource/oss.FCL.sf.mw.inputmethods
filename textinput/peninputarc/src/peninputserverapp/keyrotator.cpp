@@ -18,7 +18,7 @@
 #include "keyrotator.h"
 #include <UikonInternalPSKeys.h>
 #include <PSVariables.h>
-#include <aknpriv.rsg>
+#include <AknPriv.rsg>
 #include <barsread.h>
 #include <barsc.h>
 #include <bautils.h>

@@ -537,6 +537,14 @@ public:
      * @return pointer of array.
      */
     virtual RArray<TInt>* PhraseKeycodeArray() = 0;
+    /**
+	 * Return phrase zhuyin spelling array.
+	 * 
+	 * @since S60 v3.2.3
+	 * @param None.
+	 * @return pointer of array.
+	 */
+    virtual CDesCArrayFlat* PhraseZhuYinSpellingArray() = 0;
     };
 
 #endif /*M_AKNFEPUICTRLEDITPANE_H*/

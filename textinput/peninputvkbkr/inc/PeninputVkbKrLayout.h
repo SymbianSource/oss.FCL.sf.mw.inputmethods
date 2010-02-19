@@ -22,7 +22,7 @@
 #include <e32std.h>
 #include <e32base.h>
 
-#include <PeninputCommonLayoutExt.h>
+#include <peninputcommonlayoutext.h>
 #include "PtiDefs.h"
 
 class CPtiEngine;

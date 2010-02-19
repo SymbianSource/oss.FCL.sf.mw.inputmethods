@@ -20,7 +20,7 @@
 #define C_CAKNFEPVKBLAYOUT_H
 
 //  INCLUDES
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include <peninputlayout.h>
 #include <peninputlayoutplugininterface.h>
 #include "peninputvkblayoutcontext.h"

@@ -35,6 +35,7 @@
 #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
 #include <e32property.h>
 #endif
+#include "eikbtgpc.h"
 
 class CEikButtonGroupContainer;
 class CAknCharMapDialog;
@@ -131,6 +132,15 @@ private:	// from MEikCommandObserver
 	void ProcessCommandL(TInt aCommandId);
 
 private:
+    // Delete CBA
+	void DeleteCBAL();
+
+    // Create new inside CBA
+	void CreateInsideCBAL( CEikButtonGroupContainer::TUse aUse,
+	                       CEikButtonGroupContainer::TOrientation aOrientation,
+	                       MEikCommandObserver* aCommandObserver,
+	                       TInt aResourceId );
+	
     /**
      *  Show cba of aResourceId using owns cba object(iCba)
      *
@@ -193,6 +203,10 @@ private:
     CAknFepPredictiveSettingDialog* iPredictiveSettingDialog;
     CAknListQueryDialog* iListQueryDialog;
     CAknFepTextQueryDialog* iTextQueryDialog;
+    // cba container
+    CEikButtonGroupContainer* iDialogCba;
+    // cba mode
+    TBool isCbaEmded;
 	};
 
 

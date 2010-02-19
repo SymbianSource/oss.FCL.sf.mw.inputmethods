@@ -1280,54 +1280,63 @@ void CGSLangContainer::MakePredictiveOptionsItemL()
         }
     else
         {
+#ifndef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
         iListboxItemArray->SetItemVisibilityL( EGSLangIdPredictiveOptions,
                 CGSListBoxItemTextArray::EVisible );
+#endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__   
         }
     }
 
 void CGSLangContainer::HandleResourceChange( TInt aType )
     {
+    TRAP_IGNORE( HandleResourceChangeL( aType ));
+    }
+
+void CGSLangContainer::HandleResourceChangeL( TInt aType )
+    {
     CGSBaseContainer::HandleResourceChange(aType);
     TInt keyboardLayout = 0;
-        RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
-        TPtiKeyboardType layout = (TPtiKeyboardType)keyboardLayout;
-        TBool isPredictionSupport = EFalse;
-        switch(layout)
-            {
-            case EPtiKeyboardHalfQwerty:
-                isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEngineHalfQwertyPredictive);
-                break;
-            case EPtiKeyboardQwerty4x12:
-            case EPtiKeyboardQwerty4x10:  
-            case EPtiKeyboardQwerty3x11:
-            case EPtiKeyboardCustomQwerty:
-                isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEngineQwertyPredictive);
-                break;
-            case EPtiKeyboardNone:
-            case EPtiKeyboard12Key:
-                // Commenting out the below function call as ITI is not supported for Touch Input.
-    #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
-                //isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEnginePredictive);
-    #else
-                isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEnginePredictive);
-    #endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
-                break;
-            default:
-                isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEnginePredictive);
-                break;     
-            }
-        if (isPredictionSupport == EFalse)
-            {
-            iListboxItemArray->SetItemVisibilityL( EGSLangIdPredictiveOptions,
-                    CGSListBoxItemTextArray::EInvisible );
-            }
-        else
-            {
-            iListboxItemArray->SetItemVisibilityL( EGSLangIdPredictiveOptions,
-                    CGSListBoxItemTextArray::EVisible );
-            }
-        iListBox->HandleItemAdditionL();
-        MakeT9LItemL();
+    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+    TPtiKeyboardType layout = (TPtiKeyboardType)keyboardLayout;
+    TBool isPredictionSupport = EFalse;
+    switch(layout)
+        {
+        case EPtiKeyboardHalfQwerty:
+            isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEngineHalfQwertyPredictive);
+            break;
+        case EPtiKeyboardQwerty4x12:
+        case EPtiKeyboardQwerty4x10:  
+        case EPtiKeyboardQwerty3x11:
+        case EPtiKeyboardCustomQwerty:
+            isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEngineQwertyPredictive);
+            break;
+        case EPtiKeyboardNone:
+        case EPtiKeyboard12Key:
+            // Commenting out the below function call as ITI is not supported for Touch Input.
+#ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
+            //isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEnginePredictive);
+#else
+            isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEnginePredictive);
+#endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
+            break;
+        default:
+            isPredictionSupport = iModel->CheckT9FromPtiLForPredictionL((TPtiEngineInputMode)EPtiEnginePredictive);
+            break;     
+        }
+    if (isPredictionSupport == EFalse)
+        {
+        iListboxItemArray->SetItemVisibilityL( EGSLangIdPredictiveOptions,
+                CGSListBoxItemTextArray::EInvisible );
+        }
+    else
+        {
+#ifndef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
+        iListboxItemArray->SetItemVisibilityL( EGSLangIdPredictiveOptions,
+                CGSListBoxItemTextArray::EVisible );
+#endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__   
+        }
+    iListBox->HandleItemAdditionL();
+    MakeT9LItemL();
     }
 #endif
 // End of File

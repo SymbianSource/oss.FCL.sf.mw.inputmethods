@@ -307,12 +307,6 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerDownEventL(const TPo
             iCurFocusItem = index;
        		Draw();
             UpdateArea(Rect(),EFalse);
-			#ifdef RD_TACTILE_FEEDBACK
-            if (UiLayout()->SupportTactileFeedback())
-            	{
-            	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
-            	}
-			#endif //RD_TACTILE_FEEDBACK
             }
         }
     return this;
@@ -585,6 +579,7 @@ EXPORT_C void CFepLayoutChoiceList::Draw()
 //
 EXPORT_C void CFepLayoutChoiceList::OnDisplay()
     {
+    iCurFocusItem = -1; 
     ReCalcLayout();
     }
 

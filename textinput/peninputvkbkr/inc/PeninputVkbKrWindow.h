@@ -21,7 +21,7 @@
 #include <e32std.h>
 #include <e32base.h>
 #include <AknLayoutDef.h>
-#include <PeninputLayoutWindowExt.h>
+#include <peninputlayoutwindowext.h>
 
 class CAknFepCtrlLabel;
 class CAknFepCtrlRangeBar;

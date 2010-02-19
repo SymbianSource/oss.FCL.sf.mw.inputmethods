@@ -40,6 +40,7 @@
 
 const TInt KMaxBufLen = 100;
 const TInt KInputPhraseMaxLength = 7;
+const TInt KMaxPinYinSpellLength = 7;//max pinyin length for one chinese Zi
 
 _LIT( KMaxPhraseNote,"\x8BCD\x7EC4\x6700\x957F\x4E3A\x4E03\x5B57" );
 ///////////////////
@@ -81,6 +82,7 @@ TBool TAknFepInputStateCandidateChinesePhrase::HandleKeyL(TInt aKey, TKeyPressLe
     CDesCArrayFlat* chineseDisped = uiContainer->PinyinPopupWindow()->ChineseCharsDisped();
     CDesCArrayFlat* zhuyinSymbolsForChinese = uiContainer->PinyinPopupWindow()->ZhuyinSymbolsForChineseCharsDisped();
     CDesCArrayFlat* candidateList = uiContainer->CandidatePane()->CandidateArray();
+    
     MZhuyinKeyHandler* zhuyinKeyHandler = iOwner->ZhuyinKeyHandler();
     
     TInt index = MapKeyToIndex(aKey);
@@ -101,13 +103,13 @@ TBool TAknFepInputStateCandidateChinesePhrase::HandleKeyL(TInt aKey, TKeyPressLe
     if ( aLength == EShortKeyPress && ( candidatePane->SelectIndex(index,EFalse) 
         || aKey == EKeyOK || aKey ==  EKeyCBA1 ))
         {
-        TPtrC text = candidatePane->CurrentPhraseCandidate();
+        TPtrC text = candidatePane->CurrentPhraseCandidate();//current selected in candidates
         if ( text.Length() == 0 )
             {
             return ETrue;
             }
-        TBuf<KMaxBufLen> pinyinshown = UIContainer()->PinyinPopupWindow()->GetEEPContent();
-        TInt count = TZhuyinSymbolsMethods::GetChineseCount(pinyinshown);
+        TBuf<KMaxBufLen> pinyinshown = UIContainer()->PinyinPopupWindow()->GetEEPContent();//current selected spelling
+        TInt count = TZhuyinSymbolsMethods::GetChineseCount(pinyinshown);//zhuyin group num
         if ( count > text.Length() )
             {
             fepMan->PhraseCreation(ETrue);
@@ -126,7 +128,26 @@ TBool TAknFepInputStateCandidateChinesePhrase::HandleKeyL(TInt aKey, TKeyPressLe
                 TZhuyinSymbolsMethods::Convert2Des(chineseDisped, commitbuf);
                 fepMan->NewTextL(commitbuf);
                 fepMan->CommitInlineEditL();
-                AddPhraseToDB(commitbuf);
+
+				//we pass zhuyin-spelling to db together with phrase.
+                //chineseDisped is created phrase
+                //zhuyinSymbolsForChinese is spelling
+				TBuf<(1+KMaxPinYinSpellLength)*KInputPhraseMaxLength> phraseCreatedWithZhuYin;//(Zi+zhuyin)* max_Zi
+				phraseCreatedWithZhuYin.FillZ();
+				for (TInt i = 0; i < chineseDisped->Count(); i++)
+					{
+					TPtrC ptrZi = chineseDisped->MdcaPoint(i);
+					phraseCreatedWithZhuYin.Append(ptrZi);
+					
+					TPtrC ptrZhuYin = zhuyinSymbolsForChinese->MdcaPoint(i);
+					phraseCreatedWithZhuYin.Append(ptrZhuYin);
+					
+					TInt zeroTail = (1+KMaxPinYinSpellLength)-(ptrZi.Length()+ptrZhuYin.Length());
+					phraseCreatedWithZhuYin.AppendFill(0,zeroTail);
+					
+					}
+				
+                AddPhraseToDB(phraseCreatedWithZhuYin);
                 if ( chineseDisped->Count() < KInputPhraseMaxLength ||
                     zhuyinSymbols->Count() == 0 )
                     {
@@ -148,7 +169,7 @@ TBool TAknFepInputStateCandidateChinesePhrase::HandleKeyL(TInt aKey, TKeyPressLe
                     {
                     for ( TInt i = 0; i < candidateList->Count(); i++ )
                         {
-                        if ( TZhuyinSymbolsMethods::IsZhuyinSymbol( 
+                        if ( TZhuyinSymbolsMethods::IsZhuyinSymbol( //0x3105~0x3129 is zhuyin symbol,not include tone
                             candidateList->MdcaPoint( i ) ) )
                             {
                             candidateList->Delete( i, 1 );

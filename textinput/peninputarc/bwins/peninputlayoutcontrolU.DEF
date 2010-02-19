@@ -569,7 +569,7 @@ EXPORTS
 	?ClearStroke@CTransparentHwrWnd@@UAEXXZ @ 568 NONAME ; void CTransparentHwrWnd::ClearStroke(void)
 	?HideKeyCtrl@CVirtualKey@@QAEXH@Z @ 569 NONAME ; void CVirtualKey::HideKeyCtrl(int)
 	?HideTooltip@CFepLayoutMultiLineIcf@@QAEXXZ @ 570 NONAME ; void CFepLayoutMultiLineIcf::HideTooltip(void)
-	?ShowTooltipL@CFepLayoutMultiLineIcf@@QAEXABVTDesC16@@@Z @ 571 NONAME ; void CFepLayoutMultiLineIcf::ShowTooltipL(class TDesC16 const &)
+	?ShowTooltipL@CFepLayoutMultiLineIcf@@QAEXABVTDesC16@@ABVTRect@@@Z @ 571 NONAME ; void CFepLayoutMultiLineIcf::ShowTooltipL(class TDesC16 const &, class TRect const &)
 	?TooltipBubbleCtrl@CFepLayoutMultiLineIcf@@QAEPAVCTooltipBubbleCtrl@@XZ @ 572 NONAME ; class CTooltipBubbleCtrl * CFepLayoutMultiLineIcf::TooltipBubbleCtrl(void)
 	?RegisterFeedbackArea@CFepUiLayout@@QAEXHABVTRect@@H@Z @ 573 NONAME ; void CFepUiLayout::RegisterFeedbackArea(int, class TRect const &, int)
 	?ChangeFeedbackType@CFepUiLayout@@QAEXHH@Z @ 574 NONAME ; void CFepUiLayout::ChangeFeedbackType(int, int)	

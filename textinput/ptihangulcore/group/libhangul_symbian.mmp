@@ -1,0 +1,52 @@
+/*
+* Copyright (c) 2005,2006 Choe Hwanjin
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+
+TARGET         libhangul_symbian.dll
+TARGETTYPE     dll
+UID            0x1000008d 0xE83D39EE
+CAPABILITY All -Tcb
+
+SYSTEMINCLUDE  /epoc32/include /epoc32/include/libc ../inc_symbian
+USERINCLUDE    ../inc
+
+SOURCEPATH	   ../src
+
+SOURCE         libhangul_symbianDllMain.cpp 
+SOURCE         hangulctype.c
+SOURCE         hangulinputcontext.c
+SOURCE         hanja.c
+SOURCE         OssHangulInputContext.cpp
+SOURCE         OssKeyboard.cpp
+SOURCE         OssCombination.cpp
+SOURCE         OssHanja.cpp
+
+#if defined (WINS)
+#elif defined (GCC32)
+DEFFILE ../bmarm/libhangul_symbian.def
+#else 
+DEFFILE ../eabi/libhangul_symbian.def
+#endif
+
+nostrictdef
+
+LIBRARY        euser.lib
+LIBRARY        estlib.lib
+
+//#ifdef ENABLE_ABIV2_MODE
+//DEBUGGABLE_UDEBONLY
+//#endif

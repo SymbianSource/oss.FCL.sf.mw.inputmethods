@@ -18,10 +18,10 @@
 #include <AknDef.h>
 #include <AknFepGlobalEnums.h>
 #include <aknfeppeninputenums.h>
-#include <PeninputCommonLayoutGlobalEnum.h>
-#include <PeninputUiStateMgr.h>
-#include <PeninputLayoutBubbleCtrl.h>
-#include <PeninputLayoutMultilineIcf.h>
+#include <peninputcommonlayoutglobalenum.h>
+#include <peninputuistatemgr.h>
+#include <peninputlayoutbubblectrl.h>
+#include <peninputlayoutmultilineicf.h>
 #include <PtiEngine.h>
 
 #include "PeninputVkbKrDbg.h"

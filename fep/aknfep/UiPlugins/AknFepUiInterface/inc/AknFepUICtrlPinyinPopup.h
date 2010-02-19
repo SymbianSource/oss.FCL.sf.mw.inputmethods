@@ -448,6 +448,8 @@ public:
     virtual void SetInputLayoutMiniQwertyZhuyin() = 0;
     
     virtual void ResetInputLayoutMiniQwertyZhuyin() = 0;
+    
+    virtual CDesCArrayFlat* ChooseChineseCharacterArraySpelling(void) = 0;
 	};
 
 #endif // __AKN_FEP_UI_PINYIN_POPUP_H

@@ -15,7 +15,7 @@
 *
 */
 
-#include <ECom/ImplementationProxy.h>
+#include <ecom/implementationproxy.h>
 
 #include "PeninputVkbKrLayoutImp.h"
 

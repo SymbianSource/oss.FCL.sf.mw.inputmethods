@@ -19,14 +19,14 @@
 #include <peninputfingerhwrcn.rsg>
 
 #include <coemain.h>
-#include <S32MEM.h>
+#include <s32mem.h>
 
 #include <aknlayoutscalable_apps.cdl.h>
-#include <aknLayoutscalable_avkon.cdl.h>
+#include <aknlayoutscalable_avkon.cdl.h>
 #include <AknLayoutDef.h>
 #include <AknUtils.h>
 #include <AknsUtils.h>
-#include <akniconutils.h>
+#include <AknIconUtils.h>
 #include <aknfeppeninputenums.h>
 #include <AknFepGlobalEnums.h>
 

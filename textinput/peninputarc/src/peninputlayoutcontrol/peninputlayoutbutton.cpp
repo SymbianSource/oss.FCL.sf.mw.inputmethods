@@ -15,7 +15,7 @@
 *
 */
 
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include "peninputlayoutbutton.h"
 #include "peninputlayouttimer.h"
 #include "peninputlayout.h"

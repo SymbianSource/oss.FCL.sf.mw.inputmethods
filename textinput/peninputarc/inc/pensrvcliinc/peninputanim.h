@@ -25,7 +25,7 @@
 #include <w32adll.h>    // for CSpriteAnim and CAnimDll
 #include <e32msgqueue.h>
 #include <e32property.h>
-#include <akncapserverclient.h>
+#include <AknCapServerClient.h>
 
 #include "peninputmsgqueue.h"
 

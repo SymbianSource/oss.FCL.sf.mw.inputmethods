@@ -22,7 +22,7 @@
 #include <e32des16.h>
 #include <e32def.h>
 #include <gdi.h>
-#include <aknlayout2def.h>
+#include <AknLayout2Def.h>
 
 class TItutDataConverter
     {

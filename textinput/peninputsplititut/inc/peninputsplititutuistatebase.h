@@ -20,7 +20,7 @@
 #define C_SPLITITUTUISTATEBASE_H
 
 #include <e32base.h>
-#include <ptidefs.h>
+#include <PtiDefs.h>
 
 #include "peninputsplititutdata.h"
 #include "peninputsplititutuimgrbase.h"

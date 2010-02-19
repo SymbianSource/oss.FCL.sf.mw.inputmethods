@@ -846,8 +846,8 @@ void TAknFepInputStateCandidateBaseChinesePhrase::HandleCommitL()
                 for (i = 0; i < ptr1.Length() && count < text.Length()
                     && ptr2.Length() != 0; i++ )
                     {
-                    if ( ptr1.Mid( i, 1 ) == KPinyinSysSeparator || ptr1.Mid(
-                        i, 1 ) == KPinyinListSeparator )
+                    if ( ptr1.Mid( i, 1 ) == KPinyinSysSeparator || 
+                         ptr1.Mid( i, 1 ) == KPinyinListSeparator )
                         {
                         pos = i - len - count;
                         if ( pos < 0 )
@@ -959,16 +959,55 @@ void TAknFepInputStateCandidateBaseChinesePhrase::HandleCommitL()
                     totalCount++;
                     }
 
-                if ( totalCount > text.Length() )
+                if ( totalCount > text.Length() )//pinyin group more than phrase,will create phrase
                     {
-                    CDesCArray
-                        * chineseCharacterArray =
+                    CDesCArray* chineseCharacterArray =//phrase
                             UIContainer()->PinyinPopupWindow()->ChooseChineseCharacterArray();
                     chineseCharacterArray->Reset();
-                    for (i = 0; i < text.Length(); i++ )
+                    
+                    CDesCArray* chineseCharacterArraySpelling =//phrase spelling
+                            UIContainer()->PinyinPopupWindow()->ChooseChineseCharacterArraySpelling();
+                    chineseCharacterArraySpelling->Reset();
+                    
+                    TBuf<KMaxKeystrokeCount> buf = ptr1;
+                    for (i = 0; i < text.Length(); i++ )//usually,if totalCount > text.Length()then text length is 1
                         {
+						
+						//here,store spelling,ptr1 is full spelling
+						TInt separatorIdx = KErrNotFound;
+						if(KErrNotFound == separatorIdx)
+							separatorIdx = buf.Find(KPinyinSysSeparator);
+						if(KErrNotFound == separatorIdx)
+							separatorIdx = buf.Find(KPinyinListSeparator);
+						if(KErrNotFound == separatorIdx)
+							separatorIdx = buf.Find(KPinyinTone0ValidStr);
+						if(KErrNotFound == separatorIdx)
+							separatorIdx = buf.Find(KPinyinTone1ValidStr);
+						if(KErrNotFound == separatorIdx)
+							separatorIdx = buf.Find(KPinyinTone2ValidStr);
+						if(KErrNotFound == separatorIdx)
+							separatorIdx = buf.Find(KPinyinTone3ValidStr);
+						if(KErrNotFound == separatorIdx)
+							separatorIdx = buf.Find(KPinyinTone4ValidStr);
+					
+						if(separatorIdx == KErrNotFound )
+							{
+							if(buf.Length()>0)//only one 
+								{
+								chineseCharacterArraySpelling->AppendL(buf);
+								buf.Zero();
+								}
+							}
+						else
+							{
+							chineseCharacterArraySpelling->AppendL(buf.Left(separatorIdx+1));//include separator and tone mark
+							buf.Delete(0,separatorIdx+1);
+							}
+						
                         chineseCharacterArray->AppendL( text.Mid( i, 1 ) );
                         }
+                    
+                    
                     //set key stroke
                     CDesCArray* keyStroke =
                         UIContainer()->PinyinPopupWindow()->KeystrokeArray();
@@ -978,8 +1017,7 @@ void TAknFepInputStateCandidateBaseChinesePhrase::HandleCommitL()
                         keyStroke->AppendL( ptr2.Mid( i, 1 ) );
                         }
                     //set show stroke                               
-                    CDesCArray
-                        * showStroke =
+                    CDesCArray* showStroke =
                             UIContainer()->PinyinPopupWindow()->ShowKeystrokeArray();
                     showStroke->Reset();
                     TInt pinyinStarCount = 0;

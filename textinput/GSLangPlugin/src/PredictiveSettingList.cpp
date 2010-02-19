@@ -375,13 +375,14 @@ void CGSPredictiveSettingList::HandleResourceChange(TInt aType)
 	    //Returning as Hiding for Touch Input for Virtual Input is not required
 #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
 	    return;
-#endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
+#else
             // Number candidate
             SettingItemArray()->At(2)->SetHidden(ETrue);
             // Typing correction
             SettingItemArray()->At(3)->SetHidden(ETrue);
             // Primary Candidate
             SettingItemArray()->At(4)->SetHidden(ETrue);
+#endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
             }
         else if (keyboardLayout == EPtiKeyboardHalfQwerty)
             {

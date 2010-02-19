@@ -18,8 +18,8 @@
 #ifndef PENINPUTVKBLAYOUTIMP_H
 #define PENINPUTVKBLAYOUTIMP_H
 
-#include <PeninputLayout.h>
-#include <PeninputLayoutPluginInterface.h>
+#include <peninputlayout.h>
+#include <peninputlayoutplugininterface.h>
 
 class CPeninputVkbKrLayoutImp : public CFepUiLayoutInterface
     {

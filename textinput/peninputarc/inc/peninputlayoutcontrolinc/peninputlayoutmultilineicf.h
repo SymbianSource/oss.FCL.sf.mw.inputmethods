@@ -205,9 +205,11 @@ public:
      * Show tooltip of ICF
      * 
      * @param aText The text to be displayed in ICF
+     * @param aRect The area for displaying tooltip
      * @return None
      */
-    IMPORT_C void ShowTooltipL( const TDesC& aText );
+    IMPORT_C void ShowTooltipL( const TDesC& aText,
+                                const TRect& aRect );
     
 
     /**
@@ -294,7 +296,7 @@ public:
     // aDimFlag Dim flag, ETrue for dim
     void SetDimmed(TBool aDimFlag);
 
-    void SetFontL(TInt aFontHeight, TInt aMaxFontHeight, const CFont* aFont);
+    void SetFontL(const CFont* aFont);
 
     // Set editor focus
     void SetFocus(TBool aFlag = ETrue);    
@@ -395,7 +397,7 @@ public:
     IMPORT_C void SetInfoBubbleCtrlSize(const TSize& aSize);
     
     // For addition of ITI features on FSQ
-    void ShowTooltipL(const TDesC& aText);
+    void ShowTooltipL( const TDesC& aText, const TRect& aRect );
     void HideTooltip();
     /**
      * Returen the auto-completion state
@@ -494,7 +496,7 @@ private:    // Methods
                         TInt aMaxFontHeight,
                         const CFont* aFont);
 
-    void InitTextLayoutL();
+    void InitTextLayoutL(const CFont *aFont);
 
     // set text margin to view rect
     //void SetTextMarginL();

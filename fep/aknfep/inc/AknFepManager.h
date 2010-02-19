@@ -46,7 +46,7 @@
 #include <biditext.h>
 #include <PtiDefs.h>
 #ifdef SYMBIAN_ENABLE_SPLIT_HEADERS
-#include <tagmaLayoutAndSource.h>
+#include <tagmalayoutandsource.h>
 #endif
 
 #include <aknextendedinputcapabilities.h>
@@ -64,7 +64,7 @@
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 // Predictive QWERTY (XT9) changes ---->
 class MAknFepUiWordPopupContent;
-#include "AknFepCandidatePopup.h"
+#include "aknfepcandidatepopup.h"
 #include "AknFepCandidatePopupCallback.h"
 // Predictive QWERTY (XT9) changes <----
 #endif //RD_INTELLIGENT_TEXT_INPUT

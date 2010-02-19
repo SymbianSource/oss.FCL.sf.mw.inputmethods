@@ -40,12 +40,12 @@
 #include <AknIconUtils.h>
 #include <AknLayoutDef.h>
 #include <AknUtils.h>
-#include <AknLayoutScalable_Avkon.cdl.h>
+#include <aknlayoutscalable_avkon.cdl.h>
 #include <AknsUtils.h>
 #include <AknFepGlobalEnums.h>
 #include <peninputlayoutinputmodechoice.h>
 #include <peninputlayoutmultilineicf.h>
-#include <S32MEM.h>
+#include <s32mem.h>
 
 // User includes
 #include "peninputsplitqwerty.hrh"

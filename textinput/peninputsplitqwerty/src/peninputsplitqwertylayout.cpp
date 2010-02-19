@@ -28,7 +28,7 @@
 #include <peninputlayoutbubblectrl.h>
 #include <peninputlayoutmultilineicf.h>
 #include <peninputscrollablelist.h>
-#include <S32MEM.H>
+#include <s32mem.h>
 
 #include <peninputrangebar.h>
 

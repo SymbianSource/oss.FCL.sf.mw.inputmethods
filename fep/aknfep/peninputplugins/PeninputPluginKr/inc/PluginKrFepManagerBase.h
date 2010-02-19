@@ -21,7 +21,7 @@
 #include <e32std.h>
 #include <e32base.h>
 #include <AknFepManagerInterface.h>
-#include <PeninputClient.h>
+#include <peninputclient.h>
 
 class CPeninputPluginKr;
 class RPeninputServer;

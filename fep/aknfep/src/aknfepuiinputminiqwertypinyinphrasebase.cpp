@@ -47,6 +47,7 @@
 // Constant definition
 const TInt KMaxPhraseCount = 50;
 const TInt KMaxPhraseCreationCount = 7;
+const TInt KMaxSpellLength = 7;//max pinyin length for one chinese Zi
 const TInt KMaxKeystrokeCount = 31;
 const TInt KInvalidToneMark = -1;
 const TUint16 KAutoDLT = 0x002E;
@@ -1571,8 +1572,7 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::CommitInlineEEPL(
     CDesCArrayFlat* showkeyStoke = editpane->ShowKeystrokeArray();
     CDesCArrayFlat* keyStoke = editpane->KeystrokeArray();
     CDesCArrayFlat* phraseArray = editpane->PhraseArray();
-    CDesCArrayFlat* phraseShowKeyStroke =
-            editpane->PhraseShowKeyStrokeArray();
+    CDesCArrayFlat* phraseShowKeyStroke = editpane->PhraseShowKeyStrokeArray();
     TBuf<KMaxKeystrokeCount> buf;
     TBuf<1> autoDLT;
     autoDLT.Append(KAutoDLT);
@@ -1601,7 +1601,13 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::CommitInlineEEPL(
             }
         delCount++;
         }
-
+    
+	for (TInt j = 0; j < delCount; j++)
+		{
+		showkeyStoke->Delete( 0);
+		}
+	phraseShowKeyStroke->AppendL(buf);
+	
     TInt phraseCount = phraseArray->Count();
     if (phraseCount > KMaxPhraseCreationCount)
         {
@@ -1610,23 +1616,32 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::CommitInlineEEPL(
 
     if (keyStoke->Count() == 0 || phraseCount == KMaxPhraseCreationCount)
         {
-        TBuf<KMaxPhraseCreationCount> phraseCreated;
-        for (TInt ii = 0; ii < phraseCount; ++ii)
-            {
-            phraseCreated.Append(phraseArray->MdcaPoint(ii) );
-            }
-        fepMan->NewTextL(phraseCreated);
-        fepMan->CommitInlineEditL();
-        iOwner->PtiEngine()->SetPredictiveChineseChar(phraseCreated);
-        AddPhraseToDB(phraseCreated);
-        return EFalse;
+		//here,we pass pinyin-spelling to db together with phrase.
+		TBuf<KMaxPhraseCreationCount> phraseCreated;
+		phraseCreated.FillZ();
+		TBuf<(1+KMaxSpellLength)*KMaxPhraseCreationCount> phraseCreatedWithPinYin;//(Zi+pinyin)* max_Zi
+		phraseCreatedWithPinYin.FillZ();
+		for (TInt ii = 0; ii < phraseCount; ++ii)
+			{
+			TPtrC ptrZi = phraseArray->MdcaPoint(ii);
+			phraseCreatedWithPinYin.Append(ptrZi);
+			phraseCreated.Append(ptrZi);
+			
+			TPtrC ptrPinYin = phraseShowKeyStroke->MdcaPoint(ii);//it mabe include KManualDLT,but no matter
+			phraseCreatedWithPinYin.Append(ptrPinYin);
+			
+			TInt zeroTail = (1+KMaxSpellLength)-(ptrZi.Length()+ptrPinYin.Length());
+			phraseCreatedWithPinYin.AppendFill(0,zeroTail);
+			
+			}
+		fepMan->NewTextL(phraseCreated);
+		fepMan->CommitInlineEditL();
+		iOwner->PtiEngine()->SetPredictiveChineseChar(phraseCreated);
+		AddPhraseToDB(phraseCreatedWithPinYin);
+		return EFalse;
         }
 
-    for (TInt j = 0; j < delCount; j++)
-        {
-        showkeyStoke->Delete( 0);
-        }
-    phraseShowKeyStroke->AppendL(buf);
+    
 
     editpane->SetCursorIndexOfKeystroke( 0);
     editpane->DisableCursor();

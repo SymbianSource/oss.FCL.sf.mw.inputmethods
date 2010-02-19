@@ -123,8 +123,11 @@ RPeninputServerImpl* RPeninputServerImpl::NewL(TRequestStatus* aStatus)
     if(client && client->IsValid())
         {
         RPeninputServerImpl* server = client->GetSingletonServer();
-        TInt err = server->ServerReady() ? KErrNone : KErrLaunchingServer;  
-        User::RequestComplete(aStatus,err);
+        TInt err = server->ServerReady() ? KErrNone : KErrLaunchingServer;
+        if ( aStatus )
+            {
+            User::RequestComplete( aStatus, err );
+            }
         return server;
         }
         
@@ -253,12 +256,13 @@ TInt RPeninputServerImpl::DoConnectL(TRequestStatus* aStatus)
             return KErrNone;
             }
         }
-    else //server alreay there
+    else if ( error == KErrNone )//server alreay there
         {
+        iServerReady = ETrue;
+        AddObserver();	
+        
         if(aStatus)
-            OnServerStarted(KErrNone);
-        else
-            AddObserver();
+        	User::RequestComplete(iPendingRequest, error);
         }
     return error;
     }
@@ -1527,17 +1531,17 @@ void RPeninputServerImpl::OnServerStarted(TInt aErr)
     if(KErrNone == aErr)
         {
         iServerReady = ETrue;
-        }
-    
-    //create session
-     
-     TInt error = CreateSession( KPeninputServerName,
+        
+        //create session
+        aErr = CreateSession( KPeninputServerName,
                            Version(),
                            KDefaultMessageSlots,EIpcSession_Sharable);
 
-    if(KErrNone == error)
-        AddObserver();
-   
+	    if(KErrNone == aErr)
+	    	{
+	        AddObserver();
+	    	}
+        }
     User::RequestComplete(iPendingRequest, aErr);
     }
 

@@ -23,10 +23,10 @@
 #include <e32def.h>
 #include <w32std.h>
 #include <eikon.hrh>
-#include <aknutils.h>
+#include <AknUtils.h>
 
 //FEP INCLUDES
-#include <ptiengine.h>
+#include <PtiEngine.h>
 #include <peninputpluginutils.h>
 
 

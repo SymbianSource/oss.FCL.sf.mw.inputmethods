@@ -15,12 +15,12 @@
 *
 */
 
-#include <AknFepPeninputEnums.h>
-#include <PeninputLayoutBaseControl.h>
-#include <PeninputCommonLayoutGlobalEnum.h>
-#include <PeninputDataConverter.h>
-#include <PeninputLayoutContext.h>
-#include <PeninputLayoutVkb.h>
+#include <aknfeppeninputenums.h>
+#include <peninputlayoutbasecontrol.h>
+#include <peninputcommonlayoutglobalenum.h>
+#include <peninputdataconverter.h>
+#include <peninputlayoutcontext.h>
+#include <peninputlayoutvkb.h>
 #include <PtiEngine.h>
 
 #include "PeninputVkbKrDbg.h"

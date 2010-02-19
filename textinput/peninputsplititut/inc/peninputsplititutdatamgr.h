@@ -20,8 +20,8 @@
 #define C_SPLITITUTDATAMGR_H
 
 #include <e32base.h>
-#include <ptidefs.h>
-#include <aknlayout2def.h>
+#include <PtiDefs.h>
+#include <AknLayout2Def.h>
 
 #include "peninputsplititutpropertysubscriber.h"
 #include "peninputsplititutdata.h"

@@ -220,10 +220,28 @@ void TAknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::FillPhraseAndStrokArray
     CDesCArrayFlat* keyStrokeArray = UIContainer()->EditPaneWindow()->KeystrokeArray();
     CDesCArrayFlat* phraseKeyStrokeArray = UIContainer()->EditPaneWindow()->PhraseShowKeyStrokeArray() ;
     CDesCArrayFlat* phraseArray = UIContainer()->EditPaneWindow()->PhraseArray();
+    CDesCArrayFlat* phraseZhuYinSpellingArray = UIContainer()->EditPaneWindow()->PhraseZhuYinSpellingArray();
     
     RArray<TInt>* keyCodeArray = UIContainer()->EditPaneWindow()->KeycodeArray();
     RArray<TInt>* keyCodePhraseArray = UIContainer()->EditPaneWindow()->PhraseKeycodeArray();
     phraseArray->AppendL( aPhrase );
+    
+    //we store zhuyin-spelling for this phrase
+	TInt delCount = phraseZhuYinSpellingArray->Count() - phraseArray->Count();//we can sure delCount>=0,impossible <0
+	if(delCount > 0) 
+		{
+		phraseZhuYinSpellingArray->Delete( phraseArray->Count(),delCount );//keep same count,del from tail one by one
+		}
+	TInt pos = -1;
+	if(-1 == pos)
+		pos = aText.Find( KDelimiter );//single quote
+	if(-1 == pos)
+		pos = GetIndexOfToneMark( aText );
+	if(-1 == pos)
+		pos = aText.Length();//impossible
+	phraseZhuYinSpellingArray->AppendL(aText.Left(pos+1));//we are sure the first spelling-group from left  match the aPhrase 
+    	
+    
     TBuf<KInputPaneLength> keyStoke;
     TInt replaceCount = 0;
     TInt delimiterIndex = aText.Find( KDelimiter );

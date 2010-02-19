@@ -20,7 +20,7 @@
 
 #include <e32base.h>	// CBase
 #include <e32std.h>	 // TBuf
-#include <AknFepPenInputImePlugin.h>
+#include <aknfeppeninputimeplugin.h>
 #include <centralrepository.h>
 
 class RPeninputServer;

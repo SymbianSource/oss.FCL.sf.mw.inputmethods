@@ -434,6 +434,13 @@ public:
 
     void OnServerReady(TInt aErr);
     
+    /**
+     *  Remove last focused window,which launches touch input, from open list.
+     *
+     *  @since v5.0
+     */
+    void RemoveLastFocusedWinFromOpenList();
+    
 public: // inline    
     
     /**
@@ -505,6 +512,16 @@ public: // inline
      * @return if ETrue: Tooltip box on FSQ is enabled.
      */    
     inline TBool IsTooltipOpenOnFSQ();
+    
+    /**
+     * Get whether inMenu has been opened.
+     * InMenu is that any pop-up dialog, e.g. menu, SCT, is launched by fep.
+     * 
+     * @since 5.0
+     * @return whether inMenu has been opened
+     */     
+    inline TBool IsInMenuOpen();
+    
 private: 
 
     /**
@@ -691,8 +708,6 @@ private:
     void AddWinToOpenListL( RDrawableWindow* aWin);
     
     void RemoveCurrentWinFromOpenList();
-    
-    void RemoveLastFocusedWinFromOpenList();
     
     TBool IsCurrentWindInOpenList();
     
@@ -1185,6 +1200,12 @@ inline TBool CAknFepPluginManager::IsTooltipOpenOnFSQ()
 	{
 	return iTooltipOpenOnFSQ;
 	}
+
+inline TBool CAknFepPluginManager::IsInMenuOpen()
+    {
+    return iInMenu;
+    }
+
 #endif //RD_SCALABLE_UI_V2    
 
 #endif // __AKN_FEP_PLUGIN_MANAGER__

@@ -51,6 +51,8 @@ const TInt KMaxKeystrokeSize = 130;
 const TInt KMaxPhraseLength = 7;
 const TInt KMinCandidateCount = 1;
 const TInt KKeystrokeMaxLength = 4;
+const TInt KMaxSpellLength = 7;//max zhuyin length for one chinese Zi
+const TInt KMaxPhraseCreationCount = 7;
 //const TInt KTonemarkCount = 5;
 
 const TUint16 KToneMark1 = 0x0020;
@@ -519,7 +521,23 @@ void TAknFepInputStateEditingMiniQwertyZhuyinPhrase::CommitContentL(
         }
     if ( aAddUDB )
         {
-        AddPhraseToDB( currentText );
+		//here,we pass zhuyin-spelling to db together with phrase.
+		CDesCArrayFlat* phraseZhuYinSpellingArray = UIContainer()->EditPaneWindow()->PhraseZhuYinSpellingArray();
+		TBuf<(1+KMaxSpellLength)*KMaxPhraseCreationCount> phraseCreatedWithZhuYin;//(Zi+Zhuyin)* max_Zi
+		phraseCreatedWithZhuYin.FillZ();
+		for (TInt ii = 0; ii < phraseCount; ++ii)
+			{
+			TPtrC ptrZi = phraseArray->MdcaPoint(ii);
+			phraseCreatedWithZhuYin.Append(ptrZi);
+			
+			TPtrC ptrZhuYin = phraseZhuYinSpellingArray->MdcaPoint(ii);
+			phraseCreatedWithZhuYin.Append(ptrZhuYin);
+			
+			TInt zeroTail = (1+KMaxSpellLength)-(ptrZi.Length()+ptrZhuYin.Length());
+			phraseCreatedWithZhuYin.AppendFill(0,zeroTail);
+			
+			}
+		AddPhraseToDB( phraseCreatedWithZhuYin );
         }
     fepMan->TryCloseUiL();
     }
@@ -1073,13 +1091,24 @@ void TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::CommitCandidateL()
     CDesCArrayFlat* keyStrokeArray = UIContainer()->EditPaneWindow()->KeystrokeArray();
     CDesCArrayFlat* phraseKeyStrokeArray = UIContainer()->EditPaneWindow()->PhraseShowKeyStrokeArray();
     CDesCArrayFlat* phraseArray = UIContainer()->EditPaneWindow()->PhraseArray();
+    CDesCArrayFlat* phraseZhuYinSpellingArray = UIContainer()->EditPaneWindow()->PhraseZhuYinSpellingArray();
     TPtrC candidate = UIContainer()->CandidatePane()->CurrentPhraseCandidate();
     
     RArray<TInt>* keyCodeArray = UIContainer()->EditPaneWindow()->KeycodeArray();
     RArray<TInt>* keyCodePhraseArray = UIContainer()->EditPaneWindow()->PhraseKeycodeArray();
     TBuf<KMaxKeystrokeCount> spellingText;
+    
     UIContainer()->InputPane()->GetText( spellingText );
+    
+    //phraseZhuYinSpellingArray must keep same count with phraseArray
+    TInt delCount = phraseZhuYinSpellingArray->Count()-phraseArray->Count();//we can sure delCount>=0,impossible <0
+	if(delCount>0)
+		{
+		phraseZhuYinSpellingArray->Delete(phraseArray->Count(),delCount);//delete from tail 
+		}
+	phraseZhuYinSpellingArray->AppendL(spellingText); 
     phraseArray->AppendL( candidate );
+    
     TBuf<KMaxKeystrokeCount> keyStoke;
     TInt replaceCount = 0;
     TInt delimiterIndex = spellingText.Find( KDelimiter );

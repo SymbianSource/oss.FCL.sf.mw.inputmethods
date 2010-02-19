@@ -73,6 +73,7 @@ CAknFepUICtrlPinyinPopup::~CAknFepUICtrlPinyinPopup()
     delete iOptimizeSpelling;
     delete iTempSpelling;
     delete iChooseChineseCharacterArray;
+    delete iChooseChineseCharacterArraySpelling;
     delete iChooseChineseCharacterArrayKeystroke;
     
     delete iKeystrokeArrayForStroke;
@@ -405,7 +406,10 @@ CDesCArrayFlat* CAknFepUICtrlPinyinPopup::ChooseChineseCharacterArray()
 	{
 	return iChooseChineseCharacterArray;
 	}
-
+CDesCArrayFlat* CAknFepUICtrlPinyinPopup::ChooseChineseCharacterArraySpelling()
+	{
+	return iChooseChineseCharacterArraySpelling;
+	}
 CDesCArrayFlat* CAknFepUICtrlPinyinPopup::ChooseChineseCharacterArrayKeystroke()
 	{
 	return iChooseChineseCharacterArrayKeystroke;
@@ -747,6 +751,7 @@ void CAknFepUICtrlPinyinPopup::ConstructL(RWindow& /*aParent*/)
     iInEffectKeystrokeArray = new(ELeave)CDesCArrayFlat(1);
     iChooseChineseCharacterArray = new(ELeave)CDesCArrayFlat(1);
     iChooseChineseCharacterArrayKeystroke = new(ELeave)CDesCArrayFlat(1);
+    iChooseChineseCharacterArraySpelling = new(ELeave)CDesCArrayFlat(1);
     //For stroke
     iKeystrokeArrayForStroke = new(ELeave)CDesCArrayFlat(1);
     iInEffectKeystrokeArrayForStroke = new(ELeave)CDesCArrayFlat(1);
@@ -1067,6 +1072,8 @@ void CAknFepUICtrlPinyinPopup::ResetStrokeArray()
     iChooseChineseCharacterArray->Compress();
     iChooseChineseCharacterArrayKeystroke->Reset();
     iChooseChineseCharacterArrayKeystroke->Compress();
+    iChooseChineseCharacterArraySpelling->Reset();
+    iChooseChineseCharacterArraySpelling->Compress();
     iOptimizeSpelling->Reset();
     iOptimizeSpelling->Compress();
     iTempSpelling->Reset();

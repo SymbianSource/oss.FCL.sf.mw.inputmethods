@@ -279,11 +279,11 @@ void RPeninputServerImpl::AddObserver()
     iServerExit = EFalse;
     if(iObserver)
         {
-        iObserver->ReConstructL(srvThreadId);
+        TRAP_IGNORE(iObserver->ReConstructL(srvThreadId));
         }
     else
         {
-        iObserver = CPeninputServerObserver::NewL(this,srvThreadId);
+        TRAP_IGNORE(iObserver = CPeninputServerObserver::NewL(this,srvThreadId));
         }
     }
 

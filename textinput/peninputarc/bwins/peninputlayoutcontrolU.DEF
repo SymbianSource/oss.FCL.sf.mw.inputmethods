@@ -406,7 +406,7 @@ EXPORTS
 	?SetTextAlignmentL@CFepLayoutMultiLineIcf@@UAEXHH@Z @ 405 NONAME ; void CFepLayoutMultiLineIcf::SetTextAlignmentL(int, int)
 	?NewL@CFepLayoutMultiLineIcf@@SAPAV1@VTRect@@PAVCFepUiLayout@@HHHPBVCFont@@@Z @ 406 NONAME ; class CFepLayoutMultiLineIcf * CFepLayoutMultiLineIcf::NewL(class TRect, class CFepUiLayout *, int, int, int, class CFont const *)
 	?SetFontL@CFepLayoutMultiLineIcf@@UAEXHHPBVCFont@@@Z @ 407 NONAME ; void CFepLayoutMultiLineIcf::SetFontL(int, int, class CFont const *)
-	?SetPromptTextL@CFepLayoutMultiLineIcf@@UAEXABVTDesC16@@H@Z @ 408  NONAME ; void CFepLayoutMultiLineIcf::SetPromptTextL(class TDesC16 const &, int)
+	?SetPromptTextL@CFepLayoutMultiLineIcf@@UAEXABVTDesC16@@H@Z @ 408 NONAME ; void CFepLayoutMultiLineIcf::SetPromptTextL(class TDesC16 const &, int)
 	?SizeChangedL@CFepLayoutMultiLineIcf@@UAEXABVTRect@@HHPBVCFont@@@Z @ 409 NONAME ; void CFepLayoutMultiLineIcf::SizeChangedL(class TRect const &, int, int, class CFont const *)
 	?AddOverLapState@CFepLayoutMultiLineIcf@@UAEXVTRect@@@Z @ 410 NONAME ; void CFepLayoutMultiLineIcf::AddOverLapState(class TRect)
 	?IsEmpty@CFepLayoutMultiLineIcf@@UAEHXZ @ 411 NONAME ; int CFepLayoutMultiLineIcf::IsEmpty(void)
@@ -583,3 +583,6 @@ EXPORTS
 	?HideInfoBubble@CFepLayoutMultiLineIcf@@UAEXXZ @ 582 NONAME ; void CFepLayoutMultiLineIcf::HideInfoBubble(void)
 	?SetInfoBubbleCtrlSize@CFepLayoutMultiLineIcf@@UAEXABVTSize@@@Z @ 583 NONAME ; void CFepLayoutMultiLineIcf::SetInfoBubbleCtrlSize(class TSize const &)
 	?ShowByteWarningBubble@CFepLayoutMultiLineIcfEditor@@QAEXABVTDesC16@@@Z @ 584 NONAME ; void CFepLayoutMultiLineIcfEditor::ShowByteWarningBubble(class TDesC16 const &)
+	?SetPreviewBubbleRenderer@CVirtualKeyboard@@QAEXPAVMPeninputVkbPreviewBubbleRenderer@@@Z @ 585 NONAME ; void CVirtualKeyboard::SetPreviewBubbleRenderer(class MPeninputVkbPreviewBubbleRenderer *)
+	?NewL@CPeninputAknVkbPreviewBubbleRenderer@@SAPAV1@XZ @ 586 NONAME ; class CPeninputAknVkbPreviewBubbleRenderer * CPeninputAknVkbPreviewBubbleRenderer::NewL(void)
+

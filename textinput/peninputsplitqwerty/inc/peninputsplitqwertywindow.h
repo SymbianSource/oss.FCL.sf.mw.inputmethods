@@ -36,7 +36,7 @@ class CFepLayoutScrollableList;
 
 // Constants
 const TInt KMaxFileLength = 80;
-const TInt KMaxRangeLabelLength = 32;
+const TInt KMaxRangeLabelLength = 50;
 
 /**
  * class TAllRangeLabels
@@ -497,10 +497,6 @@ private:
     inline TBool IsRtoLLanguage( TInt aLanguage );
     inline TBool IsValidLanguage( TInt aLanguage );
 
-    inline CAknFepCtrlEventButton* EventButtonCtrl( TInt aCtrlId );
-    inline CAknFepCtrlCommonButton* CommonButtonCtrl( TInt aCtrlId );
-    TInt IntContext( TPeninputDataType aDataIndex );
-
     /**
      * Handle size changed for range list
      *
@@ -530,6 +526,33 @@ private:
     void HandleButtonResOnLangDirChangeL( TInt aControlId );
 
     /**
+     * Utils to get an event button
+     * 
+     * @since S60 v5.0
+     * @param aCtrlId id of button control
+     * @return pointer to an event button
+     */
+    inline CAknFepCtrlEventButton* EventButtonCtrl( TInt aCtrlId );
+    
+    /**
+     * Utils to get an common button
+     * 
+     * @since S60 v5.0
+     * @param aCtrlId id of button control
+     * @return pointer to an common button
+     */
+    inline CAknFepCtrlCommonButton* CommonButtonCtrl( TInt aCtrlId );
+    
+    /**
+     * Utils to get context value 
+     * 
+     * @since S60 v5.0
+     * @param aDataIndex index of context value
+     * @return conext value
+     */
+    TInt IntContext( TPeninputDataType aDataIndex );
+    
+    /**
      * Handle range list event
      *
      * @since S60 v5.0
@@ -537,6 +560,28 @@ private:
      */
     void HandleRangeListSelectedL( CFepUiBaseCtrl* aCtrl, const TDesC& aData );
 
+    //todo new rangelist
+    /**
+     * Get resource ids of range button icon
+     * 
+     * @since S60 v5.0
+     * @param aLangId current language id
+     * @param aAlphaRange variable to receive icon resource id for alpha range
+     * @param aOtherRange variable to receive icon resource id for other ranges
+     * @return None
+     */
+    void GetRangeIconResource( TInt aLangId, TInt& aAlphaRange, TInt& aOtherRange  );
+    
+    //todo new rangelist
+    /**
+     * Prepare range list items
+     * 
+     * @since S60 v5.0
+     * @param aRangeItems items in range list
+     * @return None
+     */
+    void PrepareRangeListItems( RArray<CFepLayoutChoiceList::SItem>& aRangeItems );
+    
 private: // Data
 
     /**

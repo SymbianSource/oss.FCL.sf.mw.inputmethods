@@ -25,6 +25,9 @@
 #include <peninputcmd.h>
 #include <peninputlabel.h>
 
+// Fix bug for EZLG-7YUAP7
+#include <peninputrawkeybutton.h>
+
 #include "peninputitutwesternuistatespelling.h"
 #include "peninputgenericitutuimgrbase.h"
 #include "peninputgenericitutdatamgr.h"
@@ -35,6 +38,7 @@
 #include "peninputcommonbgctrl.h"
 #include "peninputgenericitutwindowmanager.h"
 #include "peninputgenericitutwindow.h"
+#include <peninputlayoutbubblectrl.h>
 
 CWesternItutUiStateSpelling* CWesternItutUiStateSpelling::NewL(CGenericItutUiMgrBase* aOwner)
     {
@@ -115,12 +119,38 @@ void CWesternItutUiStateSpelling::OnEntryL()
         MItutPropertySubscriber::EItutPropertyKeypadResourceId, keypadResId);
 
     // hide not needed controls
-    iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(ETrue);
+    CFepUiBaseCtrl* baseCtrl = iOwner->LayoutContext()->Control(ECtrlIdSwitch);
+    if ( baseCtrl )
+        {
+        baseCtrl->Hide(ETrue);
+        }
     iOwner->LayoutContext()->Control(ECtrlIdArrowLeft)->Hide(ETrue);
     iOwner->LayoutContext()->Control(ECtrlIdArrowRight)->Hide(ETrue);
     iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(ETrue);
     iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(ETrue);
-    iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);
+    baseCtrl = iOwner->LayoutContext()->Control(ECtrlIdIndicator);
+    if ( baseCtrl )
+        {
+        baseCtrl->Hide(ETrue);
+        }
+    // Fix bug for EZLG-7YUAP7 
+    // Hide Chinese Arrow Up button and Arrow Down button 
+    CAknFepCtrlRawKeyButton* upbtn = 
+        static_cast<CAknFepCtrlRawKeyButton *>(iOwner->LayoutContext()->Control(ECtrlIdArrowUp));
+    CAknFepCtrlRawKeyButton* downbtn =  
+        static_cast<CAknFepCtrlRawKeyButton *>(iOwner->LayoutContext()->Control(ECtrlIdArrowDown));
+
+    if( upbtn )
+        {
+    	upbtn->Hide(ETrue);
+        }
+    
+    if( downbtn )
+    	{
+    	downbtn->Hide(ETrue);
+    	}
+    //
+
 
     TAknTextLineLayout btntextformat = TItutDataConverter::AnyToTextLine(
                                                iOwner->DataMgr()->RequestData(EBtnTextLine));
@@ -141,16 +171,22 @@ void CWesternItutUiStateSpelling::OnEntryL()
     
     ReCalcLayoutL();
     CAknFepCtrlLabel* indilabel = static_cast<CAknFepCtrlLabel*>
-                                      (iOwner->LayoutContext()->Control(ECtrlIdSpellIndicator));	
-    indilabel->Hide( EFalse );
+                                  (iOwner->LayoutContext()->Control(ECtrlIdSpellIndicator));
+    if ( indilabel )
+        {
+        indilabel->Hide( EFalse );
+        }
     iOwner->DataMgr()->SetUpdate(ETrue);
     }
 
 void CWesternItutUiStateSpelling::OnExit()
     {
     CAknFepCtrlLabel* indilabel = static_cast<CAknFepCtrlLabel*>
-    								                  (iOwner->LayoutContext()->Control(ECtrlIdSpellIndicator));
-    indilabel->Hide( ETrue );
+                                  (iOwner->LayoutContext()->Control(ECtrlIdSpellIndicator));
+    if ( indilabel )
+        {
+        indilabel->Hide( ETrue );
+        }
     iOk->Hide(ETrue);
     iCancel->Hide(ETrue);
     iOwner->DataMgr()->SetSpellMode(EFalse);
@@ -233,7 +269,16 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
     iCancel->SetTextFormat(btntextCancel);
     iCancel->SizeChanged(btnrect, btnrect, ETrue);
     //iICF->SetRect( TItutDataConverter::AnyToRect(iOwner->DataMgr()->RequestData(ESpellICFRect)) );
-    CFont* icffont = TItutDataConverter::AnyToFont(iOwner->DataMgr()->RequestData(EIcfFont));
+    CFont* icffont;
+    if ( iOwner->DataMgr()->IsPortraitWest() && 
+            (!iOwner->DataMgr()->IsChineseGlobalLanguage()))
+        {
+        icffont = TItutDataConverter::AnyToFont(iOwner->DataMgr()->RequestData(ESpellFont));
+        }
+    else
+        {
+        icffont = TItutDataConverter::AnyToFont(iOwner->DataMgr()->RequestData(EIcfFont));
+        }
     TRect rect = TItutDataConverter::AnyToRect(iOwner->DataMgr()->RequestData(ESpellICFRect) );
     
     //rect.iTl.iY -= 50;
@@ -243,11 +288,21 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
     					  2);
  
     iICF->SetLineSpace( 1 );
-    iICF->SizeChangedL(rect, 
-                  //icffont->HeightInPixels(),
-                  iOwner->DataMgr()->iIcfTextHeight,
-                  icffont->FontMaxHeight(),
-                  icffont);
+    if ( iOwner->DataMgr()->IsPortraitWest() && 
+            (!iOwner->DataMgr()->IsChineseGlobalLanguage()))
+        {
+        iICF->SizeChangedL(rect, 
+                      iOwner->DataMgr()->iSpellIcfTextHeightForPrtWest,
+                      icffont->FontMaxHeight(),
+                      icffont);
+        }
+    else
+        {
+        iICF->SizeChangedL(rect, 
+                      iOwner->DataMgr()->iIcfTextHeight,
+                      icffont->FontMaxHeight(),
+                      icffont);
+        }
 
     CAknFepCtrlCommonButton* clrBtn = static_cast<CAknFepCtrlCommonButton*>(
 									  iOwner->LayoutContext()->Control(ECtrlIdBackspace) );
@@ -264,6 +319,45 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
 		{
 		iOwner->UiManager()->Window()->HandleButtonResOnLangDirChange( ECtrlIdBackspace );			
 		}
+	if ( iOwner->DataMgr()->IsPortraitWest() && 
+	        (!iOwner->DataMgr()->IsChineseGlobalLanguage()))
+	    {
+		iOwner->LayoutContext()->Control(ECtrlIdArrowLeft)->Hide( EFalse );
+		iOwner->LayoutContext()->Control(ECtrlIdArrowRight)->Hide( EFalse );
+		
+	    // left button
+		CAknFepCtrlCommonButton* middleBtn = static_cast<CAknFepCtrlCommonButton*>(
+									  iOwner->LayoutContext()->Control(ECtrlIdArrowLeft));
+		TRect middleRect = TItutDataConverter::AnyToRect( 
+				iOwner->DataMgr()->RequestData(ESpellArrowLeft));
+		TRect middleInnerRect = TItutDataConverter::AnyToRect( 
+							iOwner->DataMgr()->RequestData(ESpellArrowLeftInner));
+		middleBtn->SizeChanged( middleRect, middleInnerRect, ETrue );
+	
+		// right button
+		middleBtn = static_cast<CAknFepCtrlCommonButton*>(
+									  iOwner->LayoutContext()->Control(ECtrlIdArrowRight));
+		middleRect = TItutDataConverter::AnyToRect( 
+				iOwner->DataMgr()->RequestData(ESpellArrowRight));
+		middleInnerRect = TItutDataConverter::AnyToRect( 
+							iOwner->DataMgr()->RequestData(ESpellArrowRightInner));
+		middleBtn->SizeChanged( middleRect, middleInnerRect, ETrue );
+		
+		// Indicator bubble
+        TRect bubbleRect = TItutDataConverter::AnyToRect( 
+                iOwner->DataMgr()->RequestData( ESpellIndiPaneWithoutTextRect ));
+        TRect iconRect = TItutDataConverter::AnyToRect( 
+                iOwner->DataMgr()->RequestData( ESpellIndiIconWithoutTextRect ));
+        TSize offset( 0, 6 );
+        TSize size( iconRect.Width(), iconRect.Height());
+        
+        iICF->MsgBubbleCtrl()->SetRect( bubbleRect );
+        iICF->MsgBubbleCtrl()->SetIconOffsetAndSize( offset, size );
+        
+        TBuf<100> text;
+        iICF->MsgBubbleCtrl()->GetText( text );
+        iICF->ShowBubble( text, iICF->MsgBubbleCtrl()->Rect());
+	    }
 	}
 	
 // End Of File

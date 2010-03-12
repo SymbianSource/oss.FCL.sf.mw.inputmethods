@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2005-2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -27,7 +27,7 @@
  *  defines the events from internal controls. Those events are sent 
  *  by controls via calling ReportEvent() 
  *
- *  @lib peninputfingerhwr.lib
+ *  @lib peninputfingerhwrar.lib
  *  @since S60 v5.0
  */
 enum TPeninputFingerHwrEvent

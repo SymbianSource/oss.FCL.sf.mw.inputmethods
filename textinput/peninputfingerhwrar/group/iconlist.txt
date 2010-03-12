@@ -1,31 +1,3 @@
--c8,8 qgn_graf_fep_char_6x5.svg
--c8,8 qgn_indi_fep_button_full_half_width.svg
--c8,8 qgn_indi_fep_button_full_half_width_sel.svg
--c8,8 qgn_indi_fep_button_half_full_width.svg
--c8,8 qgn_indi_fep_button_half_full_width_sel.svg
--c8,8 qgn_indi_fep_button_long_backspace.svg
--c8,8 qgn_indi_fep_button_long_backspace_sel.svg
--c8,8 qgn_indi_fep_button_case_numeric.svg
--c8,8 qgn_indi_fep_button_case_numeric_sel.svg
--c8,8 qgn_indi_fep_button_mark_case_numeric.svg
--c8,8 qgn_indi_fep_button_mark_case_numeric_sel.svg
--c8,8 qgn_indi_fep_button_case_text.svg
--c8,8 qgn_indi_fep_button_case_text_sel.svg
--c8,8 qgn_indi_fep_button_mark_case_text.svg
--c8,8 qgn_indi_fep_button_mark_case_text_sel.svg
--c8,8 qgn_indi_fep_button_chinese.svg
--c8,8 qgn_indi_fep_button_chinese_sel.svg
--c8,8 qgn_indi_fep_button_mark_chinese.svg
--c8,8 qgn_indi_fep_button_mark_chinese_sel.svg
--c8,8 qgn_graf_fep_char_button_pressed.svg
--c8,8 qgn_indi_fep_button_options.svg
--c8,8 qgn_indi_fep_button_options_sel.svg
--c8,8 qgn_indi_fep_button_switch.svg
--c8,8 qgn_indi_fep_button_switch_sel.svg
--c8,8 qgn_indi_fep_button_vkb.svg
--c8,8 qgn_indi_fep_button_vkb_sel.svg
--c8,8 qgn_indi_fep_button_enter.svg
--c8,8 qgn_indi_fep_button_enter_sel.svg
 -c8,8 qgn_indi_fep_button_space1.svg
 -c8,8 qgn_indi_fep_button_space1_sel.svg
 
@@ -42,14 +14,10 @@
 -c8,8 qgn_indi_fep_button_expand.svg
 -c8,8 qgn_indi_fep_button_close.svg
 -c8,8 qgn_indi_fep_button_close_sel.svg
--c8,8 qgn_indi_input_chinese.svg
--c8,8 qgn_indi_input_case_text.svg
--c8,8 qgn_indi_input_case_numeric.svg
--c8,8 qgn_indi_input_case_special.svg
+
 -c8,8 qgn_indi_input_backspace.svg
 -c8,8 qgn_indi_input_close.svg
 -c8,8 qgn_indi_input_options.svg
--c8,8 qgn_indi_input_switcher.svg
 -c8,8 qgn_indi_input_enter.svg
 
 -c8,8 qgn_indi_input_candi_list_close.svg
@@ -87,6 +55,13 @@
 
 -c8,8 qgn_indi_keypad_space.svg
 
--c8,8 qgn_indi_input_fshwr_sct_page1.svg
--c8,8 qgn_indi_input_fshwr_sct_page2.svg
--c8,8 qgn_indi_input_fshwr_sct_page3.svg
+-c8,8 qgn_indi_input_hwr_arabic_close.svg
+-c8,8 qgn_indi_input_hwr_arabic_page_1_2.svg
+-c8,8 qgn_indi_input_hwr_arabic_page_2_2.svg
+-c8,8 qgn_indi_input_hwr_arabic_page_1_3.svg
+-c8,8 qgn_indi_input_hwr_arabic_page_2_3.svg
+-c8,8 qgn_indi_input_hwr_arabic_page_3_3.svg
+-c8,8 qgn_indi_input_hwr_arabic_symbol_table.svg
+-c8,8 qgn_indi_input_hwr_arabic_writing_area.svg
+-c8,8 qgn_indi_input_arabic_backspace.svg
+-c8,8 qgn_indi_input_arabic_enter.svg

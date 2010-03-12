@@ -49,6 +49,7 @@ public:
     virtual CFepUiLayout* UiLayout() = 0;
     virtual TBool IsSecretEdtior() = 0;
     virtual void ApplyVariantLafDataL(TBool aResolutionChange = EFalse) = 0;
+    virtual void ApplyVariantLafDataForSpellL() = 0;
     virtual CSplitItutWindowManager* UiManager() = 0;
     };
 

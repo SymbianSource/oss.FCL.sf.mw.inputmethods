@@ -53,11 +53,11 @@ public:
  * of all key presses. `
  */
 class CAknFepKeyCatcher : 
-
+						 public CAknFepKeyCatcherInterface
 #ifdef RD_SCALABLE_UI_V2
-                          public MCoeMessageMonitorObserver, 
+						 ,public MCoeMessageMonitorObserver
 #endif //RD_SCALABLE_UI_V2
-                          public CAknFepKeyCatcherInterface
+                          
     {
 
 private:

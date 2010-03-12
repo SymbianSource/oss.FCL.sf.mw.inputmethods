@@ -50,7 +50,7 @@ _LIT(KHwrImeName, "Generic HWR");
 _LIT(KVkbImeName, "Generic VKB");
 _LIT(KFSQImeName, "Generic FSQ");
 _LIT(KSSQImeName, "Split View Qwerty");
-
+_LIT(KFingerHwrImeName, "Generic Fingerhwr");
 _LIT(KHwrResourceFormatPattern, "peninputhwrwindowconfiginfo_*.rsc");
 _LIT(KVkbResourceFormatPattern, "peninputvkbwindowconfiginfo_*.rsc");
 _LIT(KSsqResourceFormatPattern, "peninputssqwinconfiginfo_*.rsc");
@@ -207,6 +207,11 @@ MAknFepManagerInterface* CPenInputImePluginGeneric::GetInputMethodUiL(
                 }
             }
             break;
+        case EPluginInputModeFingerHwr:
+            {
+            layoutId.iUid = KFingerHwrUiId;
+            }
+            break;            
         default:
             return NULL;
         }
@@ -265,6 +270,10 @@ MAknFepManagerInterface* CPenInputImePluginGeneric::GetInputMethodUiL(
     else if( aLayoutId == KFsqUiId )
         {
         mode = EPluginInputModeFSQ;
+        }
+    else if( aLayoutId == KFingerHwrUiId )
+        {
+        mode = EPluginInputModeFingerHwr;
         }
     else
         {
@@ -354,6 +363,11 @@ TInt CPenInputImePluginGeneric::LayoutUiImplId()
         case EPluginInputModeFSQ:
             {
             id = KFsqUiId;
+            }
+            break;
+        case EPluginInputModeFingerHwr:
+            {
+            id = KFingerHwrUiId;
             }
             break;
         default:
@@ -452,7 +466,7 @@ TInt CPenInputImePluginGeneric::SupportModesL(CPtiEngine* /*aPtiEngine*/,
     TBool vkb = EFalse;
     TBool fsq = EFalse;
     TBool ssq = EFalse;
-    
+    TBool fingerhwr = EFalse;  
     CleanupStack::PushL( TCleanupItem( Cleanup, &infoArray ) );
     REComSession::ListImplementationsL(id, infoArray);
         
@@ -480,6 +494,10 @@ TInt CPenInputImePluginGeneric::SupportModesL(CPtiEngine* /*aPtiEngine*/,
             {
             ssq = ETrue;
             } 
+        if (infoArray[i]->ImplementationUid().iUid == KFingerHwrUiId )
+            {
+            fingerhwr = ETrue;
+            }          
         }
     
     TImePlguinImplDetail detail;
@@ -592,6 +610,14 @@ TInt CPenInputImePluginGeneric::SupportModesL(CPtiEngine* /*aPtiEngine*/,
             }
         delete dir;
         }    
+    if( fingerhwr )
+        {
+        detail.iMode = EPluginInputModeFingerHwr;
+        detail.iMeritValue = EImeMerit_Preferred;
+        detail.iDisplayName.Copy(KFingerHwrImeName());
+        detail.iLanguage = ELangArabic;
+        aSupportList.Append(detail);
+        }
 
     CleanupStack::PopAndDestroy(&infoArray); // infoArray    
     
@@ -735,6 +761,7 @@ CPluginFepManagerBase* CPenInputImePluginGeneric::GetPluginUiL( TInt aMode )
     
     switch ( aMode )
         {
+        case EPluginInputModeFingerHwr:        
         case EPluginInputModeHwr:
             {
             return iPluginUiManager = CPluginFepManagerHwr::NewL(*this, iPenInputServer);

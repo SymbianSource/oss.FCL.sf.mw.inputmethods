@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -189,11 +189,7 @@ void CPeninputFingerHwrArStateManager::ConstructL()
 	iStates[++i] = EPeninputFingerHwrArStateCandidateSelecting;
     iStateHandlers[i] = 
         CPeninputFingerHwrArStateCandidateSelecting::NewL( *this );
-	
-//	iStates[++i] = EPeninputFingerHwrArStatePredictSelecting;
-//    iStateHandlers[i] = 
-//        CPeninputFingerHwrArStatePredictSelecting::NewL( *this );              
-//  
+	  
     iCurrentStateHandler = iStateHandlers[0];
     iCurrentState = EPeninputFingerHwrArStateStandby;
     }
@@ -376,12 +372,7 @@ void CPeninputFingerHwrArStateWriting::HandleEventL( const TInt aEventType,
             {
             OnSelectedCandidatesL(aEventData);
             }    
-            break;
-        case EHwrEventPredictiveSelected:
-            {
-//            OnSelectedPredictivesL(aEventData);
-            }
-            break;                     
+            break;                  
         default:
             break;
         }
@@ -557,11 +548,6 @@ void CPeninputFingerHwrArStateCandidateSelecting::HandleEventL( const TInt aEven
         case EHwrEventCandidateSelected:
             {
             OnSelectedCandidatesL( aEventData );
-            }
-            break;
-        case EHwrEventPredictiveSelected:
-            {
-//            OnSelectedPredictivesL( aEventData );
             }
             break;
         case EHwrEventKeyBack:

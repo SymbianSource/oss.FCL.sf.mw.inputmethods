@@ -47,6 +47,8 @@ public:
                              CFepUiLayout* aUiLayout,
                              TInt aCtrlId);
     
+    inline void SetIconOffsetAndSize( 
+            const TSize& aOffset, const TSize& aSize );
     IMPORT_C virtual void Draw();
 
     IMPORT_C virtual void Hide(TBool aShowFlag);    
@@ -84,6 +86,7 @@ public:
     IMPORT_C TBool IsShowing();
 
     IMPORT_C void SetFrameDiff(TInt aLeftDiff,TInt aTopDiff,TInt aRightDiff,TInt aBottomDiff);
+    inline void GetText( TDes& aText );
     
     void Freeze();
     
@@ -122,6 +125,8 @@ private:
     
     TBool iNeedRedraw; // redraw flag after text changed.
     TInt iTextColorIndex;    
+    TSize iIconOffset;
+    TSize iIconSize;
     };
     
 inline void CBubbleCtrl::SetTextColorIndex( TInt aTxtClrIndex )
@@ -133,6 +138,17 @@ inline TInt CBubbleCtrl::TextColorIndex() const
 	{
 	return iTextColorIndex;
 	}
+inline void CBubbleCtrl::SetIconOffsetAndSize( 
+        const TSize& aOffset, const TSize& aSize )
+    {
+    iIconOffset = aOffset;
+    iIconSize = aSize;
+    }
+
+inline void CBubbleCtrl::GetText( TDes& aText )
+    {
+    aText.Copy( *iText );
+    }
 
 class CTooltipBubbleCtrl: public CBubbleCtrl
     {

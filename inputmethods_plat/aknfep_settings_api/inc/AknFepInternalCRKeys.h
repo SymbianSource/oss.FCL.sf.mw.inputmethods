@@ -339,6 +339,11 @@ const TUint32 KAknFepLongPressNumberEntryOnQwerty = 0x00000021;
  */
 const TUint32 KAknFepShiftCopyPasteOnQwerty = 0x00000022;
 
+/*
+ * This key is used for arabic finger hwr to set or get the default arabic finger hwr orientation.
+ * 0 is for portrait and 1 is for landscape.
+ */
+const TUint32 KAknFepDefaultArabicFingerHwrOrientation = 0x00000023;
 #endif
 
 // End of file

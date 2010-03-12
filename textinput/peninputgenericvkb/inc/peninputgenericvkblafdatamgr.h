@@ -133,6 +133,12 @@ public:
 	TPeninputButtonLayoutDataEx iSpaceButtonEx;	
 	TPeninputButtonLayoutData	iEnterButton;
 	TPeninputButtonLayoutData	iSwitchButton;
+	TPeninputButtonLayoutData   iMultiRangeButton;
+    TRect iIndiPaneRectWithTextForFSQ;
+    TRect iIndiPaneRectWithoutTextForFSQ;
+    TRect iIndiIconRectWithTextForFSQ;
+    TRect iIndiIconRectWithoutTextForFSQ;
+    TAknTextLineLayout iIndiTextForFSQ;
 	TRect iTitlebarRect;
 	TRect iClientRect;
 	TRect iQwtRect;
@@ -195,11 +201,16 @@ public:
 	inline TPeninputVkbLafOption LafOption() const;
 	void ConstructL();
 	TBool IsValid() const;
+	TRect& IndiPaneRectWithText();
+	TRect& IndiPaneRectWithoutText();
+	TRect& IndiIconRectWithText();
+	TRect& IndiIconRectWithoutText();
+	TAknTextLineLayout& IndiText();
 protected:
-	void GetTopAndBottomPaneInfo( const TRect& aParentWndRect, 
+	virtual void GetTopAndBottomPaneInfo( const TRect& aParentWndRect, 
 								  TInt aLayoutType,
 								  TInt aLayoutParam,
-								  CPeninputQwtLayoutDataInfo& aDataInfo );
+								  CPeninputQwtLayoutDataInfo& aDataInfo ) = 0;
 	virtual void ReadLafInfoL() = 0;
 	
 	TInt iLayoutType;
@@ -219,6 +230,10 @@ public:
 protected:
 	CPeninputLafDataVKB( TInt aLayoutType );
 
+    void GetTopAndBottomPaneInfo( const TRect& aParentWndRect, 
+                                  TInt aLayoutType,
+                                  TInt aLayoutParam,
+                                  CPeninputQwtLayoutDataInfo& aDataInfo );
 	void ReadLafInfoL();
 	};
 	
@@ -234,6 +249,10 @@ public:
 protected:
 	CPeninputLafDataFSQ( TInt aLayoutType );
 
+    void GetTopAndBottomPaneInfo( const TRect& aParentWndRect, 
+                                  TInt aLayoutType,
+                                  TInt aLayoutParam,
+                                  CPeninputQwtLayoutDataInfo& aDataInfo );
 	void ReadLafInfoL();
 	
 private:
@@ -253,6 +272,10 @@ private:
      * @return tooltip box layout data
      */	
 	TPeninputTooltipBoxLayoutData ReadLafForTooltipBox( const TRect& aRect );
+	TRect RelativeRect( const TRect& aRect, const TPoint& aPoint );
+
+	TRect CPeninputLafDataFSQ::OffsetRect( 
+	        const TRect& aRect, TInt aDx, TInt aDy );
 	};	
 	
 /**
@@ -402,6 +425,11 @@ public:
 	*/	
 	const TPeninputTooltipBoxLayoutData& TooltipBoxLayoutData() const;
 
+    TRect& IndiPaneRectWithText();
+    TRect& IndiPaneRectWithoutText();
+    TRect& IndiIconRectWithText();
+    TRect& IndiIconRectWithoutText();
+    TAknTextLineLayout& IndiText();
 protected:
 
 	/**

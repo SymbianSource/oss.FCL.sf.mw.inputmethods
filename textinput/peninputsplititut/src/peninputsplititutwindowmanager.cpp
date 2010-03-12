@@ -31,7 +31,7 @@
 #include <s32mem.h>
 #include <peninputlabel.h>
 #include <peninputlayoutinputmodechoice.h>
-//#include <peninputlayoutbubblectrl.h>
+#include <peninputlayoutbubblectrl.h>
 #include <peninputcommonlayoutglobalenum.h>
 
 #include "peninputsplititutwindowmanager.h"
@@ -80,6 +80,16 @@ CSplitItutWindowManager::CSplitItutWindowManager(CSplitItutUiLayout* aLayoutOwne
 CSplitItutWindowManager::~CSplitItutWindowManager()
     {
     delete iWindow;
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindowManager::CSplitItutWindowManager
+// ---------------------------------------------------------------------------
+//
+TInt CSplitItutWindowManager::OnAppEditorTextComing(const TFepInputContextFieldData& aData)
+    {
+    TRAPD(err, iWindow->Icf()->SetTextL(aData));
+    return err;
     }
 
 // ---------------------------------------------------------------------------
@@ -238,6 +248,21 @@ TBool CSplitItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
             iInEditWordQueryDlg = *data;
             }
             break;
+        case ECmdPenInputSetPromptText:
+        	{
+        	if( iDataMgr->IsSpellMode())
+        		{
+        	    SetPromptTextL(aData);
+        	    handle = ETrue;
+        		}
+        	}
+        	break;
+        case ECmdPenInputFingerMatchIndicator:
+        	{
+        	iWindow->UpdateIndiBubbleL( aData );
+        	handle = ETrue;
+        	}
+        	break;
         default:
             break;
             
@@ -315,6 +340,16 @@ void CSplitItutWindowManager::ApplyVariantLafDataL(TBool aResolutionChange)
     {
     iWindow->ApplyVariantLafDataL(aResolutionChange);
     }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindowManager::ApplyVariantLafDataForSpellL
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindowManager::ApplyVariantLafDataForSpellL()
+    {
+    iWindow->ApplyVariantLafDataForSpellL();
+    }
+
 
 // ---------------------------------------------------------------------------
 // CSplitItutWindowManager::CreateChineseSpecificCtrlsIfNeededL
@@ -462,6 +497,15 @@ void CSplitItutWindowManager::ShowBubble(TInt /*aShow*/)
         punctuation->ShowBubble(EFalse);
         }
     */
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindowManager::ShowBubble
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindowManager::SetPromptTextL(TUint8* aData)
+    {
+    iWindow->SetPromptTextL(aData);
     }
          
 // End Of File

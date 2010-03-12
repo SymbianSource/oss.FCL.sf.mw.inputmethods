@@ -54,7 +54,10 @@ SOURCE                  peninputlayoutbubblectrl.cpp
 SOURCE                  peninputlayoutcursor.cpp
 SOURCE                  peninputlayoutmultilineicfeditor.cpp
 SOURCE                  peninputpentracedecorator.cpp
-SOURCE                  peninputlayoutsmiley.cpp
+SOURCE                  peninputlayoutsmiley.cpp 
+SOURCE                  peninputfloatctrl.cpp 
+SOURCE                  peninputfloatbubble.cpp 
+SOURCE                  peninputaknvkbpreviewbubblerenderer.cpp
 
 userinclude             ../../inc/peninputlayoutcontrolinc
 

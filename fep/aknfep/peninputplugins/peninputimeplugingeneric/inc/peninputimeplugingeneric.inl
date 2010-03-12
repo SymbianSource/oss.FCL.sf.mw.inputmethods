@@ -33,13 +33,14 @@ const TInt KHwrArabicUiId = 0x20019599;
 const TInt KVkbUiId = 0x10282359;
 const TInt KFsqUiId = 0x2001114D;
 const TInt KSsqUiId = 0x2001E2BB;
-
+const TInt KFingerHwrUiId = 0x2001E2C4;
 inline CPluginFepManagerBase* CPenInputImePluginGeneric::GetCurrentUi()
     {
     switch ( iPenInputMode )
         {
         case EPluginInputModeHwr:
         case EPluginInputModeVkb:
+        case EPluginInputModeFingerHwr:            
         case EPluginInputModeFSQ:
             return iPluginUiManager;
         default:

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -25,7 +25,7 @@
 * Wrapper of L&F data.
 *
 * @lib peninputfingerhwrar.lib
-* @since S60 v5.0
+* @since Symbian TB9.2
 */
 class CPeninputFingerHwrArLafManager : public CBase 
     {
@@ -33,7 +33,7 @@ public:
     /**
      * Symbian constructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return Pointer to created object.
      */    
     static CPeninputFingerHwrArLafManager* NewL();
@@ -41,7 +41,7 @@ public:
     /**
      * Symbian constructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return Pointer to created object.
      */  
     static CPeninputFingerHwrArLafManager* NewLC();
@@ -49,7 +49,7 @@ public:
     /**
      * standard c++ destructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     ~CPeninputFingerHwrArLafManager();
@@ -58,7 +58,7 @@ public:
     /**
      * read laf data.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void ReadLafInfo();
@@ -66,7 +66,7 @@ public:
     /**
      * get screen orientation.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return ETrue if is landscape.
      */
     TBool IsLandscape();
@@ -74,7 +74,7 @@ public:
     /**
      * get rect of layout.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return rect of layout.
      */    
     TRect LayoutRect();
@@ -82,7 +82,7 @@ public:
     /**
      * get rect of specified control.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aCtrlId specifies control id.
      * @return rect of specified control.
      */
@@ -92,7 +92,7 @@ public: // icf
     /**
      * get rect of ICF control.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return rect of icf.
      */      
     TRect IcfRect();
@@ -100,7 +100,7 @@ public: // icf
     /**
      * get left margin of icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return left margin of icf.
      */
     TInt IcfLeftMargin();
@@ -108,7 +108,7 @@ public: // icf
     /**
      * get Right margin of icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return Right margin of icf.
      */    
     TInt IcfRightMargin();
@@ -116,7 +116,7 @@ public: // icf
     /**
      * get top margin of icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return top margin of icf.
      */    
     TInt IcfTopMargin();
@@ -124,7 +124,7 @@ public: // icf
     /**
      * get bottom margin of icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return bottom margin of icf.
      */    
     TInt IcfBottomMargin();
@@ -132,7 +132,7 @@ public: // icf
     /**
      * get line spacing of icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return line spacing of icf.
      */      
     TInt IcfLineSpaceMargin();
@@ -140,7 +140,7 @@ public: // icf
     /**
      * get font of icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return font of icf.
      */       
     CFont* IcfFont();
@@ -148,7 +148,7 @@ public: // icf
     /**
      * get text height of icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return text height of icf.
      */       
     TInt IcfTextHeight();
@@ -158,34 +158,17 @@ public: //buttons
     /**
      * get inner padding of buttons.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return inner padding of buttons.
      */      
     TSize ButtonInnerPadding();
     
-public: //num pad
-    /**
-     * get cell size of virtual numpad.
-     * 
-     * @since S60 v5.0
-     * @return cell size of virtual numpad.
-     */    
-    TRect VirtualNumpadCellSize();
-        
-    /**
-     * get text layout of virtual numpad.
-     * 
-     * @since S60 v5.0
-     * @return a TAknTextLineLayout object to layout cell text.
-     */
-    TAknTextLineLayout NumpadKeyTxtLayout();
-    
-public: //sct pad
+public: //symbol table
   
     /**
      * get row count of virtual sctpad.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return row count of virtual sctpad.
      */      
     TInt VirtualSctpadRowCount();
@@ -193,7 +176,7 @@ public: //sct pad
     /**
      * get column count of virtual sctpad.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return column count of virtual sctpad.
      */        
     TInt VirtualSctpadColCount();
@@ -201,7 +184,7 @@ public: //sct pad
     /**
      * get cell size of virtual sctpad.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return cell size of virtual sctpad.
      */     
     TRect VirtualSctpadCellSize();
@@ -209,7 +192,7 @@ public: //sct pad
     /**
      * Get cell size of Space and Enter
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return cell size of virtual sctpad.
      */     
     TRect FixVirtualSctpadCellSize();
@@ -217,26 +200,16 @@ public: //sct pad
     /**
      * get cell rect of virtual sctpad.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aArrayRects a TRect array to receive cell rect.
      * @return none.
      */     
     void GetVirtualKeyRects( RArray<TRect>& aArrayRects );
     
     /**
-     * get cell rect of Space and Enter.
-     * 
-     * @since S60 v5.0
-     * @param aArrayRects a TRect array to receive cell rect.
-     * @return none.
-     */     
-    void GetFixVirtualKeyRects( RArray<TRect>& aArrayRects );
-    
-    
-    /**
      * get text layout of virtual sctpad.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a TAknTextLineLayout object to layout cell text.
      */    
     TAknTextLineLayout SctpadKeyTxtLayout();
@@ -244,7 +217,7 @@ public: //sct pad
     /**
      * Get text layout about Space and Enter
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a TAknTextLineLayout object to layout cell text.
      */    
     TAknTextLineLayout FixSctpadKeyTxtLayout();
@@ -252,7 +225,7 @@ public: //sct pad
     /**
      * get preview bubble rect.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a TRect object to preview bubble rect.
      */    
     TRect PreviewBubbleRect();
@@ -260,7 +233,7 @@ public: //sct pad
     /**
      * get preview bubble inner rect.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a TRect object to preview bubble inner rect.
      */    
     TRect PreviewBubbleInnerRect();
@@ -268,7 +241,7 @@ public: //sct pad
     /**
      * get preview bubble font.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a CFont pointer to preview bubble font.
      */    
     const CFont* PreviewBubbleFont();
@@ -276,7 +249,7 @@ public: //sct pad
     /**
      * get preview bubble text layout.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a TAknTextLineLayout object to preview bubble text layout.
      */    
     TAknTextLineLayout PreviewBubbleTextLayout();
@@ -286,7 +259,7 @@ public: // candidate list
     /**
      * get width unit of candidate list.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return width unit of candidate list.
      */      
     TInt CandidateUnitWidth();
@@ -294,7 +267,7 @@ public: // candidate list
     /**
      * get height unit of candidate list.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return height unit of candidate list.
      */ 
     TInt CandidateUnitHeight();  
@@ -303,7 +276,7 @@ public: // candidate list
     /**
      * get horizontal margin of candidate list.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return horizontal margin of candidate list.
      */    
     TInt CandidateHorizontalMargin();
@@ -311,7 +284,7 @@ public: // candidate list
     /**
      * get vertical margin of candidate list.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return vertical margin of candidate list.
      */      
     TInt CandidateVerticalMargin();
@@ -319,7 +292,7 @@ public: // candidate list
     /**
      * get top-left position of candidate list.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return top-left position of candidate list.
      */     
     TPoint CandidateLTPos();
@@ -327,7 +300,7 @@ public: // candidate list
     /**
      * get top-left position of predictive list.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return top-left position of predictive list.
      */     
     TPoint PredictiveLTPos();
@@ -335,7 +308,7 @@ public: // candidate list
     /**
      * get font of candidate list.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return font of candidate list.
      */     
     const CFont* CandidateFont();
@@ -344,7 +317,7 @@ public: //sct paging buttons
     /**
      * get text layout of sct paging button.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a TAknTextLineLayout object to layout text.
      */    
     TAknTextLineLayout SctPageBtnTxtLayout();
@@ -354,7 +327,7 @@ private:
     /**
      * C++ constructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     CPeninputFingerHwrArLafManager();
@@ -362,7 +335,7 @@ private:
     /**
      * Symbian second-phase constructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void ConstructL();    
@@ -376,7 +349,6 @@ private: //datas
     TRect iRectWritingBox;
     TRect iRectNumpad;
     TRect iRectSctpad;
-    TRect iRectFixSctpad;
     TRect iRectSpase;
     TRect iRectEnter;
         
@@ -400,7 +372,6 @@ private: //datas
     TInt iSctpadRowCount;
     TInt iSctpadColCount;
     TSize iSizeSctpadCell;
-    TSize iSizeFixSctpadCell;
 
     TRect iLayoutRect;
     TPoint iLayoutOffset;

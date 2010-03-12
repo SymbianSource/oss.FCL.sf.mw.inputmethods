@@ -80,6 +80,18 @@ enum TItutDataType
     EPreviewBubbleInnerRect,
     EPreviewBubbleFont,
     EPreviewBubbleTextlayout,
+    ESpellICFRect,
+    EBtnTextLine,
+    EItutPosOk,
+    EItutPosCancel,
+    EIcfFont,
+    ESpellEditIndicatorRect,   
+    EImIndicatorRect,
+    ESpellBackSpcae,
+    ESpellBackSpcaeInner,    
+    EIndiPaneWithoutTextRect, 
+    EIndiIconWithoutTextRect,
+    EIndiTextLine
     };
 
 enum TControlId
@@ -98,7 +110,10 @@ enum TControlId
     ECtrlIdPuncCandsList,
     ECtrlIdBackground,  // used to display background
     ECtrlIdCancelWindow,
-    ECtrlIdLastStdCtrl = ECtrlIdBackground + 1
+    ECtrlIdICF,
+    ECtrlIdOkBtn,
+    ECtrlIdCancelBtn,
+    ECtrlIdLastStdCtrl = ECtrlIdCancelBtn+ 1
     };
 
 enum TItutCommand
@@ -110,6 +125,7 @@ enum TItutCommand
     EItutCmdPredictItemSelected,
     EItutCmdArrowUp,
     EItutCmdArrowDown,
+    EItutExtCmdSizeChanged,
     EItutCmdCheckIcfEmpty
     };
     

@@ -68,7 +68,8 @@ CAknFepUiSpellInputPane::CAknFepUiSpellInputPane()
 // 
 void CAknFepUiSpellInputPane::ConstructL( CCoeControl* aParent, 
     const TInt aEditorFlag, const TInt aEditorCase, 
-    const TInt aEditorSCTResID )
+    const TInt aEditorSCTResID,
+    const TBool aIsSplitEditor )
 {
     // Create as a child window of the specified parent control's window.
     CreateWindowL( aParent );
@@ -83,8 +84,17 @@ void CAknFepUiSpellInputPane::ConstructL( CCoeControl* aParent,
     
     iInputWin->SetAknEditorInputMode(EAknEditorTextInputMode);
     iInputWin->SetAknEditorSpecialCharacterTable(aEditorSCTResID);
-    iInputWin->SetAknEditorFlags(iInputWin->AknEdwinFlags() | 
-        aEditorFlag | EAknEditorFlagNoT9);
+    if ( aIsSplitEditor )
+    	{
+        iInputWin->SetAknEditorFlags( iInputWin->AknEdwinFlags() | 
+                                      aEditorFlag | EAknEditorFlagNoT9 | 
+                                      EAknEditorFlagEnablePartialScreen );
+    	}
+    else
+    	{
+         iInputWin->SetAknEditorFlags( iInputWin->AknEdwinFlags() | 
+                                   aEditorFlag | EAknEditorFlagNoT9 );
+    	}
     iInputWin->SetAknEditorCase(aEditorCase);
 	iInputWin->SetMaxLength(KSpellMaxLength);
     iInputWin->SetMopParent(this);
@@ -102,12 +112,13 @@ void CAknFepUiSpellInputPane::ConstructL( CCoeControl* aParent,
 // 
 CAknFepUiSpellInputPane* CAknFepUiSpellInputPane::NewL(
     CCoeControl* aParent, const TInt aEditorFlag, 
-    const TInt aEditorCase, const TInt aEditorSCTResID)
+    const TInt aEditorCase, const TInt aEditorSCTResID, 
+    const TBool aIsSplitEditor )
     {
     CAknFepUiSpellInputPane* self = new ( ELeave ) CAknFepUiSpellInputPane;
     
     CleanupStack::PushL( self );
-    self->ConstructL( aParent, aEditorFlag, aEditorCase, aEditorSCTResID );
+    self->ConstructL( aParent, aEditorFlag, aEditorCase, aEditorSCTResID, aIsSplitEditor );
     CleanupStack::Pop();
     
     return self;

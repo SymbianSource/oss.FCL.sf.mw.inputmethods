@@ -95,7 +95,8 @@ _LIT(KDevanagiriResFile, "peninputitutconfig_devanagari.rsc");
 _LIT(KDevanagiriResFileSplit, "peninputsplititutconfig_devanagari.rsc");
 const TScriptPair KSupportScripts[] = 
     {
-    {LatinLangs, 50, CPenInputImePluginItut::ELatinLang},
+    {LatinLangs, sizeof(LatinLangs)/sizeof(TInt),
+        CPenInputImePluginItut::ELatinLang},
     {CyrillicLangs, 3, CPenInputImePluginItut::ECyrillicLang},
     {GreekLangs, 2, CPenInputImePluginItut::EGreekLang},
     {HebrewLangs, 1, CPenInputImePluginItut::EHebrewLang},

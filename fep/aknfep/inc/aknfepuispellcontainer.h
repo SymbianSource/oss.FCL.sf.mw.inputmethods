@@ -54,7 +54,7 @@ public: // Constructors and destructor
     * @return A Pointer to new dictionary container.
     */
     static CAknFepUiSpellContainer* NewL(const TInt aEditorFlag, const TInt aEditorCase, 
-                                         const TInt aEditorSCTResID);
+                                         const TInt aEditorSCTResID, const TBool aSplitEditor );
 
     /**
     * Destructor.
@@ -77,7 +77,8 @@ private:
     * @param aRect Frame rectangle for container.
     * @param aModel Data model of the application.
     */
-    void ConstructL(const TInt aEditorFlag, const TInt aEditorCase, const TInt aEditorSCTResID); 
+    void ConstructL(const TInt aEditorFlag, const TInt aEditorCase, 
+    		        const TInt aEditorSCTResID, const TBool aIsSplitEditor ); 
 
 private: // Functions from base classes
 

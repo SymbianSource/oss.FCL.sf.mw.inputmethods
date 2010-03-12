@@ -131,6 +131,7 @@ void CAknFepAvkonCandidatePopup::ConstructL()
         }
 	// Destroy the CBA constructed in base class, and new its own CBA
     delete iPopoutCba;
+    iPopoutCba = NULL;
     iPopoutCba =  CEikButtonGroupContainer::NewL(
             CEikButtonGroupContainer::ECba,
             CEikButtonGroupContainer::EHorizontal,

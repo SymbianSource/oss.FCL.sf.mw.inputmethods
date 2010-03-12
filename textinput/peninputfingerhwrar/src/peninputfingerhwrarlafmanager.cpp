@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -19,7 +19,7 @@
 // INCLUDES
 #include <aknlayoutscalable_avkon.cdl.h>
 #include <aknlayoutscalable_apps.cdl.h>
-#include <AknUtils.h>
+#include <aknutils.h>
 
 #include "peninputfingerhwrarlafmanager.h"
 #include "peninputfingerhwrarcontrolid.h"
@@ -266,7 +266,6 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
     btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).
 										LayoutLine();
     btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane); 
-    iRectBtnImeSwitch = btnbgRect.Rect();
     
     // Arrow up button
     btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1 , 2 , 0 ).
@@ -319,10 +318,7 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 										LayoutLine();
 	btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);									    
     
-    iRectFixSctpad = btnrowRect.Rect();
-    iSizeFixSctpadCell = btnRect.Rect().Size();
-    iRectSpase = btnbgRect.Rect();
-    iRectSpase.Move(-iRectFixSctpad.iTl );
+
 
     // Enter button
     btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 0 , 1 , 0 ).
@@ -333,7 +329,6 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 	btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);
 										    
     iRectEnter = btnbgRect.Rect();
-    iRectEnter.Move(-iRectFixSctpad.iTl);
 
     
     // Writing box
@@ -390,7 +385,7 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
     // going to be removed if the LAF data is ready
     //
     #ifdef HackerVersion
-	
+	const TUint KMarginLayout = 4;
 	// hardcode those and remove them after the laf data is ready
 	// do we really need to read ui data from laf system?
 	// icf margins
@@ -406,10 +401,10 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 	
     if(iIsLandscape)
     	{
-    	TInt buttonHight = (iLayoutRect.Height()-20)/6;//-6; // 1mm ~= 6 pixls
-        TInt buttonWidth = (iLayoutRect.Width()-20)/8;//-8;
+    	TInt buttonHight = (iLayoutRect.Height()-2*KMarginLayout)/6;//-6; // 1mm ~= 6 pixls
+        TInt buttonWidth = (iLayoutRect.Width()-2*KMarginLayout)/8;//-8;
     	
-    	iRectBtnClose = TRect(iLayoutRect.iTl+TPoint(10,10),TPoint(buttonWidth+10,buttonHight+10));
+    	iRectBtnClose = TRect(iLayoutRect.iTl+TPoint(KMarginLayout,KMarginLayout),TPoint(buttonWidth+KMarginLayout,buttonHight+KMarginLayout));
     	
     	iRectBtnOption = iRectBtnClose;
     	iRectBtnOption.Move(TPoint(buttonWidth,0));
@@ -433,9 +428,8 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
         iRectBtnArrowRight = iRectBtnArrowLeft;
         iRectBtnArrowRight.Move(TPoint(buttonWidth,0));
         
-        // fix symbol table
-        TPoint fixSctTl = iRectBtnClose.iTl+TPoint(0,buttonHight);
-        iRectFixSctpad = TRect(fixSctTl,fixSctTl+TPoint(4*buttonWidth,buttonHight));
+		iSizeBtnPadding = TSize(6,6);
+
 	    
 	    iRectSpase = iRectBtnClose;
 	    iRectSpase.Move(TPoint(0,buttonHight));
@@ -443,10 +437,7 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 	    iRectEnter = iRectSpase;
 	    iRectEnter.Move(TPoint(buttonWidth,0));
 	            
-	    iRectSpase.Move(-iRectFixSctpad.iTl );
-	    iRectEnter.Move(-iRectFixSctpad.iTl );
-	    
-	    iSizeFixSctpadCell = iRectSpase.Size();
+
 	    
         // candate position
         iCandidateLTPos = iRectBtnClose.iTl + TPoint(0,buttonHight);
@@ -454,10 +445,10 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
         iCandsUnitHeight = buttonHight;
 		
     	// icf editor rect
-    	iRectIcf = TRect(TPoint(4*buttonWidth+10,10),TPoint(iLayoutRect.iBr.iX-10,2*buttonHight+10));
+    	iRectIcf = TRect(TPoint(4*buttonWidth+KMarginLayout,KMarginLayout),TPoint(iLayoutRect.iBr.iX-KMarginLayout,2*buttonHight+KMarginLayout));
     	
     	// iwriting box
-    	iRectWritingBox	= TRect(TPoint(10,2*buttonHight+10),iLayoutRect.iBr-TPoint(10,10));
+    	iRectWritingBox	= TRect(TPoint(KMarginLayout,2*buttonHight+KMarginLayout),iLayoutRect.iBr-TPoint(KMarginLayout,KMarginLayout));
     	
     	// construct symbol table
     	iRectOfSymbolTable = iRectWritingBox;
@@ -489,23 +480,26 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
     else
     	{
         // icf rect
-        iRectIcf = TRect(iLayoutRect.iTl+TPoint(10,10),TPoint(iLayoutRect.iBr.iX-10,22.5*9));
-        TPoint backSpaceTl = iRectIcf.iTl+TPoint(0,iRectIcf.Height());
+        iRectIcf = TRect(iLayoutRect.iTl+TPoint(KMarginLayout,KMarginLayout),TPoint(iLayoutRect.iBr.iX-KMarginLayout,22.5*9));
         
-		TInt buttonHight = (iLayoutRect.Height()-iRectIcf.Height()-20)/6;//(15*9)/2; // 1mm ~= 9pixls
-        TInt buttonWidth = (iLayoutRect.Width()-20)/4;
+		TInt buttonHight = (iLayoutRect.Height()-iRectIcf.Height()-2*KMarginLayout)/6;//(15*9)/2; // 1mm ~= 9pixls
+        TInt buttonWidth = (iLayoutRect.Width()-2*KMarginLayout)/4;
 		
         // the button on second row
-        iRectBtnBackspace = TRect(backSpaceTl,backSpaceTl+TPoint(buttonWidth,buttonHight));
-        iRectBtnOption = iRectBtnBackspace;
+		TPoint firstButtonTl = iRectIcf.iTl+TPoint(0,iRectIcf.Height());
+		iRectBtnClose = TRect(firstButtonTl,firstButtonTl+TPoint(buttonWidth,buttonHight));
+
+        iRectBtnOption = iRectBtnClose;
         iRectBtnOption.Move(TPoint(buttonWidth,0));
-        iRectBtnRangeSmb = iRectBtnOption;
+        
+		iRectBtnRangeSmb = iRectBtnOption;
         iRectBtnRangeSmb.Move(TPoint(buttonWidth,0));
-        iRectBtnClose = iRectBtnRangeSmb;
-        iRectBtnClose.Move(TPoint(buttonWidth,0));
+        
+		iRectBtnBackspace = iRectBtnRangeSmb;
+        iRectBtnBackspace.Move(TPoint(buttonWidth,0));
         
         // arrow button: on third row
-        iRectBtnArrowUp = iRectBtnBackspace;
+        iRectBtnArrowUp = iRectBtnClose;
         iRectBtnArrowUp.Move(TPoint(0,buttonHight));
         
         iRectBtnArrowDown = iRectBtnArrowUp;
@@ -516,14 +510,17 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
         
         iRectBtnArrowRight = iRectBtnArrowLeft;
         iRectBtnArrowRight.Move(TPoint(buttonWidth,0));
-       
+        
+        // button padding
+		iSizeBtnPadding = TSize(6,6);
+		
         // candate position
-        iCandidateLTPos = iRectBtnBackspace.iTl + TPoint(0,buttonHight);
+        iCandidateLTPos = iRectBtnClose.iTl + TPoint(0,buttonHight);
         iCandsUnitWidth = buttonWidth-iCandsVerticalMargin;
         iCandsUnitHeight = buttonHight;
 		
         // HWR Box Rect
-        iRectWritingBox = TRect(TPoint(iRectBtnArrowUp.iTl.iX,iRectBtnArrowUp.iBr.iY),iLayoutRect.iBr-TPoint(10,10));
+        iRectWritingBox = TRect(TPoint(iRectBtnArrowUp.iTl.iX,iRectBtnArrowUp.iBr.iY),iLayoutRect.iBr-TPoint(KMarginLayout,KMarginLayout));
 		
 		// construct symbol table
     	iRectOfSymbolTable = iRectWritingBox;
@@ -631,10 +628,6 @@ TRect CPeninputFingerHwrArLafManager::CtrlRect( TInt aCtrlId )
             {
             return iRectBtnOption;
             }
-        case EHwrCtrlIdVkbSwitcher:
-            {
-            return iRectBtnImeSwitch;
-            }
         case EHwrCtrlId3Page1Btn:
         case EHwrCtrlId3Page2Btn:
         case EHwrCtrlId3Page3Btn:
@@ -736,28 +729,7 @@ TSize CPeninputFingerHwrArLafManager::ButtonInnerPadding()
     {
     return iSizeBtnPadding;
     }
-
-
-// ---------------------------------------------------------------------------
-// get cell size of virtual numpad.
-// ---------------------------------------------------------------------------
-//
-TRect CPeninputFingerHwrArLafManager::VirtualNumpadCellSize()
-    {
-    return iSizeNumpadCell;
-    }
     
-
-// ---------------------------------------------------------------------------
-// get text layout of virtual numpad.
-// ---------------------------------------------------------------------------
-//
-TAknTextLineLayout CPeninputFingerHwrArLafManager::NumpadKeyTxtLayout()
-    {
-    TAknTextLineLayout layout = AknLayoutScalable_Avkon::
-        cell_fshwr2_syb_bg_pane_t1(0).LayoutLine();
-    return layout;    
-    }
 
 // ---------------------------------------------------------------------------
 // get row count of virtual sctpad.
@@ -784,15 +756,6 @@ TInt CPeninputFingerHwrArLafManager::VirtualSctpadColCount()
 TRect CPeninputFingerHwrArLafManager::VirtualSctpadCellSize()
     {
     return iSizeSctpadCell;
-    }
-
-// ---------------------------------------------------------------------------
-// get cell size of virtual sctpad.
-// ---------------------------------------------------------------------------
-//
-TRect CPeninputFingerHwrArLafManager::FixVirtualSctpadCellSize()
-    {
-    return iSizeFixSctpadCell;
     }
     
     
@@ -846,17 +809,6 @@ void CPeninputFingerHwrArLafManager::GetVirtualKeyRects( RArray<TRect>& aArrayRe
         absoluteRect.Move(-iRectSctpad.iTl.iX, -iRectSctpad.iTl.iY);
         aArrayRects.Append(absoluteRect);
         } 
-    }
-
-// ---------------------------------------------------------------------------
-// get space and enter key rect.
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArLafManager::GetFixVirtualKeyRects( RArray<TRect>& aArrayRects )
-    {   
-    aArrayRects.Reset();
-    aArrayRects.Append( iRectSpase );
-    aArrayRects.Append( iRectEnter );
     }
 
 // ---------------------------------------------------------------------------

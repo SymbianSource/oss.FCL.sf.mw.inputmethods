@@ -32,6 +32,8 @@
 #include <aknlayoutscalable_avkon.cdl.h>
 #include <peninputlayoutmultilineicf.h>
 #include <AknSettingCache.h>
+#include <AknFepInternalCRKeys.h>
+#include <centralrepository.h>
 
 #include "peninputgenericitutdatamgr.h"
 #include "peninputgenericitutlayoutcontext.h"
@@ -110,6 +112,7 @@ CGenericItutDataMgr::~CGenericItutDataMgr()
     iKeypadCellRects.Close();
     iKeypadCellRectsCn.Close();
     iKeypadCellRectsQuery.Close(); 
+    iKeypadCellRectsForPrtWest.Close();
     delete iNumericKeymapData;
     }
 
@@ -174,6 +177,295 @@ void CGenericItutDataMgr::AddSubscriber(MItutPropertySubscriber* aSubscriber)
         }
     }
 
+void CGenericItutDataMgr::ReadLafInfoForPrtWest()
+	{
+	// Screen
+	TRect rect;
+
+	AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EApplicationWindow, rect);
+
+	TAknWindowLineLayout mainWnd, bottomWnd, bottomPane;
+	TAknLayoutRect mainWndRect, bottomwndtrect, bottompanerect;
+
+	mainWnd = AknLayoutScalable_Avkon::main_fep_vtchi_ss_pane(0).LayoutLine();
+	mainWndRect.LayoutRect(rect, mainWnd);
+	
+	bottomWnd = AknLayoutScalable_Avkon::popup_fep_ituss_window(0).LayoutLine();    
+	bottomwndtrect.LayoutRect(mainWndRect.Rect(), bottomWnd);
+
+	bottomPane = AknLayoutScalable_Avkon::ituss_keypad_pane(0).LayoutLine();
+	bottompanerect.LayoutRect(bottomwndtrect.Rect(), bottomPane);   
+	
+	iLayoutRectForPrtWest = mainWndRect.Rect();
+	iLayoutOffsetForPrtWest = mainWndRect.Rect().iTl;
+
+	// ICF
+	TAknWindowLineLayout icflayout, icflayoutbg, icflayoutpane;
+	TAknLayoutRect icfRect, icfRectBg, icfRectPane;
+	
+	icflayoutpane = AknLayoutScalable_Avkon::popup_fep_vtchi_icf_pane(0).LayoutLine();
+	icfRectPane.LayoutRect( mainWndRect.Rect(), icflayoutpane );
+	
+	icflayoutbg = AknLayoutScalable_Avkon::bg_icf_pane_cp01(0).LayoutLine();
+	icfRectBg.LayoutRect( icfRectPane.Rect(), icflayoutbg );
+	
+	icflayout = AknLayoutScalable_Avkon::vtchi_icf_list_pane(0).LayoutLine();
+	icfRect.LayoutRect( icfRectBg.Rect(), icflayout );
+	
+	iIcfRectForPrtWest = icfRect.Rect();
+	
+	// icf indicator
+	TAknWindowLineLayout icfIndiPaneWithText, icfIndiPaneWithoutText, 
+        indiIcon, indiText;
+	TAknLayoutRect icfIndiPaneRectWithText, icfIndiPaneRectWithoutText, indiIconRect, indiTextRect;
+	TAknTextLineLayout indiTextLayout;
+	
+	icfIndiPaneWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane(1).LayoutLine();
+	icfIndiPaneRectWithText.LayoutRect(icfRect.Rect(), icfIndiPaneWithText);
+	iIndiPaneRectWithTextForPrtWest = icfIndiPaneRectWithText.Rect();
+	
+	icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
+	icfIndiPaneRectWithoutText.LayoutRect(icfRect.Rect(), icfIndiPaneWithoutText);
+	iIndiPaneRectWithoutTextForPrtWest = icfIndiPaneRectWithoutText.Rect();
+	
+	iIndiIconRectWithTextForPrtWest = TRect( 0, 0, 60, 20 );
+	iIndiIconRectWithoutTextForPrtWest = TRect( 0, 0, 60, 20 );
+	
+	indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
+	iIndiTextForPrtWest = indiTextLayout;
+	
+	// icf text
+	TAknTextLineLayout icflefttext, icflefttext1; 
+	icflefttext = AknLayoutScalable_Avkon::vtchi_icf_list_pane_t1(0, 0, 0).LayoutLine();
+	icflefttext1 = AknLayoutScalable_Avkon::vtchi_icf_list_pane_t1(0, 0, 1).LayoutLine();
+
+	iIcfTextAlignmentForPrtWest = icflefttext.iJ;
+	iIcfTextLeftMarginForPrtWest = icflefttext.il;
+	//iIcfTextRightMarginForPrtWest = icflefttext.ir;
+	iIcfTextRightMarginForPrtWest = iIcfTextLeftMarginForPrtWest;
+	    
+	TAknLayoutText ctxt, ctxt1;
+	ctxt.LayoutText( icfRect.Rect(), icflefttext );
+	ctxt1.LayoutText( icfRect.Rect(), icflefttext1 );
+	    
+	iIcfTextTopMarginForPrtWest = ctxt.TextRect().iTl.iY - icfRect.Rect().iTl.iY;
+	iIcfTextLineSpaceMarginForPrtWest = ctxt1.TextRect().iTl.iY - ctxt.TextRect().iBr.iY;
+	iIcfTextHeightForPrtWest = ctxt.TextRect().Height();
+	
+	TInt maxRow = ( iIcfRectForPrtWest.Height() - iIcfTextTopMarginForPrtWest ) 
+        / ( iIcfTextHeightForPrtWest + iIcfTextLineSpaceMarginForPrtWest );
+	
+	iIcfTextBottomMarginForPrtWest = 
+        iIcfRectForPrtWest.Height() - ( iIcfTextHeightForPrtWest + iIcfTextLineSpaceMarginForPrtWest ) 
+        * maxRow - iIcfTextTopMarginForPrtWest;
+	    
+	iIcfFontForPrtWest = const_cast<CFont*>(AknLayoutUtils::FontFromId(icflefttext.iFont, NULL));	
+	
+	// Keypad
+	TAknWindowLineLayout itucell, ituinnercell;
+	TAknLayoutRect itucellrect, ituinnercellrect;
+   
+	iKeypadCellRectsForPrtWest.Reset();
+
+	itucell = AknLayoutScalable_Avkon::cell_ituss_key_pane(0).LayoutLine();           
+	itucellrect.LayoutRect(bottompanerect.Rect(), itucell);
+	ituinnercell = AknLayoutScalable_Avkon::bg_cell_ituss_key_g1(1).LayoutLine();
+	
+	iKeypadRectForPrtWest = bottompanerect.Rect();
+	iKeypadRectForPrtWest.SetHeight(itucellrect.Rect().Height() * 4);
+	iKeypadRectForPrtWest.Move(-iLayoutOffsetForPrtWest); 
+	
+	TRect cellrect = itucellrect.Rect();
+	cellrect.Move(-iLayoutOffsetForPrtWest);
+	cellrect.Move(-iKeypadRectForPrtWest.iTl);
+	   
+	// keypad is 4 rows, 3 cols
+	for (TInt i = 0; i < 4; i++)
+		{
+		for (TInt j = 0; j < 3; j++)
+			{
+			TRect keyrect = cellrect;
+			keyrect.Move(itucellrect.Rect().Width() * j, itucellrect.Rect().Height() * i);
+
+			ituinnercellrect.LayoutRect(keyrect, ituinnercell);
+			iKeypadCellRectsForPrtWest.Append(ituinnercellrect.Rect());
+			
+			// read shift icon rect
+			if( i == 3 &&  j == 2 )
+				{
+				TAknWindowLineLayout shiftIcon =  AknLayoutScalable_Avkon::
+								cell_ituss_key_pane_g2( 0 ).LayoutLine();
+				TAknLayoutRect shiftIconRect;
+				shiftIconRect.LayoutRect( keyrect, shiftIcon );                
+				iShiftIconRectForPrtWest = shiftIconRect.Rect();          
+				}    
+			}
+		} 
+	 
+
+	iVkNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(0).LayoutLine(); 
+	// Key text row 1                               
+	iVkAlphaText1ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t2(0).LayoutLine();
+	iVkAlphaText3ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t4(0).LayoutLine();                                                              
+	// Key text row 2                               
+	iVkAlphaText2ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t3(0).LayoutLine();
+	
+	// close button
+	TAknWindowLineLayout funcbtn, funcbtnbg, funcbtninner;
+	TAknLayoutRect funcrect, funcbgrect, funcinnerrect, arrowleftinnerrect, arrowrightinnerrect;
+	TAknLayoutRect optioninnerrect, backspaceinnerrect;
+	
+	funcbtn = AknLayoutScalable_Avkon::cell_ituss_key_pane(1).LayoutLine();
+	funcrect.LayoutRect(bottompanerect.Rect(), funcbtn);
+	
+	funcbtnbg = AknLayoutScalable_Avkon::bg_cell_ituss_key_g1(1).LayoutLine();
+	funcbgrect.LayoutRect(funcrect.Rect(), funcbtnbg);
+	
+	funcbtninner = AknLayoutScalable_Avkon::cell_ituss_key_pane_g1(0).LayoutLine();
+	funcinnerrect.LayoutRect(funcrect.Rect(), funcbtninner);
+	
+	TInt btnWidth = funcrect.Rect().Width();
+	// close button
+	iCloseRectForPrtWest = funcbgrect.Rect();
+	iCloseRectForPrtWest.Move(0, funcrect.Rect().Height() * 4);
+	iCloseRectForPrtWest.Move(-iLayoutOffsetForPrtWest);
+
+	iCloseInnerRectForPrtWest = funcinnerrect.Rect();
+	iCloseInnerRectForPrtWest.Move(0, funcrect.Rect().Height() * 4);
+	iCloseInnerRectForPrtWest.Move(-iLayoutOffsetForPrtWest);
+	
+	// arrow left button
+	iArrowLeftRectForPrtWest = iCloseRectForPrtWest;     
+	iArrowLeftRectForPrtWest.Move(btnWidth, 0);
+	arrowleftinnerrect.LayoutRect(iArrowLeftRectForPrtWest, funcbtninner);
+	iArrowLeftInnerRectForPrtWest = arrowleftinnerrect.Rect();
+	
+	// option button
+	iOptionsRectForPrtWest = iArrowLeftRectForPrtWest;
+	iOptionsRectForPrtWest.Move(btnWidth, 0);    
+	optioninnerrect.LayoutRect(iOptionsRectForPrtWest, funcbtninner);
+	iOptionInnerRectForPrtWest = optioninnerrect.Rect();
+	
+	// arrow right button
+	iArrowRightRectForPrtWest = iOptionsRectForPrtWest;
+	iArrowRightRectForPrtWest.Move(btnWidth, 0);    
+	arrowrightinnerrect.LayoutRect(iArrowRightRectForPrtWest, funcbtninner);
+	iArrowRightInnerRectForPrtWest = arrowrightinnerrect.Rect();
+	
+	// backspace button
+	iBackspaceRectForPrtWest = iArrowRightRectForPrtWest;
+	iBackspaceRectForPrtWest.Move(btnWidth, 0);  
+	backspaceinnerrect.LayoutRect(iBackspaceRectForPrtWest, funcbtninner);
+	iBackspaceInnerRectForPrtWest = backspaceinnerrect.Rect();
+
+	// preview popup window 
+	TAknWindowLineLayout previewWnd, previewBackground, previewWndInner;
+	TAknLayoutRect previewWndRect, previewBackgroundRect, previewWndInnerRect;
+	TAknLayoutText previewWndText;
+	previewWnd = AknLayoutScalable_Avkon::popup_fshwr2_char_preview_window(0).LayoutLine(); 
+				
+	previewWndRect.LayoutRect( iLayoutRectForPrtWest, previewWnd );
+	previewBackground = AknLayoutScalable_Avkon::bg_popup_fep_char_preview_window_cp01().LayoutLine();
+	previewBackgroundRect.LayoutRect( previewWndRect.Rect(), previewBackground );
+	iPreviewWndRectForPrtWest = previewBackgroundRect.Rect();
+	
+	previewWndInner = AknLayoutScalable_Avkon::bg_popup_fep_char_preview_window_g9().LayoutLine();
+	previewWndInnerRect.LayoutRect( previewBackgroundRect.Rect(), previewWndInner );
+	
+	iPreviewWndInnerRectForPrtWest = previewWndInnerRect.Rect();
+	iPreviewWndTextForPrtWest = 
+		AknLayoutScalable_Avkon::popup_fshwr2_char_preview_window_t1(0).LayoutLine();
+	previewWndText.LayoutText(previewWndRect.Rect(), iPreviewWndTextForPrtWest);
+	iBubbleFontForPrtWest = const_cast<CFont*>(previewWndText.Font());	
+	
+	// LAF for spell mode
+	TAknWindowLineLayout btnPaneWnd, okBtnWnd, cancelBtnWnd, spellwnd;
+	TAknLayoutRect btnPaneRect, okBtnRect, cancelBtnRect, spellwndtrect;
+	
+	iSpellQueryPaneRectForPrtWest = mainWndRect.Rect();
+	
+    spellwnd = AknLayoutScalable_Avkon::popup_fep_ituss_window(1).LayoutLine();
+    spellwndtrect.LayoutRect( mainWndRect.Rect(), spellwnd ); 
+    
+	btnPaneWnd = AknLayoutScalable_Avkon::ituss_sks_pane(0).LayoutLine();
+	btnPaneRect.LayoutRect( spellwndtrect.Rect(), btnPaneWnd );
+	
+	okBtnWnd = AknLayoutScalable_Avkon::ituss_sks_pane_g1(0).LayoutLine();
+	okBtnRect.LayoutRect( btnPaneRect.Rect(), okBtnWnd );
+	iOKRectForPrtWest = okBtnRect.Rect();
+	
+	cancelBtnWnd = AknLayoutScalable_Avkon::ituss_sks_pane_g2(0).LayoutLine();
+	cancelBtnRect.LayoutRect( btnPaneRect.Rect(), cancelBtnWnd );
+	iCancelRectForPrtWest = cancelBtnRect.Rect();
+	
+	iBtnOKTextForPrtWest = AknLayoutScalable_Avkon::ituss_sks_pane_t1(0).LayoutLine();
+	iBtnCancelTextForPrtWest = AknLayoutScalable_Avkon::ituss_sks_pane_t2(0).LayoutLine();
+	
+	iBtnOKTextForPrtWest.ir = 7;
+	iBtnCancelTextForPrtWest.ir = 7;
+	
+	iBtnCancelTextForPrtWest = iBtnOKTextForPrtWest;
+	
+	TAknWindowLineLayout queryTopPane, queryICFPane, icfSpellIndiPane, middleInnerBtn;
+	TAknLayoutRect queryTopPaneRect, queryICFPaneRect, icfSpellIndiPaneRect, 
+		middleButton, middleInnerRect;
+	
+	queryTopPane = AknLayoutScalable_Avkon::popup_fep_vtchi_icf_pane(1).LayoutLine();
+	queryTopPaneRect.LayoutRect( mainWndRect.Rect(), queryTopPane );
+	
+	queryICFPane = AknLayoutScalable_Avkon::vtchi_query_pane(0).LayoutLine();
+	queryICFPaneRect.LayoutRect( queryTopPaneRect.Rect(), queryICFPane );
+	iSpellICFRectForPrtWest = queryICFPaneRect.Rect();
+	
+	TRect middleButtonPaneRect = spellwndtrect.Rect();
+	middleButtonPaneRect.Move( 5, 3 );
+	
+	TRect cellSpellRect;
+	cellSpellRect.iTl = middleButtonPaneRect.iTl;
+	cellSpellRect.SetHeight( itucellrect.Rect().Height());
+	cellSpellRect.SetWidth( itucellrect.Rect().Width());
+
+	// Left
+	middleButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowLeftRectForPrtWest = middleButton.Rect();
+	
+	middleInnerBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane_g1(2).LayoutLine();
+	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
+	iSpellArrowLeftInnerRectForPrtWest = middleInnerRect.Rect();
+	
+	// Right
+	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
+	middleButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowRightRectForPrtWest = middleButton.Rect();
+	
+	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
+	iSpellArrowRightInnerRectForPrtWest = middleInnerRect.Rect();
+	
+	// BackSpace
+	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
+	middleButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellICFBtnRectForPrtWest = middleButton.Rect();
+	
+	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
+	iSpellICFBtnInnerRectForPrtWest = middleInnerRect.Rect();
+	
+	iSpellText1ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t1(0).LayoutLine();
+	iSpellText2ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t2(0).LayoutLine();
+	iSpellText3ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t3(0).LayoutLine();
+	
+	iSpellIcfFontForPrtWest = const_cast<CFont*>(
+	        AknLayoutUtils::FontFromId(iSpellText1ForPrtWest.iFont, NULL));
+	
+	TAknLayoutText cSpelltxt1;
+	cSpelltxt1.LayoutText( queryICFPaneRect.Rect(), iSpellText1ForPrtWest );
+	iSpellIcfTextHeightForPrtWest = cSpelltxt1.TextRect().Height();
+	
+	
+	icfSpellIndiPane = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
+	icfSpellIndiPaneRect.LayoutRect(queryICFPaneRect.Rect(), icfSpellIndiPane);
+	iSpellIndiPaneWithoutTextForPrtWest = icfSpellIndiPaneRect.Rect();
+	iSpellIndiIconWithoutTextForPrtWest = TRect( 0, 0, 50, 17 );
+	}
 void CGenericItutDataMgr::ReadLafInfo()
     {
     // Screen
@@ -183,6 +475,7 @@ void CGenericItutDataMgr::ReadLafInfo()
 
     iLandScape = iScreenSize.iWidth < iScreenSize.iHeight ? EFalse : ETrue;
 
+    ReadLafInfoForPrtWest();
     AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EApplicationWindow, rect);
 
     // finger Layout
@@ -767,13 +1060,29 @@ void CGenericItutDataMgr::SetTextAlignment()
     
     if (icffield && InputLanguage() != ELangNone)
         {
-        TRAP_IGNORE(icffield->SetTextAlignmentL(iIcfTextAlignment, InputLanguage()));
+        if ( IsPortraitWest())
+            {
+            TRAP_IGNORE(icffield->SetTextAlignmentL(
+                    iIcfTextAlignmentForPrtWest, InputLanguage()));
+            }
+        else
+            {
+            TRAP_IGNORE(icffield->SetTextAlignmentL(
+                    iIcfTextAlignment, InputLanguage()));
+            }
         }
     }
     
 void CGenericItutDataMgr::SetIcfTextAlignment(TInt aAlignment)
     {
-    iIcfTextAlignment = aAlignment;
+    if ( IsPortraitWest())
+        {
+        iIcfTextAlignmentForPrtWest = aAlignment;
+        }
+    else
+        {
+        iIcfTextAlignment = aAlignment;
+        }
     }
 
 void CGenericItutDataMgr::SetLanguageL(TInt aLanguage)
@@ -890,8 +1199,474 @@ void CGenericItutDataMgr::SetInputModeL(TInt aMode)
         }
     }
 
+TBool CGenericItutDataMgr::IsChineseGlobalLanguage()
+    {
+    CRepository* repository = NULL;
+    TRAPD(ret, repository = CRepository::NewL(KCRUidAknFep));
+    if (ret != KErrNone)
+        {
+        return EPluginInputModeAll;
+        }
+    TInt curLanguage ;
+    repository->Get(KAknFepInputTxtLang, curLanguage);
+    delete repository;
+    
+    return (curLanguage == ELangPrcChinese || curLanguage == ELangHongKongChinese 
+         || curLanguage == ELangTaiwanChinese);
+    }
+
+TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
+    {
+    switch ( aDataType )
+        {
+        case EScreenSize:
+            {
+            return &iScreenSize;
+            }
+        case ELayoutOffset:
+            {
+            return &iLayoutOffsetForPrtWest;
+            }
+        case ELayoutRect:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iLayoutRect;
+                }
+            else
+                {
+                return &iLayoutRectForPrtWest;
+                }
+            }
+        case EIcfRect:
+            {
+            return &iIcfRectForPrtWest;
+            }
+        case EIcfFont:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return IsChinese() ? reinterpret_cast<TAny*>(iIcfFontCn) : 
+                    reinterpret_cast<TAny*>(iIcfFont);
+                }
+            else
+                {
+                return reinterpret_cast<TAny*>(iIcfFontForPrtWest);
+                }
+            }
+        case EBackspaceRect:
+        case EItutPosClear:
+            {
+            return &iBackspaceRectForPrtWest;
+            }
+        case EKeypadRect:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return IsChinese() ? &iKeypadRectCn : &iKeypadRect;
+                }
+            else
+                {
+                return &iKeypadRectForPrtWest;
+                }
+            }               
+        case EKeypadCellRects:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return IsChinese() ? &iKeypadCellRectsCn : &iKeypadCellRects;
+                }
+            else
+                {
+                return &iKeypadCellRectsForPrtWest;
+                }
+            }
+        case EKeypadLeftTextLine:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iVkNumText;
+                }
+            else
+                {
+                return &iVkNumTextForPrtWest;
+                }
+            }
+        case EKeypadRightTextLine1:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return IsThai() ? &iVkAlphaText1ForThai : &iVkAlphaText1;
+                }
+            else
+                {
+                return &iVkAlphaText1ForPrtWest;
+                }
+            }
+        case EKeypadRightTextLine2:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return IsThai() ? &iVkAlphaText2ForThai : &iVkAlphaText2;
+                }
+            else
+                {
+                return &iVkAlphaText2ForPrtWest;
+                }
+            }
+        case EKeypadRightTextLine3:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return IsThai() ? &iVkAlphaText3ForThai : &iVkAlphaText3;
+                }
+            else
+                {
+                return &iVkAlphaText3ForPrtWest;
+                }
+            }
+        case EDropdownlistUnitWidth:
+            {
+            return &iCandsUnitWidth;
+            }
+        case EDropdownlistUnitHeight:
+            {
+            return &iCandsUnitHeight;
+            }
+        case EDropdownlistHorizontalMargin:
+            {
+            return &iCandsHorizontalMargin;
+            }
+        case EDropdownlistVerticalMargin:
+            {
+            return &iCandsVerticalMargin;
+            }
+        case EDropdownListNaviWidth:
+            {
+            return &iCandsNaviWidth;
+            }
+        case EDropdownListSpinBtnHeight:
+            {
+            return &iCandsSpinBtnHeight;
+            }
+        case EDropdownListSpellLTPos:
+            {
+            return &iCandsSpellLTPos;
+            }
+        case EDropdownListCandsLTPos:
+            {
+            return &iCandsLTPos;
+            }
+        case EDropdownListPuncLTPos:
+            {
+            return &iCandsPuncLTPos;
+            }
+        case EDropdownListFont:
+            {
+            return reinterpret_cast<TAny*>(iCandsFont);
+            }
+        case EDropdownListTextMargin:
+            {
+            return &iCandsTextMargin;
+            }
+        case EDropdownListTextColor:
+            {
+            return &iCandsTextColor;
+            }
+        case ESpellRect:
+            {
+            return &iSpellRect;
+            }
+        case ESpellFont:
+            {
+            return reinterpret_cast<TAny*>(iSpellIcfFontForPrtWest);
+            }
+        case ESpellTextColor:
+            {
+            return &iSpellTextColor;
+            }
+        case ELanguage:
+            {
+            return &iLanguage;
+            }
+        case EInputMode:
+            {
+            return &iInputMode;
+            }
+        case ECase:
+            {
+            return &iCase;
+            }
+        case EChnCandidates:
+            {
+            return &iCandidates;
+            }
+        case EChnPuncCandidates:
+            {
+            return &iPuncCandidates;
+            }
+        case EArrowLeftRect:
+        case EItutPosArrowLeft:
+            {
+            return &iArrowLeftRectForPrtWest;
+            }
+        case EArrowRightRect:
+        case EItutPosArrowRight:
+            {
+            return &iArrowRightRectForPrtWest;
+            }
+        case EArrowUpRect:
+        case EItutPosArrowUp:
+            {
+            return &iArrowUpRect;
+            }
+        case EArrowDownRect:
+        case EItutPosArrowDown:
+            {
+            return &iArrowDownRect;
+            }
+        case EItutPosSend:
+            {
+            return &iSendRect;
+            }
+        case EItutPosDisconn:
+            {
+            return &iDisconnRect;
+            }
+        case EMatchSelectionTlPos:
+            {
+            return &iSelectionTl;
+            }
+        case EMatchSelectionItemSize:
+            {
+            return &iSelectionItemSize;
+            }
+        case EMatchSelectionItemMargin:
+            {
+            return &iSelectionItemMargin;
+            }
+        case EMatchSelectionTextLine:
+            {
+            return &iSelectionTextLine;
+            }
+        case EOptionsRect:   
+            {
+            return &iOptionsRectForPrtWest;
+            }           
+        case ECloseRect:
+            {
+            return &iCloseRectForPrtWest;
+            }          
+        case ELeftInnerRect:
+            {
+            return &iArrowLeftInnerRectForPrtWest;
+            }
+        case ERightInnerRect:
+            {
+            return &iArrowRightInnerRectForPrtWest;
+            }
+        case EUpInnerRect:
+            {
+            return &iArrowUpInnerRect;
+            }
+        case EDownInnerRect:
+            {
+            return &iArrowDownInnerRect;
+            }
+        case EBackspaceInnerRect:
+            {
+            return &iBackspaceInnerRectForPrtWest;
+            }
+        case ECloseInnerRect:
+            {
+            return &iCloseInnerRectForPrtWest;
+            }       
+        case EOptionInnerRect:
+            {
+            return &iOptionInnerRectForPrtWest;
+            }         
+        case EItutPosOk:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iOkRect;
+                }
+            else
+                {
+                return &iOKRectForPrtWest;
+                }
+            }
+        case EItutPosCancel:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iCancelRect;
+                }
+            else
+                {
+                return &iCancelRectForPrtWest;
+                }
+            }
+        case EBtnTextLine:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iBtnTextFormat;
+                }
+            else
+                {
+                return &iBtnOKTextForPrtWest;
+                }
+            }
+        case ESpellTextCancle:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iBtnTextFormat1;
+                }
+            else
+                {
+                return &iBtnCancelTextForPrtWest;
+                }
+            }
+        case ESpellICFRect:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iSpellICFRect;
+                }
+            else
+                {
+                return &iSpellICFRectForPrtWest;
+                }
+            }
+        case ESpellClrRect:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iSpellClrRect;
+                }
+            else
+                {
+                return &iSpellICFBtnRectForPrtWest;
+                }
+            }
+        case ESpellClrInnerRect:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iSpellClrInnerRect;
+                }
+            else
+                {
+                return &iSpellICFBtnInnerRectForPrtWest;
+                }
+            }
+        case ESpellEditIndicatorRect:
+            {
+            return &iSpellEditIndicator;
+            }
+        case ESpellQueryPaneRect:
+            {
+            if ( IsChineseGlobalLanguage())
+                {
+                return &iSpellQueryPaneRect;
+                }
+            else
+                {
+                return &iSpellQueryPaneRectForPrtWest;
+                }
+            }
+        case ELatinOnly:
+            {
+            return &iLatinOnly;
+            }
+        case EPreviewBubbleRect:
+            {
+            return &iPreviewWndRectForPrtWest;
+            }
+        case EPreviewBubbleInnerRect:
+            {
+            return &iPreviewWndInnerRectForPrtWest;
+            }   
+        case EPreviewBubbleTextlayout:
+            {
+            return &iPreviewWndTextForPrtWest;
+            }
+        case EPreviewBubbleFont:
+            {
+            return reinterpret_cast<TAny*>(iBubbleFontForPrtWest);
+            }
+        case EImIndicatorRect:
+            {
+            if (iSpellMode)
+                {
+                return &iSpellEditIndicator;
+                }
+                 
+            CalWesternIndicator();
+            return &iCalindwesternRect;
+            }
+        case EImIndicatorOuterRect:
+            {
+            return &iImIndiOuterRect;
+            }
+        case EIndiPaneWithTextRect:
+            {
+            return &iIndiPaneRectWithTextForPrtWest;
+            }
+        case EIndiPaneWithoutTextRect:
+            {
+            return &iIndiPaneRectWithoutTextForPrtWest;
+            }
+        case EIndiIconWithTextRect:
+            {
+            return &iIndiIconRectWithTextForPrtWest;
+            }
+        case EIndiIconWithoutTextRect:
+            {
+            return &iIndiIconRectWithoutTextForPrtWest;
+            }
+        case EIndiTextLine:
+            {
+            return &iIndiTextForPrtWest;
+            }
+        case ESpellIndiPaneWithoutTextRect:
+            {
+            return &iSpellIndiPaneWithoutTextForPrtWest;
+            }
+        case ESpellIndiIconWithoutTextRect:
+            {
+            return &iSpellIndiIconWithoutTextForPrtWest;
+            }
+        case ESpellArrowLeft:
+        	{
+        	return &iSpellArrowLeftRectForPrtWest;
+        	}
+        case ESpellArrowLeftInner:
+        	{
+        	return &iSpellArrowLeftInnerRectForPrtWest;
+        	}
+        case ESpellArrowRight:
+        	{
+        	return &iSpellArrowRightRectForPrtWest;
+        	}
+        case ESpellArrowRightInner:
+        	{
+        	return &iSpellArrowRightInnerRectForPrtWest;
+        	}
+        default:
+            break;
+        }
+
+    return NULL;
+    }
 TAny* CGenericItutDataMgr::RequestData(TInt aDataType)
     {
+    if ( IsPortraitWest())
+        {
+        return RequestDataForPortraitWest( aDataType );
+        }
     switch ( aDataType )
         {
         case EScreenSize:

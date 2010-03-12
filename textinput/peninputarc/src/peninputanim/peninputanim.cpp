@@ -810,6 +810,15 @@ TBool CPeninputAnim::OnRawButton1Down(const TRawEvent& aRawEvent)
             DoTactileFeedBack(aRawEvent.Pos() - rect.iTl);
 #endif // RD_TACTILE_FEEDBACK	
 		iIsPenDown = ETrue;
+
+        // Fix bug HMNN-82CDU5 
+        // When button downing event is happened, iIsMove is reset to EFalse
+	    iIsMove = EFalse;              
+
+        // Recording pointer that button is pressing down in at this time
+	    iPointerDown = aRawEvent.Pos();  
+        //
+
 		PostRawEvent(aRawEvent); 
 		return ETrue;
 	    }
@@ -841,6 +850,19 @@ TBool CPeninputAnim::OnRawButton1Up(const TRawEvent& aRawEvent)
 		}
 	if(iIsPenDown)
 	    {      
+    
+        // Fix bug HMNN-82CDU5 
+        // When the control key pressing down in is different with the control key pressing up 
+        // and pointer moving event isn¡¯t happened,
+        // pointer moving event will is supplied 
+        if(iPointerDown != aRawEvent.Pos() && !iIsMove)
+          {
+          TRawEvent rawEvent = aRawEvent;
+          rawEvent.Set( TRawEvent::EPointerMove );
+          OnRawPointerMove(rawEvent);
+          }
+        //
+
 		iIsPenDown = EFalse;
 		
 		TRect rect(iSpritePosition, iSpriteSize);        
@@ -848,6 +870,12 @@ TBool CPeninputAnim::OnRawButton1Up(const TRawEvent& aRawEvent)
 		    {
 			//send pen up event immediately
 			SendRawEvent(aRawEvent);
+            
+            // Fix bug HMNN-82CDU5 
+            // When key pressing up event is completed, iIsMove is reset to EFalse.
+            iIsMove = EFalse;   
+            //
+
 			return ETrue;                    
 		    }
 	    }
@@ -880,6 +908,11 @@ TBool CPeninputAnim::OnRawPointerMove(const TRawEvent& aRawEvent)
 	    {                
 	    //give tactile feedback	    
 
+        // Fix bug HMNN-82CDU5 
+        // When pointer moving event is happened, iIsMove is set to ETrue
+        iIsMove = ETrue;        
+        //
+
 		PostRawEvent(aRawEvent); 
 		return ETrue;
 	    }
@@ -887,6 +920,12 @@ TBool CPeninputAnim::OnRawPointerMove(const TRawEvent& aRawEvent)
 
 	if(iIsPointerCaptured || iIsPenDown)
 	    {                    
+
+        // Fix bug HMNN-82CDU5 
+        // When pointer moving event is happened, iIsMove is set to ETrue
+        iIsMove = ETrue;        
+        //
+
 		PostRawEvent(aRawEvent);
 		return ETrue;
 	    }

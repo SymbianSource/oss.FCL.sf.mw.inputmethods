@@ -180,7 +180,7 @@ const TInt KTouchInputPreviewOff = 0;
 const TKeyEvent KAknCcpuCopyEvent = {EKeyF18, EEikCmdEditCopy, EModifierCtrl, 1};  // Copy event for AknCcpuSupport
 const TKeyEvent KAknCcpuCutEvent  = {EKeyF18, EEikCmdEditCut, EModifierCtrl, 1};   // Cut event for AknCcpuSupport
 
-const TInt KMaxMenuSize = 25;
+const TInt KMaxMenuSize = 28;
 const TInt KEditorMenuPermitedSend[KMaxMenuSize] = 
     {         
     EJapanFepCmdModeHiragana,
@@ -192,6 +192,9 @@ const TInt KEditorMenuPermitedSend[KMaxMenuSize] =
     EChinFepCmdModePinyin,
     EChinFepCmdModeZhuyin,
     EChinFepCmdModeStroke,
+    EChinFepCmdModePinyinPhrase,
+    EChinFepCmdModeZhuyinPhrase,
+    EChinFepCmdModeStrokePhrase,    
     EAknCmdT9PredictiveT9Off,
     EAknCmdMultitapPredictiveT9On,
     EJapanFepCmdMultitapPredictiveT9On,
@@ -1487,18 +1490,7 @@ TKeyResponse CAknFepManager::HandleKeyEventL(TUint aCode, TKeyPressLength aLengt
 #ifdef RD_INTELLIGENT_TEXT_INPUT
                 else if (IsAutoCompleteOn())
                     {
-                    TInt tailLength = 0;
-                    iPtiEngine->HandleCommandL( EPtiCommandGetAutoCompletionTailLength, 
-                                                &tailLength );
-                    if(tailLength > 0)
-                        {
-                        TryRemoveNoMatchesIndicatorL();
-                        RemoveSuggestedAdvanceCompletionL();
-                        SimulateKeyEventL(EKeyF19);
-                        UpdateCbaL(NULL);
-                        response=EKeyWasConsumed;
-                        }
-                    else if(FepUI()->HandleKeyL(aCode, aLength))
+                      if(FepUI()->HandleKeyL(aCode, aLength))
                         {
                         if( EPtiKeyboardHalfQwerty == KeyboardLayout()
                         		&& iWesternPredictive
@@ -1506,6 +1498,7 @@ TKeyResponse CAknFepManager::HandleKeyEventL(TUint aCode, TKeyPressLength aLengt
                             {
                         	ClearFlag(CAknFepManager::EFlagChangeInputMode);
                             }
+                        TInt tailLength = 0;
                         iPtiEngine->HandleCommandL( EPtiCommandGetAutoCompletionTailLength, &tailLength );
                         if(tailLength > 0)
                             {
@@ -3817,8 +3810,7 @@ TBool CAknFepManager::IsSpecialNumericEditor()
 	{
 	TBool JavaNumericEditor = EFalse;
 	TUint ConstraintValue = MIDPConstraint();
-	if((ConstraintValue & ESplConstraintMask) == ESplNumeric ||
-	   (ConstraintValue & ESplConstraintMask) == ESplDecimal)
+	if((ConstraintValue & ESplConstraintMask) == ESplNumeric )
 		JavaNumericEditor = ETrue;
 	
 	return JavaNumericEditor;
@@ -4005,6 +3997,8 @@ TInt CAknFepManager::GetPermittedEditorMenuL(TBool aOnlyCount)
 	RPointerArray<CEikMenuPaneItem> editorMenuItemList;	
     
     CEikMenuPane* editorMenuPane = new (ELeave) CEikMenuPane((MEikMenuObserver*)(this));
+    CleanupDeletePushL( editorMenuPane );
+    
     editorMenuPane->SetItemArrayOwnedExternally(EFalse);
     TResourceReader reader;
     CCoeEnv::Static()->CreateResourceReaderLC(reader, R_AVKON_TOUCH_INDICATOR_EDIT_MODE_MENU);//
@@ -4069,12 +4063,11 @@ TInt CAknFepManager::GetPermittedEditorMenuL(TBool aOnlyCount)
             iFepPluginManager->CurrentPluginInputFepUI()->HandleCommandL(
                         ECmdPenInputSendEditMenuData, reinterpret_cast<TInt>(iEditorCommandList));
             }
-        
-        editorMenuItemList.ResetAndDestroy();
-        delete editorMenuPane;
-        editorMenuPane = NULL;
         }
     
+    editorMenuItemList.ResetAndDestroy();
+	CleanupStack::PopAndDestroy(editorMenuPane);
+	
     return count;
     }
 #endif // RD_SCALABLE_UI_V2
@@ -4407,16 +4400,19 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
 
         // --- commands for Chinese ---
         case EChinFepCmdModePinyin:
+        case EChinFepCmdModePinyinPhrase:
             SendEventsToPluginManL( EPluginCloseMode, EFalse );
             HandleChangeInFocus();
             TryChangeModeL(EPinyin);
             break;
         case EChinFepCmdModeZhuyin:
+        case EChinFepCmdModeZhuyinPhrase:
             SendEventsToPluginManL( EPluginCloseMode, EFalse );
             HandleChangeInFocus();
             TryChangeModeL(EZhuyin);
             break;
         case EChinFepCmdModeStroke:
+        case EChinFepCmdModeStrokePhrase:  
             SendEventsToPluginManL( EPluginCloseMode, EFalse );
             HandleChangeInFocus();
             TryChangeModeL(EStroke);
@@ -4642,7 +4638,7 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
             LaunchEditWordQueryL();
             break;
         case EAknCmdT9PredictiveInsertWord:
-            SetStopProcessFocus(ETrue);
+            SetStopProcessFocus(ETrue, EFalse);
             HandleChangeInFocus();
             LaunchInsertWordQueryL(KNullDesC, TCursorSelection(0,0));
             SetStopProcessFocus(EFalse);
@@ -4955,7 +4951,46 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
             HandleChangeInFocus();
             iStopProcessFocus = EFalse;
             }
-        break;
+            break;
+        case EPenInputCmdHwrInputToPortrait:
+            {
+            SendEventsToPluginManL( EPluginCloseMode, EFalse );
+            HandleChangeInFocus();                        
+            SendEventsToPluginManL( EPluginSwitchToPortrait);
+            }
+            break;
+        case EPenInputCmdHwrInputToLandscape:
+            {
+            SendEventsToPluginManL( EPluginCloseMode, EFalse );
+            HandleChangeInFocus();                        
+            SendEventsToPluginManL( EPluginSwitchToLandscape);
+            }
+            break;
+        case EPenInputCmdSwitchToVkeyBasedInput:
+            {
+            SendEventsToPluginManL( EPluginCloseMode, EFalse );
+            HandleChangeInFocus();            
+            SendEventsToPluginManL( EPluginSwitchMode);
+            }
+            break;
+        case EPenInputCmdWritingSpeed:
+            {
+            SetStopProcessFocus(ETrue);
+            HandleChangeInFocus();
+            LaunchWritingSpeedPopupListL();
+            HandleChangeInFocus();
+            iStopProcessFocus = EFalse;
+            }
+            break;
+        case EPenInputCmdGuidingLine:
+            {
+            SetStopProcessFocus(ETrue);
+            HandleChangeInFocus();
+            LaunchGuidingLinePopupListL();
+            HandleChangeInFocus();
+            iStopProcessFocus = EFalse;
+            }
+            break;
         default:
             break;
         }
@@ -5453,6 +5488,11 @@ void CAknFepManager::AddInputOptionsMenuItemL( CAknFepUiInterfaceMenuPane* aMenu
             posToInsertItem = numOfMenuItems;
             }
         }
+    TInt inputOptionsPos = 0;
+    if ( aMenuPane->MenuItemExists( EEikCmdEditPaste, inputOptionsPos ) )
+        {
+        inputOptionsPos++; 
+        }
     //Now we have the position at which we need to insert the menu item. 
     if (
 #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
@@ -5460,7 +5500,7 @@ void CAknFepManager::AddInputOptionsMenuItemL( CAknFepUiInterfaceMenuPane* aMenu
 #endif   		
     IsLanguageSupportPrediction() && !(iAknEditorFlags & EAknEditorFlagNoT9))
         {
-        AddPredictiveModeOptionsL(aMenuPane, posToInsertItem);
+        AddPredictiveModeOptionsL( aMenuPane, inputOptionsPos );
         }
     else
         {
@@ -7277,6 +7317,7 @@ void CAknFepManager::HandleChangeInFocusL()
             SendEventsToPluginManL( EPluginFocusChanged, 
                                     iGainForeground && focusCtrl!=0 && focusCtrl->IsFocused());        
             }
+        iNotifyPlugin = ETrue;
         }
 #endif // RD_SCALABLE_UI_V2
         if( PtiEngine() && FepAwareTextEditor() )
@@ -8730,8 +8771,9 @@ void CAknFepManager::LaunchFepQueryDialogL(TInt aResourceId, const TDesC& aIniti
     	}
 #ifdef RD_SCALABLE_UI_V2     
     if (iFepFullyConstructed && 
-        iFepPluginManager->PluginInputMode() == EPluginInputModeItut && 
-        !(EditorState()->Flags() & EAknEditorFlagEnablePartialScreen))
+        iFepPluginManager->PluginInputMode() == EPluginInputModeItut )
+   // if ( iFepFullyConstructed && 
+    //    (( iFepPluginManager->PluginInputMode() == EPluginInputModeItut ) && IsChineseInputLanguage())) 
         {
         iFepPluginManager->SpellText(textBuf);
         iFepPluginManager->DisplaySpellEditor(textQueryEditorFlag, aInitialText, 
@@ -9158,6 +9200,39 @@ void CAknFepManager::DimEditMenuModeItems(CAknFepUiInterfaceMenuPane* aMenuPane)
         if (!IsModePermitted(mode))
             {
             DimMenuItem(aMenuPane, mode);
+            }
+        }
+    
+    // Switch menu whether input language is supported related chinese phrase    
+    MPtiLanguage* ptilang = iPtiEngine->GetLanguage(
+                iLanguageCapabilities.iInputLanguageCode ); 
+    if ( ptilang )
+        {
+        if( iMode != EPinyin && IsModePermitted( EPinyin ) )
+            {
+            if( ptilang->HasInputMode( EPtiEnginePinyinByPhrase ) ) 
+                {
+                aMenuPane->SetItemDimmed( EChinFepCmdModePinyin, ETrue );
+                aMenuPane->SetItemDimmed( EChinFepCmdModePinyinPhrase, EFalse );
+                }
+            }
+        
+        if( iMode != EZhuyin && IsModePermitted( EZhuyin ) )
+            {
+            if( ptilang->HasInputMode( EPtiEngineZhuyinByPhrase ) ) 
+                {
+                aMenuPane->SetItemDimmed( EChinFepCmdModeZhuyin, ETrue );
+                aMenuPane->SetItemDimmed( EChinFepCmdModeZhuyinPhrase, EFalse );
+                }
+            }
+            
+        if( iMode != EStroke && IsModePermitted( EStroke ) )
+            {
+            if( ptilang->HasInputMode( EPtiEngineStrokeByPhrase ) ) 
+                {
+                aMenuPane->SetItemDimmed( EChinFepCmdModeStroke, ETrue );
+                aMenuPane->SetItemDimmed( EChinFepCmdModeStrokePhrase, EFalse );
+                }
             }
         }
     
@@ -12596,16 +12671,21 @@ void CAknFepManager::UpdateIndicators()
 #ifdef RD_SCALABLE_UI_V2
     TBool fingerItutIndicator = ( iFepPluginManager && 
                                   iFepPluginManager->PluginInputMode() == EPluginInputModeItut );
+    TBool fingerFSQIndicator = ( iFepPluginManager && 
+            iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ );
 #else
     TBool fingerItutIndicator = EFalse;
+    TBool fingerFSQIndicator = EFalse;
     
 #endif
     if ( IsHybridAplhaEditor() && !iHybridAplphaChangedToAlphanumeric )
             {
             newState = EHybridModeLatin;
             }    
+    //else if (!(iAknEditorFlags & EAknEditorFlagNoEditIndicators) 
+    //    || findPaneIndicator || fingerItutIndicator)
     else if (!(iAknEditorFlags & EAknEditorFlagNoEditIndicators) 
-        || findPaneIndicator || fingerItutIndicator)
+        || findPaneIndicator || fingerItutIndicator || fingerFSQIndicator)
         {
         
 #ifdef RD_SCALABLE_UI_V2
@@ -15664,7 +15744,26 @@ void CAknFepManager::LaunchRecognitionWithDictionaryPopupListL()
         }
 #endif //RD_SCALABLE_UI_V2
     }
-
+void CAknFepManager::LaunchWritingSpeedPopupListL()
+    {
+#ifdef RD_SCALABLE_UI_V2
+    if( iFepPluginManager && (iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr) )
+        {
+        iFepPluginManager->LaunchPenInputWritingSpeedSelectionL();
+        return;
+        }
+#endif //RD_SCALABLE_UI_V2
+    }
+void CAknFepManager::LaunchGuidingLinePopupListL()
+    {
+#ifdef RD_SCALABLE_UI_V2
+    if( iFepPluginManager && (iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr) )
+        {
+        iFepPluginManager->LaunchPenInputGuidingLineSelectionL();
+        return;
+        }
+#endif //RD_SCALABLE_UI_V2
+    }
 void CAknFepManager::LoadIconL( CArrayPtr<CGulIcon>* aIcons, 
                                 TInt aBitmapId, 
                                 TInt aMaskId )

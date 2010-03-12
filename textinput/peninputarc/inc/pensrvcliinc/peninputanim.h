@@ -407,6 +407,12 @@ private:    // Data
     TRect iDiscreetPopArea;
     RAknUiServer iAknUiSrv; 
     TBool iDirty;
+    
+    /**
+     * Fix bug HMNN-82CDU5
+     */
+    TPoint iPointerDown;  // record pointer that button is pressing in  
+    TBool iIsMove;  //  Is key moving event happened. 
     };
 
 

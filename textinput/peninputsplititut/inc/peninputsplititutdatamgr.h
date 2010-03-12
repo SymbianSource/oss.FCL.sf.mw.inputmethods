@@ -188,6 +188,40 @@ public:
     inline void SetLatinOnly( TBool aLatinOnly );
 
     /**
+     * Is in Spell mode
+     *
+     * @since S60 v5.0
+     * @return TBool
+     */    
+    inline TBool IsSpellMode();
+    
+    /**
+     * Set Spell mode flag
+     *
+     * @since S60 v5.0
+     * @param aSpellMode Spell mode flag
+     * @return void
+     */
+    inline void SetSpellMode(TBool aSpellMode);
+    
+    /**
+     * Set Indicator Data
+     *
+     * @since S60 v5.0
+     * @param aIndicatorData Indicator Data
+     * @return void
+     */
+    inline void SetIndicatorData(TFepIndicatorInfo &aIndicatorData);
+    
+    /**
+     * Get Indicator Data
+     *
+     * @since S60 v5.0
+     * @return TFepIndicatorInfo
+     */
+    inline TFepIndicatorInfo IndicatorData();
+    
+    /**
      * Set update flag
      *
      * @since S60 v5.0
@@ -393,6 +427,13 @@ private:
      * @return resource id
      */
     TInt HindiKeypadResourceId();
+public: 
+    TInt iIcfTextLeftMargin;
+	TInt iIcfTextRightMargin;
+	TInt iIcfTextTopMargin;
+	TInt iIcfTextBottomMargin;
+	TInt iIcfTextLineSpaceMargin;
+	TInt iIcfTextHeight;
     
 private: // data member
     RPointerArray<MItutPropertySubscriber> iSubscriberList;
@@ -406,6 +447,7 @@ private: // data member
     // offset of layout, compare to screen
     TPoint iLayoutOffset;
     TRect iLayoutRect;
+    TRect iLayoutRectSpell;
     TRect iBackgroundRect;
 
     TRect iBackspaceRect;
@@ -498,7 +540,33 @@ private: // data member
 	TBool iExistPlusChar;
 	TBool iPlusCharFlagChanged;
 	TBool iNumberOnly;
+	// For spell mode
+	TBool iSpellMode;
+	TRect iSpellICFRect;
+	TRect iSpellEditIndicator;
+	TRect iOkRect;
+	TRect iCancelRect;
+	CFont* iIcfFont;
+	TInt iIcfTextAlignment;
+	
+	// Spell Back space rect
+	TRect iSpellBackSpcace;
+	TRect iSpellBackSpcaceInner;
+	
+	// Left&Right arrow
+	TRect iSpellArrowLeftRect;
+	TRect iSpellArrowLeftRectInner;
+	TRect iSpellArrowRightRect;
+	TRect iSpellArrowRightRectInner;
+	
+    //TRect iIndiPaneRectWithTextForPrtWest;
+    TRect iIndiPaneRectWithoutTextForPrtWest;
+    //TRect iIndiIconRectWithTextForPrtWest;
+    TRect iIndiIconRectWithoutTextForPrtWest;
+    TAknTextLineLayout iIndiTextForPrtWest;
 
+	TAknTextLineLayout iSpellBtnTextFormat;
+	TFepIndicatorInfo iIndicatorData;
     };
 
 // ---------------------------------------------------------------------------
@@ -545,6 +613,46 @@ inline void CSplitItutDataMgr::SetLatinOnly( TBool aLatinOnly )
     {
     iLatinOnly = aLatinOnly;
     } 
+
+// ---------------------------------------------------------------------------
+// CSplitItutDataMgr::IsSpellMode
+// ---------------------------------------------------------------------------
+//
+inline TBool CSplitItutDataMgr::IsSpellMode()
+    {
+    return iSpellMode;
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutDataMgr::SetSpellMode
+// ---------------------------------------------------------------------------
+//
+inline void CSplitItutDataMgr::SetSpellMode(TBool aSpellMode)
+    {
+    iSpellMode = aSpellMode;
+    }
+ 
+// ---------------------------------------------------------------------------
+// CSplitItutDataMgr::SetIndicatorData
+// ---------------------------------------------------------------------------
+//
+inline void CSplitItutDataMgr::SetIndicatorData(TFepIndicatorInfo &aIndicatorData)
+    {
+    iIndicatorData.iIndicatorImgID = aIndicatorData.iIndicatorImgID;
+    iIndicatorData.iIndicatorMaskID = aIndicatorData.iIndicatorMaskID;
+    iIndicatorData.iIndicatorTextImgID = aIndicatorData.iIndicatorTextImgID;
+    iIndicatorData.iIndicatorTextMaskID = aIndicatorData.iIndicatorTextMaskID;
+    }
+ 
+// ---------------------------------------------------------------------------
+// CSplitItutDataMgr::IndicatorData
+// ---------------------------------------------------------------------------
+//
+inline TFepIndicatorInfo CSplitItutDataMgr::IndicatorData()
+    {
+    return iIndicatorData;
+    } 
+
 
 // ---------------------------------------------------------------------------
 // CSplitItutDataMgr::IsValidLanguage

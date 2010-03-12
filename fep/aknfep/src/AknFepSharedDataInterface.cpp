@@ -1723,6 +1723,37 @@ TInt CAknFepSharedDataInterface::DefaultOnScreenVKB()
         }
     return value;
     };
+	
+/**
+ * Returns a value of default arabic finger hwr orientation.
+ *
+ * @since 5.2
+ * @return Value of default arabic finger hwr orientation.
+ */
+TInt CAknFepSharedDataInterface::DefaultArabicFingerHwrOrientation() const
+     {
+     TInt value = 0;
+     if (iAknFepRepository)
+       {
+       iAknFepRepository->Get(KAknFepDefaultArabicFingerHwrOrientation, value);
+       }
+     return value;     
+     }
+
+/**
+ * Set a value of default arabic finger hwr orientation.
+ *
+ * @since 5.2
+ * @param aValue new value set to default arabic finger hwr orientation shared data item
+ */
+void CAknFepSharedDataInterface::SetDefaultArabicFingerHwrOrientation(TInt aValue)
+    {
+    if (iAknFepRepository)
+        {
+        iAknFepRepository->Set(KAknFepDefaultArabicFingerHwrOrientation, aValue);
+        }
+    }
+	
 #endif
 
 // End of File

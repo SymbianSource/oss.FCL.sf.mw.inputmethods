@@ -85,8 +85,10 @@ void CPenUiWndCtrl::Draw(const TRect& aRect) const
     if ( iShowPopup ) 
         {
         //layout is extended by popup
-        gc.SetClippingRect( iLayoutClipRect );
-        gc.BitBlt( aRect.iTl, iBitmap, aRect );
+        TRect rect = aRect;
+        rect.Intersection( iLayoutClipRect );        
+        TPoint pos = rect.iTl - iLayoutClipRect.iTl;
+        gc.BitBlt( pos, iBitmap, rect );
         // Add to fix NGA refresh problem
         CCoeEnv::Static()->WsSession().Flush();
         CCoeEnv::Static()->WsSession().Finish(); 
@@ -241,6 +243,11 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
 
 void CPenUiWndCtrl::ShowPopup( const TRect& aRectInScreen, const TRect& aRectInLayout, const TRect& aLayoutTrimRect )
     {
+    TPoint offset = aLayoutTrimRect.iTl;
+    offset += Position();
+    this->SetPosition( offset );
+    this->SetSize( aLayoutTrimRect.Size() );
+    
     iPopupWnd->PopUp( aRectInScreen, aRectInLayout );
     iLayoutClipRect = aLayoutTrimRect;
     iShowPopup = ETrue;

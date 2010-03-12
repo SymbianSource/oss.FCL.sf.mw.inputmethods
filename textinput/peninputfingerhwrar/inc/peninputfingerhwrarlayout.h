@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -443,15 +443,7 @@ private:
      * @param aGuideLineOn  guide line on or off.
      * @return none
      */    
-    void SetGuideLineOn(const TBool aGuideLineOn);
-    
-    /**
-     * get current state manager. 
-     * 
-     * @since S60 v5.0
-     * @return current state manager  
-     */
-    CPeninputFingerHwrArStateManagerBase* CurStateManager();
+    void SetGuideLineOn(TBool aGuideLineOn);
     
     /**
      * change current state manager to standby state.
@@ -459,7 +451,7 @@ private:
      * @since S60 v5.0
      * @return none 
      */
-    void ChangeCurStateManagerToStandby();
+    void ChangeCurStateToStandby();
 	
 private:
     
@@ -479,7 +471,7 @@ private:
      * The state manager
      * Own
      */
-    RPointerArray<CPeninputFingerHwrArStateManagerBase> iStateMgrArray;
+    CPeninputFingerHwrArStateManagerBase* iStateMgr;
 
     /**
      * The resource Id

@@ -22,6 +22,7 @@
 #include <peninputlayout.h>
 #include <peninputpluginutils.h>
 #include <peninputinputcontextfield.h>
+#include <peninputlayoutmultilineicf.h>
 #include <peninputlayoutvkb.h>
 
 #include "peninputsplititutwindowmanager.h"
@@ -83,6 +84,14 @@ public:
      */
     ~CSplitItutWindow();
 
+    
+    /**
+     * Get Icf pointer
+     *
+     * @since S60 v5.0
+     * @return CFepLayoutMultiLineIcf*
+     */
+    inline CFepLayoutMultiLineIcf* Icf();
     /** 
      * get pen input type
      *
@@ -145,6 +154,14 @@ public:
     void ConstructItutKeypadFromResourceL(TInt aResId);  
     
     /** 
+     * construct icf from resource
+     *
+     * @since S60 5.0
+     * @return None
+     */
+    void ConstructIcfFromResourceL();
+    
+    /** 
      * handle skin change
      *
      * @since S60 5.0
@@ -160,6 +177,14 @@ public:
      * @return None
      */
     void ApplyVariantLafDataL(TBool aResolutionChange = EFalse);
+         
+    /** 
+     * apply spell variant laf data
+     *
+     * @since S60 5.0
+     * @return None
+     */         
+    void ApplyVariantLafDataForSpellL();     
                         
     /** 
      * construct spell control
@@ -204,7 +229,47 @@ public:
      * @return None
      */
     void HandleButtonResOnLangDirChangeL( TInt aControlId );
+
+    /** 
+     * Set prompt text
+     *
+     * @since S60 5.0
+     * @param aData text
+     * @return None
+     */
+    void SetPromptTextL( TUint8* aData );
     
+    /** 
+     * Set bubble
+     *
+     * @since S60 5.0
+     * @return None
+     */    
+    void SetIndiBubble();
+    
+    /** 
+     * Update bubble prompt text
+     *
+     * @since S60 5.0
+     * @param aData text
+     * @return None
+     */
+    void UpdateIndiBubbleL( TUint8* aData );
+    
+    /** 
+     * Set bubble image
+     *
+     * @since S60 5.0
+     * @param aImgID1 image ID1
+     * @param aMaskID1 mask image id1
+     * @param aImgID2 image ID2
+     * @param aMaskID2 mask image id2
+     * @return None
+     */
+    void SetIndiBubbleImageL( const TInt aImgID1,
+						      const TInt aMaskID1,
+                              const TInt aImgID2,
+                              const TInt aMaskID2 );
 private:
     /**
      * C++ constructor
@@ -317,7 +382,7 @@ private:
      * @param aRectIdx
      * @return None
      */
-    void SetCtrlRect(CFepUiBaseCtrl* aCtrl, TInt aRectIdx);
+    void SetCtrlRect(CFepUiBaseCtrl* aCtrl, TInt aRectIdx, const TBool aOffset = EFalse);
     
     /**
      * resize candidate list
@@ -403,7 +468,15 @@ private:
                                   const TInt aInnerRectId,
                                   const TInt aResourceId,
                                   const TInt aCommand = KUnavailableID);
-  
+                                  
+    /**
+     * Create ICF for spell mode
+     *
+     * @since S60 5.0
+     * @return None
+     */
+    void CreateICFL();
+     
     /**
      * Check control size change
      *
@@ -463,6 +536,21 @@ private:
      * @return None
      */
     void SetUnicodesForHardKey1L(CVirtualKey* aKey, const TDesC& aMapData);
+    
+    /**
+     * Indicator rect
+     *
+     * @since S60 5.0
+     * @param aBoundRect
+     * @param aRealRect1
+     * @param aRealRect2
+     * @param aAlign
+     * @return None
+     */ 
+    void CalIndicatorRect( const TRect& aBoundRect,
+                           TRect& aRealRect1,
+                           TRect& aRealRect2,
+                           TIndicatorAlign aAlign );
 private:
     /**
      * ITUT keypad.
@@ -533,6 +621,11 @@ private:
      * symbol data for chinese
      */
     TFepSymbolOfHardwareOne iSymbolData;
+    
+    TSize iIndicatorSize;
+    TSize iIndicatorTextSize;
+    TBool iImDimensionSet;
+    CFepLayoutMultiLineIcf* iICF;
     };
    
 // ---------------------------------------------------------------------------
@@ -543,5 +636,13 @@ inline CVirtualKeyboard* CSplitItutWindow::ItutKeypad()
     {
     return iStandardItutKp;    
     }
-    
+  
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::Icf
+// ---------------------------------------------------------------------------
+//
+inline CFepLayoutMultiLineIcf* CSplitItutWindow::Icf()
+    {
+    return iICF;   
+    }
 #endif //C_SPLITITUTWINDOW_H

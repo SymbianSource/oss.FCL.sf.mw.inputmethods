@@ -20,6 +20,7 @@
 #include "peninputsplititutdata.h"
 #include "peninputsplititutdatamgr.h"
 #include "peninputsplititutwesternuistatenonpredict.h"
+#include "peninputsplititutwesternuistatespelling.h"
 #include "peninputsplititutlayoutcontext.h"
 #include "peninputsplititutlayout.h"
 #include "peninputsplititutwindowmanager.h"
@@ -54,6 +55,7 @@ CWesternSplitItutUiMgr::~CWesternSplitItutUiMgr()
         }
         
     delete iNormalState;
+    delete iSpellState;
     }
 
 // ---------------------------------------------------------------------------
@@ -77,6 +79,7 @@ void CWesternSplitItutUiMgr::ConstructL()
     CSplitItutUiMgrBase::ConstructL();
 
     iNormalState = CWesternSplitItutUiStateNonPredict::NewL(this);
+    iSpellState = CWesternSplitItutUiStateSpelling::NewL(this);
     }
 
 // ---------------------------------------------------------------------------
@@ -113,6 +116,11 @@ void CWesternSplitItutUiMgr::SetCurrentStateL(TUiState aNewState)
         case CSplitItutUiMgrBase::EStateWesternStandby:
             {
             newstate = iNormalState;
+            }
+            break;
+        case CSplitItutUiMgrBase::EStateSpelling:
+            {
+            newstate = iSpellState;
             }
             break;
         default:
@@ -169,7 +177,8 @@ void CWesternSplitItutUiMgr::DeactivateUI()
 //
 TInt CWesternSplitItutUiMgr::HandleCommandL(TInt aCmd, TUint8* aData)
     {
-    if ( aCmd == ECmdPenInputFingerMatchSelection )
+    if ( aCmd == ECmdPenInputFingerMatchSelection ||
+         aCmd == ECmdPenInputFingerSpelling )
         {
         if (!(*(reinterpret_cast<TBool*>(aData))))
             {
@@ -190,7 +199,13 @@ TInt CWesternSplitItutUiMgr::HandleCommandL(TInt aCmd, TUint8* aData)
                 return KErrNone;
                 }
             }
-            break;          
+        case ECmdPenInputFingerSpelling:
+            {
+            SetCurrentStateL(CSplitItutUiMgrBase::EStateSpelling);
+            return KErrNone;
+            }    
+            // Modify warning
+            //break;          
         default:
             break;
         }

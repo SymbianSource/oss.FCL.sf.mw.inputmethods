@@ -192,8 +192,26 @@ TInt CGenericItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case EItutExtCmdSetIcfData:
         case ECmdPenInputCase:
         case ECmdPenInputFingerMatchSelection:
+            {
+            if (UiMgr())
+                {
+                TInt handled = KErrNone;
+                TRAP_IGNORE(handled = UiMgr()->HandleCommandL(aCmd, aData));
+                return handled;
+                }
+            }
+            break;
         case ECmdPenInputFingerSpelling:
             {
+
+            // Fix bug EZLG-7YUAP7
+            // When writing language is Chinese, and Spell On, enforce setting language to English 
+            if( (*(reinterpret_cast<TBool*>(aData))) && iDataMgr->IsChinese() )  
+            	{
+            	iDataMgr->SetLanguageL( ELangEnglish );
+            	}
+           //
+
             if (UiMgr())
                 {
                 TInt handled = KErrNone;
@@ -381,6 +399,17 @@ void CGenericItutUiLayout::SetInputLanguageL(TInt aLanguage)
     
     if (previousLang != aLanguage)
         {
+
+        // Fix bug for EZLG-7YUAP7 
+        // When state is spelling, don¡¯t apply LAF Data   
+        if(iCurrentUiMgr 
+           && iCurrentUiMgr->CurrentState()
+           && iCurrentUiMgr->CurrentState()->StateType() == CGenericItutUiMgrBase::EStateSpelling) 
+            {
+        	return;
+            }
+        //
+
         ApplyVariantLafDataL();   
         }
     }

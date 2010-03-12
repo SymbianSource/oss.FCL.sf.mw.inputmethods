@@ -967,26 +967,35 @@ TInt CFepLayoutMultiLineIcfEditor::UpdateSecretTextL(TAny* aEditArea)
         }
     TPtrC icftext = editArea->iRichText->Read(editArea->iPromptTextLen, 
                                               editArea->iRichText->DocumentLength());
-    TInt startPos = icftext.LocateReverse(KStar) + 1 + editArea->iPromptTextLen;
-
-    TBuf<1> buf;
-    buf.Append(KStar);
-
-    TInt textlen = editArea->iRichText->DocumentLength();
-
-    if (startPos < textlen)
+    
+    for (TInt i = 0; i < icftext.Length(); i++)
         {
-        editArea->iRichText->DeleteL(startPos, 1);
-        editArea->iTextView->HandleInsertDeleteL(TCursorSelection(startPos, startPos), 1);
-        editArea->iRichText->InsertL(startPos, buf);
-        editArea->iTextView->HandleInsertDeleteL(TCursorSelection(startPos, startPos+buf.Length()),
-                                                 0);
-
-        if (startPos == textlen - 1)
+        if (icftext[i] != KStar)//find only one none-star char
             {
-            editArea->iSecretTextTimer->Cancel();
+            TInt startPos = i + editArea->iPromptTextLen;
+            TBuf<1> buf;
+            buf.Append(KStar);
+
+            TInt textlen = editArea->iRichText->DocumentLength();
+
+            if (startPos < textlen)
+                {
+                editArea->iRichText->DeleteL(startPos, 1);
+                editArea->iTextView->HandleInsertDeleteL(TCursorSelection(
+                        startPos, startPos), 1);
+                editArea->iRichText->InsertL(startPos, buf);
+                editArea->iTextView->HandleInsertDeleteL(TCursorSelection(
+                        startPos, startPos + buf.Length()), 0);
+
+                if (startPos == textlen - 1)
+                    {
+                    editArea->iSecretTextTimer->Cancel();
+                    }
+                }
+            break;
             }
         }
+    
     editArea->UpdateArea(editArea->Rect(),EFalse);
     return KErrNone;
     }
@@ -2654,11 +2663,9 @@ void CFepLayoutMultiLineIcfEditor::ShowBubble(const TDesC& aText, const TRect& /
 void CFepLayoutMultiLineIcfEditor::ShowByteWarningBubble(const TDesC& aInfo)
     {
     TSize size = iInfoBubble->Rect().Size();
-    CFont::TMeasureTextInput*  input = new (ELeave) CFont::TMeasureTextInput;
-    CleanupStack::PushL(input);
-    input->iMaxBounds = iRect.Width();
-    TInt width = iFont->MeasureText(aInfo, input, NULL);
-    CleanupStack::PopAndDestroy();
+    CFont::TMeasureTextInput input;// = new (ELeave) CFont::TMeasureTextInput;
+    input.iMaxBounds = iRect.Width();
+    TInt width = iFont->MeasureText(aInfo, &input, NULL);
     size.SetSize(width, size.iHeight);
     SetInfoBubbleCtrlSize(size);
     TRAP_IGNORE(iInfoBubble->SetTextL(aInfo));
@@ -2973,7 +2980,6 @@ void CFepLayoutMultiLineIcfEditor::CustomDrawSmileyL( CGraphicsContext& aGc,
             CPeninputSmileyImage* smiley = iSmileyManager->SmileyImage( code );
             if ( smiley )
                 {
-                gc.SetBrushColor( TRgb(255,0,0) );
                 gc.SetBrushStyle( CGraphicsContext::ENullBrush );
                 
                 smiley->SetImageSize( rect.Size() );

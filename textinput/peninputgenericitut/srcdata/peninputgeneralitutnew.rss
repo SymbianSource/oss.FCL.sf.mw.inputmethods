@@ -126,8 +126,8 @@ RESOURCE AKN_FEP_COMMON_BUTTON_IMAGE r_finger_backspace
     bmpfile=AKN_FEP_ITUT_BMP;
     imgmajorskinid=EAknsMajorGeneric;
 
-    forground=EMbmPeninputgenericitutQgn_indi_input_backspace;
-    forgroundmsk=EMbmPeninputgenericitutQgn_indi_input_backspace_mask;
+    forground=EMbmPeninputgenericitutQgn_indi_itut_backspace1;
+    forgroundmsk=EMbmPeninputgenericitutQgn_indi_itut_backspace1_mask;
     //forgroundskinid=EAknsMinorGenericQgnIndiDialerClear;
     }
 
@@ -136,8 +136,8 @@ RESOURCE AKN_FEP_COMMON_BUTTON_IMAGE r_finger_backspace_rtol
     bmpfile=AKN_FEP_ITUT_BMP;
     imgmajorskinid=EAknsMajorGeneric;
 
-    forground=EMbmPeninputgenericitutQgn_indi_itut_backspace;
-    forgroundmsk=EMbmPeninputgenericitutQgn_indi_itut_backspace_mask;
+    forground=EMbmPeninputgenericitutQgn_indi_itut_backspace1;
+    forgroundmsk=EMbmPeninputgenericitutQgn_indi_itut_backspace1_mask;
     //forgroundskinid=EAknsMinorGenericQgnIndiDialerClear;
     }
     

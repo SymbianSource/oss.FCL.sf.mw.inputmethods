@@ -451,6 +451,19 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
     data->iClearButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
     dx += rectXPane.Width();   
 
+    keyText = AknLayoutScalable_Avkon::popup_fep_char_pre_window_t1(0).LayoutLine();
+    
+    linelayout = AknLayoutScalable_Avkon::popup_fep_char_pre_window(0).LayoutLine();
+    layoutrect.LayoutRect( pic3paneRect.Rect(), linelayout );
+    TRect preBubbleRect = layoutrect.Rect();
+    preBubbleRect.Move( -preBubbleRect.iTl );
+    TRect preBubbleInner = preBubbleRect;
+    preBubbleInner.Shrink( 10, 10 );
+    
+    data->iPreviewWndText = keyText;
+    data->iPreviewWndRect = preBubbleRect;
+    data->iPreviewWndInnerRect = preBubbleInner;
+    
     return data;
     }
 

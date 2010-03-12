@@ -38,6 +38,21 @@ class CFepLayoutScrollableList;
 // Constants
 const TInt KMaxFileLength = 80;
 
+const TInt KMaxRangeLabelLength = 100;
+
+/**
+ * class TAllRangeLabels
+ */
+class TAllRangeLabels
+    {
+public:
+    TBuf<KMaxRangeLabelLength> iLabelNativeChar;
+    TBuf<KMaxRangeLabelLength> iLabelNativeNumber;
+    TBuf<KMaxRangeLabelLength> iLabelLatinChar;
+    TBuf<KMaxRangeLabelLength> iLabelLatinNumber;
+    TBuf<KMaxRangeLabelLength> iLabelSymbol;
+    TBuf<KMaxRangeLabelLength> iLabelAccent;
+    };
 /**
  *  Vkb layout window class
  *  This class define methods to deal with window layout and 
@@ -48,7 +63,13 @@ const TInt KMaxFileLength = 80;
  */
 class CPeninputGenericVkbWindow : public CPeninputLayoutWindowExt
     {
-
+private:
+    enum TIndicatorAlign
+        {
+        EIndiAlignLeft,
+        EIndiAlignCenter,
+        EIndiAlignRight 
+        };
 public:
 
     /**
@@ -355,6 +376,41 @@ public:
      */	
     void HandleCandidateListSelectedL( CFepUiBaseCtrl* aCtrl, const TDesC& aEventData );        
     
+    /*
+     * Load range labels for range list
+     *
+     * @since S60 v5.0
+     * @param aLangId current language id
+     * @return None
+     */
+    void ConstructRangeLabelListL( TInt aLangId );
+    
+    /**
+     * Update state of range button
+     * 
+     * @since S60 v5.0
+     * @return None
+     */
+    void UpdateRangeCtrlsL();
+    
+    void ConstructFSQAccentListL( TInt aLangId );
+    
+    void SetIndiBubbleImageL( const TInt aImgID1,
+                              const TInt aMaskID1,
+                              const TInt aImgID2,
+                              const TInt aMaskID2 );
+    
+    void IndiBubbleWithText();
+    
+    void IndiBubbleWithoutText();
+    
+    void SetIndiWithTextFlag( TBool aFlag );
+    
+    void UpdateIndiBubbleL( TUint8* aData );
+    
+    inline TFepIndicatorInfo IndicatorData();
+    
+    inline void SetIndicatorData( const TFepIndicatorInfo& aIndicatorData );
 protected:
 
     /**
@@ -374,6 +430,60 @@ protected:
     virtual void  AddCustomControlGroupL(CFepUiBaseCtrl* aCtrl);  
 
 private:
+    
+    /**
+     * Show range list
+     *
+     * @since S60 v5.0
+     * @return None
+     */
+    void PopupRangeListL();
+    
+    /**
+      * Prepare range list items
+      * 
+      * @since S60 v5.0
+      * @param aRangeItems items in range list
+      * @return None
+      */
+    void PrepareRangeListItems( RArray<CFepLayoutChoiceList::SItem>& 
+            aRangeItems );
+    
+    /**
+     * Utils to get context value 
+     * 
+     * @since S60 v5.0
+     * @param aDataIndex index of context value
+     * @return conext value
+     */
+    TInt IntContext( TPeninputDataType aDataIndex );
+     
+    void CalIndicatorRect(const TRect& aBoundRect,
+                          TRect& aRealRect1,
+                          TRect& aRealRect2,
+                          TIndicatorAlign aAlign);
+    
+    /**
+     * Handle range list event
+     *
+     * @since S60 v5.0
+     * @return None
+     */
+    void HandleRangeListSelectedL( CFepUiBaseCtrl* aCtrl, 
+            const TDesC& aData );
+    
+    /**
+     * Get resource ids of range button icon
+     * 
+     * @since S60 v5.0
+     * @param aLangId current language id
+     * @param aAlphaRange variable to receive icon resource id for alpha range
+     * @param aOtherRange variable to receive icon resource id for other ranges
+     * @return None
+     */
+    void GetRangeIconResource( TInt aLangId, TInt& aAlphaRange, 
+            TInt& aOtherRange );
+    
     /**
      * Add range bar into client area
      *
@@ -441,7 +551,7 @@ private:
     
     TBool HandleDeadKeyL(TInt aEventType, const TDesC& aEventData );
     
-    void ReorgnizeTitleBar();
+    void ReorgnizeICFAndButtons();
     
     void UpdateICFTextL();
     
@@ -590,6 +700,23 @@ private: // Data
      * Bitmap rotator
      */  
 	CPeninputSyncBitmapRotator* iBmpRotator;
+    /**
+     * Accent command list
+     */
+	RArray<CFepLayoutChoiceList::SItem> iAccentCmdList;
+	
+    TSize iIndicatorSize;
+    
+    TSize iIndicatorTextSize;
+    
+    TBool iIndiWithText;
+    
+    TFepIndicatorInfo iIndicatorData;
+    
+    /**
+     * Range labels for range list
+     */
+    TAllRangeLabels iRangeLabels;
 
 private:	
 	CFepLayoutScrollableList* iCandidateList;
@@ -608,4 +735,17 @@ inline TBool CPeninputGenericVkbWindow::IsValidLanguage(TInt aLanguage)
 	{
 	return (aLanguage != ELangTest && aLanguage != ELangNone);	
 	}
+inline void CPeninputGenericVkbWindow::SetIndicatorData( 
+        const TFepIndicatorInfo& aIndicatorData )
+    {
+    iIndicatorData.iIndicatorImgID = aIndicatorData.iIndicatorImgID;
+    iIndicatorData.iIndicatorMaskID = aIndicatorData.iIndicatorMaskID;
+    iIndicatorData.iIndicatorTextImgID = aIndicatorData.iIndicatorTextImgID;
+    iIndicatorData.iIndicatorTextMaskID = aIndicatorData.iIndicatorTextMaskID;
+    }
+    
+inline TFepIndicatorInfo CPeninputGenericVkbWindow::IndicatorData()
+    {
+    return iIndicatorData;
+    }
 #endif // C_PENINPUTGENERICVKBWINDOW_H

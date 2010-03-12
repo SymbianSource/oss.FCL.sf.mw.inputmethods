@@ -64,6 +64,15 @@ public:
     ~CSplitItutWindowManager();
     
     /**
+     * Process text update
+     *
+     * @since S60 v5.0
+     * @param aData context data
+     * @return TInt
+     */
+    TInt OnAppEditorTextComing(const TFepInputContextFieldData& aData);
+    
+    /**
      * Handle control event
      *
      * @since Series 60 5.0
@@ -187,6 +196,14 @@ public:
      */
     void ApplyVariantLafDataL(TBool aResolutionChange);
 
+    /** 
+     * apply spell variant laf data
+     *
+     * @since S60 5.0
+     * @return None
+     */        
+    void ApplyVariantLafDataForSpellL();
+    
     /**
      * apply variant laf data
      *
@@ -249,6 +266,15 @@ private:
      * @return none
      */
     void ConstructL(); 
+   
+    /**
+     * Set prompt text
+     *
+     * @since S60 5.0
+     * paran aData
+     * @return none
+     */    
+    void SetPromptTextL( TUint8* aData );
 
 private:
    /**

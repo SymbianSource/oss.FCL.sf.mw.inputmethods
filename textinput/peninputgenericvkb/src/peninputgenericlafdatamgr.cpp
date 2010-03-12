@@ -444,6 +444,35 @@ void CPeninputGenericVkbLafMgr::GetSpaceButtonExLayoutInfo( TRect& aIconsFrameRe
 	aMiddleIconRect = iLafData->QwtLayoutData().iSpaceButtonEx.iMiddleIconRect;		
 	}
 
+TRect& CPeninputGenericVkbLafMgr::IndiPaneRectWithText()
+    {
+    ASSERT(iLafData);
+    return iLafData->IndiPaneRectWithText();
+    }
+
+TRect& CPeninputGenericVkbLafMgr::IndiPaneRectWithoutText()
+    {
+    ASSERT(iLafData);
+    return iLafData->IndiPaneRectWithoutText();
+    }
+
+TRect& CPeninputGenericVkbLafMgr::IndiIconRectWithText()
+    {
+    ASSERT(iLafData);
+    return iLafData->IndiIconRectWithText();
+    }
+
+TRect& CPeninputGenericVkbLafMgr::IndiIconRectWithoutText()
+    {
+    ASSERT(iLafData);
+    return iLafData->IndiIconRectWithoutText();
+    }
+
+TAknTextLineLayout& CPeninputGenericVkbLafMgr::IndiText()
+    {
+    ASSERT(iLafData);
+    return iLafData->IndiText();
+    }
 // ---------------------------------------------------------------------------
 // Return layout data for candidate list
 // ---------------------------------------------------------------------------
@@ -554,6 +583,11 @@ const TPeninputButtonLayoutData& MPeninputLafDataCommon::ButtonLayoutData( TInt 
 			pData = &(iLayoutDataInfo[iLayoutType]->iRightButton);	
 			}
 			break;
+		case EPeninutWindowCtrlIdMultiRangeBtn:
+		    {
+		    pData = &(iLayoutDataInfo[iLayoutType]->iMultiRangeButton);    
+		    }
+		    break;
 		default:
 			ASSERT(EFalse);
 			break;
@@ -605,6 +639,35 @@ const CPeninputQwtLayoutDataInfo& MPeninputLafDataCommon::QwtLayoutData() const
 	return 	*iLayoutDataInfo[iLayoutType];
 	}
 
+TRect& MPeninputLafDataCommon::IndiPaneRectWithText()
+    {
+    ASSERT( IsValid());
+    return iLayoutDataInfo[iLayoutType]->iIndiPaneRectWithTextForFSQ;
+    }
+
+TRect& MPeninputLafDataCommon::IndiPaneRectWithoutText()
+    {
+    ASSERT( IsValid());
+    return iLayoutDataInfo[iLayoutType]->iIndiPaneRectWithoutTextForFSQ;
+    }
+
+TRect& MPeninputLafDataCommon::IndiIconRectWithText()
+    {
+    ASSERT( IsValid());
+    return iLayoutDataInfo[iLayoutType]->iIndiIconRectWithTextForFSQ;
+    }
+
+TRect& MPeninputLafDataCommon::IndiIconRectWithoutText()
+    {
+    ASSERT( IsValid());
+    return iLayoutDataInfo[iLayoutType]->iIndiIconRectWithoutTextForFSQ;
+    }
+
+TAknTextLineLayout& MPeninputLafDataCommon::IndiText()
+    {
+    ASSERT( IsValid());
+    return iLayoutDataInfo[iLayoutType]->iIndiTextForFSQ;
+    }
 // ---------------------------------------------------------------------------
 // CPeninputLafDataCommon::ConstructL()
 // (other items were commented in a header)
@@ -627,11 +690,11 @@ TBool MPeninputLafDataCommon::IsValid() const
 
 
 // ---------------------------------------------------------------------------
-// CPeninputLafDataCommon::GetTopAndBottomPaneInfo
+// CPeninputLafDataVKB::GetTopAndBottomPaneInfo
 // (other items were commented in a header)
 // ---------------------------------------------------------------------------
 //	
-void MPeninputLafDataCommon::GetTopAndBottomPaneInfo( const TRect& aParentWndRect, 
+void CPeninputLafDataVKB::GetTopAndBottomPaneInfo( const TRect& aParentWndRect, 
 													  TInt aLayoutType,
 													  TInt aLayoutParam,
 													  CPeninputQwtLayoutDataInfo& aDataInfo )
@@ -922,6 +985,244 @@ inline TPeninputVkbLafOption MPeninputLafDataCommon::LafOption() const
 	}
 
 // ---------------------------------------------------------------------------
+// CPeninputLafDataFSQ::RelativeRect
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//
+TRect CPeninputLafDataFSQ::RelativeRect( const TRect& aRect, const TPoint& aPoint )
+    {
+    TRect rect = aRect;
+    rect.Move( - aPoint.iX, - aPoint.iY );
+    return rect;
+    }
+
+// ---------------------------------------------------------------------------
+// CPeninputLafDataFSQ::OffsetRect
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//
+TRect CPeninputLafDataFSQ::OffsetRect( const TRect& aRect, TInt aDx, TInt aDy )
+    {
+    TRect rect = aRect;
+    rect.Move( aDx, aDy );
+    return rect;    
+    }
+
+// ---------------------------------------------------------------------------
+// CPeninputLafDataFSQ::GetTopAndBottomPaneInfo
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//  
+void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect, 
+                                                      TInt aLayoutType,
+                                                      TInt aLayoutParam,
+                                                      CPeninputQwtLayoutDataInfo& aDataInfo )
+    {
+    TAknWindowLineLayout linelayout;
+    TAknLayoutRect layoutrect;
+
+    TAknLayoutRect keypadRect, keypaneRect, keycellRect, keylabelRect;  
+    TAknLayoutRect pic3paneRect;
+    
+    TPoint base;
+    TRect rectBottomWin, rectICFBg, rectICF, rectICFpane;
+    TAknTextLineLayout cellText;
+    TAknLayoutText txt;
+    TInt pic3pLeftWidth, pic3pRightWidth;
+    
+    base = aParentWndRect.iTl;
+    TRect rect = aParentWndRect;
+    rect.Move( - base.iX, - base.iY );
+    aDataInfo.iClientRect = rect;
+    aDataInfo.iQwtRect = aParentWndRect;
+    
+    TInt v1, v2;
+    switch ( aLayoutType )
+        {
+        case ELayout10x3:
+            {
+            v1 = 0;
+            v2 = 0;
+            break;
+            }
+        case ELayout11x3:
+            {
+            v1 = 1;
+            v2 = 2;
+            break;
+            }
+        case ELayout11x4:
+            {
+            v1 = 1;
+            v2 = 3;
+            break;
+            }
+        default:
+            {
+            v1 = 0;
+            v2 = 0;
+            }
+        }
+    
+    // Bottom pane rect
+    linelayout = AknLayoutScalable_Avkon::popup_fep_vkbss_window(0).LayoutLine();
+    layoutrect.LayoutRect( aParentWndRect, linelayout );
+    rectBottomWin = layoutrect.Rect();
+    
+    // ICF pane rect
+    linelayout = AknLayoutScalable_Avkon::popup_fep_vkb_icf_pane(0).LayoutLine();
+    layoutrect.LayoutRect( aParentWndRect, linelayout );
+    rectICFpane = layoutrect.Rect();
+    
+    // ICF bg pane rect
+    linelayout = AknLayoutScalable_Avkon::bg_icf_pane(0).LayoutLine();
+    layoutrect.LayoutRect( rectICFpane, linelayout );
+    rectICFBg = layoutrect.Rect();
+    
+    // ICF area rect
+    linelayout = AknLayoutScalable_Avkon::list_vkb_icf_pane(0).LayoutLine();
+    layoutrect.LayoutRect( rectICFBg, linelayout );
+    rectICF = layoutrect.Rect();
+    
+    aDataInfo.iICF.iRect = rectICF;
+    cellText = AknLayoutScalable_Avkon::list_vkb_icf_pane_t1(0, 0, 0).LayoutLine();
+    aDataInfo.iICF.iPromptTextFont = AknLayoutUtils::FontFromId(cellText.iFont, NULL);
+    txt.LayoutText( rectICF, cellText );
+    aDataInfo.iICF.iPromptTextRect = txt.TextRect();
+    cellText = AknLayoutScalable_Avkon::list_vkb_icf_pane_t1(0, 0, 1).LayoutLine();
+    aDataInfo.iICF.iTextFont = AknLayoutUtils::FontFromId(cellText.iFont, NULL);
+    txt.LayoutText( rectICF, cellText );
+    aDataInfo.iICF.iTextRect = txt.TextRect();
+    
+    // icf indicator
+    TAknWindowLineLayout icfIndiPaneWithText, icfIndiPaneWithoutText, 
+        indiIconWithText, indiIconWithoutText, indiText;
+    TAknLayoutRect icfIndiPaneRectWithText, icfIndiPaneRectWithoutText, 
+    indiIconRectWithText, indiIconRectWithoutText, indiTextRect;
+    TAknTextLineLayout indiTextLayout;
+    
+    icfIndiPaneWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane(1).LayoutLine();
+    icfIndiPaneRectWithText.LayoutRect( rectICF, icfIndiPaneWithText );
+    aDataInfo.iIndiPaneRectWithTextForFSQ = icfIndiPaneRectWithText.Rect();
+    
+    icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
+    icfIndiPaneRectWithoutText.LayoutRect( rectICF, icfIndiPaneWithoutText );
+    aDataInfo.iIndiPaneRectWithoutTextForFSQ = icfIndiPaneRectWithoutText.Rect();
+
+    aDataInfo.iIndiIconRectWithTextForFSQ = TRect( 0, 0, 60, 20 );
+    aDataInfo.iIndiIconRectWithoutTextForFSQ = TRect( 0, 0, 60, 20 );
+    
+    indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
+    aDataInfo.iIndiTextForFSQ = indiTextLayout;
+    
+    // keypad pane rect
+    linelayout = AknLayoutScalable_Avkon::grid_vkbss_keypad_pane(v1).LayoutLine();
+    keypadRect.LayoutRect( rectBottomWin, linelayout );
+    
+    // key pane rect
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(v2).LayoutLine();
+    keypaneRect.LayoutRect( keypadRect.Rect(), linelayout );
+
+    // key cell rect
+    linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(v2).LayoutLine();
+    keycellRect.LayoutRect( keypaneRect.Rect(), linelayout );
+    
+    // key label rect
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(v2).LayoutLine();
+    keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
+    
+    // pic3pane rect
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_3p_pane(v2).LayoutLine();
+    pic3paneRect.LayoutRect( keypaneRect.Rect(), linelayout );
+    
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_3p_pane_g1(0).LayoutLine();
+    layoutrect.LayoutRect( pic3paneRect.Rect(), linelayout );
+    pic3pLeftWidth = layoutrect.Rect().Width();
+
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_3p_pane_g3(0).LayoutLine();
+    layoutrect.LayoutRect( pic3paneRect.Rect(), linelayout );
+    pic3pRightWidth = layoutrect.Rect().Width();
+    
+    TRect rectXPane = keypaneRect.Rect();
+    rect = keycellRect.Rect();
+    rect.Move( - rectXPane.iTl.iX, - rectXPane.iTl.iY );
+    TRect rectXBorder = rect;
+    rect = keylabelRect.Rect();
+    rect.Move( - rectXPane.iTl.iX, - rectXPane.iTl.iY );
+    TRect rectXInner = rect;
+    rect = pic3paneRect.Rect();
+    rect.Move( - rectXPane.iTl.iX, - rectXPane.iTl.iY );
+    TRect rect3PicPane = rect;
+    rectXPane.Move( - rectXPane.iTl );
+    
+    rect = keypadRect.Rect();
+    rect.Move( - base.iX, - base.iY );
+    TRect rectOfKeypad = rect;
+    TRect rectOfButtons = rectOfKeypad;
+    rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
+    rectOfButtons.iTl.iY += rectOfKeypad.Height();
+    
+    TInt spaceBtnWidth = rectOfButtons.Width() - rectXPane.Width() * 8;
+    TInt dx = rectOfButtons.iTl.iX;
+    TInt dy = rectOfButtons.iTl.iY;
+    
+    aDataInfo.iCloseButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iCloseButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    dx += rectXPane.Width();
+
+    aDataInfo.iShiftButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iShiftButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    dx += rectXPane.Width();
+
+    aDataInfo.iMultiRangeButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iMultiRangeButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    dx += rectXPane.Width();
+
+    aDataInfo.iLeftButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iLeftButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    dx += rectXPane.Width();
+
+    TInt expand = spaceBtnWidth - rectXPane.Width();
+    aDataInfo.iSpaceButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iSpaceButton.iRect.Resize( expand, 0 );
+    aDataInfo.iSpaceButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    aDataInfo.iSpaceButton.iInnerRect.Resize( expand, 0 );
+    aDataInfo.iSpaceButtonEx.iIconsFrameRect = OffsetRect( rect3PicPane, dx, dy );
+    aDataInfo.iSpaceButtonEx.iIconsFrameRect.Resize( expand, 0 );
+    aDataInfo.iSpaceButtonEx.iMiddleIconRect = 
+        aDataInfo.iSpaceButtonEx.iIconsFrameRect;
+    aDataInfo.iSpaceButtonEx.iMiddleIconRect.iTl.iX += pic3pLeftWidth;
+    aDataInfo.iSpaceButtonEx.iMiddleIconRect.iBr.iX -= pic3pRightWidth;    
+    dx += spaceBtnWidth;
+
+    aDataInfo.iRightButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iRightButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    dx += rectXPane.Width();
+
+    aDataInfo.iOptionButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iOptionButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    dx += rectXPane.Width();
+
+    aDataInfo.iEnterButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iEnterButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    dx += rectXPane.Width();
+
+    aDataInfo.iClearButton.iRect = OffsetRect( rectXBorder, dx, dy );
+    aDataInfo.iClearButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
+    
+    // preview popup window
+    TAknWindowLineLayout previewWnd, previewWndInner;
+    TAknLayoutRect previewWndRect, previewWndInnerRect;
+    previewWnd = AknLayoutScalable_Avkon::popup_fep_char_preview_window(aLayoutParam).LayoutLine();
+    previewWndRect.LayoutRect( aParentWndRect, previewWnd );
+    previewWndInner = AknLayoutScalable_Avkon::bg_popup_fep_char_preview_window_g9().LayoutLine();
+    previewWndInnerRect.LayoutRect( previewWndRect.Rect(), previewWndInner );
+    aDataInfo.iPreviewWndRect = previewWndRect.Rect();
+    aDataInfo.iPreviewWndInnerRect = previewWndInnerRect.Rect();
+    aDataInfo.iPreviewWndText = AknLayoutScalable_Avkon::popup_fep_char_preview_window_t1(
+                              aLayoutParam).LayoutLine();
+    }
+// ---------------------------------------------------------------------------
 // CPeninputLafDataVKB::NewL( TInt aLayoutType )
 // (other items were commented in a header)
 // ---------------------------------------------------------------------------
@@ -1147,6 +1448,10 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
 	CPeninputQwtLayoutDataInfo* dataInfo = new( ELeave ) CPeninputQwtLayoutDataInfo;
 	TAknWindowLineLayout appWnd; 
     TAknWindowLineLayout wndLayout;
+    TAknWindowLineLayout linelayout;
+    TAknLayoutRect layoutrect, keypaneRect, keycellRect, keylabelRect;
+    TRect rectBottomWin, rectVkbCtrl;
+    TPoint base;
     TAknWindowLineLayout keypad, cellpane;
     
     TAknWindowLineLayout cellPaneBK;
@@ -1159,40 +1464,80 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
 	TRect keyRect;
 	// -----------------------Landscape Mode--------------------------
 	appWnd = AknLayoutScalable_Avkon::application_window(0).LayoutLine();
-	wndLayout = AknLayoutScalable_Avkon::popup_fep_vkb2_window(0).LayoutLine();
+	wndLayout = AknLayoutScalable_Avkon::main_fep_vtchi_ss_pane(0).LayoutLine();
 	wndRect.LayoutRect(appWnd.Rect(), wndLayout);
+	// Bottom pane rect
+	linelayout = AknLayoutScalable_Avkon::popup_fep_vkbss_window(0).LayoutLine();
+	layoutrect.LayoutRect( wndRect.Rect(), linelayout );
+	rectBottomWin = layoutrect.Rect();
+	base = wndRect.Rect().iTl;
 	// ==================10x3====================
 	// top pane and bottom pane
 	GetTopAndBottomPaneInfo( wndRect.Rect(), ELayout10x3, 0, *dataInfo );
 	// keypad
-	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(0).LayoutLine();
+	// Modify begin
+	keyText = AknLayoutScalable_Avkon::cell_vkbss_key_t1(0).LayoutLine();
+	keyText.iB += 3;
 	dataInfo->iKeypad.iTextLayout = keyText;
-  	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
-  	//dataInfo->iKeypad.iTxtRect = keyText.TextRect();
+  	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId( keyText.iFont, NULL );
+  	
+    keypad = AknLayoutScalable_Avkon::grid_vkbss_keypad_pane(0).LayoutLine();
+  	keypadRect.LayoutRect( rectBottomWin, keypad );
+  	
+  	linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(0).LayoutLine();
+  	keypaneRect.LayoutRect( keypadRect.Rect(), linelayout );
+  	    
+  	rectVkbCtrl = keypadRect.Rect();
+    rectVkbCtrl.iBr.iY -= keypaneRect.Rect().Height();
+  	dataInfo->iKeypad.iKaypadRect = rectVkbCtrl;
 
-    keypad = AknLayoutScalable_Avkon::vkb2_area_keypad_pane(0).LayoutLine();
-  	keypadRect.LayoutRect(wndRect.Rect(), keypad);
-  	dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
-  	//iKeypadRect10x3 = keypadRect.Rect();
-  	cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(0, 0, 0).LayoutLine();
+  	linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(0).LayoutLine();
+  	keycellRect.LayoutRect( keypaneRect.Rect(), linelayout );
+  	
+  	linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(0).LayoutLine();
+  	keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
+
+  	linelayout = AknLayoutScalable_Avkon::aid_vkbss_key_offset(0).LayoutLine();    
+  	layoutrect.LayoutRect( keypadRect.Rect(), linelayout );
+  	TInt rowIndentWidth = layoutrect.Rect().Width();
+  	
+    TRect rectOfKeypad = RelativeRect( keypadRect.Rect(), base );
+    rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
+  	
+    TRect rectXPane = RelativeRect( keypaneRect.Rect(), base ); 
+    TRect rectXBorder = RelativeRect( keycellRect.Rect(), base );
+    TRect rectXInner = RelativeRect( keylabelRect.Rect(), base );
+
+    rectXPane.Move( - rectOfKeypad.iTl ); //translate to keypad coord-sys
+    rectXBorder.Move( - rectOfKeypad.iTl );
+    rectXInner.Move( - rectOfKeypad.iTl );
+  	
   	for( TInt i = 0; i < KKeypadLayout[0][1]; i++)
   		{
+  		TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
   		for( TInt j = 0; j < KKeypadLayout[0][0]; j++)
-  			{
-  			cellpane = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane(0, j, i).LayoutLine();
-  			cellpaneRect.LayoutRect(keypadRect.Rect(), cellpane);
-  			keyRect = cellpaneRect.Rect();
-  			keyRect.Move( -keypadRect.Rect().iTl.iX, -keypadRect.Rect().iTl.iY );
-            cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
-            keyBKRect = cellPaneBKRect.Rect();
-            dataInfo->iKeypad.iRects.AppendL(keyBKRect);
-  			keyTextLayout.LayoutText(keyRect, keyText);
-  			dataInfo->iKeypad.iCharRects.AppendL(keyTextLayout.TextRect());
-  			}
+            {
+            TRect bound = rectXBorder;
+            bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
+            bound.Move( indent, 0 );
+            
+            dataInfo->iKeypad.iRects.AppendL( bound );
+            
+            TRect inner = rectXPane;
+            inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
+            inner.Move( indent, 0 );        
+            
+            TAknLayoutText keyTextLayout; 
+            keyTextLayout.LayoutText( inner, keyText );
+            dataInfo->iKeypad.iCharRects.AppendL( keyTextLayout.TextRect() );
+            }
   		}
- 	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(0).LayoutLine();
-  	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
-  	//dataInfo->iKeypad.iTxtRect = keyText.TextRect();	
+  	// Modify end
+  	
+  	// Modify begin
+ 	//keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(0).LayoutLine();
+  	//dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);	
+  	// Modify end
   	
   	// Add candate list laf data for ITI features
   	// Candidate list's parent Layout window is ITUT window
@@ -1217,11 +1562,15 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
   	
 	// ==================11x3====================
 	dataInfo = new( ELeave ) CPeninputQwtLayoutDataInfo;
-	wndLayout = AknLayoutScalable_Avkon::popup_fep_vkb2_window(0).LayoutLine();
-	wndRect.LayoutRect(appWnd.Rect(), wndLayout);
+	// Modify begin
+	//wndLayout = AknLayoutScalable_Avkon::popup_fep_vkb2_window(0).LayoutLine();
+	//wndRect.LayoutRect(appWnd.Rect(), wndLayout);
+	// Modify end
 	// top pane and bottom pane
 	GetTopAndBottomPaneInfo( wndRect.Rect(), ELayout11x3, 1, *dataInfo );	
 	// keypad
+	// Modify begin
+	/*
     keypad = AknLayoutScalable_Avkon::vkb2_area_keypad_pane(1).LayoutLine();
   	keypadRect.LayoutRect(wndRect.Rect(), keypad);
   	dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
@@ -1245,7 +1594,65 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
 	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(1).LayoutLine();
   	dataInfo->iKeypad.iTextLayout = keyText;	
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
-  	//dataInfo->iKeypad.iTxtRect = keyText.TextRect();	  	
+  	*/
+	
+	keyText = AknLayoutScalable_Avkon::cell_vkbss_key_t1(2).LayoutLine();
+    keyText.iB += 3;
+    dataInfo->iKeypad.iTextLayout = keyText;
+    dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId( keyText.iFont, NULL );
+    
+    keypad = AknLayoutScalable_Avkon::grid_vkbss_keypad_pane(1).LayoutLine();
+    keypadRect.LayoutRect( rectBottomWin, keypad );
+    
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(2).LayoutLine();
+    keypaneRect.LayoutRect( keypadRect.Rect(), linelayout );
+    
+    rectVkbCtrl = keypadRect.Rect();
+    rectVkbCtrl.iBr.iY -= keypaneRect.Rect().Height();
+    dataInfo->iKeypad.iKaypadRect = rectVkbCtrl;
+
+    linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(2).LayoutLine();
+    keycellRect.LayoutRect( keypaneRect.Rect(), linelayout );
+    
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(2).LayoutLine();
+    keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
+
+    linelayout = AknLayoutScalable_Avkon::aid_vkbss_key_offset(1).LayoutLine();    
+    layoutrect.LayoutRect( keypadRect.Rect(), linelayout );
+    rowIndentWidth = layoutrect.Rect().Width();
+    
+    rectOfKeypad = RelativeRect( keypadRect.Rect(), base );
+    rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
+    
+    rectXPane = RelativeRect( keypaneRect.Rect(), base ); 
+    rectXBorder = RelativeRect( keycellRect.Rect(), base );
+    rectXInner = RelativeRect( keylabelRect.Rect(), base );
+
+    rectXPane.Move( - rectOfKeypad.iTl ); //translate to keypad coord-sys
+    rectXBorder.Move( - rectOfKeypad.iTl );
+    rectXInner.Move( - rectOfKeypad.iTl );
+    
+    for( TInt i = 0; i < KKeypadLayout[1][1]; i++)
+        {
+        TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
+        for( TInt j = 0; j < KKeypadLayout[1][0]; j++)
+            {
+            TRect bound = rectXBorder;
+            bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
+            bound.Move( indent, 0 );
+            
+            dataInfo->iKeypad.iRects.AppendL( bound );
+            
+            TRect inner = rectXPane;
+            inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
+            inner.Move( indent, 0 );        
+            
+            TAknLayoutText keyTextLayout; 
+            keyTextLayout.LayoutText( inner, keyText );
+            dataInfo->iKeypad.iCharRects.AppendL( keyTextLayout.TextRect() );
+            }
+        }
+  	// Modify end
   	
     if ( isLandscape )
         {
@@ -1260,11 +1667,15 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
 	
 	// ==================11x4====================
 	dataInfo = new( ELeave ) CPeninputQwtLayoutDataInfo;
-	wndLayout = AknLayoutScalable_Avkon::popup_fep_vkb2_window(0).LayoutLine();
-	wndRect.LayoutRect(appWnd.Rect(), wndLayout);
+	// Modify begin
+	//wndLayout = AknLayoutScalable_Avkon::popup_fep_vkb2_window(0).LayoutLine();
+	//wndRect.LayoutRect(appWnd.Rect(), wndLayout);
+	// Modify end
 	// top pane and bottom pane
 	GetTopAndBottomPaneInfo( wndRect.Rect(), ELayout11x4, 2, *dataInfo );
+	// Modify begin
 	// keypad
+	/*
     keypad = AknLayoutScalable_Avkon::vkb2_area_keypad_pane(2).LayoutLine();
   	keypadRect.LayoutRect(wndRect.Rect(), keypad);
     dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
@@ -1287,7 +1698,65 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
  	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(2).LayoutLine();
   	dataInfo->iKeypad.iTextLayout = keyText; 	
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
-  	//dataInfo->iKeypad.iTxtRect = keyText.TextRect();	 	
+  	*/
+	
+	keyText = AknLayoutScalable_Avkon::cell_vkbss_key_t1(3).LayoutLine();
+    keyText.iB += 3;
+    dataInfo->iKeypad.iTextLayout = keyText;
+    dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId( keyText.iFont, NULL );
+    
+    keypad = AknLayoutScalable_Avkon::grid_vkbss_keypad_pane(1).LayoutLine();
+    keypadRect.LayoutRect( rectBottomWin, keypad );
+
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(3).LayoutLine();
+    keypaneRect.LayoutRect( keypadRect.Rect(), linelayout );
+    
+    rectVkbCtrl = keypadRect.Rect();
+    rectVkbCtrl.iBr.iY -= keypaneRect.Rect().Height();
+    dataInfo->iKeypad.iKaypadRect = rectVkbCtrl;    
+
+    linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(3).LayoutLine();
+    keycellRect.LayoutRect( keypaneRect.Rect(), linelayout );
+    
+    linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(3).LayoutLine();
+    keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
+
+    linelayout = AknLayoutScalable_Avkon::aid_vkbss_key_offset(1).LayoutLine();    
+    layoutrect.LayoutRect( keypadRect.Rect(), linelayout );
+    rowIndentWidth = layoutrect.Rect().Width();
+    
+    rectOfKeypad = RelativeRect( keypadRect.Rect(), base );
+    rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
+    
+    rectXPane = RelativeRect( keypaneRect.Rect(), base ); 
+    rectXBorder = RelativeRect( keycellRect.Rect(), base );
+    rectXInner = RelativeRect( keylabelRect.Rect(), base );
+
+    rectXPane.Move( - rectOfKeypad.iTl ); //translate to keypad coord-sys
+    rectXBorder.Move( - rectOfKeypad.iTl );
+    rectXInner.Move( - rectOfKeypad.iTl );
+    
+    for( TInt i = 0; i < KKeypadLayout[2][1]; i++)
+        {
+        TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
+        for( TInt j = 0; j < KKeypadLayout[2][0]; j++)
+            {
+            TRect bound = rectXBorder;
+            bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
+            bound.Move( indent, 0 );
+            
+            dataInfo->iKeypad.iRects.AppendL( bound );
+            
+            TRect inner = rectXPane;
+            inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
+            inner.Move( indent, 0 );        
+            
+            TAknLayoutText keyTextLayout; 
+            keyTextLayout.LayoutText( inner, keyText );
+            dataInfo->iKeypad.iCharRects.AppendL( keyTextLayout.TextRect() );
+            }
+        }
+	// Modify end
   	
     if ( isLandscape )
         {

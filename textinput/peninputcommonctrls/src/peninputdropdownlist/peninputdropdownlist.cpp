@@ -508,7 +508,12 @@ EXPORT_C void CFepCtrlDropdownList::SizeChanged(const TInt aCellWidth,
             {
             ChangeActiveList(iListManager->ListExpandableMultiRowWithoutIcon());
             }
-            break;            
+            break;
+        case EListExpandableMultiRowWithoutIconWithBubble:
+        	{
+        	ChangeActiveList(iListManager->ListMultiRowWithoutIconWithBubble());
+        	}  
+        	break;                
 	    default:
 	    	__ASSERT_DEBUG( EFalse, 
 	    			User::Panic( _L("TListType Error::SizeChanged()"), 0 ) );
@@ -673,7 +678,14 @@ EXPORT_C void CFepCtrlDropdownList::SetCandidatesL(const RPointerArray<HBufC>& a
 		    {
             ChangeActiveList( iListManager->ListExpandableMultiRowWithoutIcon() );
 		    }
-            break;        
+            break;
+            
+        case EListExpandableMultiRowWithoutIconWithBubble:
+      	    {
+      	    ChangeActiveList(iListManager->ListMultiRowWithoutIconWithBubble());
+      	    }  
+      	    break;
+        	                
 	    default:
 	    	__ASSERT_DEBUG( EFalse, 
 	    			User::Panic( _L("TListType Error::SetCandidatesL()"), 0 ) );
@@ -822,6 +834,13 @@ EXPORT_C void CFepCtrlDropdownList::ResetAndClear(const TListType aListType)
             NotifyClosePage();		    
 		    }
 		    break;
+		    
+		case EListExpandableMultiRowWithoutIconWithBubble:
+      	    {
+      	    ChangeActiveList(iListManager->ListMultiRowWithoutIconWithBubble());
+      	    NotifyClosePage();
+      	    }  
+      	  break;
 	    default:
 	    	__ASSERT_DEBUG( EFalse, 
 	    			User::Panic( _L("TListType Error::ResetAndClear()"), 0 ) );
@@ -1231,7 +1250,13 @@ EXPORT_C void CFepCtrlDropdownList::SetFont(const CFont* aFont, TBool aReDraw)
 			    {
                 ChangeActiveList( iListManager->ListExpandableMultiRowWithoutIcon() );
 			    }
-                break;			    
+                break;
+			case EListExpandableMultiRowWithoutIconWithBubble:
+			  	{
+			  	ChangeActiveList(iListManager->ListMultiRowWithoutIconWithBubble());
+			  	}
+			  	break;
+        	            			    
 		    default:
 		    	__ASSERT_DEBUG( EFalse, 
 		    			User::Panic( _L("TListType Error::SetFont()"), 0 ) );
@@ -1680,6 +1705,7 @@ void CFepCtrlDropdownList::ChangeActiveList(CList* aList, TInt aLastIndex)
 	        EnableSecondary(EFalse);
 	        break;
 		case EListExpandableMultiRowWithoutIcon:
+		case EListExpandableMultiRowWithoutIconWithBubble:	
 		    break;
 	    default:
 	    	__ASSERT_DEBUG( EFalse, 
@@ -1719,7 +1745,9 @@ void CFepCtrlDropdownList::ChangeActiveList(CList* aList, TInt aLastIndex)
 	     || ( ( ( beforeList == iListManager->ListMultiRowWithIconWithBubble() ))
 	     && (aList != iListManager->ListMultiRowWithIconWithBubble() ) )
 	     || ( ( ( beforeList == iListManager->ListMultiRowRollWithIconWithBubble() ))
-	     && (aList != iListManager->ListMultiRowRollWithIconWithBubble() ) ) )
+	     && (aList != iListManager->ListMultiRowRollWithIconWithBubble() ) ) 
+	     || ( ( ( beforeList == iListManager->ListMultiRowWithoutIconWithBubble() ))
+	     && (aList != iListManager->ListMultiRowWithoutIconWithBubble() ) ))
 		{
 	    rect.Shrink(TSize(0,-1));
 	    RootControl()->ReDrawRect(rect);
@@ -1919,8 +1947,9 @@ void CFepCtrlDropdownList::AutoChangeActiveList( TInt aLastIndex )
 				}
 		    }
 		    break;
-        case EListExpandableMultiRowWithoutIcon:
-            break;              
+		case EListExpandableMultiRowWithoutIcon:
+		case EListExpandableMultiRowWithoutIconWithBubble:	
+			break;              
 		case EListNoExpandable:
 		case EListNoExpandableWithBubble:
 			break;
@@ -2080,6 +2109,7 @@ EXPORT_C void CFepCtrlDropdownList::SetDropdownListImgID(
 	iListManager->ListMultiRowRollWithIconWithBubble()->SetDropdownListImgID(aDropdownListDrawInfo);
 	
 	iListManager->ListExpandableMultiRowWithoutIcon()->SetDropdownListImgID(aDropdownListDrawInfo);
+	iListManager->ListMultiRowWithoutIconWithBubble()->SetDropdownListImgID(aDropdownListDrawInfo);
 	}
 
 CFepUiLayout* CFepCtrlDropdownList::UiLayout()
@@ -2233,10 +2263,33 @@ void CFepCtrlDropdownList::DrawBubble(const TRect aRect, const TDesC& aText)
         
         rect.iTl.iY = iBubbleVerticalMargin + aRect.iTl.iY - 
                       iBubbleSize.iHeight;
-        rect.iBr.iY = iBubbleVerticalMargin + aRect.iTl.iY;
-		
-		TRAP_IGNORE(iBubbleCtrl->SetTextL(aText));		
-	
+        if ( rect.iTl.iY < 0 )
+        	{
+        	rect.iTl.iY = iBubbleVerticalMargin;
+        	}
+        
+        rect.iBr.iY = rect.iTl.iY + iBubbleSize.iHeight;
+		    
+        if((TBidiText::TextDirectionality(aText) == TBidiText:: ERightToLeft) && (aText.Length() > 1))
+          {
+          HBufC* displayStr = aText.AllocLC();
+         
+          TInt i = 0;
+          TInt charNum = displayStr->Length();
+         
+          while(i < charNum)
+              {
+              displayStr->Des()[i] = aText[(charNum-1)-i];
+              ++i;
+              }
+           TRAP_IGNORE(iBubbleCtrl->SetTextL(*displayStr));     
+           CleanupStack::PopAndDestroy(displayStr);
+          }
+       else
+          {
+          TRAP_IGNORE(iBubbleCtrl->SetTextL(aText));
+          }
+	          
         iBubbleCtrl->Popup(rect);
         }
     }

@@ -151,6 +151,7 @@ void CListOneRowWithIconWithBubble::HandlePointerDragL(const TPoint& aPoint)
                 iMoveLatestRect = iClickedRect;                    
                 iClickedRect.SetRect(iNavigationPreviousRect.iTl, iNavigationPreviousRect.iBr);
                 }  
+            CompareRect(iMoveLatestRect, iClickedRect);
             }
         else if ( iContentRect.Contains(aPoint) )
             { 
@@ -165,6 +166,7 @@ void CListOneRowWithIconWithBubble::HandlePointerDragL(const TPoint& aPoint)
                     iMoveLatestRect = iClickedRect;
                     iClickedRect.SetRect(candidate->GetRect().iTl, candidate->GetRect().Size());
                     
+                    CompareRect(iMoveLatestRect, iClickedRect);
                     iOwner->ClearBubble();
                     iOwner->DrawBubble(iClickedRect, candidate->GetCandidate());                    
                     }
@@ -175,6 +177,7 @@ void CListOneRowWithIconWithBubble::HandlePointerDragL(const TPoint& aPoint)
                 iMoveLatestRect = iClickedRect;
                 
                 iClickedRect = KEmptyRect;
+                CompareRect(iMoveLatestRect, iClickedRect);
                 }            
             }
         else
@@ -184,7 +187,6 @@ void CListOneRowWithIconWithBubble::HandlePointerDragL(const TPoint& aPoint)
             iClickedRect = KEmptyRect;
             iMoveLatestRect = iClickedRect;
             }
-        CompareRect(iMoveLatestRect, iClickedRect);
         }
     }
 

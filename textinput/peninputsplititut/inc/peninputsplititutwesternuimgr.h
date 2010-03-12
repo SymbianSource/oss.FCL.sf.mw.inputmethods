@@ -133,6 +133,12 @@ private:
      * own
      */
     CSplitItutUiStateBase* iNormalState;
+    
+    /**
+     * Spell state.
+     * own
+     */
+    CSplitItutUiStateBase* iSpellState;
     };
 
 #endif // C_WESTERNSPLITITUTUIMGR_H

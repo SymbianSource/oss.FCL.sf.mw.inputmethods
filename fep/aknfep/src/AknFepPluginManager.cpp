@@ -105,6 +105,8 @@ _LIT(KVITU_HLP_MAIN_VIEW, "VITU_HLP_MAIN_VIEW");
 const TInt KDefaultCandidateArraySize = 16;
 const TInt KNumberOfCases = 6;
 
+ _LIT_SECURE_ID(KPhoneSecureId, 0x100058b3);
+
 #define iAvkonAppUi ((CAknAppUi*)CEikonEnv::Static()->EikAppUi())
 TUid AppUidFromWndGroupIdL(TInt aWndGrpId)
     {
@@ -581,6 +583,10 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                                                              subrange);
                     }
                 SyncIndicatorWithPluginRangeL();
+                if ( PluginInputMode() == EPluginInputModeFSQ )
+                    {
+					UpdateFSQIndicator();
+                    }
                 }
                 break;
             case ESignalLayoutUIChanged:
@@ -782,7 +788,10 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
     if( iPluginInputMode == EPluginInputModeNone && 
         aEventType != EPluginEditorActivate && 
         aEventType != EPluginActivate &&
-        aEventType != EPluginResourceChanged )
+        aEventType != EPluginResourceChanged &&
+        aEventType != EPluginSwitchMode &&
+        aEventType != EPluginSwitchToPortrait &&
+        aEventType != EPluginSwitchToLandscape)
         {      
         return;
         }
@@ -888,6 +897,10 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
         case EPluginUpdateIndicator:
             {
             UpdateITUTIndicator();
+            if ( PluginInputMode() == EPluginInputModeFSQ )
+                {
+				UpdateFSQIndicator();
+                }
             }
             break;
         case EPluginPreview:
@@ -919,6 +932,50 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
         	HideTooltipOnFSQL();
         	}
         	break;
+        case EPluginSwitchToPortrait:
+            {
+            iSharedData.SetDefaultArabicFingerHwrOrientation(0);
+            TryChangePluginInputModeByModeL(EPluginInputModeFingerHwr,
+                                            EPenInputOpenManually,
+                                            ERangeInvalid);
+            }
+            break;
+        case EPluginSwitchToLandscape:
+            {
+            iSharedData.SetDefaultArabicFingerHwrOrientation(1);            
+            TryChangePluginInputModeByModeL(EPluginInputModeFingerHwr,
+                                            EPenInputOpenManually,
+                                            ERangeInvalid);
+            }
+            break;
+        case EPluginSwitchMode:
+            {
+            iPreferredUiMode = EFalse;
+            TPluginInputMode defaultMode = EPluginInputModeNone;
+            TPixelsTwipsAndRotation size; 
+            CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+        
+            TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
+            if(iSharedData.AutoRotateEnabled())
+                {
+                if(landscape)
+                    {
+                    defaultMode = EPluginInputModeVkb;
+                    }
+                else
+                    {
+                    defaultMode = EPluginInputModeItut;
+                    }
+                }
+            else
+                {
+                defaultMode = EPluginInputModeItut;
+                }
+            TryChangePluginInputModeByModeL(defaultMode,
+                                            EPenInputOpenManually,
+                                            ERangeInvalid);
+            }
+            break;
         default:
             break;
         }
@@ -1008,19 +1065,23 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         iPenInputServer.SetDisabledLayout( EPluginInputModeFSQ );
         }
 
-    if ( aSuggestMode == EPluginInputModeFSQ )
+    if ( aSuggestMode == EPluginInputModeFSQ || (aSuggestMode == EPluginInputModeFingerHwr 
+	     && iSharedData.InputTextLanguage() == ELangArabic
+	     && iSharedData.AutoRotateEnabled()))
         {
         TPluginInputMode tempInputMode = iPluginInputMode;           
-        iPluginInputMode = EPluginInputModeFSQ;
+        iPluginInputMode = aSuggestMode;
         
-        if (disableFSQ )
+        if (disableFSQ && (aSuggestMode != EPluginInputModeFingerHwr))
             {
             iPluginInputMode = tempInputMode;
             aSuggestMode = EPluginInputModeItut;
             }
         else
             {
-            if ( !iSharedData.AutoRotateEnabled() )
+            if ( (!iSharedData.AutoRotateEnabled() 
+                    && aSuggestMode == EPluginInputModeFSQ) || 
+                  (aSuggestMode == EPluginInputModeFingerHwr))
                 {
                 iFepMan.SetNotifyPlugin( EFalse );
                 iAvkonAppUi->SetOrientationL( CAknAppUiBase::EAppUiOrientationLandscape );
@@ -1034,6 +1095,28 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
                 {
                 iPluginInputMode = tempInputMode;
                 aSuggestMode = EPluginInputModeItut;
+                }
+            }
+        }
+    else if(aSuggestMode == EPluginInputModeFingerHwr 
+            && iSharedData.InputTextLanguage() == ELangArabic
+            && !iSharedData.AutoRotateEnabled())
+        {
+        TInt hOrient = iSharedData.DefaultArabicFingerHwrOrientation();
+        if(landscape)
+            {
+            if(!hOrient)
+                {
+                iAvkonAppUi->SetOrientationL( CAknAppUiBase::EAppUiOrientationPortrait );
+                iOrientationChanged = ETrue;                
+                }
+            }
+        else
+            {
+            if(hOrient)
+                {
+                iAvkonAppUi->SetOrientationL( CAknAppUiBase::EAppUiOrientationLandscape );
+                iOrientationChanged = ETrue;                
                 }
             }
         }
@@ -1114,7 +1197,7 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
 		    }
         
         // Notify application touch window state
-        NotifyAppUiImeTouchWndState( ETrue );
+        NotifyAppUiImeTouchWndStateL( ETrue );
 
         rtn = ETrue;
         }
@@ -1174,19 +1257,21 @@ void CAknFepPluginManager::ClosePluginInputModeL( TBool aRestore )
     if( aRestore && !iSharedData.QwertyInputMode() && iFepMan.InputMode() == ELatin)
         {
 	    RestorePredictStateL();
-        if ( iFepMan.EditorType() == CAknExtendedInputCapabilities::EPhoneNumberEditor )
-            {
-            if( AknTextUtils::NumericEditorDigitType() == EDigitTypeEasternArabicIndic || 
-                AknTextUtils::NumericEditorDigitType() == EDigitTypeDevanagari ||
-                AknTextUtils::NumericEditorDigitType() == EDigitTypeArabicIndic )
-                {
-                iFepMan.TryChangeModeL( ENativeNumber );
-                }
-            else
-                {
-                iFepMan.TryChangeModeL( ENumber );
-                }
-            }
+        
+        // Fix bug EAHN-82C9M7, comment out the following code
+        //if ( iFepMan.EditorType() == CAknExtendedInputCapabilities::EPhoneNumberEditor )
+        //    {
+        //    if( AknTextUtils::NumericEditorDigitType() == EDigitTypeEasternArabicIndic || 
+        //        AknTextUtils::NumericEditorDigitType() == EDigitTypeDevanagari ||
+        //        AknTextUtils::NumericEditorDigitType() == EDigitTypeArabicIndic )
+        //        {
+        //        iFepMan.TryChangeModeL( ENativeNumber );
+        //        }
+        //    else
+        //        {
+        //        iFepMan.TryChangeModeL( ENumber );
+        //        }
+        //    }
         }
     //iFepMan.UpdateCbaL( NULL ); //pls refer to bug ESZG-7G7CGF
                 
@@ -1236,7 +1321,8 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
             }
         }
 
-    if ( iPluginInputMode == EPluginInputModeFSQ  && iOrientationChanged 
+    if ( (iPluginInputMode == EPluginInputModeFSQ || (iPluginInputMode == EPluginInputModeFingerHwr 
+	     && iSharedData.InputTextLanguage() == ELangArabic)) && iOrientationChanged 
     	                                            && !iITISettingDialogOpen )
         {
 		// This TRAP_IGNORE is essential to fix bug ECJA-7JDCKR, never delete it
@@ -1245,7 +1331,7 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
         } 
         
     // Notify editor the touch window has been closed
-    NotifyAppUiImeTouchWndState( EFalse );
+    NotifyAppUiImeTouchWndStateL( EFalse );
     
     iCharStartPostion = KInvalidValue;
     }
@@ -1264,7 +1350,8 @@ void CAknFepPluginManager::OnResourceChangedL( TInt aType )
         }
         
     if ( iPluginInputMode == EPluginInputModeFSQ && 
-         !iSharedData.AutoRotateEnabled())
+         !iSharedData.AutoRotateEnabled() || (iPluginInputMode == EPluginInputModeFingerHwr 
+	     && iSharedData.InputTextLanguage() == ELangArabic))
         {
         return;
         }
@@ -1615,7 +1702,8 @@ void CAknFepPluginManager::HandleKeyEventL(TInt aKeyId)
             break;
         case EKeyEscape:
             {
-			ClosePluginInputUiL( ETrue );
+			ClosePluginInputUiL( ETrue );			
+			iFepMan.SetNotifyPlugin( EFalse );
             DestroySpellEditor();
             }
             break;
@@ -1759,21 +1847,84 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
             }
         
         // add some input mode in option menu
-        TBool isSplitView = IsEditorSupportSplitIme();
-    	if(isSplitView)
+        
+    	TInt disabledInputMode = iPenInputServer.DisabledLayout();
+    	TInt curInputMode = iLangMan.CurrentImePlugin()->CurrentMode();
+    	TBool isChinese = iFepMan.IsChineseInputLanguage();
+    	
+    	if ( !isChinese && ( curInputMode == EPluginInputModeItut ) && 
+    	        !( disabledInputMode & EPluginInputModeFSQ ))
     	    {
-    	    TInt disabledMode = iPenInputServer.DisabledLayout();
-    	    TInt curMode =  iLangMan.CurrentImePlugin()->CurrentMode();
-    	    if(!(disabledMode & EPluginInputModeFSQ) && curMode != EPluginInputModeFSQ )
-    	        {
-    	        aMenuPane->SetItemDimmed(EPeninputCmdFSQ, EFalse);
-    	        }
-    	    if(!(disabledMode & EPluginInputModeItut) && curMode != EPluginInputModeItut)
-    	        {
-    	        aMenuPane->SetItemDimmed(EPenInputCmdVITUT, EFalse);
-    	        }
-
+    	    aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
     	    }
+    	
+    	if ( !isChinese && ( curInputMode == EPluginInputModeFSQ ) &&
+    	        !( disabledInputMode & EPluginInputModeItut ))
+    	    {
+    	    aMenuPane->SetItemDimmed(EPenInputCmdVITUT, EFalse);
+    	    }
+        //For arabic finger hwr input orientation.
+        TInt index = 0;        
+        if(iPluginInputMode == EPluginInputModeFingerHwr
+                && (ELangArabic == iSharedData.InputTextLanguage())
+                && (!iSharedData.AutoRotateEnabled()))
+            {
+            TBool disableMenu = ETrue;
+            TPixelsTwipsAndRotation size; 
+            CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+            TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
+            if(landscape && aMenuPane->MenuItemExists(EPenInputCmdHwrInputToPortrait, index))
+                {
+                disableMenu = EFalse;
+                aMenuPane->SetItemDimmed(EPenInputCmdHwrInputToPortrait,disableMenu);
+                }
+            index = 0;
+            if(!landscape && aMenuPane->MenuItemExists(EPenInputCmdHwrInputToLandscape, index))
+                {
+                disableMenu = EFalse;
+                aMenuPane->SetItemDimmed(EPenInputCmdHwrInputToLandscape,disableMenu);
+                }
+            }   
+        
+        //For arabic finger hwr switch to key based input.
+        index = 0;
+        if(aMenuPane->MenuItemExists(
+                EPenInputCmdSwitchToVkeyBasedInput, index))
+            {
+            TBool disableMenu = ETrue;
+            if(iPluginInputMode == EPluginInputModeFingerHwr
+                    && (ELangArabic == iSharedData.InputTextLanguage()))
+                {
+                disableMenu = EFalse;
+                }   
+            aMenuPane->SetItemDimmed(EPenInputCmdSwitchToVkeyBasedInput,disableMenu);
+            }        
+        //For arabic finger hwr writing speed.
+        index = 0;
+        if(aMenuPane->MenuItemExists(
+                EPenInputCmdWritingSpeed, index))
+            {
+            TBool disableMenu = ETrue;
+            if(iPluginInputMode == EPluginInputModeFingerHwr
+                    && (ELangArabic == iSharedData.InputTextLanguage()))
+                {
+                disableMenu = EFalse;
+                }   
+            aMenuPane->SetItemDimmed(EPenInputCmdWritingSpeed,disableMenu);
+            }        
+        //For arabic finger hwr guide line.
+        index = 0;
+        if(aMenuPane->MenuItemExists(
+                EPenInputCmdGuidingLine, index))
+            {
+            TBool disableMenu = ETrue;
+            if(iPluginInputMode == EPluginInputModeFingerHwr
+                    && (ELangArabic == iSharedData.InputTextLanguage()))
+                {
+                disableMenu = EFalse;
+                }   
+            aMenuPane->SetItemDimmed(EPenInputCmdGuidingLine,disableMenu);
+            }        
         
         iLangMan.CurrentImePlugin()->DynInitMenuPaneL(aMenuPane);
         }
@@ -2702,6 +2853,35 @@ void CAknFepPluginManager::LaunchPenInputRecognitionWithDictionarySelectionL()
     }  
 
 // ---------------------------------------------------------------------------
+// CAknFepPluginManager::LaunchPenInputWritingSpeedSelectionL
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//     
+void CAknFepPluginManager::LaunchPenInputWritingSpeedSelectionL()
+    {
+    //record langauge
+    CPenInputGSInterface*  setting = CPenInputGSInterface::NewL();
+    CleanupStack::PushL(setting);
+    setting->ShowWritingSpeedPageL();
+    CleanupStack::PopAndDestroy(setting); 
+    TInt inputLanguage = iSharedData.InputTextLanguage();
+    }
+
+// ---------------------------------------------------------------------------
+// CAknFepPluginManager::LaunchPenInputGuideLineSelectionL
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//     
+void CAknFepPluginManager::LaunchPenInputGuidingLineSelectionL()
+    {
+    //record langauge
+    CPenInputGSInterface*  setting = CPenInputGSInterface::NewL();
+    CleanupStack::PushL(setting);
+    setting->ShowGuideLinePageL();
+    CleanupStack::PopAndDestroy(setting); 
+    TInt inputLanguage = iSharedData.InputTextLanguage();
+    }
+// ---------------------------------------------------------------------------
 // CAknFepPluginManager::LaunchPenInputSettingL
 // (other items were commented in a header)
 // ---------------------------------------------------------------------------
@@ -3291,11 +3471,13 @@ TBool CAknFepPluginManager::GetCurSuggestMode( TPluginInputMode& aSuggestMode )
         case EPluginInputModeHwr:
 			{
 		    if( iFepMan.IsSupportsSecretText() || 
-		    	( ( aSuggestMode == EPluginInputModeFSc || 
+		    	(( ( aSuggestMode == EPluginInputModeFSc || 
 		    		aSuggestMode == EPluginInputModeFingerHwr) &&
-		    	    iSharedData.InputTextLanguage() != ELangPrcChinese &&
-                    iSharedData.InputTextLanguage() != ELangTaiwanChinese &&
-                    iSharedData.InputTextLanguage() != ELangHongKongChinese ))   
+		    	  !(iSharedData.InputTextLanguage() == ELangPrcChinese ||
+		    	          iSharedData.InputTextLanguage() == ELangTaiwanChinese ||
+		    	          iSharedData.InputTextLanguage() == ELangHongKongChinese)) &&
+		    	  ((aSuggestMode == EPluginInputModeFingerHwr && 
+		    	          iSharedData.InputTextLanguage() != ELangArabic))))   
 				{
 				aSuggestMode = EPluginInputModeItut;
 				if ((disableLayouts & aSuggestMode))
@@ -3366,11 +3548,13 @@ TBool CAknFepPluginManager::GetCurSuggestMode( TPluginInputMode& aSuggestMode )
          testMode<<=1;
          }
          
-     if ((testMode == EPluginInputModeFSc ||
-          testMode == EPluginInputModeFingerHwr ) && 
-         iSharedData.InputTextLanguage() != ELangPrcChinese &&
-         iSharedData.InputTextLanguage() != ELangTaiwanChinese &&
-         iSharedData.InputTextLanguage() != ELangHongKongChinese )
+     if (((testMode == EPluginInputModeFSc ||
+           testMode == EPluginInputModeFingerHwr) &&
+         !(iSharedData.InputTextLanguage() == ELangPrcChinese ||
+           iSharedData.InputTextLanguage() == ELangTaiwanChinese ||
+           iSharedData.InputTextLanguage() == ELangHongKongChinese)) &&
+         ((testMode == EPluginInputModeFingerHwr && 
+           iSharedData.InputTextLanguage() != ELangArabic)))
          {
          return EFalse;   
          }
@@ -3617,6 +3801,10 @@ void CAknFepPluginManager::NotifyLayoutL(TInt aOpenMode, TInt aSuggestRange,
         {
         iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputInEditWordQueryDlg, iIsInEditWordQueryDlg);
         }    
+    if ( PluginInputMode() == EPluginInputModeFSQ )
+        {
+        UpdateFSQIndicator();
+        }
     }
 
     
@@ -4120,6 +4308,49 @@ TBool CAknFepPluginManager::GetIndicatorImgIDL(const TInt IndicatorUID,TInt &aIm
     return ret;  
     }     
 
+void CAknFepPluginManager::UpdateFSQIndicator()    
+    {
+    if ( EPluginInputModeFSQ != PluginInputMode() )
+        {
+        return;
+        }
+        
+    TInt indicatorImgID;
+    TInt indicatorTextID;
+    
+    if (iFepMan.GetIndicatorImgID(indicatorImgID, indicatorTextID))   
+        {
+        iIndicatorImgID = indicatorImgID;
+        iIndicatorTextID = indicatorTextID;
+        }
+        TInt indImgid = 0;
+        TInt indMaskid = 0; 
+
+        TInt textImgid = 0;
+        TInt textMaskid = 0; 
+
+    if (iIndicatorImgID > 0)
+        {
+        GetIndicatorImgID(iIndicatorImgID ,indImgid, indMaskid);
+        }
+    
+    if (iIndicatorTextID > 0)
+        {
+        GetIndicatorImgID(iIndicatorTextID ,textImgid, textMaskid);
+        }
+        
+    if (iIndicatorImgID != 0 || iIndicatorTextID != 0)
+        {
+        TFepIndicatorInfo indicator;
+        
+        indicator.iIndicatorImgID = indImgid;
+        indicator.iIndicatorMaskID = indMaskid;
+        indicator.iIndicatorTextImgID = textImgid;
+        indicator.iIndicatorTextMaskID = textMaskid;
+        TRAP_IGNORE(iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputFingerMatchIndicator, 
+            reinterpret_cast<TInt>(&indicator)));    
+        }
+   }
 void CAknFepPluginManager::UpdateITUTIndicator()    
     {
     if ( EPluginInputModeItut != PluginInputMode() )
@@ -4249,7 +4480,7 @@ void CAknFepPluginManager::DisplaySpellEditorL(const TInt aEditorFlag,
     iSpell = NULL;
     iSpellCba = ESpellCBACancelEmpty;
     iSpellOn = ETrue;
-    iSpell = CAknFepUiSpellContainer::NewL(editorFlag, editorCase, editorSCTResId);
+    iSpell = CAknFepUiSpellContainer::NewL(editorFlag, editorCase, editorSCTResId, IsEditorSupportSplitIme());
    
     iSpell->SetInputWinObserver(this);
    
@@ -4536,6 +4767,10 @@ void CAknFepPluginManager::UpdateCaseMode()
 		TRAP_IGNORE(iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputCaseMode, 
 		                                                     iCaseMan.CurrentCase()));	
 		UpdateITUTIndicator();
+	    if ( PluginInputMode() == EPluginInputModeFSQ )
+	        {
+			UpdateFSQIndicator();
+	        }
 		}	
 	}
 
@@ -4574,6 +4809,9 @@ void CAknFepPluginManager::DimAllModeAndCase(CAknFepUiInterfaceMenuPane* aMenuPa
     aMenuPane->SetItemDimmed(EChinFepCmdModeStroke, ETrue);    
     aMenuPane->SetItemDimmed(EChinFepCmdModeZhuyin, ETrue);    
     aMenuPane->SetItemDimmed(EChinFepCmdModePinyin, ETrue);    
+    aMenuPane->SetItemDimmed(EChinFepCmdModeStrokePhrase, ETrue);    
+    aMenuPane->SetItemDimmed(EChinFepCmdModeZhuyinPhrase, ETrue);    
+    aMenuPane->SetItemDimmed(EChinFepCmdModePinyinPhrase, ETrue);    
     aMenuPane->SetItemDimmed(EAknCmdEditModeLatinText, ETrue);     
     aMenuPane->SetItemDimmed(EChinFepCmdModeLatinUpper, ETrue); 
     aMenuPane->SetItemDimmed(EChinFepCmdModeLatinLower, ETrue);         
@@ -5087,7 +5325,9 @@ TBool CAknFepPluginManager::IsSupportITIOnFSQ()
               // default range couldn't be accent. 
               || !iPluginPrimaryRange )
          && iFepMan.InputLanguageCapabilities().iSupportsWesternQwertyPredictive
-         && !iSharedData.QwertyInputMode() )
+         && !iSharedData.QwertyInputMode()
+         // No need to support in dialer application.
+         && RProcess().SecureId().iId != KPhoneSecureId )
         {
         return ETrue;
         }        
@@ -5366,7 +5606,7 @@ TBool CAknFepPluginManager::IsDeadKeyCode( TUint aKeyCode )
 // Notify app touch input window closed or open.
 // -----------------------------------------------------------------------------
 //
-void CAknFepPluginManager::NotifyAppUiImeTouchWndState( const TBool aTouchState )
+void CAknFepPluginManager::NotifyAppUiImeTouchWndStateL( const TBool aTouchState )
     {
     if ( iLangMan.IsSplitView() )
         {
@@ -5415,7 +5655,7 @@ void CAknFepPluginManager::OnServerReady(TInt aErr)
     TRAP_IGNORE(iPenInputServer.AddPeninputServerObserverL(this)); //always add the handler            
     
     iPenInputSvrConnected = ETrue;                     
-    ActivatePenInputL();
+    TRAP_IGNORE(ActivatePenInputL());
     }
 
 CConnectAo::CConnectAo(CAknFepPluginManager* aClient) 

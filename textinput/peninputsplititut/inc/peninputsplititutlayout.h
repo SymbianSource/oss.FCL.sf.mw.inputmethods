@@ -60,6 +60,15 @@ public:
     ~CSplitItutUiLayout();
 
     /**
+     * Process text update
+     *
+     * @since S60 v5.0
+     * @param aData context data
+     * @return TInt
+     */ 
+    TInt OnAppEditorTextComing(const TFepInputContextFieldData& aData);
+    
+    /**
      * handle control event
      *
      * @since S60 v5.0
@@ -188,6 +197,14 @@ public:
      * @return None
      */
     void ApplyVariantLafDataL(TBool aResolutionChange = EFalse);
+    /**
+     * apply spell modelaf data
+     *
+     * @since S60 v5.0
+     * @return None
+     */
+    void ApplyVariantLafDataForSpellL();
+    
     
     /**
      * get ui manager

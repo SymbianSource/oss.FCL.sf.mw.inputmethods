@@ -258,22 +258,28 @@ EXPORT_C void CBubbleCtrl::Draw()
                      
     if ( iForgroundBmp )
         {
-        if( iForgroundBmp->SizeInPixels() != innerRect.Size() )
+        TRect iconRect;
+        iconRect.iTl = TPoint( innerRect.iTl.iX + iIconOffset.iWidth, 
+                innerRect.iTl.iY + iIconOffset.iHeight );
+        iconRect.SetWidth( iIconSize.iWidth );
+        iconRect.SetHeight( iIconSize.iHeight );
+        
+        if( iForgroundBmp->SizeInPixels() != iconRect.Size() )
         	{
-        	AknIconUtils::SetSize( iForgroundBmp, innerRect.Size(), EAspectRatioNotPreserved );
+        	AknIconUtils::SetSize( iForgroundBmp, iconRect.Size(), EAspectRatioNotPreserved );
         	}
         	
     	TRect srcRect( TPoint( 0, 0 ), iForgroundBmp->SizeInPixels() );
     	
     	if( iForgroundBmpMask )
     		{
-            if( iForgroundBmpMask->SizeInPixels() != innerRect.Size() )
+            if( iForgroundBmpMask->SizeInPixels() != iconRect.Size() )
             	{
-            	AknIconUtils::SetSize( iForgroundBmpMask, innerRect.Size(), EAspectRatioNotPreserved);
+            	AknIconUtils::SetSize( iForgroundBmpMask, iconRect.Size(), EAspectRatioNotPreserved);
             	}
             	        
-
-    		gc->BitBltMasked( innerRect.iTl, 
+            gc->SetBrushStyle( CGraphicsContext::ENullBrush );
+    		gc->BitBltMasked( iconRect.iTl, 
     						  iForgroundBmp, 
     						  srcRect,
     						  iForgroundBmpMask,
@@ -281,13 +287,13 @@ EXPORT_C void CBubbleCtrl::Draw()
     		}
         else
             {
-    		gc->BitBlt( innerRect.iTl,
+    		gc->BitBlt( iconRect.iTl,
     					iForgroundBmp,
     					srcRect );
             }            
         }
         
-    if ( iText )
+    if ( iText && iText->Length() > 0 )
         {
         gc->SetBrushStyle( CGraphicsContext::ENullBrush );
         TAknLayoutText textLayout;

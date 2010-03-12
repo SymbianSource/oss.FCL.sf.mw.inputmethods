@@ -27,7 +27,6 @@ class CFepLayoutMultiLineIcf;
 class CAknFepCtrlEventButton;
 class CAknFepCtrlRepeatButton;
 class CFepCtrlDropdownList;
-class CPeninputLayoutInputmodelChoice;
 class CTransparentHwrWndExt;
 class CPeninputFingerHwrArLafManager;
 class CPeninputArabicFingerHwrSymbolTable;
@@ -39,17 +38,16 @@ class CPeninputArabicFingerHwrIndicator;
  *  Main window of finger hwr arabic. 
  *
  *  @lib peninputfingerhwrar.lib
- *  @since S60 v5.0
+ *  @since Symbian TB9.2
  */
 class CPeninputFingerHwrArWnd : public CControlGroup
-    {
-
+    {   
 public:
 
     /**
      * Symbian constructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * 
      * @param aUiLayout The layout
      * @param aControlId The control id
@@ -62,7 +60,7 @@ public:
     /**
      * Symbian constructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * 
      * @param aUiLayout The layout
      * @param aControlId The control id
@@ -75,7 +73,7 @@ public:
     /**
      * standard c++ destructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     virtual ~CPeninputFingerHwrArWnd();
@@ -102,7 +100,7 @@ public:
     /**
      * Resize according to LAF.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     void SizeChangedL();
@@ -111,7 +109,7 @@ public: // target editor attributes
     /**
      * accept editor's text alignment.  
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aAlignment text alignment id. It can be one of the following: 
      *     EAknEditorAlignNone
      *     EAknEditorAlignCenter
@@ -126,7 +124,7 @@ public: // target editor attributes
     /**
      * accept editor's text.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aData editor's text.
      * @return none
      */
@@ -135,7 +133,7 @@ public: // target editor attributes
     /**
      * accept editor's promopt txt
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aPromoptData editor's promopt text
      * @return none
      */    
@@ -144,7 +142,7 @@ public: // target editor attributes
     /**
      * Dim option button
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aEnable Enable or disable option button
      * @return none
      */    
@@ -153,31 +151,18 @@ public: // target editor attributes
     /**
      * accept editor's bubble text.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aPromoptData editor's bubble text.
      * @return none
      */       
     void SetBubbleTextL( const TDesC& aInfo );    
 
-    /**
-     * accept editor's char ranges restriction.
-     * 
-     * @since S60 v5.0
-     * @param aPermittedRanges permitted char range flags. It can be combination of the following: 
-     *     ERangeNative
-     *     ERangeEnglish
-     *     ERangeNumber.
-     *     See TAknFepPenInputRange.
-     * @return none
-     */
-    void SetPermittedRanges( const TInt aPermittedRanges );
-    
 public: //hwr 
     
     /**
      * get strokes from hwr writing box
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return a TPoint array of strokes
      */
     const RArray<TPoint>& StrokeList();
@@ -185,7 +170,7 @@ public: //hwr
     /**
      * set end mark of hwr
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aEndMark a TPoint object as end mark
      * @return none
      */
@@ -194,7 +179,7 @@ public: //hwr
     /**
      * set guide line on or off. 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */
     void SetGuideLineOn( const TBool aGuideLineOn);
@@ -202,7 +187,7 @@ public: //hwr
     /**
      * set pen color of hwr writing 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */
     void SetBoxPenColor( const TInt aPenColor );
@@ -210,7 +195,7 @@ public: //hwr
     /**
      * set pen size of hwr writing 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */
     void SetBoxPenSize( const TSize aPenSize );
@@ -218,7 +203,7 @@ public: //hwr
     /**
      * set writing speed hwr writing 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */    
     void SetBoxWritingSpeed( const TTimeIntervalMicroSeconds32& aCharDelay );
@@ -226,7 +211,7 @@ public: //hwr
     /**
      * retrieve rect of hwr writingbox.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return rect of hwr writingbox.
      */
     TRect WritingBoxRect();
@@ -234,7 +219,7 @@ public: //hwr
     /**
      * Cancel wrting
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     void CancelWriting();    
@@ -242,9 +227,9 @@ public: //hwr
 public: // show symbol table page
     
     /**
-     * Change SCT page.
+     * Change symbol table page.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aPageNo page no.
      * @param aPos Specifies the interpretation of the aPageNo parameter:
             EPagePosPageNo - go to page aPageNo.
@@ -254,14 +239,14 @@ public: // show symbol table page
             EPagePosFirstPage  - go to first page.
      * @return none
      */
-    void ShowSctPage( TInt aPageNo, TInt aPos );
+    void ShowSymbolPage( TInt aPageNo, TInt aPos );
     
 public: //child control access
     
     /**
      * retrieve the ICF control. 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return pointer to ICF
      */
     CFepLayoutMultiLineIcf* Icf();
@@ -270,7 +255,7 @@ public: //child control access
     /**
      * retrieve the candicate list control. 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return pointer to candicate list 
      */    
     CFepCtrlDropdownList* CandidateList();
@@ -278,38 +263,15 @@ public: //child control access
     /**
      * retrieve the number candicate list control. 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return pointer to candicate list 
      */    
     CFepCtrlDropdownList* NumCandidateList();
-
-public: //ui
-    
-    /**
-     * update layout
-     * safe version of UpdateLayoutL()
-     * 
-     * @since S60 v5.0
-     * @param aIsStandby ETrue if is standby state
-     * @return none
-     */
-    void UpdateLayout( const TBool aIsStandby, 
-                       const TBool aReloadCandicate=ETrue );
-    
-    /**
-     * update layout
-     * 
-     * @since S60 v5.0
-     * @param aIsStandby ETrue if is standby state
-     * @return none
-     */    
-    void UpdateLayoutL( const TBool aIsStandby, 
-                        const TBool aReloadCandicate=ETrue);
-
+	
     /**
      * dim arrow buttons
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aDimArrow ETrue to dim arrow buttons, EFalse to set arrow buttons as not dimmed. 
      * @return none
      */
@@ -317,17 +279,9 @@ public: //ui
     
 public: // symbol table & candidate list    
     /**
-     * retrieve char range of layout, including sct.
-     * 
-     * @since S60 v5.0
-     * @return char range id.
-     */
-    TInt CurrentCharRange();
-    
-    /**
      * Show preview bubble
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aShow Show/Hide flag
      * @return none
      */
@@ -336,7 +290,7 @@ public: // symbol table & candidate list
 	/**
      * Open the symble table
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */
     void OpenSymbolTable();
@@ -344,15 +298,31 @@ public: // symbol table & candidate list
 	/**
      * Close the symble table
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */
 	void CloseSymbolTable();
 	
 	/**
+     * Open the candidate list
+     * 
+     * @since Symbian TB9.2
+     * @return none
+     */
+	void OpenCandidateList();
+	
+	/**
+     * Close the candidate list
+     * 
+     * @since Symbian TB9.2
+     * @return none
+     */
+	void CloseCandidateList();
+	
+	/**
      * Check if the symbol table is alreay opened up
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */
     TBool IsSymbolTableShowingUp();
@@ -360,14 +330,14 @@ public: // symbol table & candidate list
 	/**
      * Check if the candidate list was opened up
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none
      */
 	TBool IsCandidateShowup();
 
     /**
      * Hide the indicator of handwriting
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return none	 
      */
     void HideIndicator();
@@ -377,7 +347,7 @@ public: // symbol table & candidate list
 	 *
 	 * @param aCharPos The the char position
 	 * @param aCharBeforeCursor The char to be retrieved
-	 * @since S60 v5.0
+	 * @since Symbian TB9.2
      * @return TBool ETrue if char have been retrieved, EFalse otherwise
 	 */
 	TBool GetCharBeforeCursor(TInt aCharPos, TUint16& aCharBeforeCursor); 
@@ -387,7 +357,7 @@ protected:
     /**
      * C++ constructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aFepUiLayout A Ui Layout environment (CFepUiLayout)
      * @param aControlId Control id
      * @return None
@@ -399,7 +369,7 @@ private:
     /**
      * Symbian second-phase constructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aLandscapeStyle Current screen is landscape or not
      * @return None
      */
@@ -408,7 +378,7 @@ private:
     /**
      * create icf.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     void CreateContextFieldL();
@@ -416,14 +386,14 @@ private:
     /**
      * create candidate lists.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     void CreateCandidateListL();
     /**
      * create number candidate lists.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     void CreateNumCandidateListL();
@@ -431,7 +401,7 @@ private:
     /**
      * create writing box.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void CreateWritingBoxL();
@@ -439,7 +409,7 @@ private:
     /**
      * create all function buttons. 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void CreateButtonsL();
@@ -447,7 +417,7 @@ private:
     /**
      * create virtual sct pad.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void CreateSymbolTableL();
@@ -455,7 +425,7 @@ private:
     /**
      * EventButton creation helper.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aCtrlId button control id.
      * @param aResId resource id.
      * @param aEvent event id;
@@ -468,7 +438,7 @@ private:
     /**
      * RepeatButton creation helper.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aCtrlId button control id.
      * @param aResId resource id.
      * @param aEvent event id;
@@ -477,48 +447,37 @@ private:
      */
     CAknFepCtrlRepeatButton* CreateRepBtnL( const TInt aCtrlId, TInt32 aResId,  
             const TInt aEvent, const TInt aUnicode );
-    
-    /**
-     * load virtual number pad images. 
-     * 
-     * @since S60 v5.0
-     * @param aResId resource id.
-     * @param aKeySize virtual key rect.
-     * @return None
-     */    
-    void LoadVkbKeyImageL( const TInt aResId, const TSize& aKeySize );
-    
-    
+        
     /**
      * load virtual sct keys.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aResId resource id.
      * @param aCellRects rects of virtual keys.
      * @return None
      */      
-    void LoadVirtualSctpadKeysL( const TInt aResId, const RArray<TRect>& aCellRects );
+    void LoadSymbolVirtualKeysL( const TInt aResId, const RArray<TRect>& aCellRects );
 
     /**
      * relayout full ui, reset all controls position. 
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void ResetLayoutL();
 
     /**
-     * layout for chinese range standby.
+     * switch to arabic standby view
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void SwitchToStandbyView();
     
     /**
-     * layout for symbol range standby.
+     * switch to symbol table view
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void SwitchToSymbolTableView();
@@ -526,7 +485,7 @@ private:
     /**
      * EventButton layout helper. Move button to specified rect.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aButton the button to move
      * @param aRect new rect of button
      * @param aXPadding horz padding of button icon.
@@ -540,7 +499,7 @@ private:
     /**
      * read control's shadow info.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aResId resource id.
      * @return None
      */    
@@ -549,7 +508,7 @@ private:
     /**
      * read control's background info.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aResId resource id.
      * @return None
      */
@@ -558,7 +517,7 @@ private:
     /**
      * read icf appearance info.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aResId resource id.
      * @return None
      */    
@@ -567,31 +526,22 @@ private:
     /**
      * read writingbox appearance info.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aResId resource id.
      * @return None
      */    
     void ReadWritingBoxInfoL( TInt aResId );
-
-    /**
-     * update feedback state of all virtual keys 
-     * 
-     * @since S60 v5.0
-     * @param aType char range id
-     * @return None
-     */
-    void UpdateAllVirtualKeysFeedback( TInt aType );
     
 	/**
 	 * Calcaulate the postion of guideline
-	 * @since S60 v5.0
+	 * @since Symbian TB9.2
 	 * @return None
 	 */
     void CalculateGuideLinePos();
 	
 	/**
 	 * Draw the guideline
-	 * @since S60 v5.0
+	 * @since Symbian TB9.2
 	 * @return None
 	 */
     void DrawGuideLine();
@@ -681,12 +631,6 @@ private: // datas
      * Not own.
      */     
     CPeninputArabicFingerHwrSymbolTable* iSymbolTable;
-	
-    /**
-     * Ime selection list control.
-     * Not own.
-     */     
-    CPeninputLayoutInputmodelChoice* iInputModeSwitch;
     
     /**
      * L&F manager.
@@ -698,17 +642,7 @@ private: // datas
      * First time construct flag
      */
     TBool iFirstTimeConstruct;
-    
-    /**
-     * Current char range id, including SCT.
-     */
-    TInt iCurCharRange;
-    
-    /**
-     * Current char range id, without SCT.
-     */
-    TInt iCurCharRangeNoSct;
-    
+
     /**
      * bit mask of permitted char ranges.
      */

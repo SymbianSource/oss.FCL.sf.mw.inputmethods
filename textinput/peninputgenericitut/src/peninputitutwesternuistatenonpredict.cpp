@@ -111,10 +111,10 @@ void CWesternItutUiStateNonPredict::OnEntryL()
             }
         else
             {
-            iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(EFalse);
+            //iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(EFalse);
             iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(EFalse);
             iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(EFalse);
-            iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
+            //iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
             
             iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight);    
             if(iOwner->LayoutContext()->IsSecretEdtior())

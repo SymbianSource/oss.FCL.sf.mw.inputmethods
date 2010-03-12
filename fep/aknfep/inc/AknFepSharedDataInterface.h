@@ -525,6 +525,25 @@ public:
     TInt DefaultOnScreenVKB();
 #endif
     
+    /**
+     * Returns a value of default arabic finger hwr orientation.
+     *
+     * @since 5.2
+     * @return 0 is portrait.
+     *         1 is landscape.
+     */
+    TInt DefaultArabicFingerHwrOrientation() const;
+    
+    /**
+     * Set a value of default arabic finger hwr orientation.
+     *
+     * @since 5.2
+     * @param aValue new value set to default arabic finger hwr orientation shared data item which
+     *               represents the default orientation.
+     *               0 is portrait.
+     *               1 is landscape.
+     */
+    void SetDefaultArabicFingerHwrOrientation(TInt aValue);
 private:
     /**
      * C++ Constructor

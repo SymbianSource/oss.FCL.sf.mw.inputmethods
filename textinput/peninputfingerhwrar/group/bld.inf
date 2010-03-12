@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -21,11 +21,20 @@ PRJ_PLATFORMS
 
 PRJ_EXPORTS
 ../rom/peninputfingerhwrar_variant.iby CUSTOMER_MW_LAYER_IBY_EXPORT_PATH( peninputfingerhwrar_variant.iby )	
+../data/qgn_indi_input_hwr_arabic_close.svg                      /epoc32/s60/icons/qgn_indi_input_hwr_arabic_close.svg
+../data/qgn_indi_input_hwr_arabic_page_1_2.svg                   /epoc32/s60/icons/qgn_indi_input_hwr_arabic_page_1_2.svg
+../data/qgn_indi_input_hwr_arabic_page_2_2.svg                   /epoc32/s60/icons/qgn_indi_input_hwr_arabic_page_2_2.svg
+../data/qgn_indi_input_hwr_arabic_page_1_3.svg                   /epoc32/s60/icons/qgn_indi_input_hwr_arabic_page_1_3.svg
+../data/qgn_indi_input_hwr_arabic_page_2_3.svg                   /epoc32/s60/icons/qgn_indi_input_hwr_arabic_page_2_3.svg
+../data/qgn_indi_input_hwr_arabic_page_3_3.svg                   /epoc32/s60/icons/qgn_indi_input_hwr_arabic_page_3_3.svg
+../data/qgn_indi_input_hwr_arabic_symbol_table.svg               /epoc32/s60/icons/qgn_indi_input_hwr_arabic_symbol_table.svg
+../data/qgn_indi_input_hwr_arabic_writing_area.svg               /epoc32/s60/icons/qgn_indi_input_hwr_arabic_writing_area.svg
+../data/qgn_indi_input_arabic_backspace.svg                      /epoc32/s60/icons/qgn_indi_input_arabic_backspace.svg
+../data/qgn_indi_input_arabic_enter.svg                          /epoc32/s60/icons/qgn_indi_input_arabic_enter.svg
 
 	
 PRJ_MMPFILES
-//gnumakefile peninputhwrfsar_icons.mk
-	peninputfingerhwrar.mmp
+peninputfingerhwrar.mmp
 
 PRJ_EXTENSIONS
 START EXTENSION s60/mifconv

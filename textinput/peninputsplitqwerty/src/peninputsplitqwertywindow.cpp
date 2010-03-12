@@ -56,6 +56,8 @@
 #include "peninputsplitqwertylangmeritpair.h"
 #include "peninputsplitqwertylayout.h"
 
+#include <peninputaknvkbpreviewbubblerenderer.h>
+
 // Constants
 const TInt KPeninputVkbWndInvalidIndex = -1;
 const TInt KInvalidImg = -1 ;
@@ -227,11 +229,12 @@ void CPeninputSplitQwertyWindow::CreateAllControlsL()
     iVkbLayout->ConstructFromNonIrregularResourceL();        
 
     //todo split-view FSQ, bubble support
-    /*
-    iVkbCtrl->ShowBubble(ETrue);    
-    iVkbCtrl->SetGowithPointerDown(ETrue);
-    iVkbCtrl->SetBubbleBitmapParam(NULL,NULL,KAknsIIDQsnFrInputCharPreview); 
-    */
+    CPeninputAknVkbPreviewBubbleRenderer* renderer = CPeninputAknVkbPreviewBubbleRenderer::NewL();
+    iVkbCtrl->SetPreviewBubbleRenderer( renderer );
+    iVkbCtrl->ShowBubble( ETrue );    
+    iVkbCtrl->SetGowithPointerDown( ETrue );
+    iVkbCtrl->SetBubbleBitmapParam( NULL, NULL, KAknsIIDQsnFrInputCharPreview ); 
+    iVkbCtrl->SetBubbleSize( TSize(80,80) ); //todo preview-bubble
        
     //set key to be 9 piece graphics
     iVkbCtrl->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonFrNormal );
@@ -977,7 +980,7 @@ void CPeninputSplitQwertyWindow::ConstructAccentListL( TInt aLangId )
 // Load range labels for range list
 // ---------------------------------------------------------------------------
 //
-void CPeninputSplitQwertyWindow::ConstructRangeLabelListL( TInt aLangId )
+void CPeninputSplitQwertyWindow::ConstructRangeLabelListL( TInt /*aLangId*/ )
     {
     iRangeLabels.iLabelNativeChar.Zero();
     iRangeLabels.iLabelNativeNumber.Zero();
@@ -986,68 +989,7 @@ void CPeninputSplitQwertyWindow::ConstructRangeLabelListL( TInt aLangId )
     iRangeLabels.iLabelSymbol.Zero();
     iRangeLabels.iLabelAccent.Zero();
     
-    TInt resid = -1;
-    switch ( aLangId )
-        {
-        case 16: //Cyrillic
-        case 42:
-        case 93:
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_CYRILLIC;
-            }
-            break;
-        
-        case 54: //Greek
-        case 55:
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_GREEK;
-            }
-            break;        
-        case 57: //Hebrew
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_HEBREW;
-            }
-            break;  
-        case 37: //Arabic
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_ARABIC;
-            }
-            break;
-        case 50://Farsi
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_FARSI;
-            }
-            break;
-        case 94: //Urdu
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_URDU;
-            }
-            break;
-        case 33: //Thai
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_THAI;
-            }
-            break;
-        case 29: //chinese
-        case 30:
-        case 31:
-            break;
-        case 58: //Devanagiri
-        case 72:
-            {
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_DEVANAGIRI;
-            }
-            break;
-        default: //Latin        
-            {
-            //1,   2,   3,   4,   5,   6,   7,   8,   9,   10, 
-            //11,  12,  13,  14,  15,  17,  18,  20,  21,  22,  
-            //23,  24,  25,  26,  27,  28,  39,  44,  45,  46,  
-            //47,  48,  49,  51,  59,  67,  68,  70,  76,  78,  
-            //79,  82,  83,  85,  91,  96,  102, 103, 401, 402
-            resid = R_PENINPUT_LAYOUT_VKB_RANGES_LATIN;
-            }
-        }
+    TInt resid = R_PENINPUT_LAYOUT_VKB_RANGES;
     
     TResourceReader reader;   
     CCoeEnv::Static()->CreateResourceReaderLC( reader, resid );
@@ -1074,7 +1016,7 @@ void CPeninputSplitQwertyWindow::ConstructRangeLabelListL( TInt aLangId )
 //
 void CPeninputSplitQwertyWindow::ShowBubble( TInt aShow )
     {
-    iVkbCtrl->ShowBubble( EFalse ); 
+    iVkbCtrl->ShowBubble( aShow > 0 ? ETrue : EFalse ); 
     }
 
 // ---------------------------------------------------------------------------
@@ -1083,37 +1025,31 @@ void CPeninputSplitQwertyWindow::ShowBubble( TInt aShow )
 //
 void CPeninputSplitQwertyWindow::UpdateRangeCtrlsL()
     {
-    TInt currentRange = IntContext( EPeninputDataTypeCurrentRange );
+    RArray<CFepLayoutChoiceList::SItem> items;
+    PrepareRangeListItems( items );
+    TInt count = items.Count();
+    items.Close();
     
-    TInt resid = ConfigInfo()->RangebarResId();
+    TInt languageId = IntContext( EPeninputDataTypeInputLanguage );
+    TInt range = IntContext( EPeninputDataTypeCurrentRange );
+
+    TInt resId = -1;
+    TInt aplhaRangeResId = -1;
+    TInt numberRangeResId = -1;
+    GetRangeIconResource( languageId, aplhaRangeResId, numberRangeResId );
     
-    TResourceReader reader;
-    
-    CCoeEnv::Static()->CreateResourceReaderLC( reader, resid ); 
-    
-    TInt count = reader.ReadInt16();
-    for ( TInt i = 0; i < count; i++ )
+    if ( range == ERangeEnglish || range == ERangeNative ) 
         {
-        const TInt16 rangeId = reader.ReadInt16();
-        const TInt16 rangeType = reader.ReadInt16();
-        const TInt16 ctrlId = reader.ReadInt16();
-        const TInt16 ctrlType = reader.ReadInt16(); 
-        const TInt32 ctrlResId = reader.ReadInt32();
-        const TInt actionStyle = reader.ReadInt16();
-        TBool hide = reader.ReadInt16();
-        TInt posidx = reader.ReadInt16();        
-        
-        if ( currentRange == rangeId )
-            {
-            iRangeButton->SetResourceId( ctrlResId );
-            iRangeButton->ConstructFromResourceL();
-            break;
-            }
+        resId = aplhaRangeResId;
         }
-    
-    // Pop and destroy reader
-    CleanupStack::PopAndDestroy( 1 );
-    
+    else
+        {
+        resId = numberRangeResId; 
+        }
+        
+    iRangeButton->SetResourceId( resId );
+    iRangeButton->ConstructFromResourceL();
+    iRangeButton->SetDimmed( count < 1 );    
     }
 
 // ---------------------------------------------------------------------------
@@ -1519,105 +1455,41 @@ void CPeninputSplitQwertyWindow::ReorgnizeTitleBar()
 //
 void CPeninputSplitQwertyWindow::PopupRangeListL()
     {
-    TInt currentRange = IntContext( EPeninputDataTypeCurrentRange );
-    TInt permittedRange = IntContext( EPeninputDataTypePermittedRange );
-    TInt currentAccent = IntContext( EPeninputDataTypeCurrentAccent );
-    
-    CFepUiBaseCtrl* btn = Control( EPeninutWindowCtrlIdRangeBtn );
-    if( !btn ) 
-        {
-        return;
-        }
-    
     if ( !iPopupInited )
         {
         TRAP_IGNORE( DoIdleConstructL() );
         }
     
+
     iPopupWnd->ClearItemsL();
-    
-    CPeninputRangeBarInfo* rbinfo= ConfigInfo()->RangeBarInfo();
-    CPeninputRangeInfo* rgninfo = NULL;
-   
-    //add accent items
-    if ( permittedRange & ERangeAccent )
+    RArray<CFepLayoutChoiceList::SItem> items;
+    PrepareRangeListItems( items );
+    TInt count = items.Count();
+    for ( TInt i = 0; i < count; i++ )
         {
-        rgninfo = rbinfo->FindRange( ERangeAccent );
-        if ( rgninfo )
-            {
-            for ( TInt i = 0; i < iAccentCmdList.Count(); i++ )
-                {
-                if( currentRange != ERangeAccent || currentAccent != i )
-                    {
-                    iPopupWnd->AddItemL( iAccentCmdList[i] );
-                    }
-                }
-            }
+        iPopupWnd->AddItemL( items[i] );
+        }
+    items.Close();
+
+    if ( iPopupWnd->ItemsCount() < 1 ) 
+        {
+        return;
         }
     
-    //add range items
-    
-    CFepLayoutChoiceList::SItem item;
-    
-    if ( permittedRange & ERangeNative )
+    if ( iPopupWnd->ItemsCount() < 2 )
         {
-        rgninfo = rbinfo->FindRange( ERangeNative );
-        if ( rgninfo && currentRange != ERangeNative )
-            {
-            item.iCommand = EPeninputVkbLayoutNativeChar;
-            item.iText.Copy( iRangeLabels.iLabelNativeChar );
-            iPopupWnd->AddItemL( item );
-            }
+        const CFepLayoutChoiceList::SItem* item = iPopupWnd->ItemByIndex( 0 );
+        CFepLayoutChoiceList::SEvent event;
+        event.iIndex = 0;
+        event.iCommand = item->iCommand;
+        TPtrC ptr;
+        ptr.Set(reinterpret_cast<TText*>(&event), sizeof(event));
+        HandleRangeListSelectedL( iPopupWnd, ptr );
+        return;
         }
     
-    if ( permittedRange & ERangeNativeNumber )
-        {
-        rgninfo = rbinfo->FindRange( ERangeNativeNumber );
-        if ( rgninfo && currentRange != ERangeNativeNumber )
-            {
-            item.iCommand = EPeninputVkbLayoutNativeNumber;
-            item.iText.Copy( iRangeLabels.iLabelNativeNumber );
-            iPopupWnd->AddItemL( item );
-            }
-        }
-   
-    if ( permittedRange & ERangeEnglish )
-        {
-        rgninfo = rbinfo->FindRange( ERangeEnglish );
-        if ( rgninfo && currentRange != ERangeEnglish )
-            {
-            item.iCommand = EPeninputVkbLayoutLatinChar;
-            item.iText.Copy( iRangeLabels.iLabelLatinChar );
-            iPopupWnd->AddItemL( item );
-            }
-        }
-    
-    if ( permittedRange & ERangeNumber )
-        {
-        rgninfo = rbinfo->FindRange( ERangeNumber );
-        if ( rgninfo && currentRange != ERangeNumber )
-            {
-            item.iCommand = EPeninputVkbLayoutLatinNumber;
-            item.iText.Copy( iRangeLabels.iLabelLatinNumber );
-            iPopupWnd->AddItemL( item );
-            }
-        }
-    
-    /*
-    if ( permittedRange & ERangeSymbol )
-        {
-        rgninfo = rbinfo->FindRange( ERangeSymbol );
-        if ( rgninfo && currentRange != ERangeSymbol )
-            {
-            item.iCommand = EPeninputVkbLayoutSymbol;
-            item.iText.Copy( _L("#*") );
-            iPopupWnd->AddItemL( item );
-            }
-        }
-    */
-    
-    iPopupWnd->SetListColumnNumWithLafL( iPopupWnd->ItemsCount() );
-    
+    CFepUiBaseCtrl* btn = Control( EPeninutWindowCtrlIdRangeBtn );    
+    iPopupWnd->SetListColumnNumWithLafL( iPopupWnd->ItemsCount() );    
     iPopupWnd->SetCurrentFocusedIndex( - 1 ); //no active item
     iPopupWnd->Display( btn->Rect() );
     iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStatePopup );    
@@ -1717,12 +1589,6 @@ void CPeninputSplitQwertyWindow::SimulateRawEvent( TInt aScanCode,
     UiLayout()->SignalOwner(ESignalSimulateEvent,eventPtr);
     }
 
-TInt CPeninputSplitQwertyWindow::IntContext( TPeninputDataType aDataIndex )
-    {
-    return CPeninputDataConverter::AnyToInt( 
-                iLayoutContext->RequestData( aDataIndex ) 
-                );
-    }
 
 // ---------------------------------------------------------------------------
 // Handle size changed for range list
@@ -1834,11 +1700,22 @@ void CPeninputSplitQwertyWindow::HandleButtonResOnLangDirChangeL( TInt aControlI
     }    
 
 // ---------------------------------------------------------------------------
+// Utils to get context value 
+// ---------------------------------------------------------------------------
+//
+TInt CPeninputSplitQwertyWindow::IntContext( TPeninputDataType aDataIndex )
+    {
+    return CPeninputDataConverter::AnyToInt( 
+                                       iLayoutContext->RequestData( aDataIndex ) 
+                                   );
+    }
+
+// ---------------------------------------------------------------------------
 // Handle range list event
 // ---------------------------------------------------------------------------
 //
 void CPeninputSplitQwertyWindow::HandleRangeListSelectedL( CFepUiBaseCtrl* /*aCtrl*/, 
-                                                          const TDesC& aData )
+                                                           const TDesC& aData )
     {
     CFepLayoutChoiceList::SEvent* event = (CFepLayoutChoiceList::SEvent*)aData.Ptr();
     
@@ -1913,4 +1790,138 @@ void CPeninputSplitQwertyWindow::HandleRangeListSelectedL( CFepUiBaseCtrl* /*aCt
     UpdateRangeCtrlsL();
     }
 
+//todo new rangelist
+// ---------------------------------------------------------------------------
+// Get resource ids of range button icon
+// ---------------------------------------------------------------------------
+//
+void CPeninputSplitQwertyWindow::GetRangeIconResource( TInt aLangId, 
+                                                       TInt& aAlphaRange, 
+                                                       TInt& aOtherRange  )
+    {   
+    switch ( aLangId )
+        {
+        case ELangRussian:    //Cyrillic
+        case ELangBulgarian:
+        case ELangUkrainian:
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_CYRILLIC_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_CYRILLIC_NUMERIC;
+            }
+            break;
+        case ELangGreek:       //Greek
+        case ELangCyprusGreek:
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_GREEK_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_GREEK_NUMERIC;
+            }
+            break;        
+        case ELangHebrew:     //Hebrew
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_HEBREW_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_HEBREW_NUMERIC;
+            }
+            break;  
+        case ELangArabic:     //Arabic
+        case ELangFarsi:      //Farsi
+        case ELangUrdu:       //Urdu
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_ARABIC_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_ARABIC_NUMERIC;
+            }
+            break;
+        case ELangThai:       //Thai
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_THAI_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_THAI_NUMERIC;
+            }
+            break;
+        default:              //others       
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_LATIN_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_LATIN_NUMERIC;
+            }
+        }
+    }
+
+//todo new rangelist
+// ---------------------------------------------------------------------------
+// Prepare range list items
+// ---------------------------------------------------------------------------
+//
+void CPeninputSplitQwertyWindow::PrepareRangeListItems( 
+                             RArray<CFepLayoutChoiceList::SItem>& aRangeItems )
+    {
+    aRangeItems.Reset();
+    TInt currentRange = IntContext( EPeninputDataTypeCurrentRange );
+    TInt permittedRange = IntContext( EPeninputDataTypePermittedRange );
+    TInt currentAccent = IntContext( EPeninputDataTypeCurrentAccent );
+    
+    CPeninputRangeBarInfo* rbinfo= ConfigInfo()->RangeBarInfo();
+    CPeninputRangeInfo* rgninfo = NULL;
+   
+    //add accent items
+    if ( permittedRange & ERangeAccent )
+        {
+        rgninfo = rbinfo->FindRange( ERangeAccent );
+        if ( rgninfo )
+            {
+            for ( TInt i = 0; i < iAccentCmdList.Count(); i++ )
+                {
+                if( currentRange != ERangeAccent || currentAccent != i )
+                    {
+                    aRangeItems.Append( iAccentCmdList[i] );
+                    }
+                }
+            }
+        }
+    
+    //add range items
+    
+    CFepLayoutChoiceList::SItem item;
+    
+    if ( permittedRange & ERangeNative )
+        {
+        rgninfo = rbinfo->FindRange( ERangeNative );
+        if ( rgninfo && currentRange != ERangeNative )
+            {
+            item.iCommand = EPeninputVkbLayoutNativeChar;
+            item.iText.Copy( iRangeLabels.iLabelNativeChar );
+            aRangeItems.Append( item );
+            }
+        }
+    
+    if ( permittedRange & ERangeNativeNumber )
+        {
+        rgninfo = rbinfo->FindRange( ERangeNativeNumber );
+        if ( rgninfo && currentRange != ERangeNativeNumber )
+            {
+            item.iCommand = EPeninputVkbLayoutNativeNumber;
+            item.iText.Copy( iRangeLabels.iLabelNativeNumber );
+            aRangeItems.Append( item );
+            }
+        }
+   
+    if ( permittedRange & ERangeEnglish )
+        {
+        rgninfo = rbinfo->FindRange( ERangeEnglish );
+        if ( rgninfo && currentRange != ERangeEnglish )
+            {
+            item.iCommand = EPeninputVkbLayoutLatinChar;
+            item.iText.Copy( iRangeLabels.iLabelLatinChar );
+            aRangeItems.Append( item );
+            }
+        }
+    
+    if ( permittedRange & ERangeNumber )
+        {
+        rgninfo = rbinfo->FindRange( ERangeNumber );
+        if ( rgninfo && currentRange != ERangeNumber )
+            {
+            item.iCommand = EPeninputVkbLayoutLatinNumber;
+            item.iText.Copy( iRangeLabels.iLabelLatinNumber );
+            aRangeItems.Append( item );
+            }
+        }  
+    }
 // End Of File

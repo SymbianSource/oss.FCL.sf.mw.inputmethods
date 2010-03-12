@@ -74,6 +74,7 @@ public:
     void SetCase(TInt aCase);
 
     TAny* RequestData(TInt aDataType);
+    TAny* RequestDataForPortraitWest(TInt aDataType);
 
     inline CPtiEngine* PtiEngine();
 
@@ -100,6 +101,9 @@ public:
 
     inline void SetLatinOnly( TBool aLatinOnly );
 
+    inline TBool IsPortraitWest();
+    
+    TBool IsChineseGlobalLanguage();
 	void SetUpdate(TBool aNeedUpdate);
 	TBool IsUpdate() const;
     // when user press navi-next button on dropdownlist, there is need to 
@@ -164,6 +168,14 @@ public:
 	TInt iIcfTextHeightCn;
 	
 	TRect iShiftIconRect;
+	TInt iIcfTextLeftMarginForPrtWest;
+    TInt iIcfTextRightMarginForPrtWest;
+    TInt iIcfTextTopMarginForPrtWest;
+    TInt iIcfTextBottomMarginForPrtWest;
+    TInt iIcfTextLineSpaceMarginForPrtWest;
+    TInt iIcfTextHeightForPrtWest;
+    TRect iShiftIconRectForPrtWest;
+    TInt iSpellIcfTextHeightForPrtWest;
 private:
     CGenericItutDataMgr(MItutLayoutContext* aLayoutContext, CPtiEngine* aPtiEngine );
 
@@ -188,6 +200,7 @@ private:
     
     TInt HindiKeypadResourceId();
     TInt KoreanKeypadResourceId();
+    void ReadLafInfoForPrtWest();
     
 private: // data member
     RPointerArray<MItutPropertySubscriber> iSubscriberList;
@@ -324,6 +337,24 @@ private: // data member
     TAknTextLineLayout iBtnTextFormat1; 
     TFepIndicatorInfo iIndicatorData; 
     
+    TRect iSpellQueryPaneRectForPrtWest;
+    TRect iOKRectForPrtWest;
+    TRect iCancelRectForPrtWest;
+    TAknTextLineLayout iBtnOKTextForPrtWest;
+    TAknTextLineLayout iBtnCancelTextForPrtWest;
+    TRect iSpellICFRectForPrtWest;
+    TRect iSpellICFBtnRectForPrtWest;
+    TRect iSpellICFBtnInnerRectForPrtWest;
+    TAknTextLineLayout iSpellText1ForPrtWest;
+    TAknTextLineLayout iSpellText2ForPrtWest;
+    TAknTextLineLayout iSpellText3ForPrtWest;
+    TRect iSpellIndiPaneWithoutTextForPrtWest;
+    TRect iSpellIndiIconWithoutTextForPrtWest;
+    CFont* iSpellIcfFontForPrtWest;
+    TRect iSpellArrowLeftRectForPrtWest;
+    TRect iSpellArrowLeftInnerRectForPrtWest;
+    TRect iSpellArrowRightRectForPrtWest;
+    TRect iSpellArrowRightInnerRectForPrtWest;
     RPointerArray<TMenuItem> iMenuItemList;
 
     TBool iNeedUpdate;
@@ -337,6 +368,37 @@ private: // data member
 	TBool iPlusCharFlagChanged;
 	TBool iNumberOnly;
 
+	TRect iLayoutRectForPrtWest;
+	TPoint iLayoutOffsetForPrtWest;
+	RArray<TRect> iKeypadCellRectsForPrtWest;
+	TRect iKeypadRectForPrtWest;
+    TAknTextLineLayout iVkAlphaText1ForPrtWest;
+    TAknTextLineLayout iVkAlphaText2ForPrtWest;
+    TAknTextLineLayout iVkAlphaText3ForPrtWest;
+    TAknTextLineLayout iVkNumTextForPrtWest;
+    TRect iCloseRectForPrtWest;
+    TRect iCloseInnerRectForPrtWest;
+    TRect iArrowLeftRectForPrtWest;
+    TRect iArrowLeftInnerRectForPrtWest;
+    TRect iOptionsRectForPrtWest;
+    TRect iOptionInnerRectForPrtWest;
+    TRect iArrowRightRectForPrtWest;
+    TRect iArrowRightInnerRectForPrtWest;
+    TRect iBackspaceRectForPrtWest;
+    TRect iBackspaceInnerRectForPrtWest;
+    TRect iPreviewWndRectForPrtWest;
+    TRect iPreviewWndInnerRectForPrtWest;
+    TAknTextLineLayout iPreviewWndTextForPrtWest;
+    CFont* iBubbleFontForPrtWest;
+    TRect iIcfRectForPrtWest;
+    CFont* iIcfFontForPrtWest;
+    TInt iIcfTextAlignmentForPrtWest;
+    
+    TRect iIndiPaneRectWithTextForPrtWest;
+    TRect iIndiPaneRectWithoutTextForPrtWest;
+    TRect iIndiIconRectWithTextForPrtWest;
+    TRect iIndiIconRectWithoutTextForPrtWest;
+    TAknTextLineLayout iIndiTextForPrtWest;
     };
 
 inline CPtiEngine* CGenericItutDataMgr::PtiEngine()
@@ -393,6 +455,10 @@ inline void CGenericItutDataMgr::SetLatinOnly( TBool aLatinOnly )
     iLatinOnly = aLatinOnly;
     } 
 
+inline TBool CGenericItutDataMgr::IsPortraitWest()
+    {
+    return !iLandScape && !IsChinese();
+    }
 inline TBool CGenericItutDataMgr::IsValidLanguage(TInt aLanguage)
 	{
 	return (aLanguage != ELangTest && aLanguage != ELangNone);	

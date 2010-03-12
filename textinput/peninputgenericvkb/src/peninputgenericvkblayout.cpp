@@ -50,6 +50,7 @@ const TUint16 thaiUnicodeNew[KNumberOfDottedChar] = {0xF731,0xF733,0xF734,0xF735
 
 
 _LIT(KDisplaySpace, "\x0020");
+_LIT(KEmptyString, "");
 
 // ---------------------------------------------------------------------------
 // CPeninputGenericVkbLayoutImp::NewL
@@ -222,7 +223,23 @@ TInt CPeninputGenericVkbLayout::HandleCommand( TInt aCmd, TUint8* aData )
             {
             vkbWindow->SetSwitchlistLanguage(*aData);
             vkbWindow->SetDeadKey();
-			TRAP_IGNORE(vkbWindow->ConstructAccentListL(*aData));
+            if ( iLayoutType == EPluginInputModeFSQ )
+                {
+                TRAP_IGNORE(vkbWindow->ConstructFSQAccentListL( *aData ));
+                TRAP_IGNORE(vkbWindow->ConstructRangeLabelListL( *aData ));
+                }
+            else
+                {
+                TRAP_IGNORE(vkbWindow->ConstructAccentListL(*aData));
+                }
+            }
+            break;
+        case ECmdPenInputRange:
+            {
+            if ( iLayoutType == EPluginInputModeFSQ )
+                {
+                TRAP_IGNORE( vkbWindow->UpdateRangeCtrlsL());
+                }
             }
             break;
         case ECmdPenInputIsSecretText:
@@ -277,6 +294,14 @@ TInt CPeninputGenericVkbLayout::HandleCommand( TInt aCmd, TUint8* aData )
             // Set the flag to indicate if FSQ with ITI feature is opened
             iITIEnabled = CPeninputDataConverter::AnyToInt( aData );
             }            
+            break;
+        case ECmdPenInputFingerMatchIndicator:
+            {
+            if ( iLayoutType == EPluginInputModeFSQ )
+                {
+				TRAP_IGNORE( vkbWindow->UpdateIndiBubbleL( aData ));
+                }
+            }
             break;
         default:
             {
@@ -375,11 +400,46 @@ void CPeninputGenericVkbLayout::HandleAppInfoChange(const TDesC& aInfo,
             { 
             if ( aInfo.Length() > 0 && !iInEditWordQueryDlg)
                 {
+				icf->HideBubble();
+                CPeninputGenericVkbWindow* vkbWindow = 
+                    static_cast<CPeninputGenericVkbWindow*>(iLayoutWindow);
+                vkbWindow->SetIndiWithTextFlag( ETrue );
+                vkbWindow->IndiBubbleWithText();
+                
+                if ( vkbWindow->IndicatorData().iIndicatorImgID != 0 && 
+                     vkbWindow->IndicatorData().iIndicatorMaskID != 0 && 
+                     vkbWindow->IndicatorData().iIndicatorTextImgID != 0 &&
+                     vkbWindow->IndicatorData().iIndicatorTextMaskID != 0 )
+                    {
+					TRAP_IGNORE( vkbWindow->SetIndiBubbleImageL( 
+                            vkbWindow->IndicatorData().iIndicatorImgID,
+                            vkbWindow->IndicatorData().iIndicatorMaskID,
+                            vkbWindow->IndicatorData().iIndicatorTextImgID,
+                            vkbWindow->IndicatorData().iIndicatorTextMaskID ));
+                    }
                 icf->ShowBubble(aInfo,icf->MsgBubbleCtrl()->Rect());
                 }
             else
                 {
                 icf->HideBubble();
+                CPeninputGenericVkbWindow* vkbWindow = 
+                    static_cast<CPeninputGenericVkbWindow*>(iLayoutWindow);
+                vkbWindow->SetIndiWithTextFlag( EFalse );
+                vkbWindow->IndiBubbleWithoutText();
+                
+                if ( vkbWindow->IndicatorData().iIndicatorImgID != 0 && 
+                     vkbWindow->IndicatorData().iIndicatorMaskID != 0 && 
+                     vkbWindow->IndicatorData().iIndicatorTextImgID != 0 &&
+                     vkbWindow->IndicatorData().iIndicatorTextMaskID != 0 )
+                    {
+					TRAP_IGNORE( vkbWindow->SetIndiBubbleImageL( 
+                            vkbWindow->IndicatorData().iIndicatorImgID,
+                            vkbWindow->IndicatorData().iIndicatorMaskID,
+                            vkbWindow->IndicatorData().iIndicatorTextImgID,
+                            vkbWindow->IndicatorData().iIndicatorTextMaskID));
+                    }
+                
+                icf->ShowBubble(KEmptyString, icf->MsgBubbleCtrl()->Rect());
                 }
             }            
         else 

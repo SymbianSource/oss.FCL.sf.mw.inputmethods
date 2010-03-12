@@ -51,7 +51,8 @@ public: // Constructors and destructor
     static CAknFepUiSpellInputPane* NewL( CCoeControl* aParent, 
                                  const TInt aEditorFlag, 
                                  const TInt aEditorCase, 
-                                 const TInt aEditorSCTResID );
+                                 const TInt aEditorSCTResID,
+                                 const TBool aIsSplitEditor );
 
     /**
     * Destructor.
@@ -119,7 +120,7 @@ private:
     * @param aRect Frame rectangle for container.
     */
     void ConstructL( CCoeControl* aParent, const TInt aEditorFlag, 
-        const TInt aEditorCase, const TInt aEditorSCTResID );
+        const TInt aEditorCase, const TInt aEditorSCTResID, const TBool aIsSplitEditor );
 
 private: // Functions from base classes
 

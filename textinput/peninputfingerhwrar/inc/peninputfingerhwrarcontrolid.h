@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description:  Enum values of control id in fingerhwr hwr pluggin
+* Description:  Enum values of control id in arabic fingerhwr hwr pluggin
 *
 */
 
@@ -23,8 +23,8 @@
  *
  *  defines the controlid of full screen hwr
  *
- *  @lib peninputfingerhwr.lib
- *  @since S60 v5.0
+ *  @lib peninputfingerhwrar.lib
+ * @since Symbian TB9.2
  */
 enum TPenInputFingerHwrCtrlId
     {
@@ -39,16 +39,13 @@ enum TPenInputFingerHwrCtrlId
     EHwrCtrlIdBackspace,
     EHwrCtrlIdLanguageOption,
     EHwrCtrlIdInputLangSwitcher,
-    EHwrCtrlIdVkbSwitcher,
     EHwrCtrlIdClose,
 
     
     EHwrCtrlIdSymbolTableVkb,
     EHwrCtrlIdSymbolTableVkbGroup,
-	EHwrCtrlIdSctpad,
     EHwrCtrlIdSymbolButton,
     
-    EHwrCtrlIdInputModeSwitcher,
     EHwrCtrlIdArrowLeft,
     EHwrCtrlIdArrowRight,
     EHwrCtrlIdArrowUp,

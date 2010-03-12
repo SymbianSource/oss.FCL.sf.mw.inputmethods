@@ -1074,16 +1074,20 @@ TInt CAknFepUserdbDlg::CountComponentControls() const
 
 void CAknFepUserdbDlg::SizeChanged()
     {
+	TRAP_IGNORE(SizeChangedL());
+    }
+void CAknFepUserdbDlg::SizeChangedL()
+    {
     //Change title text
     CEikStatusPane* statusPane = CEikonEnv::Static()->AppUiFactory()->StatusPane();
     CAknTitlePane* title = NULL;
-    TRAP_IGNORE( title = static_cast< CAknTitlePane* >(
-        statusPane->ControlL( TUid::Uid( EEikStatusPaneUidTitle) ) ) );
+    title = static_cast< CAknTitlePane* >(
+        statusPane->ControlL( TUid::Uid( EEikStatusPaneUidTitle) ) );
 
     //Load the new title text
     HBufC* titletext = StringLoader::LoadLC( R_AKNFEP_USER_DB_MANAGEMENT_TITLE );
     //Set title to the new text
-    TRAP_IGNORE( title->SetTextL( *titletext ));
+    title->SetTextL( *titletext );
     CleanupStack::PopAndDestroy( titletext );
     }
 // End of file

@@ -70,6 +70,7 @@ enum TPeninputLayoutEvent
     EPeninputLayoutEventLeftArrow,
     EPeninputLayoutEventRightArrow,    
     
+	EPeninputLayoutEventMultiRange,
     EPeninputLayoutEventLast = 2000  // user event starts from here, same as base control
     };
 
@@ -120,6 +121,7 @@ enum TPeninputCommonCtrlID
     EPeninputWindowCtrlIdMultiLineICF,
     //candidate list
     EPentinputHwrCandidateList,    
+	EPeninutWindowCtrlIdMultiRangeBtn,
     EPeninputWindowCtrlIdLastOne,
     
     EPeninutWindowCtrlIdRangeBtn //todo split view

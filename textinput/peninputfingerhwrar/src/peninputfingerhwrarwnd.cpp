@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -16,47 +16,40 @@
 */
 
 // INCLUDE
-#include <peninputfingerhwrarwnd.rsg>
+#include <coemain.h>
+#include <s32mem.h>
+
 #include <aknlayoutscalable_apps.cdl.h>
 #include <aknlayoutscalable_avkon.cdl.h>
+#include <aknlayoutdef.h>
+#include <aknutils.h>
+#include <aknsutils.h>
+#include <akniconutils.h>
+#include <aknfepglobalenums.h>
+#include <aknfeppeninputenums.h>
+
+#include <peninputfingerhwrarwnd.rsg>
 #include <peninputlayoutmultilineicf.h>
 #include <peninputdropdownlist.h>
 #include <peninputrepeatbutton.h>
-#include <AknLayoutDef.h>
-#include <AknUtils.h>
-#include <AknsUtils.h>
-#include <AknIconUtils.h>
-#include <coemain.h>
-#include <s32mem.h>
-#include <peninputlayoutchoicelist.h>
-#include <aknfeppeninputenums.h>
-#include <AknFepGlobalEnums.h>
-#include <peninputlayoutinputmodechoice.h>
-#include <peninputrepeatbutton.h>
-#include <peninputlayout.h>
 #include <peninputlayoutbubblectrl.h>
-#include <peninputlayoutvkb.h>
 
-#include <peninputmultiimagebutton.h>
-#include <peninputpluginutils.h>
-
+// USER INCLUDES
 #include "peninputfingerhwrarwnd.h"
 #include "peninputfingerhwrarlafmanager.h"
 #include "peninputfingerhwrarevent.h"
 #include "peninputfingerhwrarcontrolid.h"
 #include "peninputfingerhwrarstoreconstants.h"
+#include "peninputfingerhwrarmultipagevkb.h"
 #include "peninputfingerhwrarlayout.h"
 #include "peninputfingerhwrardatastore.h"
 #include "peninputlayouthwrwnd.h"
 #include "peninputfingerhwrarsymboltable.h"
 #include "peninputfingerhwrarindicator.h"
 
-#include "peninputfingerhwrarmultipagevkb.h"
-#include "hbufcarrayar.h"
-
-const TUint32 KDefaultTextColor = 0x000000;
-const TUint KDefaultFrameColor = 0x000000;
-const TUint32 KDefaultWriteBoxBgColor = 0xdddddd;
+const TUint32 KDefaultTextColor          = 0x000000;
+const TUint   KDefaultFrameColor         = 0x000000;
+const TUint32 KDefaultWriteBoxBgColor    = 0xdddddd;
 const TUint32 KDefaultWriteBoxFrameColor = 0x000000;
 
 // ---------------------------------------------------------------------------
@@ -329,18 +322,6 @@ void CPeninputFingerHwrArWnd::SetBubbleTextL( const TDesC& aInfo )
     }
 
 // ---------------------------------------------------------------------------
-// accept editor's char ranges restriction.
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArWnd::SetPermittedRanges( const TInt aPermittedRanges )
-    {
-    if(aPermittedRanges == 0)
-        return;
-    
-    iPermittedRanges = aPermittedRanges;  
-    }
-
-// ---------------------------------------------------------------------------
 // get strokes from hwr writing box.
 // ---------------------------------------------------------------------------
 //
@@ -365,6 +346,7 @@ void CPeninputFingerHwrArWnd::SetStrokeEndMark( const TPoint& aEndMark )
 void CPeninputFingerHwrArWnd::SetGuideLineOn(const TBool aGuideLineOn)
     {
     iGuideLineOn = aGuideLineOn;
+	DrawGuideLine();
     }
 
 // ---------------------------------------------------------------------------
@@ -418,10 +400,9 @@ void CPeninputFingerHwrArWnd::CancelWriting()
 // Change SCT page.
 // ---------------------------------------------------------------------------
 //
-void CPeninputFingerHwrArWnd::ShowSctPage( TInt aPageNo, TInt aPos )
+void CPeninputFingerHwrArWnd::ShowSymbolPage( TInt aPageNo, TInt aPos )
     {
     iSymbolTable->NavigatePage(aPageNo,aPos);
-    UpdateAllVirtualKeysFeedback( EFingerHwrSymbolRange );
     }
 
 // ---------------------------------------------------------------------------
@@ -452,72 +433,58 @@ CFepCtrlDropdownList* CPeninputFingerHwrArWnd::NumCandidateList()
     }
 
 // ---------------------------------------------------------------------------
-// Update layout
+// Open the candidate list
 // ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArWnd::UpdateLayout( const TBool aIsStandby, const TBool aReloadCandicate)
+//	
+void CPeninputFingerHwrArWnd::OpenCandidateList()
     {
-    TRAP_IGNORE( UpdateLayoutL( aIsStandby, aReloadCandicate) );
-    }
+	typedef CFepCtrlDropdownList::TListType TDropListType;
+        
+	CPeninputFingerHwrArLayout* hwrLayout = NULL;
+	hwrLayout = static_cast<CPeninputFingerHwrArLayout*>( UiLayout() );
+	CPeninputFingerHwrArDataStore& datastore = hwrLayout->DataStore();
+	
+	const RPointerArray<HBufC>& candidates = datastore.Candidate();
+	
+													 
+	TDropListType unexpandable = CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble;
+	
+	if ( datastore.PrimaryRange() == ERangeNative )
+		{
+		iCandidateList->Hide( EFalse );
+		TRAP_IGNORE(iCandidateList->SetCandidatesL( candidates, unexpandable ));
+		iCandidateList->SetHighlightCell( 0, datastore.Highlight() ); 		   
+		}
+	else
+		{
+		iNumCandidateList->Hide( EFalse );
+	    TRAP_IGNORE(iNumCandidateList->SetCandidatesL( candidates, unexpandable ));
+		iNumCandidateList->SetHighlightCell( 0, datastore.Highlight() );         
+		}
+		
+	iArrowLeftBtn->Hide(ETrue);
+    iArrowRightBtn->Hide(ETrue);
+    iArrowUpBtn->Hide(ETrue);
+    iArrowDownBtn->Hide(ETrue);	
+	}
 
 // ---------------------------------------------------------------------------
-// Update layout
+// Close the candidate list
 // ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArWnd::UpdateLayoutL( const TBool aIsStandby, 
-                                             const TBool aReloadCandicate)
+//	
+void CPeninputFingerHwrArWnd::CloseCandidateList()
     {
-    // Set the candidates when dropdown list is shown
-    if ( !aIsStandby )
-        {
-        typedef CFepCtrlDropdownList::TListType TDropListType;
-        
-        CPeninputFingerHwrArLayout* hwrLayout = NULL;
-        hwrLayout = static_cast<CPeninputFingerHwrArLayout*>( UiLayout() );
-        CPeninputFingerHwrArDataStore& datastore = hwrLayout->DataStore();
-        
-        const RPointerArray<HBufC>& candidates = datastore.Candidate();
-        
-                                                         
-        TDropListType unexpandable = CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble;
-        
-        if ( datastore.PrimaryRange() == ERangeNative )
-            {
-            iCandidateList->Hide( EFalse );
-            
-            if ( aReloadCandicate )
-                {
-                iCandidateList->SetCandidatesL( candidates, unexpandable );
-                }
-            
-            iCandidateList->SetHighlightCell( 0, datastore.Highlight() ); 
-               
-            }
-        else
-            {
-            iNumCandidateList->Hide( EFalse );
-            if ( aReloadCandicate )
-                {
-                iNumCandidateList->SetCandidatesL( candidates, unexpandable );
-                }
-            
-            iNumCandidateList->SetHighlightCell( 0, datastore.Highlight() );         
-            }
-        }
-    else
-        {
-		iCandidateList->ResetAndClear(CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble);
-        iNumCandidateList->ResetAndClear(CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble);
-        // hide all the dropdown list in standby state
-        iCandidateList->Hide( ETrue );
-        iNumCandidateList->Hide( ETrue );
-        }            
+	iCandidateList->ResetAndClear(CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble);
+	iNumCandidateList->ResetAndClear(CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble);
+	// hide all the dropdown list in standby state
+	iCandidateList->Hide( ETrue );
+	iNumCandidateList->Hide( ETrue );          
     
-    iArrowLeftBtn->Hide( !aIsStandby );
-    iArrowRightBtn->Hide( !aIsStandby );
-    iArrowUpBtn->Hide( !aIsStandby );
-    iArrowDownBtn->Hide( !aIsStandby );
-    }  
+    iArrowLeftBtn->Hide(EFalse);
+    iArrowRightBtn->Hide(EFalse);
+    iArrowUpBtn->Hide(EFalse);
+    iArrowDownBtn->Hide(EFalse);
+	}
 
 // ---------------------------------------------------------------------------
 // dim arrow buttons.
@@ -530,15 +497,6 @@ void CPeninputFingerHwrArWnd::DimArrowKeys( TBool aDimArrow )
    iArrowUpBtn->SetDimmed( aDimArrow );   
    iArrowDownBtn->SetDimmed( aDimArrow ); 
    }
-
-// ---------------------------------------------------------------------------
-// retrieve char range of layout, including sct.
-// ---------------------------------------------------------------------------
-//
-TInt CPeninputFingerHwrArWnd::CurrentCharRange()
-    {
-    return iCurCharRange;
-    }
 
 // ---------------------------------------------------------------------------
 // c++ constructor
@@ -583,11 +541,10 @@ void CPeninputFingerHwrArWnd::ConstructL( TBool /*aLandscapeStyle*/ )
     //create control buttons
     CreateButtonsL();   
     
-    iCurCharRangeNoSct = EFingerHwrNativeRange;
-    iCurCharRange      = EFingerHwrNativeRange;
-    
-	//ResetLayoutL();
+	//set controls postion and extent
     SizeChangedL();
+	
+	//switch to standby view
     SwitchToStandbyView();
     }
     
@@ -846,19 +803,10 @@ CAknFepCtrlRepeatButton* CPeninputFingerHwrArWnd::CreateRepBtnL( const TInt aCtr
     }
 
 // ---------------------------------------------------------------------------
-// load virtual number pad images. 
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArWnd::LoadVkbKeyImageL( TInt aResId, const TSize& aKeySize )
-    {
-    iSymbolTable->LoadVkbKeyImageL(aResId,aKeySize);          
-    }
-
-// ---------------------------------------------------------------------------
 // load virtual sct keys.
 // ---------------------------------------------------------------------------
 //
-void CPeninputFingerHwrArWnd::LoadVirtualSctpadKeysL( const TInt aResId, 
+void CPeninputFingerHwrArWnd::LoadSymbolVirtualKeysL( const TInt aResId, 
     const RArray<TRect>& aCellRects )
     {
     TAknTextLineLayout txtlayout = iLafManager->SctpadKeyTxtLayout();
@@ -931,7 +879,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     
     // load vkb key image
     TSize keysize = iLafManager->VirtualSctpadCellSize().Size();
-    LoadVkbKeyImageL(R_FINGER_HWR_SCTPAD_IMAGE, keysize );
+    iSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_SCTPAD_IMAGE, keysize );
     
     // get the key rect
     RArray<TRect> rects;
@@ -941,11 +889,11 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     // load keys
 	if(iLafManager->IsLandscape())
 	    {
-	    LoadVirtualSctpadKeysL(R_ARABIC_FINGER_HWR_LANDSCAPE_SYMBOL_TABLE, rects);
+	    LoadSymbolVirtualKeysL(R_ARABIC_FINGER_HWR_LANDSCAPE_SYMBOL_TABLE, rects);
 		}
     else
 	    {
-		LoadVirtualSctpadKeysL(R_ARABIC_FINGER_HWR_PORTRAIT_SYMBOL_TABLE, rects);
+		LoadSymbolVirtualKeysL(R_ARABIC_FINGER_HWR_PORTRAIT_SYMBOL_TABLE, rects);
 		}
     CleanupStack::PopAndDestroy();//rects
     
@@ -970,7 +918,7 @@ void CPeninputFingerHwrArWnd::SwitchToStandbyView()
 	// hide following controls
     iCandidateList->Hide( ETrue );
     iNumCandidateList->Hide( ETrue );
-    iSymbolTable->Hide( ETrue );
+    iSymbolTable->Hide( ETrue);
     
 	// show following controls
     iArrowLeftBtn->Hide( EFalse );
@@ -978,11 +926,8 @@ void CPeninputFingerHwrArWnd::SwitchToStandbyView()
     iArrowUpBtn->Hide( EFalse );
     iArrowDownBtn->Hide( EFalse );
     iOptionBtn->Hide( EFalse );
-
-    iSymbolTableBtn->Hide( EFalse );
-	iSymbolTableBtn->SetHighlight( EFalse);
-	
-    UpdateAllVirtualKeysFeedback( EFingerHwrNativeRange );
+    iSymbolTableBtn->SetHighlight( EFalse);
+    iContextField->SetReady(ETrue);
 	Draw();
     }
 
@@ -1004,13 +949,13 @@ void CPeninputFingerHwrArWnd::SwitchToSymbolTableView()
     iArrowRightBtn->Hide( ETrue );
     iArrowUpBtn->Hide( ETrue );
     iArrowDownBtn->Hide( ETrue );
-    iOptionBtn->Hide( EFalse );    
-    iSymbolTableBtn->SetHighlight( ETrue );
-
-    TInt pageno = ( iCurCharRangeNoSct == EFingerHwrNativeRange ) ? 0 : 1;
-    ShowSctPage( pageno, EPagePosPageNo );
     
-    UpdateAllVirtualKeysFeedback( EFingerHwrSymbolRange );
+	// set the symboltable button highlighted
+    iSymbolTableBtn->SetHighlight( ETrue );
+	
+	// avoid overlap refresh problem after opening symbil table
+	// so set this control to be not ready
+    iContextField->SetReady(EFalse);
     iSymbolTable->OpenSymbolTable();
     }
 
@@ -1279,15 +1224,6 @@ void CPeninputFingerHwrArWnd::ReadWritingBoxInfoL( const TInt aResId )
 
     CleanupStack::PopAndDestroy(); // reader
     }
-    
-// ---------------------------------------------------------------------------
-//  update feedback state of all virtual keys.
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArWnd::UpdateAllVirtualKeysFeedback( TInt aType )
-    {
-    iSymbolTable->UpdateAllVirtualKeysFeedback(aType);
-    }
 
 // ---------------------------------------------------------------------------
 //  show bublble or not
@@ -1363,12 +1299,13 @@ void CPeninputFingerHwrArWnd::CalculateGuideLinePos()
 //
 void CPeninputFingerHwrArWnd::DrawGuideLine()
     {
-    if(iGuideLineOn)
+    if(!iGuideLineOn)
         {
         iWritingBox->HideGuideLine(ETrue);
         }
     else
         {
+        iWritingBox->HideGuideLine(EFalse);
         TInt style = CTransparentHwrWndExt::EGuideLineBottom;    
         iWritingBox->SetGuideLineStyle( style );
     
@@ -1376,9 +1313,8 @@ void CPeninputFingerHwrArWnd::DrawGuideLine()
         CalculateGuideLinePos();
         
         iWritingBox->SetBottomGuideLinePosition(iGuideLineBottomTl, iGuideLineBottomBr);
-                
-        iWritingBox->RefreshUI(); 
         }
+	iWritingBox->RefreshUI();	
     }
 
 // --------------------------------------------------------------------------

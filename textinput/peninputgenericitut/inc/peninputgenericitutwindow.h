@@ -125,6 +125,15 @@ public:
     
     void HandleButtonResOnLangDirChange( TInt aControlId );
     void HandleButtonResOnLangDirChangeL( TInt aControlId );
+    TBool IsPortraitWest();
+    void IndiBubbleWithText();
+    void IndiBubbleWithoutText();
+    void UpdateIndiBubbleL( TUint8* aData );
+    void SetIndiBubbleImageL( const TInt aImgID1,
+                        const TInt aMaskID1,
+                        const TInt aImgID2,
+                        const TInt aMaskID2 );
+    void SetIndiWithTextFlag( TBool aFlag );
 private:
     CGenericItutWindow(CGenericItutWindowManager* aWindowMgr, 
                        CGenericItutUiLayout* aLayoutOwner,
@@ -251,6 +260,7 @@ private:
     CFepInputContextField* iSpell;
 	CPeninputSyncBitmapRotator* iBmpRotator;    
     TFepSymbolOfHardwareOne iSymbolData;
+    TBool iIndiWithText;
     };
 
 inline CFepLayoutMultiLineIcf* CGenericItutWindow::Icf()

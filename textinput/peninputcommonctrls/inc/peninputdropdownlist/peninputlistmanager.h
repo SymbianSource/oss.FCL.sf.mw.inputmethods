@@ -37,6 +37,7 @@ class CListOneRowRollWithIcon;
 class CListExpandableMultiRowWithoutIcon;
 class CListOneRowRollWithIconWithBubble;
 class CListMultiRowRollWithIconWithBubble;
+class CListMultiRowWithoutIconWithBubble;
 
 /**
  *  List manager
@@ -169,7 +170,8 @@ public:
      * @return the multi row list with icon
      */
     CList* ListOneRowRollWithIconWithBubble() const;
-
+    
+    CList* ListMultiRowWithoutIconWithBubble() const;
     /**
      * Reset some data
      * @since S60 v4.0
@@ -259,7 +261,12 @@ private: // Data
      * Not Own
      */
     MFepCtrlDropdownListContext* iContext;
-       
+    
+    /**
+     * The multi roll list without icon with bubble
+     * Own
+     */
+    CListMultiRowWithoutIconWithBubble* iListMultiRowWithoutIconWithBubble;   
     };
 
 #endif // C_LISTMANAGER_H

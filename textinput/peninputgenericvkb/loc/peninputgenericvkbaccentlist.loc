@@ -36,4 +36,27 @@
 //r: 3.2
 #define qtn_tin_vkb_accented_set3 "Accented "<0x0151>" - "<0x01EF>
 
+//d:Text in range list of VKB range bar 
+//l:list_single_choice_list_pane_t1
+//w:
+//r: 3.2
+#define qtn_tin_vkb_alpha_range "ABC"
+
+//d:Text in range list of VKB range bar 
+//l:list_single_choice_list_pane_t1
+//w:
+//r: 3.2
+#define qtn_tin_vkb_native_characters_range "Native char"
+
+//d:Text in range list of VKB range bar 
+//l:list_single_choice_list_pane_t1
+//w:
+//r: 3.2
+#define qtn_tin_vkb_numbers_symbols "123*&#"
+
+//d:Text in range list of VKB range bar 
+//l:list_single_choice_list_pane_t1
+//w:
+//r: 3.2
+#define qtn_tin_vkb_native_numbers_symbols "Native number"
 // End of File

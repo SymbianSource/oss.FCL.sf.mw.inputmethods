@@ -62,6 +62,12 @@ void CAknFepCtrlCommonBgCtrl::SizeChanged(const TRect& aRect)
     return;
     }
 	
+    TRect rect = Rect();
+    if ( aRect == rect )
+        {
+        return;
+        }
+    
 	SetRect( aRect );
 	
 	Draw();

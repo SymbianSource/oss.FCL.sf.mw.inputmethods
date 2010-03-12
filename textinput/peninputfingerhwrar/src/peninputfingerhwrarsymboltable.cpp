@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description:  Implementation of char range selector.
+* Description:  Implementation of symbol table.
 *
 */
 
@@ -25,17 +25,15 @@
 
 #include <aknlayoutscalable_apps.cdl.h>
 #include <aknlayoutscalable_avkon.cdl.h>
-#include <AknLayoutDef.h>
-#include <AknUtils.h>
-#include <AknsUtils.h>
-#include <AknIconUtils.h>
+#include <aknlayoutdef.h>
+#include <aknutils.h>
+#include <aknsutils.h>
+#include <akniconutils.h>
 #include <aknfeppeninputenums.h>
-#include <AknFepGlobalEnums.h>
+#include <aknfepglobalenums.h>
 
 #include <peninputlayout.h>
 #include <peninputrepeatbutton.h>
-#include <peninputmultiimagebutton.h>
-#include <peninputpluginutils.h>
 
 #include "hbufcarrayar.h"
 #include "peninputfingerhwrarevent.h"
@@ -91,12 +89,10 @@ CPeninputArabicFingerHwrSymbolTable::~CPeninputArabicFingerHwrSymbolTable()
 void CPeninputArabicFingerHwrSymbolTable::OpenSymbolTable()
     {
     CapturePointer( ETrue );
-    iPopupVisible = ETrue;
-    iPointerMoveBack = EFalse;
-	Draw();
-    UpdateArea(iRect );    
+    iPopupVisible = ETrue; 
 	UiLayout()->LockArea(UiLayout()->Rect(),this);
-    }
+    NavigatePage(0,EPagePosPageNo);
+	}
 
 // ---------------------------------------------------------------------------
 // cancel the popup.
@@ -105,7 +101,6 @@ void CPeninputArabicFingerHwrSymbolTable::OpenSymbolTable()
 void CPeninputArabicFingerHwrSymbolTable::CloseSymbolTable()
     {
     CapturePointer( EFalse );
-    iPenDownCtrl = NULL;
     iPopupVisible = EFalse;
     UiLayout()->UnLockArea(UiLayout()->Rect(),this);
     }
@@ -128,15 +123,13 @@ CFepUiBaseCtrl* CPeninputArabicFingerHwrSymbolTable::HandlePointerDownEventL(
     {
     CancelPointerDownL();
     CFepUiBaseCtrl* ctrl = CControlGroup::HandlePointerDownEventL( aPoint );
-    iPenDownCtrl = ctrl;
-    
+	
     if(!ctrl)
 	   {
 	   ReportEvent(EHwrEventOutsideEvent);
 	   }
 	else
        {
-	   ctrl->Draw();
 	   ctrl->UpdateArea(ctrl->Rect(),EFalse);
 	   }	
 	   
@@ -154,7 +147,6 @@ CFepUiBaseCtrl* CPeninputArabicFingerHwrSymbolTable::HandlePointerUpEventL(
 
     if(ctrl)
 	   {
-	   ctrl->Draw();
 	   ctrl->UpdateArea(ctrl->Rect(),EFalse);
 	   }
 
@@ -171,31 +163,17 @@ CFepUiBaseCtrl* CPeninputArabicFingerHwrSymbolTable::HandlePointerMoveEventL(
 	CFepUiBaseCtrl* ctrl = CControlGroup::HandlePointerMoveEventL( aPoint );
 	if(ctrl)
 	    {
-	    ctrl->Draw();
 		ctrl->UpdateArea(ctrl->Rect(),EFalse);
-		iPointerMoveBack = ETrue;
 		}
 	else
 	    {
-	    if(iPointerMoveBack)
-	        {
-            if(iPenDownCtrl)
-                {
-                iPenDownCtrl->HandlePointerLeave(aPoint);
-                }
-            iPointerMoveBack = EFalse;
-	        }
+	    CControlGroup::HandlePointerLeave(aPoint);
+	    UpdateArea(iRect,EFalse);
 	    }
-
+	
     return ctrl;
     }
 
-void CPeninputArabicFingerHwrSymbolTable::HandlePointerLeave(const TPoint& aPoint)
-    {
-    CControlGroup::HandlePointerLeave(aPoint);
-    Draw();
-    UpdateArea(Rect(),EFalse);
-    }
 // ---------------------------------------------------------------------------
 // C++ constructor.
 // ---------------------------------------------------------------------------
@@ -294,7 +272,7 @@ void CPeninputArabicFingerHwrSymbolTable::CreateVirtualKeypadL()
     iMutiPageKeypad = CMultiPageVirtualKeyboard::NewL( 
         TRect(0,0,0,0),
         UiLayout(),
-        EHwrCtrlIdSctpad,
+        EHwrCtrlIdSymbolTableVkb,
         spec );
 
     AddControlL( iMutiPageKeypad );
@@ -368,11 +346,11 @@ void CPeninputArabicFingerHwrSymbolTable::MoveIconButton( CAknFepCtrlEventButton
 void CPeninputArabicFingerHwrSymbolTable::OnActivate()
     {
     CControlGroup::OnActivate();
-	if(IsPopup())
+	/*if(IsPopup())
 	    {
 	    CapturePointer( ETrue );
 	    NavigatePage(0,EPagePosPageNo);
-		}
+		}*/
 	}
 	
 void CPeninputArabicFingerHwrSymbolTable::LoadVkbKeyImageL(TInt aResId, const TSize& aKeySize)
@@ -580,11 +558,9 @@ void CPeninputArabicFingerHwrSymbolTable::NavigatePage( TInt aPageNo, TInt aPos 
             break;
         }
 		
-	iMutiPageKeypad->Draw();		
     UpdatePageButtonsUi();
-    UpdateAllVirtualKeysFeedback( EFingerHwrSymbolRange );
-	iEnterBtn->Draw();
-	iSpaceBtn->Draw();
+    Draw();
+    UpdateAllVirtualKeysFeedback();
 	UpdateArea(iRect);
     }
 
@@ -614,10 +590,8 @@ void CPeninputArabicFingerHwrSymbolTable::UpdatePageButtonsUi()
 //  update feedback state of all virtual keys.
 // ---------------------------------------------------------------------------
 //
-void CPeninputArabicFingerHwrSymbolTable::UpdateAllVirtualKeysFeedback( TInt aType )
+void CPeninputArabicFingerHwrSymbolTable::UpdateAllVirtualKeysFeedback()
     {
-    TBool isSctpad = ( aType == EFingerHwrSymbolRange ) ? ETrue : EFalse;
-    
     //update sctpad keys
     TInt keyCount = iMutiPageKeypad->KeyArray().Count();
     TInt pageSize = iMutiPageKeypad->PageSize();
@@ -626,8 +600,9 @@ void CPeninputArabicFingerHwrSymbolTable::UpdateAllVirtualKeysFeedback( TInt aTy
         {
         CVirtualKey* vk = iMutiPageKeypad->KeyArray()[i];
         TInt page = i / pageSize;
-        TBool enable = !vk->Dimmed() &&  isSctpad && ( page == curPage );
+        TBool enable = !vk->Dimmed() && ( page == curPage );
         iMutiPageKeypad->EnableKeyFeedback( vk, enable );
         }
     }
+
 // End Of File

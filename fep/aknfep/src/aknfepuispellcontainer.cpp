@@ -89,11 +89,12 @@ void CAknFepUiSpellContainer::SetInputWinObserver( MEikEdwinObserver* aObserver 
 // ---------------------------------------------------------------------------
 // 
 void CAknFepUiSpellContainer::ConstructL(const TInt aEditorFlag, 
-    const TInt aEditorCase, const TInt aEditorSCTResID)
+    const TInt aEditorCase, const TInt aEditorSCTResID, const TBool aIsSplitEditor )
     {  
     CreateWindowL();
 
-    iInputPane = CAknFepUiSpellInputPane::NewL( this, aEditorFlag, aEditorCase,aEditorSCTResID);
+    iInputPane = CAknFepUiSpellInputPane::NewL( this, aEditorFlag, aEditorCase,
+    		                                    aEditorSCTResID, aIsSplitEditor );
     
     iInputPane->SetMopParent(this);
     
@@ -110,13 +111,13 @@ void CAknFepUiSpellContainer::ConstructL(const TInt aEditorFlag,
 // ---------------------------------------------------------------------------
 // 
 CAknFepUiSpellContainer* CAknFepUiSpellContainer::NewL(const TInt aEditorFlag, 
-    const TInt aEditorCase, const TInt aEditorSCTResID)
+    const TInt aEditorCase, const TInt aEditorSCTResID, const TBool aSplitEditor )
     {
     CAknFepUiSpellContainer* self = new ( ELeave ) CAknFepUiSpellContainer();
     CleanupStack::PushL( self );
     
     self->SetMopParent(CEikonEnv::Static()->EikAppUi());
-    self->ConstructL(aEditorFlag, aEditorCase, aEditorSCTResID);
+    self->ConstructL(aEditorFlag, aEditorCase, aEditorSCTResID, aSplitEditor );
 
     CleanupStack::Pop();
     

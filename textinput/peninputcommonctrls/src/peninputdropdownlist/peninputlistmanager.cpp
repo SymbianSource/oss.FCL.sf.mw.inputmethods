@@ -31,6 +31,8 @@
 #include "peninputlistmultirowrollwithicon.h"
 #include "peninputlistonerowrollwithicon.h"
 #include "peninputlistexpandablemultirowwithouticon.h"
+#include "peninputlistmultirowwithouticonwithbubble.h"
+
 #include <peninputdropdownlistcontext.h>
 
 // ======== MEMBER FUNCTIONS ========
@@ -72,6 +74,7 @@ CListManager::~CListManager()
     delete iListExpandableMultiRowWithoutIcon;
     delete iListMultiRowRollWithIconWithBubble;
     delete iListOneRowRollWithIconWithBubble;
+    delete iListMultiRowWithoutIconWithBubble;
     }
         
 // -----------------------------------------------------------------------------
@@ -95,6 +98,7 @@ void CListManager::ConstructL(MFepCtrlDropdownListContext* aContext)
     iListExpandableMultiRowWithoutIcon = CListExpandableMultiRowWithoutIcon::NewL(this, aContext);
     iListMultiRowRollWithIconWithBubble = CListMultiRowRollWithIconWithBubble::NewL(this, aContext);
     iListOneRowRollWithIconWithBubble = CListOneRowRollWithIconWithBubble::NewL(this, aContext);
+    iListMultiRowWithoutIconWithBubble = CListMultiRowWithoutIconWithBubble::NewL(this, aContext);
     }
 
 // -----------------------------------------------------------------------------
@@ -117,6 +121,7 @@ void CListManager::SizeChanged()
     iListExpandableMultiRowWithoutIcon->SizeChanged();
     iListMultiRowRollWithIconWithBubble->SizeChanged();
     iListOneRowRollWithIconWithBubble->SizeChanged();
+    iListMultiRowWithoutIconWithBubble->SizeChanged();
     }
 
 // -----------------------------------------------------------------------------
@@ -139,6 +144,7 @@ void CListManager::Move(const TPoint& aOffset)
     iListExpandableMultiRowWithoutIcon->Move(aOffset);
     iListMultiRowRollWithIconWithBubble->Move(aOffset);
     iListOneRowRollWithIconWithBubble->Move(aOffset);
+    iListMultiRowWithoutIconWithBubble->Move(aOffset);
     
     // Move all candidates
     for ( TInt i=0; i<iContext->CandidateCount(); i++ )   
@@ -281,6 +287,11 @@ CList* CListManager::ListMultiRowRollWithIconWithBubble() const
     {
     return iListMultiRowRollWithIconWithBubble;
     }   
+
+CList* CListManager::ListMultiRowWithoutIconWithBubble() const
+	{
+	return iListMultiRowWithoutIconWithBubble;
+	}
     
 void CListManager::ResetStatus()
 	{

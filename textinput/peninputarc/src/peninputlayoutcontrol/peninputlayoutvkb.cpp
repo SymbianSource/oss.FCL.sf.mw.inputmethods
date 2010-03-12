@@ -27,6 +27,7 @@
 #include "peninputlayoutvkb.h"
 #include "peninputpluginutils.h"
 
+#include "peninputvkbpreviewbubblerenderer.h"
 const TInt KFadingParamBlack = 128;
 const TInt KFadingParamWhite = 192;
 const TInt KDefaultBubbleSize = 50;
@@ -102,6 +103,7 @@ EXPORT_C CVirtualKeyboard::CVirtualKeyboard(const TRect& /*aRect*/,
     {
     iFontSpec = aFontSpec;   
     SetControlType(ECtrlVirtualKeyboard);
+    iBubbleSize = TSize( KDefaultBubbleSize, KDefaultBubbleSize );
     }
     
 // ---------------------------------------------------------------------------
@@ -113,6 +115,11 @@ EXPORT_C CVirtualKeyboard::~CVirtualKeyboard()
     {
     if ( iBubbleCtrl )
         delete iBubbleCtrl;
+    if ( iPreviewBubbleRenderer )
+        {
+        iPreviewBubbleRenderer->Detach();
+        iPreviewBubbleRenderer = NULL;
+        }
     
     //free keys
     iKeyArray.ResetAndDestroy();
@@ -441,10 +448,24 @@ void CVirtualKeyboard::ClearBubble(TBool /*aSetZeroSize*/)
         {
         iBubbleCtrl->Close();
         }
+    if( iPreviewBubbleRenderer )
+        {
+        iPreviewBubbleRenderer->ClearBubble();
+        }
     }
 
 void CVirtualKeyboard::DrawBubble(CVirtualKey* aKey)
     {
+    if( iPreviewBubbleRenderer )
+        {
+        if ( iIsShowBubble )
+            {
+            TPoint org = UiLayout()->Position();
+            TPoint vkbpos = Rect().iTl;
+            iPreviewBubbleRenderer->DrawBubble( aKey, vkbpos, org, iBubbleSize );
+            }
+        return;
+        }
     
     if ( aKey && !aKey->Dimmed() && iBubbleCtrl && iIsShowBubble)
         {
@@ -466,12 +487,18 @@ void CVirtualKeyboard::DrawBubble(CVirtualKey* aKey)
             {
             rect.iTl.iX = x1;     
             rect.iBr.iX = x2;                 
+            
+            TPoint vkbpos = Rect().iTl;
+            rect.Move( vkbpos.iX, 0 );
             }
         
         rect.iTl.iY = iBubbleVerticalMargin + aKey->Rect().iTl.iY - 
                       iBubbleSize.iHeight + Rect().iTl.iY;
         rect.iBr.iY = iBubbleVerticalMargin + aKey->Rect().iTl.iY + Rect().iTl.iY;
-		
+        
+        TPoint org = UiLayout()->Position();
+        rect.Move( org.iX, org.iY ); //now is in screen coord-sys
+        
 		if( aKey->DisplayUnicode() && aKey->DisplayUnicode()->Length() != 0 )
 			{
 			TRAP_IGNORE(iBubbleCtrl->SetTextL(*aKey->DisplayUnicode()));		
@@ -485,9 +512,15 @@ void CVirtualKeyboard::DrawBubble(CVirtualKey* aKey)
     }
 
 EXPORT_C void CVirtualKeyboard::ShowBubble(TBool aFlag)
-    {  
-    TBool flag = iBubbleCtrl ? ETrue : EFalse;
+    {
     iIsShowBubble = aFlag;
+
+    if( iPreviewBubbleRenderer )
+        {
+        iPreviewBubbleRenderer->ShowBubble( aFlag );
+        return;
+        }
+    TBool flag = iBubbleCtrl ? ETrue : EFalse;
     if ( flag != aFlag )
         {
         if(!flag)
@@ -516,6 +549,10 @@ EXPORT_C void CVirtualKeyboard::SetBubbleBitmapParam(CFbsBitmap* aBmpId,
         {
         iBubbleCtrl->SetBitmapParam(aBmpId,aMaskBmpId,aBgSkinId);
         }
+    if( iPreviewBubbleRenderer )
+        {
+        iPreviewBubbleRenderer->SetBubbleBitmapParam( aBmpId,aMaskBmpId,aBgSkinId );
+        }
     }
         
 EXPORT_C void CVirtualKeyboard::SetBubbleSize(const TSize& aSize)
@@ -534,6 +571,10 @@ EXPORT_C void CVirtualKeyboard::SetTextFormat(TAknTextLineLayout aTextFormat)
         {
         iBubbleCtrl->SetTextFormat(aTextFormat);    
         }
+    if( iPreviewBubbleRenderer )
+        {
+        iPreviewBubbleRenderer->SetTextFormat( aTextFormat );
+        }
     }
 
 EXPORT_C void CVirtualKeyboard::SetFrameDiff(TInt aLeftDiff, TInt aTopDiff,
@@ -542,7 +583,11 @@ EXPORT_C void CVirtualKeyboard::SetFrameDiff(TInt aLeftDiff, TInt aTopDiff,
     if ( iBubbleCtrl )
         {
         iBubbleCtrl->SetFrameDiff(aLeftDiff,aTopDiff,aRightDiff,aBottomDiff);    
-        }        
+        }
+    if ( iPreviewBubbleRenderer )
+        {
+        iPreviewBubbleRenderer->SetFrameDiff( aLeftDiff, aTopDiff, aRightDiff, aBottomDiff );
+        }
     }
        
 EXPORT_C CFepUiBaseCtrl* CVirtualKeyboard::HandlePointerMoveEventL(const TPoint& aPt)
@@ -1105,7 +1150,25 @@ EXPORT_C CFepUiBaseCtrl* CVirtualKeyboard::HandlePointerMoveEventL(const TPoint&
     {
     return CControlGroup::HandlePointerMoveEventL(aPoint);
     }
-    */				 
+    */
+EXPORT_C void CVirtualKeyboard::SetPreviewBubbleRenderer( MPeninputVkbPreviewBubbleRenderer* aRenderer )
+    {
+    if ( ( NULL != aRenderer ) && ( aRenderer == iPreviewBubbleRenderer ) )
+        {
+        return;
+        }
+    
+    if( iPreviewBubbleRenderer )
+        {
+        iPreviewBubbleRenderer->Detach();
+        }
+    
+    iPreviewBubbleRenderer = aRenderer;
+    if ( aRenderer )
+        {
+        aRenderer->Attach();
+        }
+    }
 //end of implementation of class CVirtualKeyboard
     
 // Implementation of Class CVirtualKey

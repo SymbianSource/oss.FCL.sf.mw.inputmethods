@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -35,7 +35,7 @@ class CPeninputFingerHwrArStateManager;
 *
 * The state handler interfaces 
 *
-* @lib peninputFingerHwr.lib
+* @lib peninputfingerhwrar.lib
 * @since S60 v5.0
 */
 class MPeninputFingerHwrArStateHandler
@@ -44,21 +44,21 @@ public:
     /**
     * Handle state event
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     virtual void HandleEventL( const TInt aEventType, const TDesC& aEventData ) = 0;
     
     /**
     * Handle the state entering action
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     virtual void OnEntry() = 0;
     
     /**
     * Handle the state exiting action
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     virtual void OnExit() = 0;
     };
@@ -67,7 +67,7 @@ public:
 /**
 * The state handler base class.
 *
-* @since Series 60 5.0.
+* @since Symbian TB9.2.
 */    
 class CPeninputFingerHwrArStateHandlerBase :public CBase 
      ,public MPeninputFingerHwrArStateHandler
@@ -77,7 +77,7 @@ public:
     /**
     * The handler base destructor
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     virtual ~CPeninputFingerHwrArStateHandlerBase();
        
@@ -85,7 +85,7 @@ protected:
     /**
     * The constructor.
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aStateManager The reference to state manager. @see CPeninputFingerHwrStateManager.
     */
     CPeninputFingerHwrArStateHandlerBase( CPeninputFingerHwrArStateManagerBase& aStateManager );
@@ -94,14 +94,14 @@ protected:
     /**
     * The reference to state manager.
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     CPeninputFingerHwrArStateManagerBase& iStateManager;
     
     /**
     * The data store reference
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     CPeninputFingerHwrArDataStore& iDataStore;      
     };
@@ -111,7 +111,7 @@ protected:
 /**
 * The finger hwr state manager base class.
 *
-* @since Series 60 5.0
+* @since Symbian TB9.2
 */
 class CPeninputFingerHwrArStateManagerBase : public CBase
     {
@@ -124,7 +124,7 @@ public:
     /**
     * The destructor
     *
-    *@since Series 60 5.0
+    *@since Symbian TB9.2
     */
     virtual ~CPeninputFingerHwrArStateManagerBase();  
 
@@ -132,7 +132,7 @@ public:
     /**
     * Handle the hwr box and canidate events
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aEventType The event type
     * @param aEventData The event data
     */
@@ -141,7 +141,7 @@ public:
     /**
     * Return the layout reference
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * CPeninputFingerHwrArLayout& The hwr layout reference
     */
     CPeninputFingerHwrArLayout& HwrLayout();
@@ -149,7 +149,7 @@ public:
     /**
     * Is stanby state
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * TBool The standby state flag
     */    
     TBool IsStandbyState();
@@ -157,7 +157,7 @@ public:
     /**
     * Set current state.
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aState The state to be set. @See TPeninputFingerHwrState.
     */    
     virtual void SetState( TInt aState );     
@@ -167,14 +167,14 @@ protected:
     /**
     * 2nd phase constructor.
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void BaseConstructL();
 
     /**
     * The constructor.
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aLayout The full screen HWR layout pointer.
     */
     CPeninputFingerHwrArStateManagerBase( CPeninputFingerHwrArLayout* aLayout );
@@ -203,7 +203,7 @@ protected:
 /**
 * The finger hwr state manager for arabic.
 *
-* @since Series 60 5.0
+* @since Symbian TB9.2
 */
 class CPeninputFingerHwrArStateManager : public CPeninputFingerHwrArStateManagerBase
     {
@@ -211,7 +211,7 @@ public:
     /**
     * The factory function
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aLayout The layout reference
     * @return CPeninputFingerHwrArStateManager* The newly created CPeninputFingerHwrArStateManager object
     */
@@ -220,7 +220,7 @@ public:
     /**
     * The destructor
     *
-    *@since Series 60 5.0
+    *@since Symbian TB9.2
     */
     ~CPeninputFingerHwrArStateManager();
 
@@ -228,7 +228,7 @@ public:
     /**
     * The hwr states.
     *
-    *@since Series 60 5.0
+    *@since Symbian TB9.2
     */    
     enum TPeninputFingerHwrArState
     {
@@ -242,7 +242,7 @@ public:
     /**
     * Handle the hwr box and canidate events
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aEventType The event type
     * @param aEventData The event data
     */
@@ -251,7 +251,7 @@ public:
     /**
     * Set current state.
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aState The state to be set. @See TPeninputFingerHwrState.
     */    
     virtual void SetState( TInt aState );
@@ -260,7 +260,7 @@ private:
     /**
     * The constructor.
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aLayout The full screen HWR layout pointer.
     */
     CPeninputFingerHwrArStateManager( CPeninputFingerHwrArLayout* aLayout );
@@ -268,14 +268,14 @@ private:
     /**
     * 2nd phase constructor.
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void ConstructL();
     
     /**
     * Find the current state object.
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aState According to this state type, 
     *        we could find the corresponding state obect.
     */
@@ -300,7 +300,7 @@ private:
 /**
 * The Standby state class.
 *
-* @since Series 60 5.0
+* @since Symbian TB9.2
 */    
 class CPeninputFingerHwrArStateStandby : public CPeninputFingerHwrArStateHandlerBase
     {
@@ -308,7 +308,7 @@ public:
     /**
     * Factory function
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aStateManager The reference to state manager. @see CPeninputFingerHwrStateManager.
     * @return CPeninputFingerHwrStateHandlerStandby* Return the 
           CPeninputFingerHwrStateHandlerStandby object pointer. 
@@ -320,21 +320,21 @@ public:
     /**
     * Handle state event
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void HandleEventL( const TInt aEventType, const TDesC& aEventData );
     
     /**
     * Handle the state entering action
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void OnEntry();
     
     /**
     * Handle the state exiting action
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void OnExit();
     
@@ -342,7 +342,7 @@ private:
     /**
     * The constructor
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aStateManager The reference to state manager. @see CPeninputFingerHwrStateManager.
     */
     CPeninputFingerHwrArStateStandby( 
@@ -354,7 +354,7 @@ private:
 /**
 * The Writing state class.
 *
-* @since Series 60 5.0
+* @since Symbian TB9.2
 */
 class CPeninputFingerHwrArStateWriting : public CPeninputFingerHwrArStateHandlerBase
     {
@@ -362,7 +362,7 @@ public:
     /**
     * Factory function
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aStateManager The reference to state manager. @see CPeninputFingerHwrStateManager.
     * @return CPeninputFingerHwrStateHandlerWriting* Return the 
           CPeninputFingerHwrStateHandlerWriting object pointer. 
@@ -374,21 +374,21 @@ public:
     /**
     * Handle state event
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void HandleEventL( const TInt aEventType, const TDesC& aEventData );
     
     /**
     * Handle the state entering action
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void OnEntry();
     
     /**
     * Handle the state exiting action
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void OnExit();
     
@@ -396,7 +396,7 @@ private:
     /**
     * The constructor
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aStateManager The reference to state manager. @see CPeninputFingerHwrStateManager.
     */
     CPeninputFingerHwrArStateWriting( CPeninputFingerHwrArStateManager& aStateManager );
@@ -405,7 +405,7 @@ private:
     /**
     * Handle the end stroke event
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aEventData The trace data
     */
     void OnEndStrokeL( const TDesC& aEventData );
@@ -413,7 +413,7 @@ private:
     /**
     * Handle the end writing event
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aEventData The trace data
     */
     void OnEndWritingL( const TDesC& aEventData );
@@ -421,7 +421,7 @@ private:
     /**
     * Handle the candidate selection event
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aEventData The trace data
     */
     void OnSelectedCandidatesL( const TDesC& aEventData );
@@ -431,7 +431,7 @@ private:
 /**
 * The CandidateSelecting state class for Chinese.
 *
-* @since Series 60 5.0
+* @since Symbian TB9.2
 */
 class CPeninputFingerHwrArStateCandidateSelecting : public CPeninputFingerHwrArStateHandlerBase
     {
@@ -439,7 +439,7 @@ public:
     /**
     * Factory function
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aStateManager The reference to state manager. @see CPeninputFingerHwrStateManager.
     * @return CPeninputFingerHwrStateHandlerCandidateSelecting Return the 
           CPeninputFingerHwrStateHandlerCandidateSelecting object pointer. 
@@ -451,21 +451,21 @@ public:
     /**
     * Handle state event
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void HandleEventL( const TInt aEventType, const TDesC& aEventData );
     
     /**
     * Handle the state entering action
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void OnEntry();
     
     /**
     * Handle the state exiting action
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void OnExit();
     
@@ -473,7 +473,7 @@ private:
     /**
     * The constructor
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aStateManager The reference to state manager. @see CPeninputFingerHwrStateManager.
     */
     CPeninputFingerHwrArStateCandidateSelecting( 
@@ -483,7 +483,7 @@ private:
     /**
     * Handle one candiate selected event
     * 
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     * @param aEventData The selected candidate
     */
     void OnSelectedCandidatesL( const TDesC& aEventData );
@@ -492,7 +492,7 @@ private:
     /**
     * Handle backspace events
     *
-    * @since Series 60 5.0
+    * @since Symbian TB9.2
     */
     void OnClickBackSpaceL();
     };

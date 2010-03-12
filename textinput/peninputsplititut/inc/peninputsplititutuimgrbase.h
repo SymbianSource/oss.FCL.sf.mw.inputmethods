@@ -47,7 +47,8 @@ public:
         EStateComposition,
         EStatePredict,
         // western ui state
-        EStateWesternStandby
+        EStateWesternStandby,
+        EStateSpelling
         };
 
 public:

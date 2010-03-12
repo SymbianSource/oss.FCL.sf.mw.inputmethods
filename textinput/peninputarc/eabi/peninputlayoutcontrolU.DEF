@@ -701,9 +701,9 @@ EXPORTS
 	_ZN18CTransparentHwrWnd27PenTraceDecorationActivatedEv @ 700 NONAME
 	_ZTI26CPeninputPenTraceDecorator @ 701 NONAME ; #<TI>#
 	_ZTV26CPeninputPenTraceDecorator @ 702 NONAME ; #<VT>#
-        _ZN22CFepLayoutMultiLineIcf17TooltipBubbleCtrlEv @ 703 NONAME
-        _ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16RK5TRect @ 704 NONAME
-        _ZN22CFepLayoutMultiLineIcf11HideTooltipEv @ 705 NONAME        
+	_ZN22CFepLayoutMultiLineIcf17TooltipBubbleCtrlEv @ 703 NONAME
+	_ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16RK5TRect @ 704 NONAME
+	_ZN22CFepLayoutMultiLineIcf11HideTooltipEv @ 705 NONAME
 	_ZTI18CTooltipBubbleCtrl @ 706 NONAME
 	_ZTV18CTooltipBubbleCtrl @ 707 NONAME
 	_ZN12CFepUiLayout20RegisterFeedbackAreaEiRK5TRecti @ 708 NONAME
@@ -715,4 +715,8 @@ EXPORTS
 	_ZN22CFepLayoutMultiLineIcf14InfoBubbleCtrlEv @ 714 NONAME
 	_ZN22CFepLayoutMultiLineIcf21SetInfoBubbleCtrlSizeERK5TSize @ 715 NONAME
 	_ZN22CFepLayoutMultiLineIcf21ShowByteWarningBubbleERK7TDesC16 @ 716 NONAME
+	_ZN16CVirtualKeyboard24SetPreviewBubbleRendererEP33MPeninputVkbPreviewBubbleRenderer @ 717 NONAME
+	_ZN36CPeninputAknVkbPreviewBubbleRenderer4NewLEv @ 718 NONAME
+	_ZTI36CPeninputAknVkbPreviewBubbleRenderer @ 719 NONAME
+	_ZTV36CPeninputAknVkbPreviewBubbleRenderer @ 720 NONAME
 

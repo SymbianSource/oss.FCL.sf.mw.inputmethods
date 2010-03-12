@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -29,7 +29,6 @@
 // FORWARD DECLARATIONS
 class CAknFepCtrlEventButton;
 class CMultiPageVirtualKeyboard;
-class CPeninputSyncBitmapRotator;
 
 // CLASS DECLARATION
 
@@ -38,8 +37,8 @@ class CPeninputSyncBitmapRotator;
  *
  *  The symbol table control for arabic input 
  *
- *  @lib peninputfingerhwr.lib
- *  @since S60 v5.0
+ *  @lib peninputfingerhwrar.lib
+ *  @since Symbian TB9.2
  */
 class CPeninputArabicFingerHwrSymbolTable : public CControlGroup
     {
@@ -47,7 +46,7 @@ public:
     /**
      * Symbian constructor
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aUiLayout The layout
      * @param aId The control id
      * @return pointer of created object.
@@ -57,7 +56,7 @@ public:
     /**
      * Symbian constructor
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aUiLayout The layout
      * @param aId The control id
      * @return pointer of created object.
@@ -67,7 +66,7 @@ public:
     /**
      * standard c++ destructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      */    
     ~CPeninputArabicFingerHwrSymbolTable();
     
@@ -75,7 +74,7 @@ public:
 	/**
 	 * open the symbol table.
 	 * 
-	 * @since S60 v5.0
+	 * @since Symbian TB9.2
 	 *
 	 * @return None
 	 */
@@ -84,7 +83,7 @@ public:
     /**
      * cancel the popup.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      * 
      */
@@ -92,7 +91,7 @@ public:
     
     /**
      * get visibility of popup.
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return ETrue if the popup is visible
      */
     TBool IsPopup();
@@ -114,7 +113,7 @@ public:
 	
 	void UpdatePageButtonsUi();
 	
-	void UpdateAllVirtualKeysFeedback(TInt aType);
+	void UpdateAllVirtualKeysFeedback();
 
 protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 
@@ -122,7 +121,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
      * From CControlGroup
      * Handle pointer down event
      *
-     * @since S60 V5.0
+     * @since Symbian TB9.2
      * @param aPoint The point position relative the layout
      * @return The control which handles the event.     
      */   
@@ -132,7 +131,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
      * From CControlGroup
      * Handle pointer up event
      *
-     * @since S60 V5.0
+     * @since Symbian TB9.2
      * @param aPoint The point position relative the layout
      * @return The control which handles the event.     
      */           
@@ -149,19 +148,9 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
     CFepUiBaseCtrl* HandlePointerMoveEventL(const TPoint& aPoint);
     
     /**
-     * Handle pointer levae event. 
-     * This will be called only when it's got pointer down event before and 
-     * now pointer leaves without pointer up event
-     *
-     * @since S60 V4.0
-     * @param aPoint current pointer position
-     */
-    void HandlePointerLeave(const TPoint& aPoint);
-    
-    /**
      * C++ constructor
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aFepUiLayout A Ui Layout environment (CFepUiLayout)
      * @param aControlId Control id
      * @return none.
@@ -171,7 +160,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
     /**
      * Symbian second-phase constructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */    
     void ConstructL();
@@ -179,7 +168,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 	/**
      * create a multipate virtual keypad
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
 	void CreateVirtualKeypadL();
@@ -193,7 +182,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
     /**
      * EventButton creation helper.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aCtrlId button control id.
      * @param aResId resource id.
      * @param aEvent event id;
@@ -206,7 +195,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
     /**
      * EventButton layout helper. Move button to specified rect.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aButton the button to move
      * @param aRect new rect of button
      * @param aXPadding horz padding of button icon.
@@ -230,6 +219,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 	void UpdateVkbKeyL( CVirtualKey* aVirtualKey, TResourceReader& aReader, 
 	                    const TRect aKeyRect );
     void OnActivate();
+	
 private:
     /**
 	 * multipage viritual keyboard

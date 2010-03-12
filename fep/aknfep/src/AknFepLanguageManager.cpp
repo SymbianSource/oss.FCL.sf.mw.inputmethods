@@ -414,9 +414,10 @@ CAknFepPenInputImePlugin* CAknFepLanguageManager::ActivateImePlugin(
         TUid dtor_ID_Key;
         CAknFepPenInputImePlugin* pIme = NULL;
 
-        TRAP_IGNORE(pIme = REINTERPRET_CAST(CAknFepPenInputImePlugin*, 
-              REComSession::CreateImplementationL(TUid::Uid(aImeImplId), dtor_ID_Key, aPenServer)));
-
+        TRAP_IGNORE( 
+        		TAny* obj = REComSession::CreateImplementationL(TUid::Uid(aImeImplId), dtor_ID_Key, aPenServer);
+				pIme = REINTERPRET_CAST(CAknFepPenInputImePlugin*, obj );
+        );
         if( pIme )
             {
             pIme->iDtor_ID_Key = dtor_ID_Key;           

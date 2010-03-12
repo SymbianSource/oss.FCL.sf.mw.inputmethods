@@ -1801,6 +1801,8 @@ private: //navigation
 
     void LaunchLanguagesPopupListL(TBool aLaunchedByTouchWin = EFalse);
     void LaunchRecognitionWithDictionaryPopupListL();
+    void LaunchWritingSpeedPopupListL();
+    void LaunchGuidingLinePopupListL();
     TBool IsInputModeAvailable(TInt aMode) const;
     TInt NewInputModeAfterLanguageChange() const;
 

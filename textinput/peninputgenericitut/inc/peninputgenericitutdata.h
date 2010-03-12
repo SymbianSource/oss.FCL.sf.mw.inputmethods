@@ -94,6 +94,17 @@ enum TItutDataType
     EPreviewBubbleInnerRect,
     EPreviewBubbleFont,
     EPreviewBubbleTextlayout,
+    EIndiPaneWithTextRect,
+    EIndiPaneWithoutTextRect,
+    EIndiIconWithTextRect,
+    EIndiIconWithoutTextRect,
+    EIndiTextLine,
+    ESpellIndiPaneWithoutTextRect,
+    ESpellIndiIconWithoutTextRect,
+    ESpellArrowLeft,
+    ESpellArrowLeftInner,
+    ESpellArrowRight,
+    ESpellArrowRightInner
     };
 
 enum TControlId

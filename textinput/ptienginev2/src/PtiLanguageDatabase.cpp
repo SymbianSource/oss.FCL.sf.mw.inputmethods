@@ -342,6 +342,8 @@ const TPtiLangDatabaseMapping langUids[] =
 	{0, 0}
 	};
 
+const TInt xt9LangImplUidDanish = 0x10282D36;
+const TInt xt9LangImplUidNorwegian = 0x10282D38;
 
 // ---------------------------------------------------------------------------
 // CPtiLanguageDatabase::LanguageCodeForUid
@@ -351,6 +353,15 @@ const TPtiLangDatabaseMapping langUids[] =
 EXPORT_C TInt CPtiLanguageDatabase::LanguageCodeForUid(TInt aUid)
 	{
 	TInt i;
+	
+	if ( aUid == xt9LangImplUidDanish )
+	    {
+	    return ELangDanish;
+	    }
+	else if ( aUid == xt9LangImplUidNorwegian )
+	    {
+	    return ELangNorwegian;
+	    }
 
 	for (i = 0; ; i++)
 		{

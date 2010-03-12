@@ -121,5 +121,6 @@ LIBRARY         estor.lib
 LIBRARY         fbscli.lib
 LIBRARY 		bitgdi.lib 
 LIBRARY         commonengine.lib
+LIBRARY         centralrepository.lib
 
 // End Of File

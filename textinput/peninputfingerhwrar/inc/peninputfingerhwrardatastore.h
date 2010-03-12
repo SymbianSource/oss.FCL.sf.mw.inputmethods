@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -15,7 +15,6 @@
 *
 */
 
-
 #ifndef C_PENINPUTFINGERHWRARDATASTORE_H
 #define C_PENINPUTFINGERHWRARDATASTORE_H
 
@@ -24,10 +23,10 @@
 #include <e32def.h>
 #include <w32std.h>
 #include <eikon.hrh>
-#include <AknUtils.h>
+#include <aknutils.h>
 
 //FEP INCLUDES
-#include <PtiEngine.h>
+#include <ptiengine.h>
 #include <peninputpluginutils.h>
 
 
@@ -48,7 +47,7 @@ class CPtiEngine;
  *  CPeninputFingerHwrArDataStore
  *
  *  @lib peninputfingerhwr.lib
- *  @since S60 v5.0
+ *  @since Symbian TB9.2
  */
 class CPeninputFingerHwrArDataStore : public CBase
     {
@@ -56,7 +55,7 @@ public:
     /**
      * Symbian constructor.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aPtiEngine The PtiEngine
      * @param aLayout The Finger HWR layout
      * @return Pointer to created CPeninputFingerHwrArDataStore object
@@ -67,7 +66,7 @@ public:
     /**
      * destructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     virtual ~CPeninputFingerHwrArDataStore();
@@ -77,7 +76,7 @@ public:
     /**
      * Is valid candidate
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aCandidateIndex The index the candidate in list.
      * @return ETrue if candidate is not empty; otherwise EFalse
      */    
@@ -87,7 +86,7 @@ public:
     /**
      * Is English letter
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aLetter The recognize character.
      * @return ETrue if the character is English letter; otherwise EFalse
      */   
@@ -96,7 +95,7 @@ public:
     /**
      * Do recoginize by engine
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aTraceData The trace data.
      * @return None
      */            
@@ -106,27 +105,15 @@ public:
     /**
      * Set Chinese symbol to writing candidate list
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */      
     void SetArabicSymbolL();
     
-    
-    /**
-     * Set fixed English symbol
-     *
-     * @since S60 v5.0
-     * @param aRowCount The flag to confirm which row
-     * @return None
-     */   
-    void SetFixEnglishSymbolL(TRowCount aRowCount = ERowOne);
-    
-       
-
     /**
      * Set permitted ranges
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aPermittedRanges The permitted ranges.
      * @return None
      */            
@@ -135,7 +122,7 @@ public:
     /**
      * Set permitted ranges
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aPermittedRanges The permitted ranges.
      * @return None
      */            
@@ -145,7 +132,7 @@ public:
     /**
      * Set Primary range
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aPrimaryRange The Primary range
      * @return None
      */            
@@ -154,7 +141,7 @@ public:
     /**
      * Get Primary range
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return Primary range.
      */
     TInt PrimaryRange();
@@ -162,7 +149,7 @@ public:
     /**
      * Get current range
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return Current range.
      */   
     TFingerHwrRange CurrentRange();
@@ -171,7 +158,7 @@ public:
     /**
      * Set case
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aCase The case
      * @return None
      */            
@@ -180,7 +167,7 @@ public:
     /**
      * Set language
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aLanguage The language
      * @return None
      */            
@@ -190,7 +177,7 @@ public:
     /**
      * Set auto complete candidate list.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aIsFirstStroke The first stroke flag
      * @return None
      */
@@ -199,7 +186,7 @@ public:
     /**
      * Set auto complete candidate list.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return ETrue if it's the first stroke
      */
     TBool FirstStroke();   
@@ -208,7 +195,7 @@ public:
     /**
      * Get the candidate.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aIndex The index of candidate
      * @param aCharCode The result candidate
      * @return Candidate char code
@@ -219,7 +206,7 @@ public:
     /**
      * Set number mode
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aNumberMode Given number mode
      * @return None
      */
@@ -228,7 +215,7 @@ public:
     /**
      * Set number mode
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aCustomMode The customized number key mapping, 0-9
      *                    are not included.
      * @return None
@@ -238,7 +225,7 @@ public:
     /**
      * Set the screen mode.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aRange The range
      * @return None
      */
@@ -250,7 +237,7 @@ public:
     /**
      * Set stroke end mark to stroke end mark control
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     void SetStrokeEndMark();
@@ -258,7 +245,7 @@ public:
     /**
      * Get the stroke end mark.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return TPoint
      */
     TPoint StrokeEndMark();
@@ -266,7 +253,7 @@ public:
     /**
      * Get stroke end mark from control which handle it
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     TPoint StrokeEndMarkFromControl();
@@ -274,7 +261,7 @@ public:
     /**
      * Get number keymapping string
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aKeyMappingId Keymapping id
      * @return Pointer to keymapping string 
      */    
@@ -283,7 +270,7 @@ public:
     /**
      * Check if the char is the special display char
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aChar The checked char
      * @return TBool Wheater or not the input char is the special display char
      */
@@ -292,7 +279,7 @@ public:
     /**
      * Check if the char is need to be sent to app directly which not need to be shown  in candidate window.
      * 
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aChar The checked char
      * @return TBool Wheater or not the input char is the directly sent char
      */
@@ -301,7 +288,7 @@ public:
     /**
      * Convert the special display char to the keycode.
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aChar The special display char.
      * @return HBufC* The converted keycode char.
      */
@@ -310,7 +297,7 @@ public:
     /**
      * Get start writing char flag
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return ETrue If begine writing.
      */   
     TBool StartCharacter();
@@ -318,7 +305,7 @@ public:
     /**
      * Set start writing char flag
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aStartCharacter The start writing flag
      * @return ETrue If begine writing.
      */   
@@ -327,7 +314,7 @@ public:
     /**
      * Set input area size to engine for recognize
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aStartCharacter The start writing flag
      * @return ETrue If begine writing.
      */   
@@ -336,7 +323,7 @@ public:
     /**
      * Set screen size to engine for recognize
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aStartCharacter The start writing flag
      * @return ETrue If begine writing.
      */        
@@ -346,7 +333,7 @@ public:
     /**
      * Set high light flag for candidate list
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aIsHighlight The flag to decide highlight default cell or not
      * @return None
      */   
@@ -355,7 +342,7 @@ public:
     /**
      * Get high light flag for candidate list
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return ETrue If highlight the default cell to candidate list
      */   
     TBool Highlight();
@@ -363,7 +350,7 @@ public:
     /**
      * Remove duplicate candidate from predictive candidate list
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aSrc The punctuation candidate list
      * @param aTgt The predicative candidate list
      * @param aSrcStartIdx 
@@ -378,35 +365,35 @@ public:
     /**
      * Reset key board type
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      */   
     void ResetKeyboardType();
     
     /**
      * Set key board type to qwerty
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      */   
     void SetKeyboardToQwerty();
     
     /**
      * Get key board type
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      */   
     void GetKeyboardType();
     
 	/**
      * Get top guide line from hwr engine
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      */
     void GetTopGuideLinePos(TInt& aPos);
     
 	/**
      * Get bottom guide line from hwr engine
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      */
 	void GetBottomGuideLinePos(TInt& aPos);
 	
@@ -442,31 +429,12 @@ public:
      * @return ETrue if it is, EFalse otherwise
      */
     TBool IsArabicNumber(TUint16 aChar);
-
-    /**
-     * Check if the passed char is arabic character
-     *
-     * @since s60 v5.2
-     * @param aChar The passed unicode
-     * @return ETrue if it is, EFalse otherwise
-     */
-    TBool IsArabicChar(TUint16 aChar);
-
-    /**
-     * Check if the passed char is arabic symbols
-     *
-     * @since s60 v5.2
-     * @param aChar The passed unicode
-     * @return ETrue if it is, EFalse otherwise
-     */
-    TBool IsArabicSymbol(TUint16 aChar);
-    
 private:  
 
     /**
      * C++ constructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */            
     CPeninputFingerHwrArDataStore(CPeninputFingerHwrArLayout* aLayout);
@@ -474,7 +442,7 @@ private:
     /**
      * Second phase constructor
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */
     void ConstructL( CPtiEngine* aPtiEngine );
@@ -482,7 +450,7 @@ private:
    /**
      * Initialize the key mapping list
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @return None
      */  
     void InitKeyMappingListL();    
@@ -491,7 +459,7 @@ private:
     /**
      * Judge if a language is Arabic
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aLanguage Given language code
      * @return ETrue if aLanguage is Chinese, otherwise EFalse
      */
@@ -500,7 +468,7 @@ private:
     /**
      * Set engine language
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aLanguage Given language code
      * @return None
      */
@@ -509,7 +477,7 @@ private:
     /**
      * Set language show text
      *
-     * @since S60 v5.0
+     * @since Symbian TB9.2
      * @param aLanguage language code
      * @return None
      */

@@ -20,13 +20,12 @@
 #include <coemain.h>
 
 //FEP Includes
-#include <AknFepGlobalEnums.h>
+#include <aknfepglobalenums.h>
 #include <aknfeppeninputenums.h>
 #include <peninputlayoutchoicelist.h>
 #include <settingsinternalcrkeys.h>
 #include <centralrepository.h>
 #include <peninputlayoutvkb.h>
-#include <AknFepGlobalEnums.h>
 #include <peninputcmdparam.h>
 #include <peninputdropdownlist.h>
 #include <peninputlayoutmultilineicf.h>
@@ -154,7 +153,6 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
             {
             TInt ranges = *(TInt*)aData;
             iDataStore->SetPermittedRanges( ranges );
-            iHwrWnd->SetPermittedRanges( ranges );
             ret = KErrNone;
             }
             break;
@@ -188,7 +186,7 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
             TSize hwrSize = hwrRect.Size();
             iDataStore->SetInputAreaSize(hwrSize);
             iDataStore->SetScreenSize(hwrSize);
-            ChangeCurStateManagerToStandby();
+            ChangeCurStateToStandby();
             
             iDataStore->GetKeyboardType();
             iDataStore->SetKeyboardToQwerty();
@@ -299,10 +297,7 @@ TInt CPeninputFingerHwrArLayout::OnAppEditorTextComing(
 				{
 				candtype = ECandArabicIndicNumFirst;
 				}
-			else if(iDataStore->IsArabicChar(charBeforeCursor))
-			    {
-			    candtype = ECandArabicCharFirst;
-			    }
+				
 			iDataStore->SetFirstCandidateType(candtype);	
 			}
         
@@ -356,13 +351,14 @@ TInt CPeninputFingerHwrArLayout::PenInputType()
 //
 void CPeninputFingerHwrArLayout::OnDeActivate()
     {
-    //cancel writing
+    // cancel writing
     iHwrWnd->CancelWriting();
     
-    if(!iHwrWnd->IsSymbolTableShowingUp())
-        {
-        iHwrWnd->UpdateLayout( ETrue );
-        }
+	// close the symbol table if it's showing up
+    iHwrWnd->CloseSymbolTable();
+    
+	// close the candidate list if it's showing up
+    iHwrWnd->CloseCandidateList();
     
     CFepUiLayout::OnDeActivate();
     }
@@ -445,7 +441,7 @@ void CPeninputFingerHwrArLayout::HandleControlEventL( TInt aEventType,
             
         case EHwrEventOutsideEvent:
             {
-            ChangeCurStateManagerToStandby();
+            ChangeCurStateToStandby();
             iHwrWnd->CloseSymbolTable();
             }
             break;
@@ -549,7 +545,7 @@ TInt CPeninputFingerHwrArLayout::HandleGSRepositoryCallBack( TAny* aPtr )
                 break;
             case KSettingsPenInputGuideLine:
                 {
-                
+                self->SetGuideLineOn(newValue);
                 }
                 break;
             default:
@@ -616,9 +612,7 @@ CPeninputFingerHwrArLayout::~CPeninputFingerHwrArLayout()
     CCoeEnv::Static()->DeleteResourceFile( iResId );
 
     delete iDataStore;
-    iStateMgrArray.ResetAndDestroy();
-    iStateMgrArray.Close();
-
+	delete iStateMgr;
     delete iGSRepositoryWatcher;
     delete iRepositorySetting;
     }
@@ -645,7 +639,7 @@ void CPeninputFingerHwrArLayout::CreateHwrWindowL()
 // 
 void CPeninputFingerHwrArLayout::CreateStateManagerL()
     {
-    iStateMgrArray.AppendL( CPeninputFingerHwrArStateManager::NewL( this ) );
+    iStateMgr = CPeninputFingerHwrArStateManager::NewL( this );
     }
 
 // ---------------------------------------------------------------------------
@@ -679,8 +673,8 @@ void CPeninputFingerHwrArLayout::OnCtrlButtonUpL( TInt /*aEventType*/,
                 {
                 iDataStore->SetStartCharacter(EFalse);
                 iHwrWnd->CancelWriting();
-                ChangeCurStateManagerToStandby();
-                iHwrWnd->UpdateLayout( ETrue );
+                ChangeCurStateToStandby();
+                iHwrWnd->CloseCandidateList();
                 }
         
             SignalOwner( ESignalLayoutClosed );
@@ -698,8 +692,8 @@ void CPeninputFingerHwrArLayout::OnCtrlButtonUpL( TInt /*aEventType*/,
                 {
                 iDataStore->SetStartCharacter(EFalse);
                 iHwrWnd->CancelWriting();
-                ChangeCurStateManagerToStandby();
-                iHwrWnd->UpdateLayout( ETrue );
+                ChangeCurStateToStandby();
+                iHwrWnd->CloseCandidateList();
                 }
             
             if(iHwrWnd->IsSymbolTableShowingUp())
@@ -708,34 +702,34 @@ void CPeninputFingerHwrArLayout::OnCtrlButtonUpL( TInt /*aEventType*/,
                 }
             else
                 {
-                ChangeCurStateManagerToStandby();
+                ChangeCurStateToStandby();
                 iHwrWnd->OpenSymbolTable();
                 }
             }
             break;
         case EHwrCtrlId3Page1Btn:
             {
-            iHwrWnd->ShowSctPage( 1, EPagePosPageNo );
+            iHwrWnd->ShowSymbolPage( 1, EPagePosPageNo );
             }
             break;
         case EHwrCtrlId3Page2Btn:
             {
-            iHwrWnd->ShowSctPage( 2, EPagePosPageNo );
+            iHwrWnd->ShowSymbolPage( 2, EPagePosPageNo );
             }
             break;
         case EHwrCtrlId3Page3Btn:
             {
-            iHwrWnd->ShowSctPage( 0, EPagePosPageNo );
+            iHwrWnd->ShowSymbolPage( 0, EPagePosPageNo );
             }
             break;
         case EHwrCtrlId2Page1Btn:
             {
-            iHwrWnd->ShowSctPage( 1, EPagePosPageNo );
+            iHwrWnd->ShowSymbolPage( 1, EPagePosPageNo );
             }
             break;    
         case EHwrCtrlId2Page2Btn:
             {
-            iHwrWnd->ShowSctPage( 0, EPagePosPageNo );
+            iHwrWnd->ShowSymbolPage( 0, EPagePosPageNo );
             }
             break;    
 		case EHwrCtrlIdBtnEnter:
@@ -808,18 +802,17 @@ void CPeninputFingerHwrArLayout::OnBackspaceClickedL()
         {
         // goto standby and clear screen
         iDataStore->SetStartCharacter(EFalse);
-		ChangeCurStateManagerToStandby();
-	    iHwrWnd->UpdateLayout( ETrue );
+		ChangeCurStateToStandby();
+	    iHwrWnd->CloseCandidateList();
         }
     else
         {
-		
         SubmitCharToFep( EKeyBackspace );
-        CurStateManager()->HandleEventL( EHwrEventKeyBack, KNullDesC );
+        iStateMgr->HandleEventL( EHwrEventKeyBack, KNullDesC );
 		if(iDataStore->StartCharacter())
 		    {
-			ChangeCurStateManagerToStandby();
-		    iHwrWnd->UpdateLayout( ETrue );
+			ChangeCurStateToStandby();
+		    iHwrWnd->CloseCandidateList();;
 			}
         }
     }
@@ -875,12 +868,11 @@ void CPeninputFingerHwrArLayout::OnCandidateSelectedL( CFepUiBaseCtrl* aCtrl,
         return;
         }
     
-    CurStateManager()->HandleEventL( EHwrEventCandidateSelected, aData );
+    iStateMgr->HandleEventL( EHwrEventCandidateSelected, aData );
     
-    
-    ChangeCurStateManagerToStandby();
+    ChangeCurStateToStandby();
 
-    iHwrWnd->UpdateLayout( ETrue );
+    iHwrWnd->CloseCandidateList();;
     }
 
 
@@ -891,8 +883,11 @@ void CPeninputFingerHwrArLayout::OnCandidateSelectedL( CFepUiBaseCtrl* aCtrl,
 void CPeninputFingerHwrArLayout::OnIcfClicked()
     {
     // Go to standby
-	ChangeCurStateManagerToStandby();
-	iHwrWnd->UpdateLayout( ETrue );
+	ChangeCurStateToStandby();
+	if(iHwrWnd->IsCandidateShowup())
+	    {
+		iHwrWnd->CloseCandidateList();
+		}
 	}
 
 // ---------------------------------------------------------------------------
@@ -902,13 +897,19 @@ void CPeninputFingerHwrArLayout::OnIcfClicked()
 void CPeninputFingerHwrArLayout::OnHwrStrokeStartedL()
     {
 	iHwrWnd->HideIndicator();
+	
 	// The default candidate cell is not highlight
-	iDataStore->SetHighlight(EFalse);      
-	iHwrWnd->UpdateLayout(ETrue);
+	iDataStore->SetHighlight(EFalse); 
+    
+    // close the candidate list if it's currently showing up	
+	if(iHwrWnd->IsCandidateShowup())
+	    {
+		iHwrWnd->CloseCandidateList();
+		}
     
 	// remember the start writing position.
     iDataStore->SetStartCharacter(ETrue);
-    CurStateManager()->HandleEventL( EEventHwrStrokeStarted, KNullDesC );
+    iStateMgr->HandleEventL( EEventHwrStrokeStarted, KNullDesC );
     }
 
 // ---------------------------------------------------------------------------
@@ -920,7 +921,7 @@ void CPeninputFingerHwrArLayout::OnHwrStrokeFinishedL()
     RArray<TPoint> points = iHwrWnd->StrokeList();
     TPtrC ptr;
     ptr.Set(reinterpret_cast<TText*>(&points), sizeof(&points));
-    CurStateManager()->HandleEventL( EEventHwrStrokeFinished, ptr );
+    iStateMgr->HandleEventL( EEventHwrStrokeFinished, ptr );
     }
 
 // ---------------------------------------------------------------------------
@@ -934,11 +935,10 @@ void CPeninputFingerHwrArLayout::OnHwrCharacterFinishedL()
     RArray<TPoint> points = iHwrWnd->StrokeList();
     TPtrC ptr;
     ptr.Set( reinterpret_cast<TText*>( &points ), sizeof(&points) );
-    CurStateManager()->HandleEventL( EEventHwrCharacterTimerOut, ptr );
-
-    // When recognize Enter or Backspace, it will go to standby
-    iHwrWnd->UpdateLayout( CurStateManager()->IsStandbyState(), ETrue);
-    }
+    iStateMgr->HandleEventL( EEventHwrCharacterTimerOut, ptr );
+  
+	iHwrWnd->OpenCandidateList();
+	}
 
 // ---------------------------------------------------------------------------
 // get value from repository.
@@ -1039,32 +1039,18 @@ void CPeninputFingerHwrArLayout::SetBoxPenColor( const TInt aPenColor )
 // set hwr writing pen color.
 // ---------------------------------------------------------------------------
 //  
-void CPeninputFingerHwrArLayout::SetGuideLineOn(const TBool aGuideLineOn)
+void CPeninputFingerHwrArLayout::SetGuideLineOn(TBool aGuideLineOn)
     {
     iHwrWnd->SetGuideLineOn( aGuideLineOn );
     }
 
 // ---------------------------------------------------------------------------
-// get current state manager.
-// ---------------------------------------------------------------------------
-// 
-CPeninputFingerHwrArStateManagerBase* CPeninputFingerHwrArLayout::CurStateManager()
-    {
-    return iStateMgrArray[0];
-    }
-
-
-// ---------------------------------------------------------------------------
 // change current state manager to standby state.
 // ---------------------------------------------------------------------------
 // 
-void CPeninputFingerHwrArLayout::ChangeCurStateManagerToStandby()
+void CPeninputFingerHwrArLayout::ChangeCurStateToStandby()
     {
-    CPeninputFingerHwrArStateManagerBase* stateMgr = CurStateManager();
-    if ( stateMgr )
-        {
-        stateMgr->SetState( CPeninputFingerHwrArStateManagerBase::EStateStandBy );
-        }
+    iStateMgr->SetState( CPeninputFingerHwrArStateManagerBase::EStateStandBy );
     }
 
 //End of file

@@ -24,7 +24,7 @@
  *  Label control. This class could be used directly by user.
  *
  *  @lib peninputfingerhwrar.lib
- *  @since S60 V5.0
+ *  @since Symbian TB9.2
  */
 class CPeninputArabicFingerHwrIndicator: public CFepUiBaseCtrl
     {
@@ -34,14 +34,14 @@ public:
     /**
      * Destructor.        
      *
-     * @since S60 V4.0        
+     * @since Symbian TB9.2       
      */                  
     virtual ~CPeninputArabicFingerHwrIndicator();
 
     /**
      * Factory function.        
      *
-     * @since S60 V4.0        
+     * @since Symbian TB9.2       
      * @param aRect The rectangle area for this control
      * @param aUiLayout Ui layout who contains this control.Ownership not transferred
      * @param aControlId control Id
@@ -54,7 +54,7 @@ public:
     /**
      * Set bitmap for given status .        
      *
-     * @since S60 V4.0        
+     * @since Symbian TB9.2       
      * @param aBmp The bitmap. Ownership transferred to button
      * @param aType The bitmap type used for
      */                                 
@@ -63,7 +63,7 @@ public:
     /**
      * Set mask bitmap for given status.        
      *
-     * @since S60 V4.0        
+     * @since Symbian TB9.2       
      * @param aBmp The bitmap. Ownership transferred to button
      * @param aType The bitmap type used for
      */                                 
@@ -74,14 +74,14 @@ public:
      * From CFepUiBaseCtrl
      * Draw control
      *
-     * @since S60 V4.0
+     * @since Symbian TB9.2
      */                               
     virtual void Draw();    
 
     /**
      * Label size changed
      *
-     * @since S60 v3.2
+     * @since Symbian TB9.2
      * @param aNewRect New rect for label
      * @param aIsReloadImages resize image     
      * @return None
@@ -93,7 +93,7 @@ protected:
     /**
      * Constructor
      *
-     * @since S60 V4.0
+     * @since Symbian TB9.2
      * @param aRect The rectangle area for this control
      * @param aUiLayout Ui layout who contains this control.Ownership not transferred
      * @param aControlId control Id
@@ -103,7 +103,7 @@ protected:
     /**
      * Bitmaps size changed
      *
-     * @since S60 v3.2
+     * @since Symbian TB9.2
      * @param aSize New size for bitmaps
      * @return None
      */

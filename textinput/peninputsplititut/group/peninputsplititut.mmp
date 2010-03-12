@@ -42,6 +42,7 @@ SOURCE          peninputsplititutchnuistatepredict.cpp peninputsplititutchnuista
 SOURCE          peninputsplititutchnuistatepinyincomposition.cpp peninputsplititutwesternuimgr.cpp peninputsplititutwesternuistatenonpredict.cpp
 
 SOURCE          peninputsplititutconverter.cpp peninputcommonbgctrl.cpp
+SOURCE          peninputsplititutwesternuistatespelling.cpp
 
 USERINCLUDE     ../inc
 

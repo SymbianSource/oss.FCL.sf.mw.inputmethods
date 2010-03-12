@@ -167,6 +167,8 @@ void CSplitItutDataMgr::ReadLafInfo()
     splitpanerect.LayoutRect(spliwndtrect.Rect(), splitpane);   
     
     iLayoutRect = spliwndtrect.Rect();
+    // spell layout rect
+    iLayoutRectSpell = rect;
     iLayoutOffset = spliwndtrect.Rect().iTl;
     iBackgroundRect = iLayoutRect;
     iBackgroundRect.Move(-iLayoutOffset);
@@ -290,6 +292,120 @@ void CSplitItutDataMgr::ReadLafInfo()
         AknLayoutScalable_Avkon::popup_fshwr2_char_preview_window_t1(0).LayoutLine();
     previewWndText.LayoutText(previewWndRect.Rect(), iPreviewWndText);
     iBubbleFont = const_cast<CFont*>(previewWndText.Font());
+    
+    // for spell window
+    // OK and Cancel button
+    TAknWindowLineLayout spellwnd, softkeypane, okkeypane, cancelkeypane  ;
+    TAknLayoutRect spellwndtrect, softkeypanerect, okkeyRect, cancelkeyRect  ;
+
+    spellwnd = AknLayoutScalable_Avkon::popup_fep_ituss_window(1).LayoutLine();
+    spellwndtrect.LayoutRect(rect, spellwnd);    
+    
+    softkeypane = AknLayoutScalable_Avkon::ituss_sks_pane().LayoutLine();
+    softkeypanerect.LayoutRect(spellwndtrect.Rect(), softkeypane);
+    
+    okkeypane = AknLayoutScalable_Avkon::ituss_sks_pane_g1().LayoutLine();
+    okkeyRect.LayoutRect(softkeypanerect.Rect(), okkeypane);
+    iOkRect = okkeyRect.Rect();
+    
+    iSpellBtnTextFormat = AknLayoutScalable_Avkon::ituss_sks_pane_t1().LayoutLine();
+    iSpellBtnTextFormat.ir = 7;
+    
+    cancelkeypane = AknLayoutScalable_Avkon::ituss_sks_pane_g2().LayoutLine();
+    cancelkeyRect.LayoutRect(softkeypanerect.Rect(), cancelkeypane);
+    iCancelRect = cancelkeyRect.Rect();
+    
+    // icf in spell mode
+    TAknWindowLineLayout icfpane, querypane, focuspane, backkeyInnerpane, backkeypane,
+                         middleInnerBtn;
+    TAknLayoutRect icfpaneRect, querypaneRect, focuspaneRect, backInnerRect, backkeyRect,
+                   middleButton, middleInnerRect;
+    
+    icfpane = AknLayoutScalable_Avkon::popup_fep_vtchi_icf_pane(1).LayoutLine();
+    icfpaneRect.LayoutRect(rect, icfpane);
+    
+    querypane = AknLayoutScalable_Avkon::vtchi_query_pane().LayoutLine();
+    querypaneRect.LayoutRect(icfpaneRect.Rect(), querypane);
+        
+    focuspane = AknLayoutScalable_Avkon::vtchi_query_pane(0).LayoutLine();
+    focuspaneRect.LayoutRect(querypaneRect.Rect(), focuspane);
+    iSpellICFRect = focuspaneRect.Rect();
+    
+	TRect middleButtonPaneRect = spellwndtrect.Rect();
+	middleButtonPaneRect.Move( 5, 3 );
+	
+	TRect cellSpellRect;
+	cellSpellRect.iTl = middleButtonPaneRect.iTl;
+	cellSpellRect.SetHeight( itucellrect.Rect().Height());
+	cellSpellRect.SetWidth( itucellrect.Rect().Width());
+
+	// Left
+	middleButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowLeftRect = middleButton.Rect();
+	
+	middleInnerBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane_g1(2).LayoutLine();
+	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
+	iSpellArrowLeftRectInner = middleInnerRect.Rect();
+	
+	// Right
+	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
+	middleButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowRightRect = middleButton.Rect();
+	
+	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
+	iSpellArrowRightRectInner = middleInnerRect.Rect();
+
+    
+    // backspace in spell mode
+	
+	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
+	middleButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellBackSpcace = middleButton.Rect();
+	
+	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
+	iSpellBackSpcaceInner = middleInnerRect.Rect();
+
+
+    
+	// icf indicator
+	TAknWindowLineLayout icfIndiPaneWithoutText, indiIcon, indiText;
+	TAknLayoutRect icfIndiPaneRectWithoutText, indiIconRect, indiTextRect;
+	TAknTextLineLayout indiTextLayout;
+	
+
+	
+	icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
+	icfIndiPaneRectWithoutText.LayoutRect(icfpaneRect.Rect(), icfIndiPaneWithoutText);
+	iIndiPaneRectWithoutTextForPrtWest = icfIndiPaneRectWithoutText.Rect();
+	
+
+	iIndiIconRectWithoutTextForPrtWest = TRect( 0, 0, 60, 20 );
+	
+	indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
+	iIndiTextForPrtWest = indiTextLayout;  
+    
+	// ICF text line info
+    TAknTextLineLayout icftextT1, icftextT2, icftextT3;    
+    icftextT1 = AknLayoutScalable_Avkon::vtchi_query_pane_t1(0).LayoutLine();
+    icftextT2 = AknLayoutScalable_Avkon::vtchi_query_pane_t2(0).LayoutLine();
+    icftextT3 = AknLayoutScalable_Avkon::vtchi_query_pane_t3(0).LayoutLine();
+    
+    iIcfTextAlignment = icftextT1.iJ;
+    iIcfTextLeftMargin = icftextT1.il;
+    iIcfTextRightMargin = icftextT1.ir;
+
+    TAknLayoutText ctxt1, ctxt2, ctxt3;
+    ctxt1.LayoutText( focuspaneRect.Rect(), icftextT1 );
+    ctxt2.LayoutText( focuspaneRect.Rect(), icftextT2 );
+    ctxt3.LayoutText( focuspaneRect.Rect(), icftextT3 );
+
+    iIcfTextTopMargin = ctxt1.TextRect().iTl.iY - focuspaneRect.Rect().iTl.iY;
+    iIcfTextLineSpaceMargin = ctxt2.TextRect().iTl.iY - ctxt1.TextRect().iBr.iY;
+    iIcfTextBottomMargin = focuspaneRect.Rect().iBr.iY - ctxt3.TextRect().iBr.iY 
+                                                      - iIcfTextLineSpaceMargin;  
+    iIcfTextHeight = ctxt1.TextRect().Height();
+    
+    iIcfFont = const_cast<CFont*>(AknLayoutUtils::FontFromId(icftextT1.iFont, NULL));
     }   
 
 // ---------------------------------------------------------------------------
@@ -453,9 +569,9 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
         case ELayoutOffset:
             return &iLayoutOffset;
         case ELayoutRect:
-            return &iLayoutRect;
+            return iSpellMode ? &iLayoutRectSpell : &iLayoutRect;
         case EBackgroundRect:
-            return &iBackgroundRect;
+            return iSpellMode ? &iLayoutRectSpell : &iBackgroundRect;
         case EBackspaceRect:
             return IsChinese() ? &iBackspaceCnRect : &iBackspaceRect;
         case EKeypadRect:
@@ -512,11 +628,23 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
             return &iPuncCandidates;
         */
         case EArrowLeftRect:
- //       case EItutPosArrowLeft:
-            return IsChinese() ? &iArrowLeftCnRect : &iArrowLeftRect;
+        	if( iSpellMode )
+        		{
+        	    return &iSpellArrowLeftRect;
+        		}
+        	else
+        		{
+                return IsChinese() ? &iArrowLeftCnRect : &iArrowLeftRect;
+        		}
         case EArrowRightRect:
-//        case EItutPosArrowRight:
-            return IsChinese() ? &iArrowRightCnRect : &iArrowRightRect;
+        	if( iSpellMode )
+           		{
+        	    return &iSpellArrowRightRect;
+           		}
+        	else
+        		{
+                return IsChinese() ? &iArrowRightCnRect : &iArrowRightRect;
+        		}
         case EArrowUpRect:
 //        case EItutPosArrowUp:
             return &iArrowUpRect;
@@ -536,9 +664,23 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
             return &iCloseRect;
 #endif            
         case ELeftInnerRect:
-        	return IsChinese() ? &iArrowLeftInnerCnRect : &iArrowLeftInnerRect;
+        	if( iSpellMode )
+           		{
+        	    return &iSpellArrowLeftRectInner;
+           		}
+        	else
+        		{
+        	    return IsChinese() ? &iArrowLeftInnerCnRect : &iArrowLeftInnerRect;
+        		}
         case ERightInnerRect:
-        	return IsChinese() ? &iArrowRightInnerCnRect : &iArrowRightInnerRect;
+        	if( iSpellMode )
+        		{
+        	    return &iSpellArrowRightRectInner;
+        	    }
+        	else
+        		{
+        	    return IsChinese() ? &iArrowRightInnerCnRect : &iArrowRightInnerRect;
+        		}
         case EBackspaceInnerRect:
         	return IsChinese() ? &iBackspaceInnerCnRect : &iBackspaceInnerRect;
        	case EUpInnerRect:
@@ -567,6 +709,30 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
             return &iPreviewWndText;
         case EPreviewBubbleFont:
             return reinterpret_cast<TAny*>(iBubbleFont);    
+        case EItutPosOk:
+            return &iOkRect;
+        case EItutPosCancel:
+            return &iCancelRect;
+        case EBtnTextLine:
+            return &iSpellBtnTextFormat;            
+        case ESpellICFRect:
+            return &iSpellICFRect;
+        case ESpellEditIndicatorRect:
+            return &iSpellEditIndicator;
+        case EIcfFont:
+            return reinterpret_cast<TAny*>(iIcfFont);      
+        case EImIndicatorRect:
+        	return &iSpellEditIndicator;
+        case ESpellBackSpcae:
+        	return &iSpellBackSpcace;
+        case ESpellBackSpcaeInner:
+        	return &iSpellBackSpcaceInner;
+        case EIndiPaneWithoutTextRect:
+            return &iIndiPaneRectWithoutTextForPrtWest;
+        case EIndiIconWithoutTextRect:
+            return &iIndiIconRectWithoutTextForPrtWest;
+        case EIndiTextLine:
+            return &iIndiTextForPrtWest;
         default:
             break;
         }
@@ -588,7 +754,8 @@ CSplitItutDataMgr::CSplitItutDataMgr(MSplitItutLayoutContext* aLayoutContext,
                                          iCase(EAknEditorUpperCase),
                                          iConfigResId(0),
                                          iLayoutContext(aLayoutContext),
-                                         iCurrentScriptIdx(KInvalidIndex)
+                                         iCurrentScriptIdx(KInvalidIndex),
+                                         iSpellMode(EFalse)
     {
     }
 

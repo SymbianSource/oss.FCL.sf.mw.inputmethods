@@ -121,7 +121,10 @@ void CWesternSplitItutUiStateNonPredict::OnEntryL()
             }
         else
             {
-            iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight);    
+            iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight); 
+            iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(EFalse);
+            iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(EFalse);           
+               
             if(iOwner->LayoutContext()->IsSecretEdtior())
                 {
                 CAknFepCtrlRawKeyButton * leftbtn;

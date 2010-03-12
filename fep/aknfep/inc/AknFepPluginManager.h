@@ -81,7 +81,10 @@ enum TPluginCmd
     EPluginPromptChanged,
     EPluginShowCandidate,
     EPluginShowTooltip,
-    EPluginHideTooltip
+    EPluginHideTooltip,
+    EPluginSwitchToPortrait,
+    EPluginSwitchToLandscape,
+    EPluginSwitchMode
     };
 
 /** 
@@ -327,6 +330,7 @@ public:
     
     void ResetCandidateList();
     
+    void UpdateFSQIndicator();
     void UpdateITUTIndicator();
     
     void SetITUTSpellingStateL(TBool aState);
@@ -493,6 +497,8 @@ public: // inline
     inline void SetInEditWordQueryFlag(TBool aIsEditWordQueryDlg );    
     void LaunchPenInputLanguageSelectionL( TBool aLaunchedByTouchWin = EFalse );
     void LaunchPenInputRecognitionWithDictionarySelectionL();
+    void LaunchPenInputWritingSpeedSelectionL();
+    void LaunchPenInputGuidingLineSelectionL();
   inline TBool IsInGlobleNoteEditor();
     void SetMenuState(TBool aUpdateEditor = ETrue);
     void ResetMenuState(TBool aUnDim = ETrue);
@@ -818,7 +824,7 @@ private:
      * @param aParam
      * @return None
      */
-    void NotifyAppUiImeTouchWndState( const TBool aTouchState );
+    void NotifyAppUiImeTouchWndStateL( const TBool aTouchState );
         
     /**
      * Check if current editor support partial screen IMEs

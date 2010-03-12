@@ -264,25 +264,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_back_space
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_backspace;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_backspace_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_backspace;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_backspace_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_backspace;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_backspace_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_backspace;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_backspace_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_backspace;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_backspace_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_backspace_mask;
     }
     
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_close
@@ -291,25 +286,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_close
     
     imgmajorskinid=EAknsMajorGeneric;
     colorgroup=0xffff;
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_close;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_close_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_close;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_close_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_close;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_close_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_close;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_close_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_close;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_close_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_close_mask;
     }
     
 
@@ -321,23 +311,18 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_arrowup
     
     nactive=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up;
     nactivemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
        
     nactivep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up;
     nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     
     active=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up;
     activemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
         
     activep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up;
     activepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
     
     disable=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up;
     disablemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_up_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     }
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_arrowdown
@@ -348,23 +333,18 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_arrowdown
     
     nactive=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down;
     nactivemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
        
     nactivep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down;
     nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     
     active=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down;
     activemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
         
     activep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down;
     activepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
     
     disable=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down;
     disablemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_down_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     }
     
 
@@ -376,23 +356,18 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_arrowleft
     
     nactive=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left;
     nactivemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
        
     nactivep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left;
     nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     
     active=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left;
     activemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
         
     activep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left;
     activepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
     
     disable=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left;
     disablemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_left_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     }  
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_arrowright
@@ -403,23 +378,18 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_arrowright
     
     nactive=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right;
     nactivemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
        
     nactivep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right;
     nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     
     active=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right;
     activemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
         
     activep=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right;
     activepmsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
     
     disable=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right;
     disablemsk=EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     }
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_symbol_table_button
@@ -428,25 +398,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_symbol_table_button
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_case_special;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_case_special_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_case_special;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_case_special_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_case_special;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_case_special_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_case_special;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_case_special_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_case_special;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_case_special_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_symbol_table_mask;
     }
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_option
@@ -457,23 +422,18 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_option
     
     nactive=EMbmPeninputfingerhwrarQgn_indi_input_options;
     nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_options_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
        
     nactivep=EMbmPeninputfingerhwrarQgn_indi_input_options;
     nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_options_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     
     active=EMbmPeninputfingerhwrarQgn_indi_input_options;
     activemsk=EMbmPeninputfingerhwrarQgn_indi_input_options_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
         
     activep=EMbmPeninputfingerhwrarQgn_indi_input_options;
     activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_options_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
     
     disable=EMbmPeninputfingerhwrarQgn_indi_input_options;
     disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_options_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
     }
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_enter
@@ -482,25 +442,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_enter
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_enter;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_enter;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_enter;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_enter;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_enter;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
     }
 
    
@@ -561,9 +516,8 @@ RESOURCE AKN_FEP_FINGERHWR_ICON_IMAGE r_akn_fep_hwr_indicator_icon
 	bmpfile = AKN_FEP_FINGERHWR_BMP;
     imgmajorskinid = EAknsMajorGeneric;
     
-    iconimage = EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right;
-    iconimagemsk = EMbmPeninputfingerhwrarQgn_indi_itut_cursor_right_mask;
-    iconimageskinid = EAknsMinorGenericQgnIndiFepButtonChinese;
+    iconimage = EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_writing_area;
+    iconimagemsk = EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_writing_area_mask;
 	}
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_3page_hwr_sct_page_1
@@ -572,25 +526,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_3page_hwr_sct_page_1
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_3_mask;
     }
     
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_3page_hwr_sct_page_2
@@ -599,25 +548,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_3page_hwr_sct_page_2
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_3_mask;
     }
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_3page_hwr_sct_page_3
@@ -626,25 +570,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_3page_hwr_sct_page_3
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3_mask;
-    //nactiveskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3_mask;
-    //nactivepskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3_mask;
-    //activeskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3_mask;
-    //activepskinid=EAknsMinorGenericQgnIndiFepButtonChineseSel;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page3_mask;
-    //disableskinid=EAknsMinorGenericQgnIndiFepButtonChinese;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_3_3_mask;
     }	
 
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_2page_hwr_sct_page_1
@@ -653,20 +592,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_2page_hwr_sct_page_1
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page1_mask;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_1_2_mask;
     }
     
 RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_2page_hwr_sct_page_2
@@ -675,20 +614,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_arabic_2page_hwr_sct_page_2
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_fshwr_sct_page2_mask;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_hwr_arabic_page_2_2_mask;
     }	
 	
 RESOURCE AKN_FEP_NONIRREGULAR_VKB_BITMAP r_akn_fep_vkb_nonirregular_bitmap
@@ -1256,7 +1195,7 @@ RESOURCE PENINPUT_FINGERHWR_KEYPAD r_arabic_finger_hwr_landscape_symbol_table
             leftstr = <0x005D>;
             scancode = 0x005D;
             },            
-        PENINPUT_FINGERHWR_KEYPAD_KEY  //half  revert /
+        PENINPUT_FINGERHWR_KEYPAD_KEY  //half  \
             {
             leftstr = <0x005C>;
             scancode = 0x005C;

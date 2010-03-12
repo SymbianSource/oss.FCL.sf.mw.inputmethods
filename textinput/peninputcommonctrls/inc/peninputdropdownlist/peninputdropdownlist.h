@@ -98,7 +98,8 @@ public: // internal type definition
         EListExpandableWithoutIcon,
         EListExpandableRollWithIcon,
 		EListExpandableRollWithIconWithBubble,
-        EListExpandableMultiRowWithoutIcon      
+        EListExpandableMultiRowWithoutIcon,
+        EListExpandableMultiRowWithoutIconWithBubble      
         };
 
     enum TCandTruncateType

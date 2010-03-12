@@ -76,6 +76,8 @@ _LIT( KConfigurationResourceFile,
       "z:\\resource\\plugins\\peninputvkbwindowconfiginfo_" );
 _LIT( KResourceFileExtName, ".RSC" );
 
+_LIT(KEmptyString, "");
+
 // ======== MEMBER FUNCTIONS ========
 
 // --------------------------------------------------------------------------
@@ -91,7 +93,8 @@ CPeninputGenericVkbWindow::CPeninputGenericVkbWindow(
       iPopupInited(EFalse),
       iPopupSet(EFalse),
       iLafMgr(NULL),
-      iFirstConstruct(ETrue)
+      iFirstConstruct(ETrue),
+      iIndiWithText( EFalse )
     {
     }
 
@@ -126,6 +129,7 @@ CPeninputGenericVkbWindow::~CPeninputGenericVkbWindow()
     delete iLafMgr;
     iLafMgr = NULL;
     delete iBmpRotator;
+    iAccentCmdList.Close();
     }
 void CPeninputGenericVkbWindow::ConstructL()
     {
@@ -155,6 +159,14 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
     
     switch ( aEventType )
         {
+        case EPeninputLayoutEventMultiRange:
+            {
+            if ( aCtrl->ControlId() == EPeninutWindowCtrlIdMultiRangeBtn )
+                {
+                PopupChoiceList();
+                }
+            }
+            break;
         case EPeninputLayoutVkbEventResetShift: 
             {
             HandleShiftAndCapslockBtnClicked();
@@ -165,7 +177,10 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
             if ( iPopupWnd && !iPopupWnd->Hiden() )
                 {
                 iPopupWnd->CloseWindow();
-                ResetAccentButton();
+                if ( iLayoutContext->LayoutType() != EPluginInputModeFSQ )
+                    {
+                    ResetAccentButton();
+                    }
                 iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStateStandby );
                 }
         	}
@@ -179,25 +194,32 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
                 {
                 if (aCtrl->ControlId() == EPeninutWindowCtrlIdAccentPopupWindow)
                     {
-                    TInt currentRange = CPeninputDataConverter::AnyToInt(
-                                      iLayoutContext->RequestData(EPeninputDataTypeCurrentRange));
-                    TInt currentAccent = CPeninputDataConverter::AnyToInt(
-                                      iLayoutContext->RequestData(EPeninputDataTypeCurrentAccent));
-                
-                    if ((currentRange == ERangeAccent) && (currentAccent == event->iIndex))
+                    if ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
                         {
-						iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStateStandby );
-                        return;
+                        TRAP_IGNORE( HandleRangeListSelectedL( aCtrl, aEventData ));
                         }
-
-                    iLayoutContext->SetData( EPeninputDataTypeCurrentAccent, &(event->iIndex));
-                                         
-                    // Active range, update rangebar and vkb layout
-                    //ChangeRange( ERangeAccent, EPeninputVkbLayoutAccented1 + 2 * event->iIndex);
-                    (currentRange == ERangeAccent) ? ChangeRange(ERangeAccent, 
-                                       EPeninputVkbLayoutAccented1 + 2 * event->iIndex, EFalse) :
-                                                     ChangeRange(ERangeAccent, 
-                                       EPeninputVkbLayoutAccented1 + 2 * event->iIndex, ETrue);
+                    else
+                        {
+                        TInt currentRange = CPeninputDataConverter::AnyToInt(
+                                          iLayoutContext->RequestData(EPeninputDataTypeCurrentRange));
+                        TInt currentAccent = CPeninputDataConverter::AnyToInt(
+                                          iLayoutContext->RequestData(EPeninputDataTypeCurrentAccent));
+                    
+                        if ((currentRange == ERangeAccent) && (currentAccent == event->iIndex))
+                            {
+                            iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStateStandby );
+                            return;
+                            }
+    
+                        iLayoutContext->SetData( EPeninputDataTypeCurrentAccent, &(event->iIndex));
+                                             
+                        // Active range, update rangebar and vkb layout
+                        //ChangeRange( ERangeAccent, EPeninputVkbLayoutAccented1 + 2 * event->iIndex);
+                        (currentRange == ERangeAccent) ? ChangeRange(ERangeAccent, 
+                                           EPeninputVkbLayoutAccented1 + 2 * event->iIndex, EFalse) :
+                                                         ChangeRange(ERangeAccent, 
+                                           EPeninputVkbLayoutAccented1 + 2 * event->iIndex, ETrue);
+                        }
                     }
                 else if (aCtrl->ControlId() == EPeninutWindowCtrlIdSwitcherPopupWindow)
                     {
@@ -220,7 +242,10 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
                 }
             else
                 {
-                ResetAccentButton();   
+                if ( iLayoutContext->LayoutType() != EPluginInputModeFSQ )
+                    {
+                    ResetAccentButton();
+                    }
                 }
             iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStateStandby );
             }
@@ -429,6 +454,7 @@ void CPeninputGenericVkbWindow::CreateAllControlsL()
     									  KAknsIIDQsnFrInputPreviewSideL,
     									  KAknsIIDQsnFrInputPreviewMiddle,
     									  KAknsIIDQsnFrInputPreviewSideR);  
+    icf->MsgBubbleCtrl()->SetTextL( KEmptyString );
     icf->InfoBubbleCtrl()->SetTextFormat(iBubbleTextLayout);
     icf->InfoBubbleCtrl()->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
     icf->InfoBubbleCtrl()->SetBitmapParam(NULL,
@@ -442,8 +468,11 @@ void CPeninputGenericVkbWindow::CreateAllControlsL()
         icf->SetInfoBubbleCtrlSize(TSize(iBubbleSize.iW,iBubbleSize.iH));
         }
         
-    // Range bar
-    AddRangeBarL();
+    if ( !( iLayoutContext->LayoutType() == EPluginInputModeFSQ ))
+        {
+        // Range bar
+        AddRangeBarL();
+        }
 
     // Vkb control
     iVkbCtrl = CPeninputVkbCtrlExt::NewL( TRect(), UiLayout(), 
@@ -527,10 +556,20 @@ void CPeninputGenericVkbWindow::CreateAllControlsL()
 	                                  KAknsIIDQsnFrKeypadButtonFrInactive );
 	    }
 	
-    // Switch to hwr button  
-    AddButtonL( EPeninutWindowCtrlIdSwitchToHwrBtn, 
-                EPeninputLayoutEventToHwr, 
-                R_PENINPUT_LAYOUT_VKB_HWR );
+	if ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
+	    {
+        // Switch to hwr button  
+        AddButtonL( EPeninutWindowCtrlIdMultiRangeBtn, 
+                    EPeninputLayoutEventMultiRange, 
+                    R_PENINPUT_LAYOUT_FSQ_MULTIRANGE );
+	    }
+	else
+	    {
+	    // Switch to hwr button  
+	    AddButtonL( EPeninutWindowCtrlIdSwitchToHwrBtn, 
+                    EPeninputLayoutEventToHwr, 
+                    R_PENINPUT_LAYOUT_VKB_HWR );
+	    }
                   
     // Add popup window
     AddPopupWindowL();
@@ -557,7 +596,10 @@ void CPeninputGenericVkbWindow::ChangeClientSize()
     if ( !iPopupWnd->Hiden() )
         {
         iPopupWnd->CloseWindow();
-        ResetAccentButton();
+        if ( iLayoutContext->LayoutType() != EPluginInputModeFSQ )
+            {
+            ResetAccentButton();
+            }
         iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStateStandby );
         }
         
@@ -683,7 +725,8 @@ void CPeninputGenericVkbWindow::ReorganizeControls( TInt aClientLayoutId,
     TRect winRect( Rect().iTl, iLafMgr->EntirePaneRect().Size());
         
     SetWindowRect(winRect);  
-    ReorgnizeTitleBar();
+    //ReorgnizeTitleBar();
+    ReorgnizeICFAndButtons();
     
     const TInt count = controlList.Count();
     TInt controlID = 0;
@@ -897,15 +940,366 @@ void CPeninputGenericVkbWindow::AddPopupWindowL()
 //
 void CPeninputGenericVkbWindow::PopupChoiceList()
     {
-    CFepUiBaseCtrl* accentBtn = Control( EPeninutWindowCtrlIdAccentedBtn );
-    
-    if ( accentBtn )
+    if ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
         {
-        if(!iPopupInited)
-            TRAP_IGNORE(DoIdleConstructL());
-        iPopupWnd->Display( accentBtn->Rect() );
-        iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStatePopup );
+        TRAP_IGNORE( PopupRangeListL());
         }
+    else
+        {
+        CFepUiBaseCtrl* accentBtn = Control( EPeninutWindowCtrlIdAccentedBtn );
+        
+        if ( accentBtn )
+            {
+            if(!iPopupInited)
+                TRAP_IGNORE(DoIdleConstructL());
+            iPopupWnd->Display( accentBtn->Rect() );
+            iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStatePopup );
+            }
+        }
+    }
+// ---------------------------------------------------------------------------
+// Show range list
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::PopupRangeListL()
+    {
+    if ( !iPopupInited )
+        {
+        TRAP_IGNORE( DoIdleConstructL() );
+        }
+    
+
+    iPopupWnd->ClearItemsL();
+    RArray<CFepLayoutChoiceList::SItem> items;
+    PrepareRangeListItems( items );
+    TInt count = items.Count();
+    for ( TInt i = 0; i < count; i++ )
+        {
+        iPopupWnd->AddItemL( items[i] );
+        }
+    items.Close();
+
+    if ( iPopupWnd->ItemsCount() < 1 ) 
+        {
+        return;
+        }
+    
+    if ( iPopupWnd->ItemsCount() < 2 )
+        {
+        const CFepLayoutChoiceList::SItem* item = iPopupWnd->ItemByIndex( 0 );
+        CFepLayoutChoiceList::SEvent event;
+        event.iIndex = 0;
+        event.iCommand = item->iCommand;
+        TPtrC ptr;
+        ptr.Set(reinterpret_cast<TText*>(&event), sizeof(event));
+        HandleRangeListSelectedL( iPopupWnd, ptr );
+        return;
+        }
+    
+    CFepUiBaseCtrl* btn = Control( EPeninutWindowCtrlIdMultiRangeBtn );    
+    iPopupWnd->SetListColumnNumWithLafL( iPopupWnd->ItemsCount() );    
+    iPopupWnd->SetCurrentFocusedIndex( - 1 ); //no active item
+    iPopupWnd->Display( btn->Rect() );
+    iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStatePopup );    
+    }
+
+// ---------------------------------------------------------------------------
+// Handle range list event
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::HandleRangeListSelectedL( CFepUiBaseCtrl* /*aCtrl*/, 
+                                                       const TDesC& aData )
+    {
+    CFepLayoutChoiceList::SEvent* event = 
+        (CFepLayoutChoiceList::SEvent*)aData.Ptr();
+    
+    TInt index = -1;
+    TInt range = ERangeInvalid;
+
+    if ( event->iCommand == EPeninputVkbLayoutNativeChar )
+        {
+        range = ERangeNative;
+        }
+
+    else if ( event->iCommand == EPeninputVkbLayoutNativeNumber )
+        {
+        range = ERangeNativeNumber;
+        }
+    
+    else if ( event->iCommand == EPeninputVkbLayoutLatinChar )
+        {
+        range = ERangeEnglish;
+        }
+    
+    else if ( event->iCommand == EPeninputVkbLayoutLatinNumber )
+        {
+        range = ERangeNumber;
+        }
+    
+    else if ( event->iCommand == EPeninputVkbLayoutSymbol )
+        {
+        range = ERangeSymbol;
+        }
+
+    else if ( event->iCommand == EPeninputVkbLayoutAccented1 )
+        {
+        index = 0;
+        range = ERangeAccent;
+        }
+    
+    else if ( event->iCommand == EPeninputVkbLayoutAccented2 )
+        {
+        index = 1;
+        range = ERangeAccent;
+        }
+    
+    else if ( event->iCommand == EPeninputVkbLayoutAccented3 )
+        {
+        index = 2;
+        range = ERangeAccent;
+        }
+        
+    TInt currentRange = IntContext( EPeninputDataTypeCurrentRange );
+    TInt currentAccent = IntContext( EPeninputDataTypeCurrentAccent );
+
+    if ( currentRange == range )
+        {
+        if ( range != ERangeAccent || currentAccent == index )
+            {
+            iUiStateMgr->SetCurrentUiState( EPeninputVkbUiStateStandby );
+            return;
+            }
+        }
+
+    iLayoutContext->SetData( EPeninputDataTypeCurrentAccent, &index );
+
+    if ( range != ERangeAccent )
+        {
+        ChangeRange( range );
+        }
+    else
+        {
+        ChangeRange( ERangeAccent, 
+                EPeninputVkbLayoutAccented1 + 2 * index, ETrue );
+        }
+    UpdateRangeCtrlsL();
+    }
+
+// ---------------------------------------------------------------------------
+// Update state of range button
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::UpdateRangeCtrlsL()
+    {
+    CAknFepCtrlCommonButton* rangeBtn = 
+        static_cast<CAknFepCtrlCommonButton*>( 
+                Control(EPeninutWindowCtrlIdMultiRangeBtn));
+    if ( !rangeBtn )
+        {
+        return;
+        }
+    
+    RArray<CFepLayoutChoiceList::SItem> items;
+    PrepareRangeListItems( items );
+    TInt count = items.Count();
+    items.Close();
+    
+    TInt languageId = IntContext( EPeninputDataTypeInputLanguage );
+    TInt range = IntContext( EPeninputDataTypeCurrentRange );
+
+    TInt resId = -1;
+    TInt aplhaRangeResId = -1;
+    TInt numberRangeResId = -1;
+    GetRangeIconResource( languageId, aplhaRangeResId, numberRangeResId );
+    
+    if ( range == ERangeEnglish || range == ERangeNative ) 
+        {
+        resId = aplhaRangeResId;
+        }
+    else
+        {
+        resId = numberRangeResId; 
+        }
+        
+    rangeBtn->SetResourceId( resId );
+    rangeBtn->ConstructFromResourceL();
+    rangeBtn->SetDimmed( count < 1 );    
+    }
+
+// ---------------------------------------------------------------------------
+// Get resource ids of range button icon
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::GetRangeIconResource( TInt aLangId, 
+                                                      TInt& aAlphaRange, 
+                                                      TInt& aOtherRange  )
+    {   
+    switch ( aLangId )
+        {
+        case ELangRussian:    //Cyrillic
+        case ELangBulgarian:
+        case ELangUkrainian:
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_CYRILLIC_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_CYRILLIC_NUMERIC;
+            }
+            break;
+        case ELangGreek:       //Greek
+        case ELangCyprusGreek:
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_GREEK_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_GREEK_NUMERIC;
+            }
+            break;        
+        case ELangHebrew:     //Hebrew
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_HEBREW_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_HEBREW_NUMERIC;
+            }
+            break;  
+        case ELangArabic:     //Arabic
+        case ELangFarsi:      //Farsi
+        case ELangUrdu:       //Urdu
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_ARABIC_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_ARABIC_NUMERIC;
+            }
+            break;
+        case ELangThai:       //Thai
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_THAI_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_THAI_NUMERIC;
+            }
+            break;
+        default:              //others       
+            {
+            aAlphaRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_LATIN_ALPHA;
+            aOtherRange = R_PENINPUT_LAYOUT_VKB_RANGECTRL_LATIN_NUMERIC;
+            }
+        }
+    }
+
+// ---------------------------------------------------------------------------
+// Prepare range list items
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::PrepareRangeListItems( 
+                     RArray<CFepLayoutChoiceList::SItem>& aRangeItems )
+    {
+    aRangeItems.Reset();
+    TInt currentRange = IntContext( EPeninputDataTypeCurrentRange );
+    TInt permittedRange = IntContext( EPeninputDataTypePermittedRange );
+    TInt currentAccent = IntContext( EPeninputDataTypeCurrentAccent );
+    
+    CPeninputRangeBarInfo* rbinfo= ConfigInfo()->RangeBarInfo();
+    CPeninputRangeInfo* rgninfo = NULL;
+   
+    //add accent items
+    if ( permittedRange & ERangeAccent )
+        {
+        rgninfo = rbinfo->FindRange( ERangeAccent );
+        if ( rgninfo )
+            {
+            for ( TInt i = 0; i < iAccentCmdList.Count(); i++ )
+                {
+                if( currentRange != ERangeAccent || currentAccent != i )
+                    {
+                    aRangeItems.Append( iAccentCmdList[i] );
+                    }
+                }
+            }
+        }
+    
+    //add range items  
+    CFepLayoutChoiceList::SItem item;
+    
+    if ( permittedRange & ERangeNative )
+        {
+        rgninfo = rbinfo->FindRange( ERangeNative );
+        if ( rgninfo && currentRange != ERangeNative )
+            {
+            item.iCommand = EPeninputVkbLayoutNativeChar;
+            item.iText.Copy( iRangeLabels.iLabelNativeChar );
+            aRangeItems.Append( item );
+            }
+        }
+    
+    if ( permittedRange & ERangeNativeNumber )
+        {
+        rgninfo = rbinfo->FindRange( ERangeNativeNumber );
+        if ( rgninfo && currentRange != ERangeNativeNumber )
+            {
+            item.iCommand = EPeninputVkbLayoutNativeNumber;
+            item.iText.Copy( iRangeLabels.iLabelNativeNumber );
+            aRangeItems.Append( item );
+            }
+        }
+   
+    if ( permittedRange & ERangeEnglish )
+        {
+        rgninfo = rbinfo->FindRange( ERangeEnglish );
+        if ( rgninfo && currentRange != ERangeEnglish )
+            {
+            item.iCommand = EPeninputVkbLayoutLatinChar;
+            item.iText.Copy( iRangeLabels.iLabelLatinChar );
+            aRangeItems.Append( item );
+            }
+        }
+    
+    if ( permittedRange & ERangeNumber )
+        {
+        rgninfo = rbinfo->FindRange( ERangeNumber );
+        if ( rgninfo && currentRange != ERangeNumber )
+            {
+            item.iCommand = EPeninputVkbLayoutLatinNumber;
+            item.iText.Copy( iRangeLabels.iLabelLatinNumber );
+            aRangeItems.Append( item );
+            }
+        }  
+    }
+
+// ---------------------------------------------------------------------------
+// Load range labels for range list
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::ConstructRangeLabelListL( TInt /*aLangId*/ )
+    {
+    iRangeLabels.iLabelNativeChar.Zero();
+    iRangeLabels.iLabelNativeNumber.Zero();
+    iRangeLabels.iLabelLatinChar.Zero();
+    iRangeLabels.iLabelLatinNumber.Zero();
+    iRangeLabels.iLabelSymbol.Zero();
+    iRangeLabels.iLabelAccent.Zero();
+    
+    TInt resid = R_PENINPUT_LAYOUT_VKB_RANGES;
+    
+    TResourceReader reader;   
+    CCoeEnv::Static()->CreateResourceReaderLC( reader, resid );
+    TPtrC ptr1 = reader.ReadTPtrC();
+    TPtrC ptr2 = reader.ReadTPtrC();
+    TPtrC ptr3 = reader.ReadTPtrC();
+    TPtrC ptr4 = reader.ReadTPtrC();
+    TPtrC ptr5 = reader.ReadTPtrC();
+    TPtrC ptr6 = reader.ReadTPtrC();
+    
+    iRangeLabels.iLabelNativeChar.Copy( ptr1 );
+    iRangeLabels.iLabelNativeNumber.Copy( ptr2 );
+    iRangeLabels.iLabelLatinChar.Copy( ptr3 );
+    iRangeLabels.iLabelLatinNumber.Copy( ptr4 );
+    iRangeLabels.iLabelSymbol.Copy( ptr5 );
+    iRangeLabels.iLabelAccent.Copy( ptr6 );
+    
+    CleanupStack::PopAndDestroy( 1 ); //reader        
+    }
+
+// ---------------------------------------------------------------------------
+// Utils to get context value 
+// ---------------------------------------------------------------------------
+//
+TInt CPeninputGenericVkbWindow::IntContext( TPeninputDataType aDataIndex )
+    {
+    return CPeninputDataConverter::AnyToInt( 
+                           iLayoutContext->RequestData( aDataIndex ));
     }
 
 // --------------------------------------------------------------------------
@@ -1246,8 +1640,14 @@ void  CPeninputGenericVkbWindow::SetSwitchlistLanguage(TInt aLang)
 //    
 void  CPeninputGenericVkbWindow::SetSwitchlistSecretFlag(TBool aSecret)
     {
-	static_cast<CPeninputLayoutInputmodelChoice*>
-	    	(Control(EPeninutWindowCtrlIdSwitcherPopupWindow))->SetSecretEditor(aSecret);    
+    CPeninputLayoutInputmodelChoice* choiceList = 
+        static_cast<CPeninputLayoutInputmodelChoice*>( 
+            Control(EPeninutWindowCtrlIdSwitcherPopupWindow ));
+        
+    if ( choiceList )
+        {
+        choiceList->SetSecretEditor( aSecret );
+        }
 	//disable or enable arrow keys of FSQ in secret editor.    	
     }
     
@@ -1680,7 +2080,7 @@ void CPeninputGenericVkbWindow::UpdateLafData()
     TRAP_IGNORE( iLafMgr->UpdateLafDataL() );
     }
 
-void CPeninputGenericVkbWindow::ReorgnizeTitleBar()
+void CPeninputGenericVkbWindow::ReorgnizeICFAndButtons()
 	{
     TRect rect;
     
@@ -1721,6 +2121,20 @@ void CPeninputGenericVkbWindow::ReorgnizeTitleBar()
 				icfFont->FontMaxHeight(),
 				icfFont));
 
+    if ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
+        {
+        iLafMgr->GetButtonRect( 
+                EPeninutWindowCtrlIdMultiRangeBtn, exRect, inRect );
+        exRect.Move(x, y); 
+        inRect.Move(x, y);
+        static_cast<CAknFepCtrlEventButton*>
+            ( Control( EPeninutWindowCtrlIdMultiRangeBtn ))->SizeChanged( 
+              exRect, inRect, ETrue );
+            
+        TRAP_IGNORE( icf->MsgBubbleCtrl()->SetTextL( KEmptyString ));
+        iIndiWithText = EFalse;
+        IndiBubbleWithoutText();
+        }
     
     iLafMgr->GetButtonRect(EPeninutWindowCtrlIdOptionBtn,exRect ,inRect);
     exRect.Move(x, y); 
@@ -1885,6 +2299,88 @@ void CPeninputGenericVkbWindow::ConstructAccentListL(TInt aLang)
     iPopupInited = ETrue;
     iPopupSet = ETrue;
 	}
+// ---------------------------------------------------------------------------
+// Load accent labels for range list
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::ConstructFSQAccentListL( TInt aLangId )
+    {  
+    iAccentCmdList.Reset();
+    
+    TBool is10x3 = ( aLangId == ELangEnglish ) || ( aLangId == ELangAmerican )
+                   || ( aLangId == ELangDutch)  || (aLangId == ELangTagalog ) 
+                   || ( aLangId == ELangIndonesian) || (aLangId == ELangMalay );
+    
+    if ( aLangId == ELangVietnamese )
+        {
+        _LIT( KVietAccentList1, "\x00E0 - \x013A" );
+        _LIT( KVietAccentList2, "\x013C - \x017E" );
+        
+        CFepLayoutChoiceList::SItem item;
+
+        item.iCommand = EPeninputVkbLayoutAccented1;
+        item.iText.Copy( KVietAccentList1 );      
+        iAccentCmdList.Append( item );
+        
+        item.iCommand = EPeninputVkbLayoutAccented2;
+        item.iText.Copy( KVietAccentList2 );
+        iAccentCmdList.Append( item );
+        }
+    
+    // 10X3
+    else if ( is10x3 )
+        {
+        _LIT( KVietAccentList1, "\x00E0 - \x0121" );
+        _LIT( KVietAccentList2, "\x0123 - \x014F" );
+        _LIT( KVietAccentList3, "\x0151 - \x017E" );
+        
+        CFepLayoutChoiceList::SItem item;
+
+        item.iCommand = EPeninputVkbLayoutAccented1;
+        item.iText.Copy( KVietAccentList1 );
+        iAccentCmdList.Append( item );
+        
+        item.iCommand = EPeninputVkbLayoutAccented2;
+        item.iText.Copy( KVietAccentList2 );
+        iAccentCmdList.Append( item );
+
+        
+        item.iCommand = EPeninputVkbLayoutAccented3;
+        item.iText.Copy( KVietAccentList3 );
+        iAccentCmdList.Append( item );
+        }
+    //10X4
+    else
+        {
+        // Add item
+        TResourceReader reader;
+        CFepLayoutChoiceList::SItem item;
+
+        item.iCommand = EPeninputVkbLayoutAccented1;
+        CCoeEnv::Static()->CreateResourceReaderLC( reader, R_PENINPUT_VKB_ACCENT1 );
+        TPtrC p1 = reader.ReadTPtrC();
+        item.iText.Copy( p1 );
+        iAccentCmdList.Append( item );
+        CleanupStack::PopAndDestroy( 1 ); //reader
+        
+        item.iCommand = EPeninputVkbLayoutAccented2;
+        CCoeEnv::Static()->CreateResourceReaderLC( reader, R_PENINPUT_VKB_ACCENT2 );
+        TPtrC p2 = reader.ReadTPtrC();
+        item.iText.Copy( p2 );
+        iAccentCmdList.Append( item );
+        CleanupStack::PopAndDestroy( 1 ); //reader
+        
+        item.iCommand = EPeninputVkbLayoutAccented3;
+        CCoeEnv::Static()->CreateResourceReaderLC( reader, R_PENINPUT_VKB_ACCENT3 );
+        TPtrC p3 = reader.ReadTPtrC();
+        item.iText.Copy( p3 );
+        iAccentCmdList.Append( item );
+        CleanupStack::PopAndDestroy( 1 );//reader          
+        }
+
+    iPopupInited = ETrue;
+    iPopupSet = ETrue;
+    }
 void CPeninputGenericVkbWindow::UpdateICFTextL()
     {
     CFepLayoutMultiLineIcf* icf = 
@@ -2101,4 +2597,208 @@ TRgb CPeninputGenericVkbWindow::AutoCompletionPartColor()
     return matchlistcolor;
     }
 
+void CPeninputGenericVkbWindow::SetIndiBubbleImageL( const TInt aImgID1,
+                                              const TInt aMaskID1,
+                                              const TInt aImgID2,
+                                              const TInt aMaskID2 )
+    {
+    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+
+    CFbsBitmap* bmp1 = NULL;
+    CFbsBitmap* mask1 = NULL;
+    
+    TInt colorIndex = EAknsCIQsnIconColorsCG30;
+
+    AknsUtils::CreateColorIconL(skininstance,
+                                KAknsIIDQsnIconColors,
+                                KAknsIIDQsnIconColors,
+                                colorIndex,
+                                bmp1,
+                                mask1,
+                                AknIconUtils::AvkonIconFileName(),
+                                aImgID1,
+                                aMaskID1,
+                                KRgbGray);
+    CleanupStack::PushL( bmp1 );
+    CleanupStack::PushL( mask1 );
+                                
+    AknIconUtils::GetContentDimensions(bmp1, iIndicatorSize);
+
+    CFbsBitmap* bmp2 = NULL;
+    CFbsBitmap* mask2 = NULL;
+    AknsUtils::CreateColorIconL(skininstance,
+                                KAknsIIDQsnIconColors,
+                                KAknsIIDQsnIconColors,
+                                colorIndex,
+                                bmp2,
+                                mask2,
+                                AknIconUtils::AvkonIconFileName(),
+                                aImgID2,
+                                aMaskID2,
+                                KRgbGray);
+ 
+    CleanupStack::PushL( bmp2 );
+    CleanupStack::PushL( mask2 );
+    
+    AknIconUtils::GetContentDimensions(bmp2, iIndicatorTextSize);
+    
+    TRect boundRect;
+    if ( iIndiWithText )
+        {
+        boundRect = iLafMgr->IndiIconRectWithText();
+        }
+    else
+        {
+        boundRect = iLafMgr->IndiIconRectWithoutText();
+        }
+    
+    TRect imgrect, textrect;
+    
+    CalIndicatorRect(boundRect, imgrect, textrect, EIndiAlignCenter);
+    AknIconUtils::SetSize(bmp1, imgrect.Size(), EAspectRatioNotPreserved);
+    AknIconUtils::SetSize(mask1, imgrect.Size(), EAspectRatioNotPreserved);
+    AknIconUtils::SetSize(bmp2, textrect.Size(), EAspectRatioNotPreserved);
+    AknIconUtils::SetSize(mask2, textrect.Size(), EAspectRatioNotPreserved);
+
+    CFbsBitmap* bmp3 = AknPenImageUtils::CombineTwoImagesL(bmp1, bmp2, bmp1->DisplayMode());
+    CFbsBitmap* mask3 = AknPenImageUtils::CombineTwoImagesL(mask1, mask2, EGray256);
+    
+    CFepLayoutMultiLineIcf* icf = static_cast<CFepLayoutMultiLineIcf*>
+                                   (Control(EPeninputWindowCtrlIdMultiLineICF));
+    icf->MsgBubbleCtrl()->SetBitmapParam( bmp3, mask3, 
+                    KAknsIIDQsnFrInputPreviewSideL,
+                    KAknsIIDQsnFrInputPreviewMiddle,
+                    KAknsIIDQsnFrInputPreviewSideR );
+    
+    CleanupStack::PopAndDestroy( mask2 );
+    CleanupStack::PopAndDestroy( bmp2 );
+    CleanupStack::PopAndDestroy( mask1 );
+    CleanupStack::PopAndDestroy( bmp1 );
+    }
+
+void CPeninputGenericVkbWindow::CalIndicatorRect(const TRect& aBoundRect,
+                                          TRect& aRealRect1,
+                                          TRect& aRealRect2,
+                                          TIndicatorAlign aAlign) 
+    {
+    TInt imgAspectText = iIndicatorTextSize.iWidth / iIndicatorTextSize.iHeight;
+    TInt imgAspectIndi = iIndicatorSize.iWidth / iIndicatorSize.iHeight;
+    TSize imgSizeText( aBoundRect.Size().iHeight * imgAspectText, 
+                       aBoundRect.Size().iHeight );
+    TSize imgSizeIndi( aBoundRect.Size().iHeight * imgAspectIndi, 
+                               aBoundRect.Size().iHeight );
+    // check if the length of img > bound rect width
+    TInt nTotalWidth = imgSizeText.iWidth + imgSizeIndi.iWidth;
+    if( nTotalWidth > aBoundRect.Size().iWidth )
+        {
+        TReal nAspect = (TReal)imgSizeText.iWidth / nTotalWidth;
+        imgSizeText.iWidth = aBoundRect.Size().iWidth * nAspect;
+        imgSizeIndi.iWidth = aBoundRect.Size().iWidth - imgSizeText.iWidth;
+        imgSizeText.iHeight = imgSizeText.iWidth / imgAspectText;
+        // make sure the height of two rect is equal
+        imgSizeIndi.iHeight = imgSizeText.iHeight;
+        }
+    if( aAlign == EIndiAlignRight )
+        {
+        aRealRect2 = TRect(TPoint( aBoundRect.iBr.iX - imgSizeText.iWidth, aBoundRect.iTl.iY),
+                       imgSizeText);
+        aRealRect1 = TRect(TPoint(aRealRect2.iTl.iX - imgSizeIndi.iWidth, aRealRect2.iTl.iY),
+                       imgSizeIndi);
+        }
+    else if( aAlign == EIndiAlignCenter )
+        {
+        TInt offsetX = ( aBoundRect.Size().iWidth - imgSizeText.iWidth - imgSizeIndi.iWidth ) / 2;
+        TInt offsetY = ( aBoundRect.Size().iHeight - imgSizeText.iHeight ) / 2;
+        aRealRect2 = TRect( TPoint( aBoundRect.iBr.iX - imgSizeText.iWidth - offsetX, 
+                                   aBoundRect.iTl.iY + offsetY),
+                            imgSizeText );
+        aRealRect1 = TRect( TPoint(aRealRect2.iTl.iX - imgSizeIndi.iWidth, aRealRect2.iTl.iY),
+                       imgSizeIndi );
+        }
+    else if( aAlign == EIndiAlignLeft )
+        {
+        aRealRect1 = TRect( aBoundRect.iTl, imgSizeIndi );
+        aRealRect2 = TRect( TPoint( aRealRect1.iBr.iX, aRealRect1.iTl.iY ), imgSizeText );
+        }
+    }
+
+void CPeninputGenericVkbWindow::IndiBubbleWithText()
+    {
+    CFepLayoutMultiLineIcf* icf = static_cast<CFepLayoutMultiLineIcf*>
+                           (Control(EPeninputWindowCtrlIdMultiLineICF));
+    if ( icf )
+        {
+        TAknTextLineLayout textLine = iLafMgr->IndiText();
+        TRect bubbleRect = iLafMgr->IndiPaneRectWithText();
+        TRect iconRect = iLafMgr->IndiIconRectWithText();
+        TSize offset( 60, 6 );
+        TSize size( iconRect.Width(), iconRect.Height());
+        
+        icf->MsgBubbleCtrl()->SetRect( bubbleRect );
+        icf->MsgBubbleCtrl()->SetIconOffsetAndSize( offset, size );
+        icf->MsgBubbleCtrl()->SetTextFormat( textLine );
+        icf->MsgBubbleCtrl()->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
+        }
+    }
+
+void CPeninputGenericVkbWindow::IndiBubbleWithoutText()
+    {
+    CFepLayoutMultiLineIcf* icf = static_cast<CFepLayoutMultiLineIcf*>
+                               (Control(EPeninputWindowCtrlIdMultiLineICF));
+    if ( icf )
+        {
+        TRect bubbleRect = iLafMgr->IndiPaneRectWithoutText();
+        TRect iconRect = iLafMgr->IndiIconRectWithoutText();
+        TSize offset( 0, 6 );
+        TSize size( iconRect.Width(), iconRect.Height());
+        
+        icf->MsgBubbleCtrl()->SetRect( bubbleRect );
+        icf->MsgBubbleCtrl()->SetIconOffsetAndSize( offset, size );
+        }
+    }
+
+void CPeninputGenericVkbWindow::SetIndiWithTextFlag( TBool aFlag )
+    {
+    iIndiWithText = aFlag;
+    }
+
+void CPeninputGenericVkbWindow::UpdateIndiBubbleL( TUint8* aData )
+    {
+    CFepLayoutMultiLineIcf* icf = static_cast<CFepLayoutMultiLineIcf*>
+                               (Control(EPeninputWindowCtrlIdMultiLineICF));
+    
+    RDesReadStream readStream;
+    TFepIndicatorInfo indicatorData;
+
+    TPtr8 countPtr( aData, 4*sizeof(TInt), 4*sizeof(TInt) );            
+    readStream.Open(countPtr);
+    CleanupClosePushL(readStream);
+
+    indicatorData.iIndicatorImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorMaskID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextMaskID = readStream.ReadInt32L();
+
+    CleanupStack::PopAndDestroy(&readStream);
+    
+    if ( indicatorData.iIndicatorImgID != 0 && 
+        indicatorData.iIndicatorMaskID != 0 && 
+        indicatorData.iIndicatorTextImgID != 0 &&
+        indicatorData.iIndicatorTextMaskID != 0 )
+        { 
+        SetIndicatorData( indicatorData );
+        
+        if ( icf )
+            {
+            SetIndiBubbleImageL( indicatorData.iIndicatorImgID,
+                    indicatorData.iIndicatorMaskID,
+                    indicatorData.iIndicatorTextImgID,
+                    indicatorData.iIndicatorTextMaskID );
+                 
+            TBuf<100> text;
+            icf->MsgBubbleCtrl()->GetText( text );
+            icf->ShowBubble( text, icf->MsgBubbleCtrl()->Rect());
+            }
+        }
+    }
 // End Of File

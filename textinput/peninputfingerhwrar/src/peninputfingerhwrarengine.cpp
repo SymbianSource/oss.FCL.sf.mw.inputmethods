@@ -17,11 +17,11 @@
 
 
 //FEP INCLUDES
-#include <AknFepGlobalEnums.h>
+#include <aknfepglobalenums.h>
 #include <aknfeppeninputenums.h>
-#include <PtiHwrRecognizer.h>
+#include <ptihwrrecognizer.h>
 #include <e32property.h>
-#include "PtiDefs.h"
+#include "ptidefs.h"
 
 //USER INCLUDES
 #include "peninputfingerhwrarengine.h"

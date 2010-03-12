@@ -22,7 +22,7 @@
 //  INCLUDES
 #include <e32cmn.h>
 #include <eikon.hrh>
-#include <PtiEngine.h>
+#include <ptiengine.h>
 
 class CPeninputFingerHwrArDataStore;
 

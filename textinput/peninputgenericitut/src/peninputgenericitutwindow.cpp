@@ -47,6 +47,7 @@
 #include "peninputcommonbgctrl.h"
 
 _LIT(KBmpFileName, "z:\\resource\\apps\\peninputgenericitut.mbm");
+_LIT(KEmptyString, "");
 
 const TInt KImageMajorSkinId = EAknsMajorGeneric;
 const TUint KDefaultSpellTextColor = 0;
@@ -74,7 +75,8 @@ CGenericItutWindow::CGenericItutWindow(CGenericItutWindowManager* aWindowMgr,
                                        CGenericItutDataMgr* aDataMgr)
     : iDataMgr(aDataMgr),
       iLayoutOwner(aLayoutOwner),
-      iWindowMgr(aWindowMgr)
+      iWindowMgr(aWindowMgr),
+      iIndiWithText( EFalse )
     {
     }
 
@@ -158,7 +160,14 @@ void CGenericItutWindow::CreateItutKeypadL()
     
     // read key shift icon res
     CPenInputColorIcon* shiftIcon = CPenInputColorIcon::NewL( R_ITUT_KEYPAD_SHIFT_ICON );
-    shiftIcon->ResizeL( iDataMgr->iShiftIconRect.Size() );
+    if ( IsPortraitWest())
+        {
+        shiftIcon->ResizeL( iDataMgr->iShiftIconRectForPrtWest.Size());
+        }
+    else
+        {
+        shiftIcon->ResizeL( iDataMgr->iShiftIconRect.Size());
+        }
     iStandardItutKp->SetShiftIcon( shiftIcon );
 
     //set key to be 9 piece graphics
@@ -497,7 +506,7 @@ CFepUiBaseCtrl* CGenericItutWindow::CreateButtonL(TButtonType aType,
 
 void CGenericItutWindow::CreateAllButtonL()
     {
-    CFepUiBaseCtrl* temp = NULL;
+    //CFepUiBaseCtrl* temp = NULL;
     //create backgrand 
     CreateBackGroundControlL();
     
@@ -506,13 +515,10 @@ void CGenericItutWindow::CreateAllButtonL()
                   EBackspaceInnerRect,R_FINGER_RAWKEY_BACKSPACE);
 
     //create switch
+    /*
     CreateButtonL(ECommonButton, ECtrlIdSwitch, ESwitchRect, 
                   ESwitchInnerRect, R_FINGER_LAYOUT_SWITCH);
                       
-
-    //create indicator
-//    temp = CreateButtonL(ERawKeyButton, ECtrlIdIndicator, KUnavailableID, 
-//                  KUnavailableID,KUnavailableID, 127);
     //If open indicator menu, please use the following 2 lines
     temp = CreateButtonL(ECommonButton, ECtrlIdIndicator, KUnavailableID, 
                   KUnavailableID,KUnavailableID);
@@ -523,7 +529,7 @@ void CGenericItutWindow::CreateAllButtonL()
         }
     
     temp = NULL;
-
+    */
 
     // create navi 
     CreateButtonL(ERawKeyButton, ECtrlIdArrowLeft, EArrowLeftRect, 
@@ -547,9 +553,9 @@ void CGenericItutWindow::CreateAllButtonL()
                   ECloseInnerRect, R_PENINPUT_FINGER_CLOSE);  
                   
                   
-    CAknFepCtrlLabel* spellIndicator = CAknFepCtrlLabel::NewL(iLayoutOwner, ECtrlIdSpellIndicator);
-    AddControlL(spellIndicator);
-    spellIndicator->Hide(ETrue);                    
+    //CAknFepCtrlLabel* spellIndicator = CAknFepCtrlLabel::NewL(iLayoutOwner, ECtrlIdSpellIndicator);
+    //AddControlL(spellIndicator);
+    //spellIndicator->Hide(ETrue);
 
     }
 
@@ -760,6 +766,10 @@ void CGenericItutWindow::AddEditorMenuL()
 
 void CGenericItutWindow::ShowEditorMenuL(TInt* aData)
     {
+    if ( NULL == iEditorMenu )
+        {
+        return;
+        }
     TInt count = *aData;
     iEditorMenu->ClearItemsL();
     for (TInt i=1;i<=count;i++ )
@@ -790,6 +800,7 @@ void CGenericItutWindow::ConstructL()
     CreateICFL();
     CreateMatchSelectionCtrlL();
     
+    /*
     AddEditorMenuL();
     
     iInputModeSwitch = CPeninputLayoutInputmodelChoice::NewL(
@@ -798,6 +809,7 @@ void CGenericItutWindow::ConstructL()
                                      EPluginInputModeItut );
     iInputModeSwitch->SetListSkinID( KAknsIIDQsnFrList, KAknsIIDQsnFrPopupSub );
     AddControlL( iInputModeSwitch );
+    */
     
    
     iBubbleSize = AknLayoutScalable_Apps::popup_char_count_window().LayoutLine();
@@ -812,6 +824,7 @@ void CGenericItutWindow::ConstructL()
     									  KAknsIIDQsnFrInputPreviewMiddle,
     									  KAknsIIDQsnFrInputPreviewSideR);  
     iICF->SetMsgBubbleCtrlSize(TSize(iBubbleSize.iW,iBubbleSize.iH));
+    iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
     /* Teleca change start, 18.05.2009 ssal */ 
     iICF->InfoBubbleCtrl()->SetTextFormat(iBubbleTextLayout); 
     iICF->InfoBubbleCtrl()->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
@@ -834,6 +847,30 @@ void CGenericItutWindow::CreateChineseSpecificCtrlsIfNeededL()
         {
         return;
         }
+    // create switch
+    CreateButtonL(ECommonButton, ECtrlIdSwitch, ESwitchRect, 
+                  ESwitchInnerRect, R_FINGER_LAYOUT_SWITCH);
+    
+    // create indicator button
+    CFepUiBaseCtrl* indicatorBtn = CreateButtonL(ECommonButton, 
+            ECtrlIdIndicator, KUnavailableID, 
+            KUnavailableID,KUnavailableID);
+    
+    // create spell indicator
+    CAknFepCtrlLabel* spellIndicator = CAknFepCtrlLabel::NewL(iLayoutOwner, ECtrlIdSpellIndicator);
+    AddControlL(spellIndicator);
+    spellIndicator->Hide(ETrue);
+    
+    // create input case type menu
+    AddEditorMenuL();
+    
+    // create switch input mode menu
+    iInputModeSwitch = CPeninputLayoutInputmodelChoice::NewL(
+                                     iLayoutOwner,
+                                     ECtrlIdInputSwitch,
+                                     EPluginInputModeItut );
+    iInputModeSwitch->SetListSkinID( KAknsIIDQsnFrList, KAknsIIDQsnFrPopupSub );
+    AddControlL( iInputModeSwitch );
 
     CreateDropdownListL();
     // create spell control for stroke/zhuyin
@@ -980,14 +1017,93 @@ TInt CGenericItutWindow::OnAppEditorTextComing(const TFepInputContextFieldData& 
     return err;
     }
 
+void CGenericItutWindow::SetIndiBubbleImageL( const TInt aImgID1,
+                                              const TInt aMaskID1,
+                                              const TInt aImgID2,
+                                              const TInt aMaskID2 )
+    {
+    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
 
+    CFbsBitmap* bmp1 = NULL;
+    CFbsBitmap* mask1 = NULL;
     
+    TInt colorIndex = EAknsCIQsnIconColorsCG30;
+
+    AknsUtils::CreateColorIconL(skininstance,
+                                KAknsIIDQsnIconColors,
+                                KAknsIIDQsnIconColors,
+                                colorIndex,
+                                bmp1,
+                                mask1,
+                                AknIconUtils::AvkonIconFileName(),
+                                aImgID1,
+                                aMaskID1,
+                                KRgbGray);
+    CleanupStack::PushL( bmp1 );
+    CleanupStack::PushL( mask1 );
+                                
+    AknIconUtils::GetContentDimensions(bmp1, iIndicatorSize);
+
+    CFbsBitmap* bmp2 = NULL;
+    CFbsBitmap* mask2 = NULL;
+    AknsUtils::CreateColorIconL(skininstance,
+                                KAknsIIDQsnIconColors,
+                                KAknsIIDQsnIconColors,
+                                colorIndex,
+                                bmp2,
+                                mask2,
+                                AknIconUtils::AvkonIconFileName(),
+                                aImgID2,
+                                aMaskID2,
+                                KRgbGray);
+ 
+    CleanupStack::PushL( bmp2 );
+    CleanupStack::PushL( mask2 );
+    
+    AknIconUtils::GetContentDimensions(bmp2, iIndicatorTextSize);
+    
+    TRect boundRect;
+    if ( iIndiWithText )
+        {
+        boundRect = TItutDataConverter::AnyToRect(
+                iDataMgr->RequestData(EIndiIconWithTextRect));
+        }
+    else
+        {
+        boundRect = TItutDataConverter::AnyToRect(
+                iDataMgr->RequestData(EIndiIconWithoutTextRect));
+        }
+    TRect imgrect, textrect;
+    
+    CalIndicatorRect(boundRect, imgrect, textrect, EIndiAlignCenter);
+    AknIconUtils::SetSize(bmp1, imgrect.Size(), EAspectRatioNotPreserved);
+    AknIconUtils::SetSize(mask1, imgrect.Size(), EAspectRatioNotPreserved);
+    AknIconUtils::SetSize(bmp2, textrect.Size(), EAspectRatioNotPreserved);
+    AknIconUtils::SetSize(mask2, textrect.Size(), EAspectRatioNotPreserved);
+
+    CFbsBitmap* bmp3 = AknPenImageUtils::CombineTwoImagesL(bmp1, bmp2, bmp1->DisplayMode());
+    CFbsBitmap* mask3 = AknPenImageUtils::CombineTwoImagesL(mask1, mask2, EGray256);
+    
+    iICF->MsgBubbleCtrl()->SetBitmapParam( bmp3, mask3, 
+                    KAknsIIDQsnFrInputPreviewSideL,
+                    KAknsIIDQsnFrInputPreviewMiddle,
+                    KAknsIIDQsnFrInputPreviewSideR );
+    
+    CleanupStack::PopAndDestroy( mask2 );
+    CleanupStack::PopAndDestroy( bmp2 );
+    CleanupStack::PopAndDestroy( mask1 );
+    CleanupStack::PopAndDestroy( bmp1 );
+    }
 void CGenericItutWindow::SetIndicatorImageL(CFepUiBaseCtrl* aIndicator,
                                               const TInt aImgID1,
                                               const TInt aMaskID1,
                                               const TInt aImgID2,
                                               const TInt aMaskID2)
     {
+    if ( NULL == aIndicator )
+        {
+        return;
+        }
     MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
 
     CFbsBitmap* bmp1 = NULL;
@@ -1098,6 +1214,57 @@ void CGenericItutWindow::SetIndicatorImageL(CFepUiBaseCtrl* aIndicator,
     CleanupStack::PopAndDestroy( bmp1 );    
     }
 
+void CGenericItutWindow::UpdateIndiBubbleL( TUint8* aData )
+    {
+    RDesReadStream readStream;
+    TFepIndicatorInfo indicatorData;
+
+    TPtr8 countPtr( aData, 4*sizeof(TInt), 4*sizeof(TInt) );            
+    readStream.Open(countPtr);
+    CleanupClosePushL(readStream);
+
+    indicatorData.iIndicatorImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorMaskID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextMaskID = readStream.ReadInt32L();
+
+    CleanupStack::PopAndDestroy(&readStream);
+
+    if (indicatorData.iIndicatorImgID != 0 && 
+        indicatorData.iIndicatorMaskID != 0 && 
+        indicatorData.iIndicatorTextImgID != 0 &&
+        indicatorData.iIndicatorTextMaskID != 0)
+        {
+        iDataMgr->SetIndicatorData(indicatorData);
+        iImDimensionSet = ETrue;
+        
+        SetIndiBubbleImageL( indicatorData.iIndicatorImgID,
+                             indicatorData.iIndicatorMaskID,
+                             indicatorData.iIndicatorTextImgID,
+                             indicatorData.iIndicatorTextMaskID);
+        
+        if ( iLayoutOwner->UiMgr()->CurrentState()->StateType() ==
+            CGenericItutUiMgrBase::EStateSpelling )
+            {
+			TRect bubbleRect = TItutDataConverter::AnyToRect( 
+					iDataMgr->RequestData( ESpellIndiPaneWithoutTextRect ));
+			TRect iconRect = TItutDataConverter::AnyToRect( 
+					iDataMgr->RequestData( ESpellIndiIconWithoutTextRect ));
+			TSize offset( 0, 6 );
+			TSize size( iconRect.Width(), iconRect.Height());
+			
+			iICF->MsgBubbleCtrl()->SetRect( bubbleRect );
+			iICF->MsgBubbleCtrl()->SetIconOffsetAndSize( offset, size );
+            iICF->ShowBubble( KEmptyString, iICF->MsgBubbleCtrl()->Rect());
+            }
+        else
+            {
+            TBuf<100> text;
+            iICF->MsgBubbleCtrl()->GetText( text );
+            iICF->ShowBubble( text, iICF->MsgBubbleCtrl()->Rect());
+            }
+        }
+    }
 
 void CGenericItutWindow::UpdateIndicatorL(TUint8* aData)
     {
@@ -1140,7 +1307,17 @@ void CGenericItutWindow::UpdateIndicatorL(TUint8* aData)
             CGenericItutUiMgrBase::EStateSpelling)
             {
             temp = Control(ECtrlIdSpellIndicator);
-            Control(ECtrlIdIndicator)->Hide(ETrue);  
+            if ( !temp )
+                {
+                return;
+                }
+            
+            CFepUiBaseCtrl* indi = Control(ECtrlIdIndicator);
+            if ( !indi )
+                {
+                return;
+                }
+            indi->Hide(ETrue);  
 	        SetIndicatorImageL(temp, 
 	                           indicatorData.iIndicatorImgID,
 	                           indicatorData.iIndicatorMaskID,
@@ -1159,7 +1336,17 @@ void CGenericItutWindow::UpdateIndicatorL(TUint8* aData)
         else
             {
             temp = Control(ECtrlIdIndicator); 
-            Control(ECtrlIdSpellIndicator)->Hide(ETrue);  
+            if ( !temp )
+                {
+                return;
+                }
+            
+            CFepUiBaseCtrl* indi = Control(ECtrlIdSpellIndicator);
+            if ( !indi )
+                {
+                return;
+                }
+            indi->Hide(ETrue);
 	    SetIndicatorImageL(temp, 
 	                           indicatorData.iIndicatorImgID,
 	                           indicatorData.iIndicatorMaskID,
@@ -1440,22 +1627,44 @@ void CGenericItutWindow::ApplyVariantLafDataL(TBool aResolutionChange)
     	}
     else
     	{
-	    iICF->SetTextMargin ( iDataMgr->iIcfTextLeftMargin,
-	    					  iDataMgr->iIcfTextRightMargin,
-	    					  iDataMgr->iIcfTextTopMargin,
-	    					  iDataMgr->iIcfTextBottomMargin );
-	    					  
-	    iICF->SetLineSpace( iDataMgr->iIcfTextLineSpaceMargin );    					  
-	 
-	    iICF->SizeChangedL(TItutDataConverter::AnyToRect(iDataMgr->RequestData(EIcfRect)), 
-	                      //icffont->HeightInPixels(),
-	                      iDataMgr->iIcfTextHeight,
-	                      icffont->FontMaxHeight(),
-	                      icffont);
+    	if ( iDataMgr->IsLandScape())
+    	    {
+    	    iICF->SetTextMargin ( iDataMgr->iIcfTextLeftMargin,
+    	                          iDataMgr->iIcfTextRightMargin,
+    	                          iDataMgr->iIcfTextTopMargin,
+    	                          iDataMgr->iIcfTextBottomMargin );
+    	                                  
+            iICF->SetLineSpace( iDataMgr->iIcfTextLineSpaceMargin );                          
+         
+            iICF->SizeChangedL(TItutDataConverter::AnyToRect(iDataMgr->RequestData(EIcfRect)), 
+                              iDataMgr->iIcfTextHeight,
+                              icffont->FontMaxHeight(),
+                              icffont);
+    	    }
+    	else
+    	    {
+    	    iICF->SetTextMargin ( iDataMgr->iIcfTextLeftMarginForPrtWest,
+    	                          iDataMgr->iIcfTextRightMarginForPrtWest,
+    	                          iDataMgr->iIcfTextTopMarginForPrtWest,
+    	                          iDataMgr->iIcfTextBottomMarginForPrtWest );
+    	                                  
+            iICF->SetLineSpace( iDataMgr->iIcfTextLineSpaceMarginForPrtWest );                          
+         
+            iICF->SizeChangedL(TItutDataConverter::AnyToRect(iDataMgr->RequestData(EIcfRect)),
+                              iDataMgr->iIcfTextHeightForPrtWest,
+                              icffont->FontMaxHeight(),
+                              icffont);
+    	    }
     	}
 
     iICF->Hide(EFalse);    
     
+    if ( IsPortraitWest() && (!iDataMgr->IsChineseGlobalLanguage()))
+        {
+        iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
+        iIndiWithText = EFalse;
+        IndiBubbleWithoutText();
+        }
     if( iDataMgr->IsChinese() )
         {
         ControlSizeChanged(ECtrlIdArrowUp, EArrowUpRect, EUpInnerRect, ETrue);
@@ -1465,7 +1674,10 @@ void CGenericItutWindow::ApplyVariantLafDataL(TBool aResolutionChange)
     TBool bSizeChanged = EFalse;       
     ControlSizeChanged(ECtrlIdArrowLeft, EArrowLeftRect, ELeftInnerRect, ETrue);
     ControlSizeChanged(ECtrlIdArrowRight, EArrowRightRect, ERightInnerRect, ETrue);
-    ControlSizeChanged(ECtrlIdSwitch, ESwitchRect, ESwitchInnerRect, ETrue);
+    if( iDataMgr->IsChinese())
+        {
+        ControlSizeChanged(ECtrlIdSwitch, ESwitchRect, ESwitchInnerRect, ETrue);
+        }
     bSizeChanged = ControlSizeChanged(ECtrlIdBackspace, EBackspaceRect, EBackspaceInnerRect, ETrue);
     ControlSizeChanged(ECtrlIdOptions, EOptionsRect, EOptionInnerRect, ETrue);
     ControlSizeChanged(ECtrlIdClose, ECloseRect, ECloseInnerRect, ETrue);
@@ -1528,7 +1740,14 @@ void CGenericItutWindow::OnSkinChange()
     
     // reconstruct shift icon when skin changed
     TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ReConstructL());
-    TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ResizeL(iDataMgr->iShiftIconRect.Size()));
+    if ( IsPortraitWest())
+        {
+        TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ResizeL(iDataMgr->iShiftIconRectForPrtWest.Size()));
+        }
+    else
+        {
+        TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ResizeL(iDataMgr->iShiftIconRect.Size()));
+        }
     
     //Skin change will case the reconstuction of the button graphic.
     //When language is RToL, it should be mirrored again.
@@ -1564,6 +1783,10 @@ void CGenericItutWindow::EnterMatchSelectionState(TBool aOn)
 
 void CGenericItutWindow::ResetIndicatorL(CFepUiBaseCtrl* aIndicator)
 	{
+	if ( NULL == aIndicator )
+	    {
+	    return;
+	    }
     SetIndicatorImageL(aIndicator, 
                        iDataMgr->IndicatorData().iIndicatorImgID,
                        iDataMgr->IndicatorData().iIndicatorMaskID,
@@ -1592,7 +1815,13 @@ CAknFepCtrlCommonButton* CGenericItutWindow::CommonButtonControl(const TInt aCon
 
 void CGenericItutWindow::DisplayInputmodeSwitchL()
     {
-    TRect rect = Control(ECtrlIdSwitch)->Rect();   
+    CFepUiBaseCtrl* btn = Control(ECtrlIdSwitch);
+    if ( NULL == btn )
+        {
+        return;
+        }
+    
+    TRect rect = btn->Rect();
               
     TRAP_IGNORE( iInputModeSwitch->PopUpSwitchListL(rect) );        
     }
@@ -1792,5 +2021,50 @@ void CGenericItutWindow::SetUnicodesForHardKey1L(CVirtualKey* aKey, const TDesC&
     unicodesArr1.Close();
     unicodesInt.Close();
 
+    }
+TBool CGenericItutWindow::IsPortraitWest()
+    {
+    return !iDataMgr->IsChinese() && !iDataMgr->IsLandScape();
+    }
+
+void CGenericItutWindow::IndiBubbleWithText()
+    {
+    if ( iICF )
+        {
+        TAknTextLineLayout textLine = TItutDataConverter::AnyToTextLine( 
+                iDataMgr->RequestData( EIndiTextLine ));
+        TRect bubbleRect = TItutDataConverter::AnyToRect( 
+                iDataMgr->RequestData( EIndiPaneWithTextRect ));
+        TRect iconRect = TItutDataConverter::AnyToRect( 
+                iDataMgr->RequestData( EIndiIconWithTextRect ));
+        TSize offset( 60, 6 );
+        TSize size( iconRect.Width(), iconRect.Height());
+        
+        iICF->MsgBubbleCtrl()->SetRect( bubbleRect );
+        iICF->MsgBubbleCtrl()->SetIconOffsetAndSize( offset, size );
+        iICF->MsgBubbleCtrl()->SetTextFormat( textLine );
+        iICF->MsgBubbleCtrl()->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
+        }
+    }
+
+void CGenericItutWindow::IndiBubbleWithoutText()
+    {
+    if ( iICF )
+        {
+        TRect bubbleRect = TItutDataConverter::AnyToRect( 
+                iDataMgr->RequestData( EIndiPaneWithoutTextRect ));
+        TRect iconRect = TItutDataConverter::AnyToRect( 
+                iDataMgr->RequestData( EIndiIconWithoutTextRect ));
+        TSize offset( 0, 6 );
+        TSize size( iconRect.Width(), iconRect.Height());
+        
+        iICF->MsgBubbleCtrl()->SetRect( bubbleRect );
+        iICF->MsgBubbleCtrl()->SetIconOffsetAndSize( offset, size );
+        }
+    }
+
+void CGenericItutWindow::SetIndiWithTextFlag( TBool aFlag )
+    {
+    iIndiWithText = aFlag;
     }
 // End Of File

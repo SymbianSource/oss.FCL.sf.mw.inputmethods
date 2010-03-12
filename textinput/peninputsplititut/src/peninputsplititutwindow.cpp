@@ -30,7 +30,8 @@
 #include <peninputdropdownlist.h>
 #include <s32mem.h>
 #include <peninputlabel.h>
-//#include <peninputlayoutbubblectrl.h>
+#include <peninputlayoutbubblectrl.h>
+#include <aknlayoutscalable_apps.cdl.h>
 
 #include "peninputsplititutwindow.h"
 #include "peninputsplititutdatamgr.h"
@@ -42,6 +43,7 @@
 #include "peninputcommonbgctrl.h"
 
 _LIT(KBmpFileName, "z:\\resource\\apps\\peninputsplititut.mbm");
+_LIT(KEmptyString, "");
 
 const TInt KImageMajorSkinId = EAknsMajorGeneric;
 const TUint KDefaultSpellTextColor = 0;
@@ -49,6 +51,12 @@ const TUint KDefaultSpellTextColor = 0;
 const TInt KSpaceUnicode = 32;
 const TInt KButtonOneUnicode = 49;
 const TInt KInvalidBmp = -1;
+
+const TUint KDefaultIcfTextColor = 0x000000;
+const TUint KDefaultIcfFrameColor = 0x000000;
+
+
+
 
 
 // ============================ MEMBER FUNCTIONS =============================
@@ -91,6 +99,7 @@ CSplitItutWindow::~CSplitItutWindow()
     {
     delete iBmpRotator;
     }
+
 
 // ---------------------------------------------------------------------------
 // CSplitItutWindow::SetPropertyL
@@ -170,7 +179,7 @@ void CSplitItutWindow::CreateItutKeypadL()
 	// read keypad image info
 	ConstructKeyImageFromResourceL( R_ITUT_KEYPAD_BITMAP );
 	
-    iStandardItutKp->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG68 );
+    iStandardItutKp->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG65 );
     iStandardItutKp->SetDrawOpaqueBackground(EFalse);
     
     // read key shift icon res
@@ -664,6 +673,125 @@ void CSplitItutWindow::CreateDropdownListL()
 	iPuncCandsList->SetDropdownListImgID(candiDrawInfo);
     iPuncCandsList->Hide(ETrue);
     }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::ConstructIcfFromResourceL
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::ConstructIcfFromResourceL()
+    {
+    if (!iICF->ResourceId())
+        {
+        return;
+        }
+    
+    TResourceReader icfreader;
+    CCoeEnv::Static()->CreateResourceReaderLC(icfreader, iICF->ResourceId());
+    TInt32 colorMajorSkinId = icfreader.ReadInt32();
+    TInt skinitemid = icfreader.ReadInt16();
+    TInt coloridx = icfreader.ReadInt16();
+
+    TAknsItemID colorid;
+    colorid.Set(TInt(colorMajorSkinId), skinitemid);
+
+    TRgb icftextcolor;
+    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    TInt error = AknsUtils::GetCachedColor( skininstance, 
+                                            icftextcolor, 
+                                            colorid, 
+                                            coloridx );
+
+    if ( error != KErrNone )
+        {
+        icftextcolor = TRgb( KDefaultIcfTextColor );
+        }
+
+    iICF->SetTextColorL( icftextcolor );    
+    
+    // Set highlight color
+    TRgb icfhightlightcolor;
+    error = AknsUtils::GetCachedColor( skininstance, 
+                                       icfhightlightcolor, 
+                                       KAknsIIDQsnHighlightColors,
+                                       EAknsCIQsnHighlightColorsCG2 ); 
+    if ( error == KErrNone ) 
+        {
+        iICF->SetTextSelColorL( icfhightlightcolor );
+        }
+
+    skinitemid = icfreader.ReadInt16();
+    coloridx = icfreader.ReadInt16();
+    
+    colorid.Set(TInt(colorMajorSkinId), skinitemid);
+    
+    TRgb icfframecolor;
+    error = AknsUtils::GetCachedColor(skininstance, 
+                                      icfframecolor, 
+                                      colorid, 
+                                      coloridx);
+
+    if ( error != KErrNone )
+        {
+    	icfframecolor = TRgb(KDefaultIcfFrameColor);
+        }
+
+    iICF->SetBorderColor( icfframecolor );
+    CleanupStack::PopAndDestroy( 1 ); // icfreader
+    }
+ 
+ 
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::CreateICFL
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::CreateICFL()
+    {
+    CFont* icffont = TItutDataConverter::AnyToFont(iDataMgr->RequestData(EIcfFont));
+    TRect rect = TItutDataConverter::AnyToRect(iDataMgr->RequestData(ESpellICFRect));
+    
+    // Create ICF
+    iICF = CFepLayoutMultiLineIcf::NewL( rect, 
+                                         iLayoutOwner, 
+                                         ECtrlIdICF, 
+                                         iDataMgr->iIcfTextHeight,
+                                         icffont->FontMaxHeight(),
+                                         icffont );
+
+    iICF->SetFocus(ETrue);
+    iICF->SetResourceId( R_SPLIT_ITUT_ICF );
+    ConstructIcfFromResourceL();
+    iICF->SetBgImgSkinId( KAknsIIDQsnFrCall2Rect );
+    
+    AddControlL( iICF );
+    
+    // Set indicator parameters
+    TAknWindowLineLayout iBubbleSize = AknLayoutScalable_Apps::popup_char_count_window().LayoutLine();
+    TAknTextLineLayout iBubbleTextLayout = AknLayoutScalable_Apps::popup_char_count_window_t1(0).LayoutLine();
+    
+    iICF->MsgBubbleCtrl()->SetTextFormat(iBubbleTextLayout);
+    iICF->MsgBubbleCtrl()->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
+    
+    //Change the ID when ID into release
+    iICF->MsgBubbleCtrl()->SetBitmapParam( NULL,
+    									   NULL,
+    									   KAknsIIDQsnFrInputPreviewSideL,
+    									   KAknsIIDQsnFrInputPreviewMiddle,
+    									   KAknsIIDQsnFrInputPreviewSideR );  
+    iICF->SetMsgBubbleCtrlSize(TSize(iBubbleSize.iW,iBubbleSize.iH));
+    
+    iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
+    
+    iICF->SetTextMargin( iDataMgr->iIcfTextLeftMargin,
+            			 iDataMgr->iIcfTextRightMargin,
+            			 iDataMgr->iIcfTextTopMargin,
+            			 iDataMgr->iIcfTextBottomMargin );
+            					  
+    iICF->SetLineSpace( iDataMgr->iIcfTextLineSpaceMargin );    					  
+        	 
+    SetIndiBubble();
+    iICF->Hide( ETrue );
+    }
+ 
     
 // ---------------------------------------------------------------------------
 // CSplitItutWindow::ConstructL
@@ -674,6 +802,7 @@ void CSplitItutWindow::ConstructL()
     iBmpRotator = CPeninputSyncBitmapRotator::NewL();
     CreateAllButtonL();
     CreateItutKeypadL();
+    CreateICFL();
     }
 
 // ---------------------------------------------------------------------------
@@ -794,9 +923,15 @@ TInt CSplitItutWindow::PenInputType()
 // CSplitItutWindow::SetCtrlRect
 // ---------------------------------------------------------------------------
 //
-void CSplitItutWindow::SetCtrlRect(CFepUiBaseCtrl* aCtrl, TInt aRectIdx)
+void CSplitItutWindow::SetCtrlRect(CFepUiBaseCtrl* aCtrl, TInt aRectIdx, const TBool aOffset )
     {
-    aCtrl->SetRect(TItutDataConverter::AnyToRect(iDataMgr->RequestData(aRectIdx)));
+    TRect rect = TItutDataConverter::AnyToRect(iDataMgr->RequestData(aRectIdx));
+    if(aOffset)
+        {
+        TPoint offset = TItutDataConverter::AnyToPoint(iDataMgr->RequestData(ELayoutOffset));
+        rect.Move(offset);
+        }
+    aCtrl->SetRect(rect);
     }
 
 // ---------------------------------------------------------------------------
@@ -930,6 +1065,41 @@ void CSplitItutWindow::ApplyVariantLafDataL(TBool /*aResolutionChange*/)
     	iDataMgr->SetLangDirectionSwitch( EFalse );	
     	}   
     }
+ 
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::ApplyVariantLafDataForSpellL
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::ApplyVariantLafDataForSpellL()
+    {
+    TBool bSizeChanged = EFalse;       
+    ControlSizeChanged( ECtrlIdArrowLeft, EArrowLeftRect, ELeftInnerRect, ETrue );
+    ControlSizeChanged( ECtrlIdArrowRight, EArrowRightRect, ERightInnerRect, ETrue );
+    
+    bSizeChanged = ControlSizeChanged( ECtrlIdBackspace, ESpellBackSpcae, 
+    		                           ESpellBackSpcaeInner, ETrue );
+   						  	
+    // resize all controls
+    SetCtrlRect( iBackgroundCtrl, EBackgroundRect );
+    SetCtrlRect( iStandardItutKp, EKeypadRect, ETrue ); 
+    
+    // Handle control res when language direction changing here.
+    if ( iDataMgr->IsLangDirectionSwitch() || 
+    	( bSizeChanged && iDataMgr->IsRtoLLanguage()))
+    	{
+    	HandleButtonResOnLangDirChange( ECtrlIdBackspace );
+    	iDataMgr->SetLangDirectionSwitch( EFalse );	
+    	}
+    
+    CFont* icffont = TItutDataConverter::AnyToFont(iDataMgr->RequestData( EIcfFont ));
+    iICF->Hide( ETrue ); 
+    iICF->SizeChangedL( TItutDataConverter::AnyToRect( iDataMgr->RequestData( ESpellICFRect )), 
+       	                iDataMgr->iIcfTextHeight,
+    	                icffont->FontMaxHeight(),
+    	                icffont );
+    iICF->Hide( EFalse );
+    }
+    
 
 // ---------------------------------------------------------------------------
 // CSplitItutWindow::ResizeCandidateList
@@ -1275,4 +1445,241 @@ void CSplitItutWindow::SetUnicodesForHardKey1L(CVirtualKey* aKey, const TDesC& a
     unicodesInt.Close();
 
     }
+
+void CSplitItutWindow::UpdateIndiBubbleL( TUint8* aData )
+    {  
+    RDesReadStream readStream;
+    TFepIndicatorInfo indicatorData;
+
+    TPtr8 countPtr( aData, 4*sizeof(TInt), 4*sizeof(TInt) );            
+    readStream.Open(countPtr);
+    CleanupClosePushL(readStream);
+
+    indicatorData.iIndicatorImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorMaskID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextMaskID = readStream.ReadInt32L();
+
+    CleanupStack::PopAndDestroy(&readStream);
+
+    if ( indicatorData.iIndicatorImgID != 0 && 
+         indicatorData.iIndicatorMaskID != 0 && 
+         indicatorData.iIndicatorTextImgID != 0 &&
+         indicatorData.iIndicatorTextMaskID != 0)
+        {
+        iDataMgr->SetIndicatorData( indicatorData );
+        iImDimensionSet = ETrue;
+
+        SetIndiBubbleImageL( indicatorData.iIndicatorImgID,
+                             indicatorData.iIndicatorMaskID,
+                             indicatorData.iIndicatorTextImgID,
+                             indicatorData.iIndicatorTextMaskID );
+            
+		TBuf<100> text;	
+        iICF->MsgBubbleCtrl()->GetText( text );
+        iICF->ShowBubble( text, iICF->MsgBubbleCtrl()->Rect());
+        }
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::CalIndicatorRect
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::CalIndicatorRect(const TRect& aBoundRect,
+                                          TRect& aRealRect1,
+                                          TRect& aRealRect2,
+                                          TIndicatorAlign aAlign) 
+	{
+	if (!iImDimensionSet)
+		{
+		return;
+		}
+	
+	TInt imgAspectText = iIndicatorTextSize.iWidth / iIndicatorTextSize.iHeight;
+	TInt imgAspectIndi = iIndicatorSize.iWidth / iIndicatorSize.iHeight;
+    TSize imgSizeText( aBoundRect.Size().iHeight * imgAspectText, 
+    			  	   aBoundRect.Size().iHeight );
+	TSize imgSizeIndi( aBoundRect.Size().iHeight * imgAspectIndi, 
+    			   			   aBoundRect.Size().iHeight );
+	// check if the length of img > bound rect width
+	TInt nTotalWidth = imgSizeText.iWidth + imgSizeIndi.iWidth;
+	if( nTotalWidth > aBoundRect.Size().iWidth )
+		{
+		TReal nAspect = (TReal)imgSizeText.iWidth / nTotalWidth;
+		imgSizeText.iWidth = aBoundRect.Size().iWidth * nAspect;
+		imgSizeIndi.iWidth = aBoundRect.Size().iWidth - imgSizeText.iWidth;
+		imgSizeText.iHeight = imgSizeText.iWidth / imgAspectText;
+		// make sure the height of two rect is equal
+		imgSizeIndi.iHeight = imgSizeText.iHeight;
+		}
+	if( aAlign == EIndiAlignRight )
+		{
+    	aRealRect2 = TRect(TPoint( aBoundRect.iBr.iX - imgSizeText.iWidth, aBoundRect.iTl.iY),
+    			   	   imgSizeText);
+		aRealRect1 = TRect(TPoint(aRealRect2.iTl.iX - imgSizeIndi.iWidth, aRealRect2.iTl.iY),
+				       imgSizeIndi);
+		}
+	else if( aAlign == EIndiAlignCenter )
+		{
+		TInt offsetX = ( aBoundRect.Size().iWidth - imgSizeText.iWidth - imgSizeIndi.iWidth ) / 2;
+		TInt offsetY = ( aBoundRect.Size().iHeight - imgSizeText.iHeight ) / 2;
+    	aRealRect2 = TRect( TPoint( aBoundRect.iBr.iX - imgSizeText.iWidth - offsetX, 
+    							   aBoundRect.iTl.iY + offsetY),
+    			   	   	    imgSizeText );
+		aRealRect1 = TRect( TPoint(aRealRect2.iTl.iX - imgSizeIndi.iWidth, aRealRect2.iTl.iY),
+				       imgSizeIndi );
+		}
+	else if( aAlign == EIndiAlignLeft )
+		{
+		aRealRect1 = TRect( aBoundRect.iTl, imgSizeIndi );
+		aRealRect2 = TRect( TPoint( aRealRect1.iBr.iX, aRealRect1.iTl.iY ), imgSizeText );
+		}
+	}
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::SetPromptTextL
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::SetPromptTextL( TUint8* aData )
+    {
+    RDesReadStream readStream;
+
+    TPtr8 countPtr( aData, 2*sizeof(TInt), 2*sizeof(TInt));
+	readStream.Open(countPtr);
+	CleanupClosePushL(readStream);
+    const TInt dataCount = readStream.ReadInt32L();
+	const TInt textCount = readStream.ReadInt32L();
+    CleanupStack::PopAndDestroy(&readStream);
+    
+    TPtr8 ptr( aData+2*sizeof(TInt), dataCount+textCount, dataCount+textCount );            
+	readStream.Open(ptr);
+	CleanupClosePushL(readStream);
+	
+	HBufC8* dataBuf = HBufC8::NewLC(dataCount);
+	TPtr8 dataBufPtr = dataBuf->Des();
+	readStream.ReadL(dataBufPtr, dataCount);
+
+    TFepPromptText* pIcfData = 
+    		reinterpret_cast<TFepPromptText*>(const_cast<TUint8*>(dataBufPtr.Ptr()));
+
+    HBufC* textBuf;
+    if ( textCount > 0 )
+        {
+        textBuf = HBufC::NewLC( textCount/2 );
+    	TPtr textBufPtr = textBuf->Des();
+    	readStream.ReadL( textBufPtr, textCount/2 );
+         
+        const HBufC* icfPromptText = iICF->PromptText();
+        
+        if (!icfPromptText || icfPromptText->Compare( textBuf->Des()) != 0 )
+        	{
+        	iICF->SetPromptTextL( textBuf->Des(), pIcfData->iCleanContent );	
+        	}
+        CleanupStack::PopAndDestroy( textBuf );
+        }
+    else
+        {
+        iICF->SetPromptTextL( KNullDesC, pIcfData->iCleanContent );
+        }
+
+      CleanupStack::PopAndDestroy( dataBuf );
+	  CleanupStack::PopAndDestroy( &readStream );
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::SetIndiBubbleImageL
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::SetIndiBubbleImageL( const TInt aImgID1,
+                                            const TInt aMaskID1,
+                                            const TInt aImgID2,
+                                            const TInt aMaskID2 )
+    {
+    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+
+    CFbsBitmap* bmp1 = NULL;
+    CFbsBitmap* mask1 = NULL;
+    
+    TInt colorIndex = EAknsCIQsnIconColorsCG30;
+
+    AknsUtils::CreateColorIconL( skininstance,
+                                 KAknsIIDQsnIconColors,
+                                 KAknsIIDQsnIconColors,
+                                 colorIndex,
+                                 bmp1,
+                                 mask1,
+                                 AknIconUtils::AvkonIconFileName(),
+                                 aImgID1,
+                                 aMaskID1,
+                                 KRgbGray );
+    CleanupStack::PushL( bmp1 );
+    CleanupStack::PushL( mask1 );
+                                
+    AknIconUtils::GetContentDimensions( bmp1, iIndicatorSize );
+
+    CFbsBitmap* bmp2 = NULL;
+    CFbsBitmap* mask2 = NULL;
+    AknsUtils::CreateColorIconL( skininstance,
+                                 KAknsIIDQsnIconColors,
+                                 KAknsIIDQsnIconColors,
+                                 colorIndex,
+                                 bmp2,
+                                 mask2,
+                                 AknIconUtils::AvkonIconFileName(),
+                                 aImgID2,
+                                 aMaskID2,
+                                 KRgbGray );
+ 
+    CleanupStack::PushL( bmp2 );
+    CleanupStack::PushL( mask2 );
+    
+    AknIconUtils::GetContentDimensions( bmp2, iIndicatorTextSize );
+    
+    TRect boundRect;
+    boundRect = TItutDataConverter::AnyToRect(
+                iDataMgr->RequestData( EIndiIconWithoutTextRect ));
+    
+    TRect imgrect, textrect;
+    
+    CalIndicatorRect( boundRect, imgrect, textrect, EIndiAlignCenter );
+    AknIconUtils::SetSize( bmp1, imgrect.Size(), EAspectRatioNotPreserved );
+    AknIconUtils::SetSize( mask1, imgrect.Size(), EAspectRatioNotPreserved );
+    AknIconUtils::SetSize( bmp2, textrect.Size(), EAspectRatioNotPreserved) ;
+    AknIconUtils::SetSize( mask2, textrect.Size(), EAspectRatioNotPreserved );
+
+    CFbsBitmap* bmp3 = AknPenImageUtils::CombineTwoImagesL(bmp1, bmp2, EColor256);
+    CFbsBitmap* mask3 = AknPenImageUtils::CombineTwoImagesL(mask1, mask2, EGray256);
+    
+    iICF->MsgBubbleCtrl()->SetBitmapParam( bmp3, mask3, 
+                    KAknsIIDQsnFrInputPreviewSideL,
+                    KAknsIIDQsnFrInputPreviewMiddle,
+                    KAknsIIDQsnFrInputPreviewSideR );
+    
+    CleanupStack::PopAndDestroy( mask2 );
+    CleanupStack::PopAndDestroy( bmp2 );
+    CleanupStack::PopAndDestroy( mask1 );
+    CleanupStack::PopAndDestroy( bmp1 );
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::SetIndiBubble
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::SetIndiBubble()
+    {
+    if ( iICF )
+        {
+        TRect bubbleRect = TItutDataConverter::AnyToRect( 
+                iDataMgr->RequestData( EIndiPaneWithoutTextRect ));
+        TRect iconRect = TItutDataConverter::AnyToRect( 
+                iDataMgr->RequestData( EIndiIconWithoutTextRect ));
+        
+        TSize offset( 0, 6 );
+        TSize size( iconRect.Width(), iconRect.Height());
+        
+        iICF->MsgBubbleCtrl()->SetRect( bubbleRect );
+        iICF->MsgBubbleCtrl()->SetIconOffsetAndSize( offset, size );
+        }
+    }
+
 // End Of File

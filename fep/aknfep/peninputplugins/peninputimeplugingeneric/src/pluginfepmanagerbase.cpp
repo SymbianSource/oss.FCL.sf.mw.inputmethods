@@ -308,6 +308,31 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
                 }            
             break;
             }
+		case ECmdPenInputFingerMatchIndicator:
+            {
+            TFepIndicatorInfo* pIndicatorData = 
+                reinterpret_cast<TFepIndicatorInfo*>( aParam );
+            
+			HBufC8* buf = HBufC8::NewLC(4 * sizeof(TInt));
+			TPtr8 bufPtr = buf->Des();
+			
+			RDesWriteStream writeStream;
+			writeStream.Open(bufPtr);
+			CleanupClosePushL(writeStream);
+			
+            writeStream.WriteInt32L(pIndicatorData->iIndicatorImgID);
+            writeStream.WriteInt32L(pIndicatorData->iIndicatorMaskID);
+            writeStream.WriteInt32L(pIndicatorData->iIndicatorTextImgID);
+            writeStream.WriteInt32L(pIndicatorData->iIndicatorTextMaskID);
+		    
+            writeStream.CommitL();
+        
+            SendCommandToServer( aCommandId, bufPtr );
+    
+			CleanupStack::PopAndDestroy(&writeStream);
+			CleanupStack::PopAndDestroy(buf);			
+            }
+            break;
         default:
             SendCommandToServer( aCommandId, aParam );
             break;

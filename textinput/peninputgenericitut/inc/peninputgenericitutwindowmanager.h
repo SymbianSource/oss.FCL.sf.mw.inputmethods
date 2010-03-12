@@ -99,6 +99,7 @@ public:
     void HideByteWarningBubble();
     void DisplayWarningNote(const TDesC& aInfo);
 	/* Teleca change end, 18.05.2009 ssal */
+    TBool IsPortraitWest();
 private:
 
     CGenericItutWindowManager(CGenericItutUiLayout* aLayoutOwner,

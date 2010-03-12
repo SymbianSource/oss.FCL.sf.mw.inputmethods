@@ -35,6 +35,12 @@ RESOURCE RSS_SIGNATURE { }
 
 RESOURCE TBUF { buf=""; }
 
+RESOURCE TBUF r_peninput_finger_ok {buf = text_softkey_ok;}
+RESOURCE TBUF r_peninput_finger_cancel {buf = text_softkey_cancel;}    
+RESOURCE TBUF r_peninput_finger_spell {buf = qtn_t9_match_selection_list;}
+RESOURCE TBUF r_peninput_finger_spell_colon {buf = qtn_colon_in_prompt;}
+
+
 RESOURCE AKN_FEP_COMMON_BUTTON_IMAGE r_peninput_finger_cursor_up
     {
     bmpfile=AKN_FEP_ITUT_BMP;
@@ -96,8 +102,8 @@ RESOURCE AKN_FEP_COMMON_BUTTON_IMAGE r_finger_backspace
     bmpfile=AKN_FEP_ITUT_BMP;
     imgmajorskinid=EAknsMajorGeneric;
 
-    forground=EMbmPeninputgenericitutQgn_indi_input_backspace;
-    forgroundmsk=EMbmPeninputgenericitutQgn_indi_input_backspace_mask;
+    forground=EMbmPeninputgenericitutQgn_indi_itut_backspace1;
+    forgroundmsk=EMbmPeninputgenericitutQgn_indi_itut_backspace1_mask;
     //forgroundskinid=EAknsMinorGenericQgnIndiDialerClear;
     }
 
@@ -106,8 +112,8 @@ RESOURCE AKN_FEP_COMMON_BUTTON_IMAGE r_finger_backspace_rtol
     bmpfile=AKN_FEP_ITUT_BMP;
     imgmajorskinid=EAknsMajorGeneric;
 
-    forground=EMbmPeninputgenericitutQgn_indi_itut_backspace;
-    forgroundmsk=EMbmPeninputgenericitutQgn_indi_itut_backspace_mask;
+    forground=EMbmPeninputgenericitutQgn_indi_itut_backspace1;
+    forgroundmsk=EMbmPeninputgenericitutQgn_indi_itut_backspace1_mask;
     //forgroundskinid=EAknsMinorGenericQgnIndiDialerClear;
     }
     
@@ -427,6 +433,15 @@ RESOURCE SPLIT_VIRTUAL_ITUT_KEYPAD r_finger_input_keypad_number_with_plus
         };
     }
     
+RESOURCE SPLIT_VIRTUAL_ITUT_ICF r_split_itut_icf
+    {
+    colormajorskinid = EAknsMajorSkin;
+    textcolorgrp = EAknsMinorQsnTextColors;
+    textcoloridx = 50;
+    bordercolorgrp = EAknsMinorQsnOtherColors;
+    bordercoloridx = 8;
+    }	
+	
 RESOURCE AKN_FEP_NONIRREGULAR_VKB_BITMAP r_itut_keypad_bitmap
     {
     bmpfile = AKN_FEP_ITUT_BMP;

@@ -101,6 +101,15 @@ public:
      * @return none
      */
     void SizeChanged();
+    /**
+     * Refresh user db view when the screen size was changed, will
+     * be called by SizeChanged.
+     *
+     * @since S60 vTB9.1
+     * @param none
+     * @return none
+     */   
+    void SizeChangedL();
 	
 	/**
      * Return control to application framework.

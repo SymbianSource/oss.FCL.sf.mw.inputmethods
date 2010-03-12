@@ -62,6 +62,7 @@ SOURCE			peninputlistonerowwithiconwithbubble.cpp
 SOURCE			peninputlistonerowwithouticonwithbubble.cpp
 SOURCE			peninputlistmultirowrollwithiconwithbubble.cpp
 SOURCE			peninputlistonerowrollwithiconwithbubble.cpp
+SOURCE          peninputlistmultirowwithouticonwithbubble.cpp
 
 // From peninputselectionlist
 SOURCEPATH      ../src/peninputselectionlist

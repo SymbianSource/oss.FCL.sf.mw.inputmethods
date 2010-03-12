@@ -86,6 +86,30 @@ CSplitItutUiLayout::~CSplitItutUiLayout()
     }
 
 // ---------------------------------------------------------------------------
+// CSplitItutUiLayout::OnAppEditorTextComing
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//
+TInt CSplitItutUiLayout::OnAppEditorTextComing(const TFepInputContextFieldData& aData)
+    {
+	TInt err = 0;
+	if ( iDataMgr->IsSpellMode())
+		{
+	    // Update the icf text
+	    err = iWindowMgr->OnAppEditorTextComing( aData );
+		}
+
+	// notify icf has text or not
+    if ( UiMgr()->CurrentState() &&
+         UiMgr()->CurrentState()->StateType() == CSplitItutUiMgrBase::EStateSpelling )
+        {
+        TRAP_IGNORE(UiMgr()->HandleCommandL(EItutCmdCheckIcfEmpty, NULL));
+        }
+ 
+     return err;
+    }
+
+// ---------------------------------------------------------------------------
 // CSplitItutUiLayout::ConstructL
 // (other items were commented in a header)
 // ---------------------------------------------------------------------------
@@ -184,6 +208,7 @@ TInt CSplitItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputFingerLongKeyPress:
         case ECmdPenInputCase:
         case ECmdPenInputFingerMatchSelection:
+        case ECmdPenInputFingerSpelling:
             {
             if (UiMgr())
                 {
@@ -207,6 +232,7 @@ TInt CSplitItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         	{
             TRAP_IGNORE(ChineseUiManager()->HandleCommandL(ECmdPenInputNoFreeSpace, NULL));
         	}        	
+        case ECmdPenInputSetPromptText: 
         case ECmdPenInputFingerMatchIndicator:
         case ECmdPenInputSendEditMenuData:
         case ECmdPenInputEnableSettingBtn:
@@ -422,6 +448,12 @@ void CSplitItutUiLayout::OnActivate()
 
     SetRect(TItutDataConverter::AnyToRect(iDataMgr->RequestData(ELayoutRect)));
     TPoint offset = TItutDataConverter::AnyToPoint(iDataMgr->RequestData(ELayoutOffset));
+    
+    if(iDataMgr->IsSpellMode())
+        {
+        offset = TPoint(0,0);
+        }
+    
     LayoutOwner()->SetPosition( offset );   
 
     iWindowMgr->OnActivate();
@@ -469,6 +501,16 @@ void CSplitItutUiLayout::ShowArrowBtn(TInt aShowFlag)
 void CSplitItutUiLayout::ApplyVariantLafDataL(TBool aResolutionChange)
     {
     iWindowMgr->ApplyVariantLafDataL(aResolutionChange);
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutUiLayout::ApplyVariantLafDataForSpellL
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//
+void CSplitItutUiLayout::ApplyVariantLafDataForSpellL()
+    {
+    iWindowMgr->ApplyVariantLafDataForSpellL();
     }
     
 // ---------------------------------------------------------------------------

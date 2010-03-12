@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2004 Nokia Corporation and/or its subsidiary(-ies).
+# Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 # All rights reserved.
 # This component and the accompanying materials are made available
 # under the terms of "Eclipse Public License v1.0"
@@ -26,8 +26,8 @@ endif
 
 TARGETDIR=$(ZDIR)\resource\apps
 HEADERDIR=\epoc32\include
-ICONTARGETFILENAME=$(TARGETDIR)\peninputfingerhwr.mif
-HEADERFILENAME=$(HEADERDIR)\peninputfingerhwr.mbg
+ICONTARGETFILENAME=$(TARGETDIR)\peninputfingerhwrar.mif
+HEADERFILENAME=$(HEADERDIR)\peninputfingerhwrar.mbg
 
 do_nothing :
 	@rem do_nothing
@@ -39,7 +39,7 @@ BLD : do_nothing
 CLEAN :
 	@del $(ICONTARGETFILENAME)
 	@del $(HEADERFILENAME)
-	@del $(TARGETDIR)\peninputfingerhwr.mbm
+	@del $(TARGETDIR)\peninputfingerhwrar.mbm
 
 LIB : do_nothing
 

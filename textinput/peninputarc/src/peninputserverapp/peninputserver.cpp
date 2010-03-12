@@ -1545,6 +1545,10 @@ void CPeninputServer::DrawSprite()
     return;
     }
 
+#ifndef FIX_FOR_NGA
+#define FIX_FOR_NGA
+#endif
+
 //MLayoutOwner
 // ---------------------------------------------------------------------------
 // CPeninputServer::UpdateArea
@@ -1559,7 +1563,11 @@ void CPeninputServer::UpdateArea(const TRect& aRect,TBool /*aFullUpdate*/,
     
     if(iUseWindowCtrl)
         {        
-        iPenUiCtrl->Invalidate(aRect,EFalse);
+#ifdef FIX_FOR_NGA
+		iPenUiCtrl->Invalidate(TRect( TPoint(0,0), LayoutRect().Size()),EFalse);
+#else
+		iPenUiCtrl->Invalidate(aRect,EFalse);
+#endif
         return;
         } 
 	

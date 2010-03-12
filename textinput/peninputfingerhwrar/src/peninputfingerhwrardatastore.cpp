@@ -21,8 +21,8 @@
 
 //FEP INCLUDE
 #include <aknfeppeninputenums.h>
-#include <AknFepGlobalEnums.h>
-#include <AknFepInternalCRKeys.h>
+#include <aknfepglobalenums.h>
+#include <aknfepinternalcrkeys.h>
 
 //USER INCLUDE
 #include "peninputfingerhwrarlayout.h"
@@ -137,69 +137,7 @@ void CPeninputFingerHwrArDataStore::DoRecognizeL( const RArray<TPoint>& aTraceDa
  void CPeninputFingerHwrArDataStore::SetArabicSymbolL()
     {
     iCandidates.ResetAndDestroy();
-//    TInt symCount = sizeof( ChineseSymbolCode )/sizeof( TUint16 ); 	
-//    
-//    for( TInt i = 0; i < symCount; i++ )
-//        {
-//        TBuf<1> charBuf;
-//        charBuf.Append( ChineseSymbolCode[i] );
-//
-//        iCandidates.AppendL( charBuf.AllocL() );
-//        }    
-    
     }
-
-
-// ----------------------------------------------------------------------------
-// Set fixed English symbols
-// ----------------------------------------------------------------------------
-//
-  void CPeninputFingerHwrArDataStore::SetFixEnglishSymbolL(TRowCount aRowCount)
-    {
-    TInt symCount = 0;
-    
-    switch(aRowCount)
-        {
-        case ERowOne: // only set one row dropdownlist
-            {
-            iCandidates.ResetAndDestroy();
-            symCount = sizeof( EnglishSymbolCodeOneRow )/sizeof( TUint16 );
-            for( TInt i = 0; i < symCount; i++ )
-                {
-                TBuf<1> charBuf;            
-                charBuf.Append( EnglishSymbolCodeOneRow[i] );
-                iCandidates.AppendL( charBuf.AllocL() );
-                }
-            }
-            break;
-        case ERowTwo: // Set two rows dropdownlist
-            {
-            iCandidates.ResetAndDestroy();
-            symCount = sizeof( EnglishSymbolCodeTwoRow )/sizeof( TUint16 );
-            
-            for( TInt i = 0; i < symCount; i++ )
-                {
-                TBuf<1> charBuf1; // the first row
-                TBuf<2> charBuf2; // the second row           
-                
-                charBuf1.Append( EnglishSymbolCodeOneRow[i] );
-                iCandidates.AppendL( charBuf1.AllocL() );
-                
-                if(i > 2) // for smile symbol
-                    {
-                    charBuf2.Append(ColonSymbol);
-                    } 
-                charBuf2.Append( EnglishSymbolCodeTwoRow[i] );
-               
-               } 
-            }
-            break;
-        default:
-            break;
-        }
-    }   
-
-
 
 // ----------------------------------------------------------------------------
 // Set permitted ranges
@@ -360,7 +298,7 @@ void CPeninputFingerHwrArDataStore::SetLanguageL( TInt aLanguage )
         }
     else
         {
-        // aLanguage is Chinese
+        // aLanguage is arabic
         if ( iLanguage != aLanguage )
             {
             iLanguage = aLanguage;
@@ -859,22 +797,6 @@ void CPeninputFingerHwrArDataStore::ReorderCandidates()
                 }
             }
         }
-    else if(iFirstCandidateType == ECandArabicCharFirst)
-        {
-        for(TInt i = 0; i < candCount; i++)
-            {
-            TUint16 unicode = (*iCandidates[i])[0];
-            if(IsArabicChar(unicode))
-                {
-                if(insertPos < i)
-                    {
-                    iCandidates.Insert(iCandidates[i],insertPos);
-                    iCandidates.Remove(i+1);
-                    }
-                insertPos++;
-                }
-            }    
-        }
     }
 
 // ----------------------------------------------------------------------------
@@ -920,37 +842,4 @@ TBool CPeninputFingerHwrArDataStore::IsArabicNumber(TUint16 aChar)
     return EFalse;	
 	}
 	
-// ----------------------------------------------------------------------------
-// CPeninputFingerHwrArDataStore::IsArabicChar
-// ----------------------------------------------------------------------------
-//  
-TBool CPeninputFingerHwrArDataStore::IsArabicChar(TUint16 aChar)
-    {
-    if((aChar >= 0x0600 && aChar <= 0x06FF && !IsArabicNumber(aChar) && 
-            !IsArabicSymbol(aChar)) ||
-            (aChar >= 0x0750 && aChar <= 0x077F) ||
-            (aChar >= 0xFB50 && aChar <= 0xFDFF) ||
-            (aChar >= 0xFE70 && aChar <= 0xFEFF))
-        {
-        return ETrue;
-        }
-    
-    return EFalse;  
-    }
-
-// ----------------------------------------------------------------------------
-// CPeninputFingerHwrArDataStore::IsArabicSymbol
-// ----------------------------------------------------------------------------
-//  
-TBool CPeninputFingerHwrArDataStore::IsArabicSymbol(TUint16 aChar)
-    {
-    if(aChar == 0x061B || aChar == 0x061F || 
-            aChar == 0x060C || aChar == 0x066A)
-        {
-        return ETrue;
-        }
-    
-    return EFalse;  
-    }
-
 // End Of File

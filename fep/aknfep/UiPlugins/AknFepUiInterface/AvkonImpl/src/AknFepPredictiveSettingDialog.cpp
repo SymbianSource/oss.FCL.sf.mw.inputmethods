@@ -728,12 +728,9 @@ void CAknFepPredictiveSettingDialog::PrepareStatusPaneL()
     
     const TDesC* appTitle = iTitlePane->Text();
     iLastTitle = appTitle->AllocL();
-    CleanupStack::PushL(iLastTitle);
     
-    iStatusTitle = StringLoader::LoadLC( iTitlePaneResId,coeEnv);
+    iStatusTitle = StringLoader::LoadL( iTitlePaneResId,coeEnv);
     SetTitlePaneL();
-    CleanupStack::Pop(iStatusTitle);
-    CleanupStack::Pop(iLastTitle);
     
     iNaviPane = static_cast<CAknNavigationControlContainer*>(statusPane->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) ) );
     

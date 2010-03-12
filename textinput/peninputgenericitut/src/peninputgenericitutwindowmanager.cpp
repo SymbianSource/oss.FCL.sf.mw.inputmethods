@@ -45,6 +45,7 @@
 #include "peninputgenericitutuistatebase.h"
 #include "peninputgenericitutconverter.h"
 
+_LIT(KEmptyString, "");
 const TInt KPeriodicTimerIntervalSec(2500000);
 /* Teleca change end, 18.05.2009 ssal */
 CGenericItutWindowManager* CGenericItutWindowManager::NewL(CGenericItutUiLayout* aLayoutOwner,
@@ -283,7 +284,12 @@ TBool CGenericItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
         case ECmdPenInputIsSecretText:
             {
             iWindow->Icf()->SetTextIsSecret(*aData);
-            iWindow->InputModeSwitch()->SetSecretEditor(*aData);
+            CPeninputLayoutInputmodelChoice* choice = 
+                iWindow->InputModeSwitch();
+            if ( choice )
+                {
+                choice->SetSecretEditor(*aData);
+                }
             }
             break;
         case ECmdPenInputIsNumberGrouping:
@@ -299,7 +305,14 @@ TBool CGenericItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
             break;
         case ECmdPenInputFingerMatchIndicator:
             {
-            UpdateIndicatorL(aData);
+            if ( IsPortraitWest() && ( !iDataMgr->IsChineseGlobalLanguage()))
+                {
+                iWindow->UpdateIndiBubbleL( aData );
+                }
+            else
+                {
+                UpdateIndicatorL( aData );
+                }
             handle = ETrue;
             }
             break;
@@ -337,15 +350,18 @@ TBool CGenericItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
 
         case ECmdPenInputEnableIndicatorButton:
             {
-            if (*data)
+            if ( NULL != static_cast<CAknFepCtrlCommonButton*>(Control(ECtrlIdIndicator)))
                 {
-                static_cast<CAknFepCtrlCommonButton*>(
-                                              Control(ECtrlIdIndicator))->SetDimmed(EFalse);
-                }
-            else
-                {
-                static_cast<CAknFepCtrlCommonButton*>(
-                                              Control(ECtrlIdIndicator))->SetDimmed(ETrue);
+                if (*data)
+                    {
+                    static_cast<CAknFepCtrlCommonButton*>(
+                                                  Control(ECtrlIdIndicator))->SetDimmed(EFalse);
+                    }
+                else
+                    {
+                    static_cast<CAknFepCtrlCommonButton*>(
+                                                  Control(ECtrlIdIndicator))->SetDimmed(ETrue);
+                    }
                 }
             }
         break;
@@ -416,6 +432,10 @@ CFepUiLayout* CGenericItutWindowManager::UiLayout()
     return iLayoutOwner;
     }
     
+TBool CGenericItutWindowManager::IsPortraitWest()
+    {
+    return !iDataMgr->IsChinese() && !iDataMgr->IsLandScape();
+    }
 void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
     {
     CGenericItutUiLayout * itutLayoutOwner;
@@ -426,11 +446,58 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
             CGenericItutUiMgrBase::EStateSpelling && 
          !iInEditWordQueryDlg)
         {
+        if ( IsPortraitWest() && (!iDataMgr->IsChineseGlobalLanguage()))
+            {
+			iWindow->Icf()->HideBubble();
+            iWindow->SetIndiWithTextFlag( ETrue );
+            iWindow->IndiBubbleWithText();
+            
+            if ( iDataMgr->IndicatorData().iIndicatorImgID != 0 &&
+                 iDataMgr->IndicatorData().iIndicatorMaskID != 0 && 
+                 iDataMgr->IndicatorData().iIndicatorTextImgID != 0 &&
+                 iDataMgr->IndicatorData().iIndicatorTextMaskID != 0 )
+                {
+                iWindow->SetIndiBubbleImageL( 
+                        iDataMgr->IndicatorData().iIndicatorImgID,
+                        iDataMgr->IndicatorData().iIndicatorMaskID,
+                        iDataMgr->IndicatorData().iIndicatorTextImgID,
+                        iDataMgr->IndicatorData().iIndicatorTextMaskID);
+                }
+            }
         iWindow->Icf()->ShowBubble(aInfo,iWindow->Icf()->MsgBubbleCtrl()->Rect());
         }
     else
         {
-        iWindow->Icf()->HideBubble();
+        if ((!IsPortraitWest()) || iDataMgr->IsChineseGlobalLanguage())
+            {
+            iWindow->Icf()->HideBubble();
+            }
+        else
+            {
+			if ( itutLayoutOwner->UiMgr()->CurrentState() &&
+			     itutLayoutOwner->UiMgr()->CurrentState()->StateType() !=
+			            CGenericItutUiMgrBase::EStateSpelling )
+				{
+				iWindow->Icf()->HideBubble();
+				iWindow->SetIndiWithTextFlag( EFalse );
+				iWindow->IndiBubbleWithoutText();
+				}
+				
+				if ( iDataMgr->IndicatorData().iIndicatorImgID != 0 &&
+					 iDataMgr->IndicatorData().iIndicatorMaskID != 0 && 
+					 iDataMgr->IndicatorData().iIndicatorTextImgID != 0 &&
+					 iDataMgr->IndicatorData().iIndicatorTextMaskID != 0 )
+					{
+					iWindow->SetIndiBubbleImageL( 
+							iDataMgr->IndicatorData().iIndicatorImgID,
+							iDataMgr->IndicatorData().iIndicatorMaskID,
+							iDataMgr->IndicatorData().iIndicatorTextImgID,
+							iDataMgr->IndicatorData().iIndicatorTextMaskID);
+					}
+            
+            iWindow->Icf()->ShowBubble( KEmptyString, 
+                    iWindow->Icf()->MsgBubbleCtrl()->Rect());
+            }
         }
     }
 

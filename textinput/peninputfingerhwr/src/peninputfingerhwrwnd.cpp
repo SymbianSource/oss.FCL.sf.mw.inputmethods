@@ -1337,8 +1337,13 @@ void CPeninputFingerHwrWnd::CreateVirtualNumpadL()
     
     CleanupStack::PopAndDestroy(); //rects
     
-    iVirtualNumpad->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG68 );
+    iVirtualNumpad->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG65 );
     iVirtualNumpad->SetDrawOpaqueBackground( EFalse );
+    
+    //set key to be 9 piece graphics
+    iVirtualNumpad->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonFrNormal );
+    iVirtualNumpad->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonFrPressed );
+    iVirtualNumpad->SetKeySkinId( EKeyBmpDim, KAknsIIDQsnFrKeypadButtonFrInactive );    
     }
 
 // ---------------------------------------------------------------------------
@@ -1376,8 +1381,13 @@ void CPeninputFingerHwrWnd::CreateVirtualSctpadL()
     TInt cols = iLafManager->VirtualSctpadColCount();
     iVirtualSctpad->UpdatePaging( rows, cols );
     
-    iVirtualSctpad->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG68 );
-    iVirtualSctpad->SetDrawOpaqueBackground( EFalse );    
+    iVirtualSctpad->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG65 );
+    iVirtualSctpad->SetDrawOpaqueBackground( EFalse );
+
+    //set key to be 9 piece graphics
+    iVirtualSctpad->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonFrNormal );
+    iVirtualSctpad->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonFrPressed );
+    iVirtualSctpad->SetKeySkinId( EKeyBmpDim, KAknsIIDQsnFrKeypadButtonFrInactive );
     }
 
 
@@ -1412,8 +1422,13 @@ void CPeninputFingerHwrWnd::CreateFixVirtualSctpadL()
     
     CleanupStack::PopAndDestroy();//rects
     
-    iVirtualSctpadFix->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG68 );
-    iVirtualSctpadFix->SetDrawOpaqueBackground( EFalse );    
+    iVirtualSctpadFix->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG65 );
+    iVirtualSctpadFix->SetDrawOpaqueBackground( EFalse );
+
+    //set key to be 9 piece graphics
+    iVirtualSctpadFix->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonFrNormal );
+    iVirtualSctpadFix->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonFrPressed );
+    iVirtualSctpadFix->SetKeySkinId( EKeyBmpDim, KAknsIIDQsnFrKeypadButtonFrInactive );    
     }
 
 // ---------------------------------------------------------------------------

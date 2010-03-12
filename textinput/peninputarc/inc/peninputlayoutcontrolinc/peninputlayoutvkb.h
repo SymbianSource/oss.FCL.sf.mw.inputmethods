@@ -29,6 +29,7 @@ class CVirtualKeyCtrl;
 class CBubbleCtrl;
 class CPenInputColorIcon;
    
+class MPeninputVkbPreviewBubbleRenderer;
 #define INVALID_COLOR_GROUP -1
    
 typedef struct TVirtualKeyEventData_Tag
@@ -560,6 +561,15 @@ public:
 	IMPORT_C void SetShiftIcon( CPenInputColorIcon* aIcon );
 	inline CPenInputColorIcon* ShiftIcon();
     
+	/**
+	 * Install preview bubble renderer
+	 * 
+	 * @param aRenderer Preview bubble renderer. 
+	 *  Ownership transfered(shared by all targets of aRenderer)
+	 * @return None.
+	 */
+	IMPORT_C void SetPreviewBubbleRenderer( MPeninputVkbPreviewBubbleRenderer* aRenderer );
+	
 protected:                          
 
     /**
@@ -854,6 +864,7 @@ private:
      * The shift icon showing on the key
      */      
     CPenInputColorIcon* iShiftIcon;
+    MPeninputVkbPreviewBubbleRenderer* iPreviewBubbleRenderer;
 friend class CVirtualKeyCtrl;
 friend class CVirtualRawKeyCtrl;
 //friend class CVirtualKey;    

@@ -16,9 +16,9 @@
 */
 
 //FEP INCLUDES
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include <aknfeppeninputenums.h>
-#include <ptihwrrecognizer.h>
+#include <PtiHwrRecognizer.h>
 #include <e32property.h>
 #include "PtiDefs.h"
 

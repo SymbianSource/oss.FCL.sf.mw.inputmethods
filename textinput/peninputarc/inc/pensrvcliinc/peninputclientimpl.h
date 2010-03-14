@@ -486,7 +486,7 @@ public:
     TInt StartThreadAsyncL();
     void AddObserver();
     TBool ServerReady();
-    void OnServerStarted(TInt);
+    void OnServerStarted(TInt aErr);
     
 private:
         /**
@@ -563,7 +563,7 @@ private:    // Data
 };
 
 
-class CWaitingServerAo : public CActive
+NONSHARABLE_CLASS(CWaitingServerAo) : public CActive
     {
 public:
 	

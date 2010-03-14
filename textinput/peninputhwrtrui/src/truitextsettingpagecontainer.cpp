@@ -17,9 +17,9 @@
 
 
 #include <aknlayoutscalable_apps.cdl.h>
-#include <aknscontrolcontext.h>
-#include <aknpreviewpopupcontroller.h>
-#include <aknpreviewpopupobserver.h>
+#include <AknsControlContext.h>
+#include <AknPreviewPopUpController.h>
+#include <AknPreviewPopUpObserver.h>
 #include <layoutmetadata.cdl.h>
 
 #include "truitextsettingpagecontainer.h"

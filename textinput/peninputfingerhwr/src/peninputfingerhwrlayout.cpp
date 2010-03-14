@@ -21,10 +21,10 @@
 #include <coemain.h>
 
 //FEP Includes
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include <aknfeppeninputenums.h>
 #include <peninputlayoutchoicelist.h>
-#include <SettingsInternalCRKeys.h>
+#include <settingsinternalcrkeys.h>
 #include <centralrepository.h>
 #include <peninputlayoutvkb.h>
 #include <AknFepGlobalEnums.h>

@@ -53,8 +53,10 @@ const TInt KSecretInstantShowTimer = 100000; // 100ms
 const TUint16 KSegment = 0x0020;
 // separator between prompt text and normal text,
 // should use localized character soon
-const TUint16 KSeparator = 0x003a;
-const TUint16 KSeparatorcn = 0xff1a;
+//const TUint16 KSeparator = 0x003a;
+//const TUint16 KSeparatorcn = 0xff1a;
+const TUint16 KColon = 0x003a;
+const TUint16 KColoncn = 0xff1a; 
 _LIT(KLineSeparator, "\n");
 const TInt KStar = '*';
 
@@ -63,6 +65,9 @@ const TInt KMaxMfneDataLen = 30;
 const TInt KMsgBubblePosAdjustValueX = 3;
 const TInt KMsgBubblePosAdjustValueY = 2;
 const TInt KPromptAdjustLen = 5;
+// Tooltip position adjust
+const TInt KTooltipPosAdjustValueY = 5;
+
 EXPORT_C CFepLayoutMultiLineIcfEditor* CFepLayoutMultiLineIcfEditor::NewL(TRect aRect,
                                                               CFepUiLayout* aUiLayout,
                                                               TInt aControlId,
@@ -147,11 +152,11 @@ CFepLayoutMultiLineIcfEditor::~CFepLayoutMultiLineIcfEditor()
         delete iFormExtendedInterfaceProvider;
         iFormExtendedInterfaceProvider = NULL;
         }
-    
+    iCoeEnv->ScreenDevice()->ReleaseFont(CONST_CAST(CFont*, iFont));
     delete iSmileyManager;
     }
 
-void CFepLayoutMultiLineIcfEditor::InitTextLayoutL()
+void CFepLayoutMultiLineIcfEditor::InitTextLayoutL(const CFont *aFont)
     {
 	iParaFormatLayer=CParaFormatLayer::NewL();
 	iCharFormatLayer=CCharFormatLayer::NewL();
@@ -181,7 +186,7 @@ void CFepLayoutMultiLineIcfEditor::InitTextLayoutL()
     //iCtrl->SetContainerWindowL(*iWin);    
     //iWin->Construct(iCoeEnv->RootWin(),reinterpret_cast<TInt>(iCtrl));
     //ctrl->SetExtent(iViewRect.iTl, iViewRect.Size());
-
+    SetFontL(aFont);
 	iTextView = CTextView::NewL(iLayout, 
 	                            iViewRect,
                         		BitmapDevice(),
@@ -268,8 +273,8 @@ void CFepLayoutMultiLineIcfEditor::SetTextAlignmentL(TInt aAlignment, TInt aLang
     iAlignment = aAlignment;
     }
 
-void CFepLayoutMultiLineIcfEditor::BaseConstructL(TInt aFontHeight, 
-                                            TInt aMaxFontHeight, 
+void CFepLayoutMultiLineIcfEditor::BaseConstructL(TInt /*aFontHeight*/, 
+                                            TInt /*aMaxFontHeight*/, 
                                             const CFont* aFont)
     {
     CFepUiBaseCtrl::BaseConstructL();
@@ -278,10 +283,10 @@ void CFepLayoutMultiLineIcfEditor::BaseConstructL(TInt aFontHeight,
     //iMaxFontHeight = aMaxFontHeight;
     //iFontHeight = aFontHeight;
     //iFont = aFont;
-    InitTextLayoutL();
+    InitTextLayoutL(aFont);
     iInsertionPoint = UiLayout()->CreateCursor();
     iInsertionPoint->SetOwner(this);
-    SetFontL(aFontHeight, aMaxFontHeight, aFont);
+    //SetFontL(aFont);
 
     iSecretTextTimer = CPeriodic::NewL(CActive::EPriorityStandard);
 
@@ -430,19 +435,31 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBoo
     iPromptText = HBufC::NewL(prompttextLen);
     TPtr text = iPromptText->Des();
 
-    TBuf<1> ptr0;
-    ptr0.Append( KEllipsis );
+        TBuf<1> ptrEllipsis;
+        ptrEllipsis.Append( KEllipsis );
 
-    TPtrC ptr1(&KSegment, 1);
-    TPtrC ptr2(&KSeparator, 1);
+        TPtrC ptrSpace(&KSegment, 1);
+        TPtrC ptrColon(&KColon, 1);
     
-    TInt separatorLen = TextWidth(ptr1) + TextWidth(ptr2) + TextWidth(ptr0);
-    TInt textWidth = TextWidth(aPromptText) + separatorLen;
-    TBool ret = EFalse;
+        TInt separatorLen = TextWidth(ptrSpace) + TextWidth(ptrColon) + TextWidth(ptrEllipsis);     
+        TInt textWidth = TextWidth(aPromptText);
+
+        if ((aPromptText.LocateReverse(KColon) != aPromptText.Length() - 1) && 
+           (aPromptText.LocateReverse(KColoncn) != aPromptText.Length() - 1))
+           {
+            textWidth += TextWidth(ptrSpace) + TextWidth(ptrColon);
+            }
+
+        else
+                {
+                textWidth += TextWidth(ptrSpace);
+                }     
+
+        TBool truncated = EFalse;
     
-    if (textWidth >= iViewRect.Width() )
-        {
-        ret = ETrue;
+        if (textWidth > iViewRect.Width() )
+            {
+            truncated = ETrue;
         AknBidiTextUtils::ConvertToVisualAndClip(aPromptText,
                                                  text,
                                                  *iFont,
@@ -464,23 +481,23 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBoo
 		text.Delete( text.Length()-1, 1 );
 	    }
 		
-    if ((text.LocateReverse(KSeparator) != text.Length() - 1) && 
-        (text.LocateReverse(KSeparatorcn) != text.Length() - 1))
+        if ((text.LocateReverse(KColon) != text.Length() - 1) && 
+            (text.LocateReverse(KColoncn) != text.Length() - 1))
         {
         // if sent prompt text already include separator, then no need to 
         // append it again
-        if ( ret )
+            if (truncated)
+                {
+                text.Append( ptrEllipsis );
+                }
+            text.Append(ptrColon);
+           }
+        else if (truncated)
             {
-            text.Append( ptr0 );
-            }
-        text.Append(ptr2);
-        }
-    else if ( ret )
-        {
-        text.Insert( text.Length()-1, ptr0 );
-        }        
+            text.Insert( text.Length()-1, ptrEllipsis );
+            }        
 
-    text.Append(ptr1); // segment between prompt text and official text
+    text.Append(ptrSpace); // segment between prompt text and official text
     textWidth = TextWidth(text);
     
     iRichText->InsertL(0, text);
@@ -993,11 +1010,9 @@ void CFepLayoutMultiLineIcfEditor::SetDimmed(TBool aDimFlag)
     iDimmed = aDimFlag;
     }
 
-void CFepLayoutMultiLineIcfEditor::SetFontL(TInt aFontHeight, 
-                                            TInt aMaxFontHeight, 
-                                            const CFont* aFont)
+void CFepLayoutMultiLineIcfEditor::SetFontL(const CFont* aFont)
     {
-    TInt newHeightInPixel = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(aFontHeight);
+    TInt newHeightInPixel = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(aFont->HeightInPixels());
     TInt OldHeightInPixel = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(iFontHeight);
     
     if( newHeightInPixel == OldHeightInPixel )
@@ -1009,9 +1024,15 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(TInt aFontHeight,
         iFormatChange = ETrue;
         }    
     
-    iMaxFontHeight = aMaxFontHeight;
-    iFontHeight = aFontHeight;
-    iFont = aFont;
+    TFontSpec fontSpec;
+    fontSpec.iHeight = aFont->HeightInPixels();
+    CFont*  font;
+    iCoeEnv->ScreenDevice()->ReleaseFont(CONST_CAST(CFont*, iFont));
+    iCoeEnv->ScreenDevice()->GetNearestFontInPixels((CFont*&)font,fontSpec);
+    
+    iMaxFontHeight = font->FontMaxHeight();
+    iFontHeight = font->HeightInPixels();
+    iFont = font;
     
         
     iCharFormatMask.ClearAttrib( EAttFontUnderline );
@@ -1566,7 +1587,8 @@ void CFepLayoutMultiLineIcfEditor::SetInfoBubbleCtrlSize(const TSize& aSize)
     iInfoBubble->SetRect( TRect(leftTop,aSize) ) ;        
     }
 
-void CFepLayoutMultiLineIcfEditor::ShowTooltipL(const TDesC& aText)
+void CFepLayoutMultiLineIcfEditor::ShowTooltipL( const TDesC& aText, 
+		                                         const TRect& aRect )
 	{
 	if ( !iTooltip )
 	    {
@@ -1574,28 +1596,33 @@ void CFepLayoutMultiLineIcfEditor::ShowTooltipL(const TDesC& aText)
 	    }
 
     iTooltip->SetTextL( aText );
-    TPoint tl = iInsertionPoint->Position();
+    TPoint tl( 0, 0 ), br( 0, 0 );
+    InlineTextPos( tl, br );    
+    
     if ( iLineMaxCount > 1 )
 	    {
 		TBool firstLine =  iLayout->FirstLineInBand() == iLineNumber;
 		if ( firstLine )
-		    {
-			tl.iY += iInsertionPoint->Height();
+		    {				
+		    tl.iY += KTooltipPosAdjustValueY;
 			}
 		else
 		    {
-			tl.iY -= iTooltip->Rect().Height();
+			tl.iY -= ( iFormatLineHeight + aRect.Height() - KTooltipPosAdjustValueY );			
 			}
-		}
-    TRect tooltipRect = TRect( tl, iTooltip->Rect().Size() );
+		}       
     
+    TRect tooltipRect = TRect( tl, aRect.Size() );
+    
+    // Make sure the right border of tooltip isn't be out of icf rect
     TInt moveX = tooltipRect.iBr.iX - Rect().iBr.iX;
     if ( moveX > 0 )
     	{
     	tooltipRect.iBr.iX -= moveX;
     	tooltipRect.iTl.iX -= moveX;
     	}
-		
+    
+    // Make sure tooltip isn't overlapped by msg bubble.
 	if ( tooltipRect.Intersects( iMsgBubble->Rect() ) )
 	    {
 		moveX = tooltipRect.iBr.iX - iMsgBubble->Rect().iTl.iX;
@@ -1610,7 +1637,7 @@ void CFepLayoutMultiLineIcfEditor::ShowTooltipL(const TDesC& aText)
 	    	tooltipRect.iBr.iX += moveX;
 	    	tooltipRect.iTl.iX += moveX;
 	    	}
-	    }
+	    }		
     iTooltip->Popup( tooltipRect );
 	}
 
@@ -1642,7 +1669,7 @@ void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
     
     AdjustBmpDeviceIfNeeded();
     // apply font formats 
-    SetFontL(aFontHeight, aMaxFontHeight, aFont);
+    SetFontL( aFont);
     
     if ( !iFormatChange && oriRect == aRect )
         {
@@ -1815,8 +1842,8 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerDownEventL(const TPoi
             break;
         case CFepLayoutMultiLineIcf::EIcfAutoComplete:
             {
-            if (iTextView->Selection().iCursorPos >= iPreInlineStartPos && 
-                iTextView->Selection().iCursorPos < iPreInlineEndPos )
+            if ( iTextView->Selection().iCursorPos >= iPreInlineStartPos 
+                 && iTextView->Selection().iCursorPos < iPreAutoEndPos )
                 {
                 iPntDownOnInline = ETrue;
                 CapturePointer(EFalse);                 
@@ -1827,18 +1854,6 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerDownEventL(const TPoi
                 else
                     {
                     ReportEvent(EEventPointerDownOnInline);
-                    }
-                }
-            else
-                {
-                // do nothing
-                //submit autocomplete when set text
-                if (iTooltip && !iTooltip->IsShowing())
-                    {
-    	            ReportEvent( EEventControlFocusGained );
-                    UiLayout()->SignalOwner( ESignalCommitITIInlineText );
-			        SetInlineStateL( EFalse, iPreInlineStartPos, iPreInlineEndPos );
-			        SetAutoCompleteStateL( EFalse );
                     }
                 }
             }
@@ -1926,10 +1941,6 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerUpEventL(const TPoint
         else
             {
             AdjustFepCursorPosForPromptText( !iPntDownOnInline );
-            if(iState != CFepLayoutMultiLineIcf::EIcfNormal)
-                {
-                UiLayout()->SignalOwner( ESignalStartInlineText );
-                }
             }
         }
 
@@ -2492,12 +2503,13 @@ void CFepLayoutMultiLineIcfEditor::SetSpecialStateL(TBool aStateOn,
         
     iCharFormatMask.SetAttrib(aAttribute);
 
-    if (IsTextPosValid(aPreStartPos) && IsTextPosValid(aPreEndPos))
-        {
-        iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, 
+    // comment for updating format anyway.
+    //if (IsTextPosValid(aPreStartPos) && IsTextPosValid(aPreEndPos))
+        //{
+    iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, 
                                     iRichText->DocumentLength());
         //iTextView->HandleRangeFormatChangeL(TCursorSelection(aPreStartPos, aPreEndPos), ETrue);    
-        } 
+        //} 
 
     aPreStartPos = 0;
     aPreEndPos = 0;
@@ -2716,12 +2728,12 @@ void CFepLayoutMultiLineIcfEditor::AdjustPromptTextL()
     
 void CFepLayoutMultiLineIcfEditor::ResetApplyFont()
     {
-    TInt fontHeight = iFontHeight; 
-    TInt maxFontHeight = iMaxFontHeight;
+    //TInt fontHeight = iFontHeight; 
+    //TInt maxFontHeight = iMaxFontHeight;
     const CFont *font = iFont;
     
     iFontHeight = 0;
-    TRAP_IGNORE(SetFontL(fontHeight, maxFontHeight, font));
+    TRAP_IGNORE(SetFontL(font));
     }
 
 void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
@@ -2885,7 +2897,7 @@ CPeninputSmileyManager* CFepLayoutMultiLineIcfEditor::SmileyManager()
     }
 
 void CFepLayoutMultiLineIcfEditor::CalcSmileyClipRegionL( RRegion& aRgn, 
-                                                          CGraphicsContext& aGc, 
+                                                          CGraphicsContext& /*aGc*/, 
                                                           CFont& aFont,  
                                                           const TDesC& aText, 
                                                           TPoint& aBasePoint, 

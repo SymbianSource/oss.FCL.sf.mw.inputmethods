@@ -1,0 +1,39 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+
+../inc/MOssHangulInputEventObserver.h    MW_LAYER_PUBLIC_EXPORT_PATH(mosshangulinputeventobserver.h) 
+../inc/OssKeyboard.h                     MW_LAYER_PUBLIC_EXPORT_PATH(osskeyboard.h)                    
+../inc/OssCombination.h                  MW_LAYER_PUBLIC_EXPORT_PATH(osscombination.h)
+../inc/OssHangulInputContext.h           MW_LAYER_PUBLIC_EXPORT_PATH(osshangulinputcontext.h)
+../inc/OssHanja.h                        MW_LAYER_PUBLIC_EXPORT_PATH(osshanja.h)
+
+../data/hanja.txt /epoc32/RELEASE/winscw/udeb/Z/resource/hanja.txt
+../data/hanja.txt /epoc32/data/Z/resource/hanja.txt
+
+../sis/libhangul_symbian_stub.sis   /epoc32/data/z/system/install/libhangul_symbian_stub.sis
+../rom/libhangul_symbian.iby CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(libhangul_symbian.iby)
+
+
+PRJ_MMPFILES
+libhangul_symbian.mmp

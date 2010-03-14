@@ -1,0 +1,36 @@
+;
+; Copyright (c) 2005,2006 Choe Hwanjin
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of the License "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description:
+;
+; Installation file for libhangul_symbian dll
+;
+; This is an auto-generated PKG file by Carbide.
+; This file uses variables specific to Carbide builds that will not work
+; on command-line builds. If you want to use this generated PKG file from the
+; command-line tools you will need to modify the variables with the appropriate
+; values: $(EPOCROOT), $(PLATFORM), $(TARGET)
+
+;
+; UID is the dll's UID
+;
+#{"libhangul_symbian DLL"},(0xE83D39EE),1,0,0, TYPE=SA
+
+
+;Localised Vendor name
+%{"Vendor-EN"}
+
+;Unique Vendor name
+:"Vendor"
+
+""-"!:\sys\bin\libhangul_symbian.dll"

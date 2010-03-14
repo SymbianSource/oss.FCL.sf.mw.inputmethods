@@ -1400,7 +1400,10 @@ TPeninputTooltipBoxLayoutData CPeninputLafDataFSQ::
         
     layoutData.iTooltipTextLayout 
                     = AknLayoutScalable_Avkon::popup_fep_tooltip_window_t1( 0 )
-                    .LayoutLine();     
+                    .LayoutLine(); 
+    
+    layoutData.iFont = AknLayoutUtils::FontFromId
+                               ( layoutData.iTooltipTextLayout.iFont, NULL );
     return layoutData;
     }
     

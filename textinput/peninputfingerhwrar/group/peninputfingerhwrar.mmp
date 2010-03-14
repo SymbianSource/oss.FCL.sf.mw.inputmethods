@@ -1,0 +1,98 @@
+/*
+* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project peninputfingerhwrar
+*
+*/
+
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET          peninputfingerhwrar.dll
+TARGETTYPE      plugin
+UID             0x10009D8D 0x2001E2C4
+
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../src
+
+// Plugin Framework
+SOURCE    peninputfingerhwrarmain.cpp
+SOURCE    peninputfingerhwrarproxy.cpp
+SOURCE    peninputfingerhwrarlayout.cpp
+SOURCE    peninputfingerhwrarstatemanager.cpp
+SOURCE    peninputfingerhwrardatastore.cpp
+SOURCE    peninputfingerhwrarengine.cpp
+SOURCE    peninputfingerhwrarlafmanager.cpp
+SOURCE    peninputfingerhwrarwnd.cpp
+SOURCE    peninputfingerhwrarmultipagevkb.cpp 
+SOURCE    peninputfingerhwrarsymboltable.cpp
+SOURCE    peninputfingerhwrarindicator.cpp
+SOURCE    hbufcarrayar.cpp 
+
+USERINCLUDE     ../inc
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   /epoc32/include/ecom
+SYSTEMINCLUDE   ../../../inc
+
+SOURCEPATH      ../data
+
+START RESOURCE	2001E2C4.rss
+#ifdef SYMBIAN_SECURE_ECOM
+TARGET			peninputfingerhwrar.rsc
+#endif
+END
+
+START RESOURCE	peninputfingerhwrarwnd.rss
+HEADER
+TARGETPATH		RESOURCE_FILES_DIR
+END
+
+LIBRARY euser.lib 
+LIBRARY ecom.lib
+LIBRARY bitgdi.lib  
+LIBRARY gdi.lib 
+LIBRARY fbscli.lib
+LIBRARY ws32.lib
+LIBRARY cone.lib
+LIBRARY efsrv.lib
+LIBRARY bafl.lib
+LIBRARY estor.lib 
+
+LIBRARY aknlayout.lib
+LIBRARY aknlayout2.lib
+LIBRARY aknlayout2scalable.lib
+LIBRARY aknicon.lib 
+LIBRARY aknskins.lib
+LIBRARY avkon.lib
+
+LIBRARY centralrepository.lib 
+LIBRARY cenrepnotifhandler.lib
+
+LIBRARY peninputlayoutinterface.lib 
+LIBRARY peninputlayoutcontrol.lib
+LIBRARY peninputpluginutils.lib
+LIBRARY peninputcommonctrls.lib
+LIBRARY peninputcommonlayout.lib
+LIBRARY ptiengine.lib
+
+
+
+
+// End Of File

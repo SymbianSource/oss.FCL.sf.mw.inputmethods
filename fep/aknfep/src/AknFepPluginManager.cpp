@@ -74,7 +74,7 @@
 #include <apgwgnam.h>
 
 #include <PtiKeyMappings.h>
-#include <aknpriv.hrh>
+#include <AknPriv.hrh>
 
 // Constants
 const TInt KCursorBlinkPerioid = 10000;//300000; // five tenth of a second * 2
@@ -735,29 +735,6 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 iFepMan.PtiEngine()->CommitCurrentWord();
                 }
                 break;
-            case ESignalStartInlineText:
-                {
-                if (!(iFepMan.IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction)))
-                    {
-					TBuf<CAknFepManager::EMaximumFepWordLength> textToUncommit;
-					TBool comsumeKey;
-					
-					if (!(iFepMan.TryGetTextToUncommitL(textToUncommit, comsumeKey)))
-						{
-						// If T9 word length > 32, the navi key is consumed without action.
-						// Maybe should navigate inside word.
-						return comsumeKey;
-						}
-					iFepMan.PtiEngine()->ClearCurrentWord();
-					iFepMan.PtiEngine()->SetCurrentWord(textToUncommit); // this set the input sequence of PtiEngine          
-					iFepMan.StartInlineEditL(iFepMan.UncommittedText(), textToUncommit, 
-											 textToUncommit.Length(), EFalse);
-
-                    // update ICF content
-                    SendIcfDataL();
-                    }
-                }
-                break;
             case ESignalCommitITIInlineText:
                 {
                 // Commit autocompletion
@@ -1259,7 +1236,8 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
             }
         }
 
-    if ( iPluginInputMode == EPluginInputModeFSQ  && iOrientationChanged )
+    if ( iPluginInputMode == EPluginInputModeFSQ  && iOrientationChanged 
+    	                                            && !iITISettingDialogOpen )
         {
 		// This TRAP_IGNORE is essential to fix bug ECJA-7JDCKR, never delete it
         TRAP_IGNORE( iAvkonAppUi->SetOrientationL( (CAknAppUiBase::TAppUiOrientation)iDefaultOrientation ) );
@@ -4217,7 +4195,7 @@ void CAknFepPluginManager::SetITUTSpellingStateL(TBool aState)
         
         iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputSetPromptText,
             reinterpret_cast<TInt>(&promptText));
-            
+         
         iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputFingerSpelling, 0);
         }
     }
@@ -5161,9 +5139,7 @@ TBool CAknFepPluginManager::IsITISupportedKey( const TKeyEvent& aKeyEvent )
          && ( iPluginPrimaryRange == ERangeNative 
               || iPluginPrimaryRange == ERangeEnglish
               || ( iPluginPrimaryRange == 0 && iFepMan.InputMode() != ENumber 
-                   && iFepMan.InputMode() != ENativeNumber) )
-         && ( TChar( aKeyEvent.iCode ).IsAlpha() || IsDeadKeyCode( aKeyEvent.iCode ) ) 
-          )
+                   && iFepMan.InputMode() != ENativeNumber) ) )
         {
         return ETrue;
         }
@@ -5321,25 +5297,8 @@ void CAknFepPluginManager::SetItiKeyboardLayoutL()
                                           iLastKeyboardLayout );
 
     // 2. Utilize right qwerty keyboard type
-    TPtiKeyboardType keyboardType = EPtiKeyboardQwerty4x12;
-    RArray<TPtiKeyboardType> supportedKeyboards;
-    CleanupClosePushL( supportedKeyboards );
-    iFepMan.PtiEngine()->KeyboardTypesSupportedByLanguageL
-                    ( iSharedData.PenInputLanguage(), supportedKeyboards );   
-    for ( TInt i = 0; i < supportedKeyboards.Count(); i ++ )
-        {        
-        if ( supportedKeyboards[i] == EPtiKeyboardQwerty4x12 
-             || supportedKeyboards[i] == EPtiKeyboardQwerty3x11
-             || supportedKeyboards[i] == EPtiKeyboardQwerty4x10
-             || supportedKeyboards[i] == EPtiKeyboardCustomQwerty )
-            {
-            keyboardType = supportedKeyboards[i];
-            break;
-            }        
-        }
     keyboardLayoutStatusProperty.Set( KCRUidAvkon, KAknKeyBoardLayout, 
-                                      keyboardType );
-    CleanupStack::PopAndDestroy( &supportedKeyboards );    
+                                      EPtiKeyboardQwerty4x12 ); 
     }
 // -----------------------------------------------------------------------------
 // Restore keyboard layout after closing FSQ.
@@ -5380,6 +5339,11 @@ void CAknFepPluginManager::RestorePredictStateL()
         iFepMan.SetWesternAutoComplete(ETrue);        
         iFepMan.TryChangeModeL(ELatin);      
         }
+    if ( IsSupportITIOnFSQ() )
+    	{        
+        iCurrentPluginInputFepUI->HandleCommandL( ECmdPeninputITIStatus,
+                                                  iFepMan.WesternPredictive() );    	
+    	}
     }
 
 // -----------------------------------------------------------------------------
@@ -5472,7 +5436,7 @@ void CConnectAo::DoCancel()
     {
     
     }
-TInt CConnectAo::RunError(TInt aError)
+TInt CConnectAo::RunError(TInt /*aError*/)
     {
     return KErrNone;
     }

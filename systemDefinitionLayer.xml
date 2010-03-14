@@ -114,6 +114,16 @@
       <unit unitID="inputmethods_textinput_AknInputLanguage" mrp="" filter="not_build" name="AknInputLanguage" bldFile="&layer_real_source_path;\textinput\AknInputLanguage\group" />
     </component>
   </module>
+  <module name="ptihangulcore">
+    <component name="ptihangulcore">
+      <unit unitID="inputmethods_textinput_ptihangulcore" mrp="" filter="not_build" name="ptihangulcore" bldFile="&layer_real_source_path;\textinput\ptihangulcore\group" />
+    </component>
+  </module>
+  <module name="ptikoreanqwertycore">
+    <component name="ptikoreanqwertycore">
+      <unit unitID="inputmethods_textinput_ptikoreanqwertycore" mrp="" filter="not_build" name="ptikoreanqwertycore" bldFile="&layer_real_source_path;\textinput\ptikoreanqwertycore\group" />
+    </component>
+  </module>
   <module name="Matsutake">
     <component name="Matsutake">
       <unit unitID="inputmethods_textinput_Matsutake" mrp="" filter="not_build" name="Matsutake" bldFile="&layer_real_source_path;\textinput\Matsutake\group" />

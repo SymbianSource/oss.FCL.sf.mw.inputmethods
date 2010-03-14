@@ -15,7 +15,7 @@
 *
 */
 
-#include "peninputimepluginkr.h"
+#include "PeninputImePluginKr.h"
 #include "eikon.hrh"
 
 #include <aknedsts.h>               //CAknEdwinState

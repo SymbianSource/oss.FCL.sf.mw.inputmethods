@@ -489,6 +489,8 @@ public:
     void SetInputLayoutMiniQwertyZhuyin();
     
     void ResetInputLayoutMiniQwertyZhuyin();
+    
+    CDesCArrayFlat* ChooseChineseCharacterArraySpelling(void);
 
 protected: // From CCoeControl
 	TTypeUid::Ptr MopSupplyObject(TTypeUid aId);
@@ -622,6 +624,7 @@ private:
     CDesCArrayFlat* iTempSpelling;
     //Chinese array
     CDesCArrayFlat* iChooseChineseCharacterArray;
+    CDesCArrayFlat* iChooseChineseCharacterArraySpelling;
     //Chinese Keystroke array
     CDesCArrayFlat* iChooseChineseCharacterArrayKeystroke;
     

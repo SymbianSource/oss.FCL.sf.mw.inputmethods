@@ -19,7 +19,7 @@
 // System includes
 #include <peninputdataconverter.h>
 #include <centralrepository.h>
-#include <SettingsInternalCRKeys.h>
+#include <settingsinternalcrkeys.h>
 #include <peninputlayoutcontext.h>
 #include <peninputcommonlayoutglobalenum.h>
 

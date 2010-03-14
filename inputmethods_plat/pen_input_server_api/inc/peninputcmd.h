@@ -139,7 +139,6 @@ enum TSignalEvent
     ESignalShowCandidate,
     ESignalSelectCandidate,
     ESignalAcceptTooltip,
-    ESignalStartInlineText,    
     ESignalCommitITIInlineText,    
     ESignalUserEventBase = 2000
     };

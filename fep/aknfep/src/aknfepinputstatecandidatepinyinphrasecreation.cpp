@@ -209,7 +209,7 @@ TBool TAknFepInputStateCandidatePinyinPhraseCreation::HandleVerticalNavigation(T
 // ---------------------------------------------------------
 //
 TBool TAknFepInputStateCandidatePinyinPhraseCreation::CommitInlineEEPL( const TDesC& aText )
-    {
+    {//select from phrase candidates
     MAknFepUICtrlPinyinPopup* popup = UIContainer()->PinyinPopupWindow();
     CDesCArrayFlat* keystrokeArray = popup->ShowKeystrokeArray();
     CDesCArrayFlat* validKeystroke = popup->InEffectKeystrokeArray();
@@ -223,12 +223,22 @@ TBool TAknFepInputStateCandidatePinyinPhraseCreation::CommitInlineEEPL( const TD
     
     popup->SetPhraseCreationState( ETrue );
     
+    //stroe spelling 
+    CDesCArrayFlat* spellingArray = popup->PhoneticSpellingArray();//spelling array
+	TInt selection = popup->CurrentSelection();//selection index of spelling array
+    CDesCArrayFlat* chooseChineseCharacterArraySpelling = popup->ChooseChineseCharacterArraySpelling();//phrase spelling array
+	TInt delCount = chooseChineseCharacterArraySpelling->Count() - chooseChineseCharacterArray->Count();
+    if(delCount > 0)//we can sure delCount>=0,impossible <0
+    	{//remove unwanted spelling
+		chooseChineseCharacterArraySpelling->Delete(chooseChineseCharacterArray->Count(),delCount);
+    	}
+	chooseChineseCharacterArraySpelling->AppendL(spellingArray->MdcaPoint(selection));
+    
     for ( TInt i = 0; i < keyCount; i++ )
         {
         keystroke.Append( keystrokeArray->MdcaPoint( 0 ) );
         keystrokeArray->Delete( 0 );
         }
-    
     chooseChineseCharacterArray->AppendL( aText );
     chooseChineseCharacterArrayKeystroke->AppendL( keystroke );
     validKeystroke->Reset();

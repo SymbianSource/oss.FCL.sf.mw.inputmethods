@@ -16,7 +16,7 @@
 */
 //SYSTEM INCLUDE
 #include <centralrepository.h>
-#include <SettingsInternalCRKeys.h>
+#include <settingsinternalcrkeys.h>
 
 //FEP INCLUDE
 #include <aknfeppeninputenums.h>

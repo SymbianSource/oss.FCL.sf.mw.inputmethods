@@ -47,6 +47,7 @@
 #include "AknFepManager.h"
 
 const TInt KMaxPhraseCreationCount = 7;
+const TInt KMaxPinYinSpellLength = 7;
 
 // ---------------------------------------------------------
 // C++ construct.
@@ -348,6 +349,13 @@ void TAknFepInputStateEntryPinyinPhraseCreation::HandleKeyOKAndKeyCBA1L()
     CDesCArrayFlat* chinese = popup->ChooseChineseCharacterArray();
     TBuf<KMaxPhraseCreationCount> phraseCreated;
     
+	CDesCArrayFlat* spellingArray = popup->PhoneticSpellingArray();
+	TBuf<100> spellingBuf;
+	for(TInt i=0;i<spellingArray->Count();i++)
+		{
+		spellingBuf.Append(spellingArray->MdcaPoint( i ));
+		}
+    
     if ( ( chinese->Count() >= 2 ) && ( 0 == keystrokeCount ) )
         {
         //commit the chinese character.
@@ -356,9 +364,28 @@ void TAknFepInputStateEntryPinyinPhraseCreation::HandleKeyOKAndKeyCBA1L()
             {
             phraseCreated.Append( chinese->MdcaPoint( i ) );
             }
-        AddPhraseToDB( phraseCreated );
+        
         fepMan->PinyinPhraseCreation( EFalse );
         fepMan->NewTextL( phraseCreated );
+        
+        //here,pass spelling to db
+        CDesCArrayFlat* chooseChineseCharacterArraySpelling = popup->ChooseChineseCharacterArraySpelling();
+        TBuf<(1+KMaxPinYinSpellLength)*KMaxPhraseCreationCount> phraseCreatedWithPinYin;//(Zi+pinyin)* max_Zi
+		phraseCreatedWithPinYin.FillZ();
+		for (TInt i = 0; i < chinese->Count(); i++)
+			{
+			TPtrC ptrZi = chinese->MdcaPoint(i);
+			phraseCreatedWithPinYin.Append(ptrZi);
+			
+			TPtrC ptrPinYin = chooseChineseCharacterArraySpelling->MdcaPoint(i);
+			phraseCreatedWithPinYin.Append(ptrPinYin);
+			
+			TInt zeroTail = (1+KMaxPinYinSpellLength)-(ptrZi.Length()+ptrPinYin.Length());
+			phraseCreatedWithPinYin.AppendFill(0,zeroTail);
+			
+			}
+        				
+        AddPhraseToDB( phraseCreatedWithPinYin );//pinyin
         fepMan->CommitInlineEditL();
         iOwner->FepMan()->TryCloseUiL(); //no more keys, close the UI.
         }

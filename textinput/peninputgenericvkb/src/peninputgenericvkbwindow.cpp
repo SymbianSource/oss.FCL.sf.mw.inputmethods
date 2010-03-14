@@ -65,6 +65,11 @@ const TInt KPeninputVkbWndInvalidIndex = -1;
 const TInt KInvalidImg = -1 ;
 const TInt KKeyCodeSize = 1;
 
+const TInt KTooltipLeftMargin = 10;
+const TInt KTooltipTopMargin = 0;
+const TInt KTooltipRightMargin = 10;
+const TInt KTooltipBottomMargin = 0;
+
 _LIT( KVkbWindowResourceFile, 
       "z:\\resource\\plugins\\peninputvkbwindow.RSC" );
 _LIT( KConfigurationResourceFile, 
@@ -804,9 +809,12 @@ void CPeninputGenericVkbWindow::ReorganizeControls( TInt aClientLayoutId,
 									  KAknsIIDQsnFrInputPreviewSideL,
 									  KAknsIIDQsnFrInputPreviewMiddle,
 									  KAknsIIDQsnFrInputPreviewSideR);
-        
+        icf->TooltipBubbleCtrl()->SetFrameDiff( KTooltipLeftMargin, 
+        		                                KTooltipTopMargin,
+        		                                KTooltipRightMargin,
+        		                                KTooltipBottomMargin );
         // read color from skin for autocompletion part
-        icf->SetAutoCompleteTextColor( AutoCompletionPartColor() );        
+        icf->SetAutoCompleteTextColor( AutoCompletionPartColor() );               
         }       
     }
 
@@ -1919,7 +1927,24 @@ void CPeninputGenericVkbWindow::ShowTooltipL( const TDesC& aText )
         {
         return;
         }    
-    icf->ShowTooltipL( aText );
+    
+    // Calculate tooltip width
+    const TPeninputTooltipBoxLayoutData& tooltipBoxLAF 
+                                      = iLafMgr->TooltipBoxLayoutData();
+    TRect tooltipRect = tooltipBoxLAF.iRect;
+    // Calculate inner rect
+    TRect innerRect = tooltipRect;
+    innerRect.iTl += TPoint( KTooltipLeftMargin, KTooltipTopMargin );
+    innerRect.iBr -= TPoint( KTooltipRightMargin, KTooltipBottomMargin );          
+    const CFont* font = tooltipBoxLAF.iFont;
+    // Set inner width in terms of text width
+    innerRect.SetWidth( font->TextWidthInPixels( aText ) );    
+    tooltipRect.iTl 
+           = innerRect.iTl - TPoint( KTooltipLeftMargin, KTooltipTopMargin );
+    tooltipRect.iBr 
+           = innerRect.iBr + TPoint( KTooltipRightMargin, KTooltipBottomMargin );
+    // Set tooltip rect in terms of inner rect
+    icf->ShowTooltipL( aText, tooltipRect );
     }
 	
 // --------------------------------------------------------------------------

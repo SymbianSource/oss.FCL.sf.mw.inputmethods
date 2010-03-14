@@ -17,7 +17,7 @@
 
 // INCLUDES
 #include <aknlayoutscalable_avkon.cdl.h>
-#include <aknutils.h>
+#include <AknUtils.h>
 
 #include "peninputfingerhwrlafmanager.h"
 #include "peninputfingerhwrcontrolid.h"

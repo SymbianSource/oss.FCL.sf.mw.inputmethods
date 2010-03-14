@@ -670,6 +670,7 @@ public:
     
     TBool NeedClearDeliberateSelection();
     
+    CDesCArrayFlat* PhraseZhuYinSpellingArray();
 protected:
 
     /**
@@ -952,6 +953,10 @@ private:
     
     TBool iNeedClearDeliberateSelection;
     
+    /**
+	 * store ZhuYin Spelling
+	 */
+    CDesCArrayFlat* iPhraseZhuYinSpellingArray;
     };
 
 #endif /* C_AKNFEPUICTRLPINYINEEP_H */

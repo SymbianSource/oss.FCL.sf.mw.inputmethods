@@ -111,6 +111,7 @@ struct TPeninputTooltipBoxLayoutData
     {
     TRect iRect;
     TAknTextLineLayout iTooltipTextLayout;
+    const CFont* iFont;       
     };
     
 class CPeninputQwtLayoutDataInfo : public CBase

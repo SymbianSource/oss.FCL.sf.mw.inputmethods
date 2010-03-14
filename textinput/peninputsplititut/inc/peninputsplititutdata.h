@@ -19,7 +19,7 @@
 
 #include <peninputlayoutbasecontrol.h>
 #include <aknfeppeninputenums.h>
-#include <ptidefs.h>
+#include <PtiDefs.h>
 #include <e32keys.h>
 #include <AknLayout2Def.h>
 

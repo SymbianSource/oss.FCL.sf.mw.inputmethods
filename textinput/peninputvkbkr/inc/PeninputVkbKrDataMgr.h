@@ -20,7 +20,7 @@
 
 #include <e32std.h>
 #include <e32base.h>
-#include <PeninputDataMgr.h>
+#include <peninputdatamgr.h>
 
 class CPtiEngine;
 

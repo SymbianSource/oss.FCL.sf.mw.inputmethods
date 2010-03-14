@@ -19,37 +19,37 @@
 #include <PeninputVkbKrWindowKr.rsg>
 
 #include <aknlayoutscalable_apps.cdl.h>
-#include <AknLayoutScalable_Avkon.cdl.h>
+#include <aknlayoutscalable_avkon.cdl.h>
 
 #include <e32keys.h>
-#include <S32MEM.h>
+#include <s32mem.h>
 #include <AknFepGlobalEnums.h>
-#include <AknFepPeninputEnums.h>
+#include <aknfeppeninputenums.h>
 #include <AknLayoutDef.h>
 #include <AknIconUtils.h>
 #include <AknUtils.h>
 #include <AknFontAccess.h> 
 
-#include <PeninputCommonLayoutGlobalEnum.h>
-#include <PeninputLayoutMultilineIcf.h>
-#include <PeninputLayoutContext.h>
-#include <PeninputInputContextField.h>
-#include <PeninputLayoutBubbleCtrl.h>
-#include <PeninputRangebar.h>
-#include <PeninputRangebarInfo.h>
-#include <PeninputClientLayoutInfo.h>
-#include <PeninputLayoutChoiceList.h>
-#include <PeninputLayoutInputmodeChoice.h>
-#include <PeninputLayoutBubbleCtrl.h>
-#include <PeninputLabel.h>
+#include <peninputcommonlayoutglobalenum.h>
+#include <peninputlayoutmultilineicf.h>
+#include <peninputlayoutcontext.h>
+#include <peninputinputcontextfield.h>
+#include <peninputlayoutbubblectrl.h>
+#include <peninputrangebar.h>
+#include <peninputrangebarinfo.h>
+#include <peninputclientlayoutinfo.h>
+#include <peninputlayoutchoicelist.h>
+#include <peninputlayoutinputmodechoice.h>
+#include <peninputlayoutbubblectrl.h>
+#include <peninputlabel.h>
 
-#include <PeninputMultimodeButton.h>
-#include <PeninputEventButton.h>
-#include <PeninputDragButton.h>
-#include <PeninputRepeatButton.h>
+#include <peninputmultimodebutton.h>
+#include <peninputeventbutton.h>
+#include <peninputdragbutton.h>
+#include <peninputrepeatbutton.h>
 
-#include <PeninputDataConverter.h>
-#include <PeninputUiStatemgrInterface.h>
+#include <peninputdataconverter.h>
+#include <peninputuistatemgrinterface.h>
 
 #include "PeninputVkbKrDbg.h"
 #include "PeninputVkbKr.pan"

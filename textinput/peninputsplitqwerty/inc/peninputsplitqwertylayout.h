@@ -19,7 +19,7 @@
 #define C_PENINPUTSPLITQWERTYLAYOUT_H
 
 // User includes
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include "peninputcommonlayoutext.h"
 
 

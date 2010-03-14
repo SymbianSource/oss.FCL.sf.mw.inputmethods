@@ -18,7 +18,7 @@
 
 // System includes
 #include <e32std.h>
-#include <ImplementationProxy.h>
+#include <implementationproxy.h>
 
 // User includes
 #include "peninputsplitqwertylayout.h"

@@ -34,6 +34,8 @@
 #else
 #include "../akninputlanguage/group/bld.inf"
 #endif
+#include "../ptihangulcore/group/bld.inf"
+#include "../ptikoreanqwertycore/group/bld.inf"
 #include "../peninputarc/group/bld.inf"
 #include "../peninputcommonctrls/group/bld.inf"
 #include "../peninputhwrboxcn/group/bld.inf"

@@ -58,8 +58,10 @@
 // constant definition
 const TInt KInvalidImg = -1 ;
 
-
-
+const TInt KTooltipLeftMargin = 10;
+const TInt KTooltipTopMargin = 0;
+const TInt KTooltipRightMargin = 10;
+const TInt KTooltipBottomMargin = 0;
 
 // ======== MEMBER FUNCTIONS ========
 
@@ -1220,7 +1222,24 @@ void CAknFepVkbWindow::ShowTooltipOnFSQL( const TDesC& aText )
         {
         return;
         }    
-    iInputContextField->ShowTooltipL( aText );
+        
+    // Calculate tooltip width
+    const TPeninputCnTooltipBoxLayoutData& tooltipBoxLAF 
+                                      = iLafMgr->TooltipBoxLayoutData();
+    TRect tooltipRect = tooltipBoxLAF.iRect;
+    // Calculate inner rect
+    TRect innerRect = tooltipRect;
+    innerRect.iTl += TPoint( KTooltipLeftMargin, KTooltipTopMargin );
+    innerRect.iBr -= TPoint( KTooltipRightMargin, KTooltipBottomMargin );          
+    const CFont* font = tooltipBoxLAF.iFont;
+    // Set inner width in terms of text width
+    innerRect.SetWidth( font->TextWidthInPixels( aText ) );    
+    tooltipRect.iTl 
+           = innerRect.iTl - TPoint( KTooltipLeftMargin, KTooltipTopMargin );
+    tooltipRect.iBr 
+           = innerRect.iBr + TPoint( KTooltipRightMargin, KTooltipBottomMargin );
+    // Set tooltip rect in terms of inner rect
+    iInputContextField->ShowTooltipL( aText, tooltipRect );    
     }
 	
 // --------------------------------------------------------------------------
@@ -1440,8 +1459,11 @@ void CAknFepVkbWindow::SetITILayoutOnFSQ()
                                         NULL,
                                         KAknsIIDQsnFrInputPreviewSideL,
                                         KAknsIIDQsnFrInputPreviewMiddle,
-                                        KAknsIIDQsnFrInputPreviewSideR);
-        
+                                        KAknsIIDQsnFrInputPreviewSideR);        
+        iInputContextField->TooltipBubbleCtrl()->SetFrameDiff( KTooltipLeftMargin, 
+        		                                               KTooltipTopMargin,
+        		                                               KTooltipRightMargin,
+        		                                               KTooltipBottomMargin );        
         // read color from skin for autocompletion part
         iInputContextField->SetAutoCompleteTextColor( 
                                         AutoCompletionPartColorOnFSQ() );        

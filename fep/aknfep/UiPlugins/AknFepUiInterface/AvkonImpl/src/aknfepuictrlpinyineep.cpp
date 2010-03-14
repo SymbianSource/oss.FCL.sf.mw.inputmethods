@@ -106,6 +106,7 @@ CAknFepUICtrlPinyinEEP::~CAknFepUICtrlPinyinEEP()
     delete iPhraseArray;
     delete iPhraseShowKeyStrokeArray;
     delete iTempArray;
+    delete iPhraseZhuYinSpellingArray;
     }
 
 // ---------------------------------------------------------
@@ -930,6 +931,7 @@ void CAknFepUICtrlPinyinEEP::ConstructL( RWindow& aParent, CAknFepUiLayoutDataMg
     iTempArray = new(ELeave)CDesCArrayFlat(1);
     iMiniQwertyZhuyin = EFalse;
     iNeedClearDeliberateSelection = EFalse;
+    iPhraseZhuYinSpellingArray =new(ELeave)CDesCArrayFlat(1);
     }
 
 // ---------------------------------------------------------
@@ -1439,6 +1441,8 @@ void CAknFepUICtrlPinyinEEP::ResetAllArray()
     iInvalidKeystrokeIndex = 0;
     iCandidateRefreshFlag = 0;
     iDelimiterCount = 0;
+    iPhraseZhuYinSpellingArray->Reset();
+    iPhraseZhuYinSpellingArray->Compress();
     }
 
 // ---------------------------------------------------------
@@ -1615,6 +1619,9 @@ TBool CAknFepUICtrlPinyinEEP::NeedClearDeliberateSelection()
     {
     return iNeedClearDeliberateSelection;
     }
-
+CDesCArrayFlat* CAknFepUICtrlPinyinEEP::PhraseZhuYinSpellingArray()
+	{
+	return iPhraseZhuYinSpellingArray;
+	}
 // End of file
 

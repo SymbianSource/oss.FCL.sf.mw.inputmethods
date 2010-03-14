@@ -392,15 +392,23 @@ void CAknFepUIAvkonImpl::ShowOwnsSoftkeysL(const TInt aResourceId, MEikCommandOb
     {
     if (iCba)
         {
-        delete iCba;
-        iCba = NULL;
+        DeleteCBAL();
         }
-    iCba = CEikButtonGroupContainer::NewL(CEikButtonGroupContainer::ECba,
-                                          CEikButtonGroupContainer::EHorizontal,
-                                          aObserver,
-                                          aResourceId);
-    iCba->SetBoundingRect(CEikonEnv::Static()->EikAppUi()->ApplicationRect());
-    iCba->DrawNow();
+    // Create Inside CBA if needed
+    CreateInsideCBAL( CEikButtonGroupContainer::ECba,
+    		          CEikButtonGroupContainer::EHorizontal,
+    		          aObserver,
+    		          aResourceId );
+    
+    if ( iCba == NULL )
+        {
+        iCba = CEikButtonGroupContainer::NewL( CEikButtonGroupContainer::ECba,
+                                               CEikButtonGroupContainer::EHorizontal,
+                                               aObserver,
+                                               aResourceId );
+        iCba->SetBoundingRect(CEikonEnv::Static()->EikAppUi()->ApplicationRect());
+        iCba->DrawNow();
+        }
     }
 
 /**
@@ -413,8 +421,14 @@ void CAknFepUIAvkonImpl::ShowEmptySoftkeysL(TBool aShown, MEikCommandObserver* a
         {
         if (!iCba)
             {
-            iCba = CEikButtonGroupContainer::NewL(CEikButtonGroupContainer::ECba, CEikButtonGroupContainer::EHorizontal, aObserver, R_AVKON_SOFTKEYS_EMPTY);
-            iCba->SetBoundingRect(CEikonEnv::Static()->EikAppUi()->ApplicationRect());
+            CreateInsideCBAL( CEikButtonGroupContainer::ECba, CEikButtonGroupContainer::EHorizontal, aObserver, R_AVKON_SOFTKEYS_EMPTY );
+            if ( iCba == NULL )
+            	{
+                iCba = CEikButtonGroupContainer::NewL( CEikButtonGroupContainer::ECba, 
+                		                               CEikButtonGroupContainer::EHorizontal, 
+                		                               aObserver, R_AVKON_SOFTKEYS_EMPTY );
+                iCba->SetBoundingRect(CEikonEnv::Static()->EikAppUi()->ApplicationRect());
+            	}
             }
         // set each CBA
         TBool update = UpdateSoftkeyLabelL(ELeftSoftkeyIndex, ENullCommandId, R_TEXT_SOFTKEY_EMPTY);
@@ -437,8 +451,7 @@ void CAknFepUIAvkonImpl::ShowEmptySoftkeysL(TBool aShown, MEikCommandObserver* a
         }
     else
         {
-        delete iCba;
-        iCba = NULL;
+        DeleteCBAL();
         }
     }
 
@@ -454,8 +467,7 @@ TInt CAknFepUIAvkonImpl::SoftkeyCommandId(TInt aPosition)
 
 void CAknFepUIAvkonImpl::DeleteSoftkeys()
 	{
-	delete iCba;
-	iCba = NULL;
+	TRAP_IGNORE( DeleteCBAL() );
 	}
 
 void CAknFepUIAvkonImpl::DrawSoftkeysNow()
@@ -466,8 +478,12 @@ void CAknFepUIAvkonImpl::DrawSoftkeysNow()
 void CAknFepUIAvkonImpl::CreateSoftkeys(TInt aResourceId, MEikCommandObserver* aObserver)
 	{
 	DeleteSoftkeys();
-    TRAP_IGNORE(iCba = CEikButtonGroupContainer::NewL(CEikButtonGroupContainer::ECba, CEikButtonGroupContainer::EHorizontal, aObserver, aResourceId));
-    iCba->SetBoundingRect(CEikonEnv::Static()->EikAppUi()->ApplicationRect());
+	TRAP_IGNORE(CreateInsideCBAL(CEikButtonGroupContainer::ECba, CEikButtonGroupContainer::EHorizontal, aObserver, aResourceId));
+	if ( iCba == NULL)
+		{
+        TRAP_IGNORE(iCba = CEikButtonGroupContainer::NewL(CEikButtonGroupContainer::ECba, CEikButtonGroupContainer::EHorizontal, aObserver, aResourceId));
+        iCba->SetBoundingRect(CEikonEnv::Static()->EikAppUi()->ApplicationRect());
+		}
     iCba->MakeVisible(ETrue);
     iCba->ButtonGroup()->AsControl()->DrawableWindow()->SetOrdinalPosition(0,ECoeWinPriorityAlwaysAtFront + 10);
 	}
@@ -894,3 +910,89 @@ void CAknFepUIAvkonImpl::CSubscriber::DoCancel()
 #endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
 #endif //RD_INTELLIGENT_TEXT_INPUT
 
+void CAknFepUIAvkonImpl::DeleteCBAL()
+	{
+	if ( iCba )
+	    {
+	    delete iCba;
+	    iCba = NULL;
+	    }
+	
+	if ( isCbaEmded )
+		{
+		CEikAppUi* eikAppUi = (CEikAppUi *)CCoeEnv::Static()->AppUi();
+		if( eikAppUi!= NULL && eikAppUi->IsDisplayingDialog() && eikAppUi->TopFocusedControl() )
+		    {
+		    CEikDialog* dlg = eikAppUi->TopFocusedControl()->MopGetObject( dlg );
+		    if ( dlg )
+		        {
+		        CEikButtonGroupContainer* currentCba = dlg->MopGetObject( currentCba );
+	        	CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
+	        	if ( currentCba && iDialogCba == currentCba )
+		            {
+		            currentCba->RemoveCommandFromStack( ELeftSoftkeyIndex, -1 );
+		            currentCba->RemoveCommandFromStack( ERightSoftkeyIndex, -1 );
+
+		            currentCba->DrawNow();
+		            currentCba->ActivateL();
+		            iDialogCba = NULL;
+                    isCbaEmded = EFalse;
+		            }
+		        }
+		    }
+	    }
+	}
+
+void CAknFepUIAvkonImpl::CreateInsideCBAL( CEikButtonGroupContainer::TUse aUse,
+		                                   CEikButtonGroupContainer::TOrientation aOrientation,
+                                           MEikCommandObserver* aCommandObserver,
+                                           TInt aResourceId )
+	{
+	CEikAppUi* eikAppUi = (CEikAppUi *)CCoeEnv::Static()->AppUi();
+	// If current is dialog create inside CBA
+	if ( eikAppUi!= NULL && eikAppUi->IsDisplayingDialog() && eikAppUi->TopFocusedControl())
+		{
+		CEikDialog* dlg = eikAppUi->TopFocusedControl()->MopGetObject( dlg );
+		if ( dlg )
+		    {
+			CEikButtonGroupContainer* currentCba = dlg->MopGetObject( currentCba );
+			CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
+			if ( currentCba )
+				{
+				TUint flags( 0 );
+				flags |= CEikButtonGroupContainer::EIsEmbedded | CEikButtonGroupContainer::EAddToStack;
+				if ( iCba != NULL )
+					{
+					delete iCba;
+					iCba = NULL;
+					}
+				iCba = CEikButtonGroupContainer::NewL( aUse, aOrientation, 
+						                               aCommandObserver, 
+						                               aResourceId, flags );
+				
+				CEikCba* cba = static_cast<CEikCba*>( iCba->ButtonGroup());
+				
+				CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
+				if( !isCbaEmded )
+					{
+					currentCba->AddCommandToStackL( ELeftSoftkeyIndex, -1, _L(""), NULL, NULL );
+					currentCba->AddCommandToStackL( ERightSoftkeyIndex, -1, _L(""), NULL, NULL );
+					currentCba->ActivateL();
+					currentCba->DrawNow();
+					iDialogCba = currentCba;
+					isCbaEmded = ETrue;
+					}
+			
+				cba->SetButtonGroupFlags( ~( EEikCbaFlagTransparent | EEikCbaFlagOutlineFont ));
+				TRect dlgRect( dlg->Rect());
+				TRect cbaRect( currentCba->Rect());
+				iCba->SetRect( currentCba->Rect());
+				iCba->SetPosition( 
+						TPoint( dlg->DrawableWindow()->Position().iX,dlg->DrawableWindow()->Position().iY + dlgRect.Height() - cbaRect.Height()));
+				iCba->SetBoundingRect( dlg->Rect());
+			    }
+		    }
+		}
+	}
+
+//End of File

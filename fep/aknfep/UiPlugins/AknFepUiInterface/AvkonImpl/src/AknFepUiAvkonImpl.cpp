@@ -927,7 +927,7 @@ void CAknFepUIAvkonImpl::DeleteCBAL()
 		    if ( dlg )
 		        {
 		        CEikButtonGroupContainer* currentCba = dlg->MopGetObject( currentCba );
-	        	CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
+	        	//CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
 	        	if ( currentCba && iDialogCba == currentCba )
 		            {
 		            currentCba->RemoveCommandFromStack( ELeftSoftkeyIndex, -1 );
@@ -953,10 +953,10 @@ void CAknFepUIAvkonImpl::CreateInsideCBAL( CEikButtonGroupContainer::TUse aUse,
 	if ( eikAppUi!= NULL && eikAppUi->IsDisplayingDialog() && eikAppUi->TopFocusedControl())
 		{
 		CEikDialog* dlg = eikAppUi->TopFocusedControl()->MopGetObject( dlg );
-		if ( dlg )
+		if ( dlg && CbaEmbeddedInDialog( dlg->DialogFlags()))
 		    {
 			CEikButtonGroupContainer* currentCba = dlg->MopGetObject( currentCba );
-			CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
+			//CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
 			if ( currentCba )
 				{
 				TUint flags( 0 );
@@ -972,7 +972,7 @@ void CAknFepUIAvkonImpl::CreateInsideCBAL( CEikButtonGroupContainer::TUse aUse,
 				
 				CEikCba* cba = static_cast<CEikCba*>( iCba->ButtonGroup());
 				
-				CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
+				//CEikCba* dlgcba = static_cast<CEikCba*>( currentCba->ButtonGroup());
 				if( !isCbaEmded )
 					{
 					currentCba->AddCommandToStackL( ELeftSoftkeyIndex, -1, _L(""), NULL, NULL );
@@ -995,4 +995,11 @@ void CAknFepUIAvkonImpl::CreateInsideCBAL( CEikButtonGroupContainer::TUse aUse,
 		}
 	}
 
+TBool CAknFepUIAvkonImpl::CbaEmbeddedInDialog( const TInt& aFlags )
+    {
+    return AknLayoutUtils::PenEnabled() && 
+        !( aFlags & EEikDialogFlagFillAppClientRect ) &&
+        !( aFlags & EEikDialogFlagFillScreen ) &&
+        !( aFlags & EEikDialogFlagVirtualInput );
+    }
 //End of File

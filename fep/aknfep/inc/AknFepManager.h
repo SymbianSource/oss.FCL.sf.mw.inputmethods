@@ -64,7 +64,7 @@
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 // Predictive QWERTY (XT9) changes ---->
 class MAknFepUiWordPopupContent;
-#include "aknfepcandidatepopup.h"
+#include "AknFepCandidatePopup.h"
 #include "AknFepCandidatePopupCallback.h"
 // Predictive QWERTY (XT9) changes <----
 #endif //RD_INTELLIGENT_TEXT_INPUT
@@ -1416,6 +1416,11 @@ public:
      * Checks if the editor is in a state where a Special Character Table can be launched
      */
     TBool IsAbleToLaunchSCT() const;
+    
+    /**
+     * Get SCT Chars' Length to judge it's null
+     */
+    TBool GetSctLengthL(TInt resourceId)const;
     
     /**
      * Get current editor's SCT resource id

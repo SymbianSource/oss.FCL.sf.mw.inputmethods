@@ -105,8 +105,15 @@ void CPeninputArabicFingerHwrIndicator::ConstructFromResourceL( TInt aResID )
     	}
     
 	CFbsBitmap* bmp;
-	CFbsBitmap* bmpMask;	
-    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+	CFbsBitmap* bmpMask;
+    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+                       id,
+                       bmp,
+                       bmpMask,
+                       bmpFileName,
+                       bmpId,
+                       bmpMskId);	
+    /*AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
 				                 id,
 				                 KAknsIIDQsnIconColors,
 				                 colorGroup,
@@ -115,7 +122,7 @@ void CPeninputArabicFingerHwrIndicator::ConstructFromResourceL( TInt aResID )
 				                 bmpFileName,
 				                 bmpId,
 				                 bmpMskId,
-				                 TRgb() );   	
+				                 TRgb() );*/   	
     
 	SetBitmapL(bmp);
 	SetMaskBitmapL(bmpMask);

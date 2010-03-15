@@ -52,6 +52,8 @@ CGenericItutUiMgrBase::TUiState CChnItutUiStateStandby::StateType()
 
 void CChnItutUiStateStandby::OnEntryL()
     {
+	iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(EFalse);
+	iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
     // pinyin    	
     switch (iOwner->DataMgr()->InputMode())
         {

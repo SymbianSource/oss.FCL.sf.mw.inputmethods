@@ -40,7 +40,6 @@
 
 
 const TUid KUidTFep1 = { 0x102024D0 };
-const TUid KUidTFep4 = { 0x1028716D };
 
 // String literal to represent the language-specific resource file path.
 _LIT(KFep1TestTargetResourceFilePath, "z:\\system\\test\\fepbasetest\\tfep1testtarget.r01");
@@ -50,14 +49,12 @@ TBuf<16> gTextNormalEdwin;
 TBuf<16> gTextNormalNumEdwin;
 TBuf<16> gTextKatakanaEdwin;
 TBuf<32> gTextPhoneticalEdwin;
-TBuf<32> gTextCJKEdwin;
 
 // expected results (according to FEP1 settings and the actions performed in the CFep1TestTargetUi::RunTestStepL method below)
 _LIT(KExpectedTextNormalEdwin, "ABCGHIJKLMQRST@");
 _LIT(KExpectedTextNormalNumEdwin, "1230056");
 _LIT(KExpectedTextKatakanaEdwin, "EFG");
 _LIT(KExpectedTextPhoneticalEdwin, "JulietteKiloLimaMNO");
-_LIT(KExpectedTextCJKEdwin, "!\x0411\x0E02\x2E81\x303A\x4E19\xAD00\xD840\xDC00\xD87E\xDC00 !\"#");
 
 
 /*************************************************************
@@ -103,10 +100,6 @@ void CTstTestTargetDialog::PreLayoutDynInitL()
 	CEikEdwin& phoneticAlphabetEdwin=*static_cast<CEikEdwin*>(Control(EControlIdPhoneticAlphabetEdwin));
 	inputCapabilities=phoneticAlphabetEdwin.InputCapabilities();
 	phoneticAlphabetEdwin.SetInputCapabilitiesL(TCoeInputCapabilities(TCoeInputCapabilities::EWesternAlphabetic|TCoeInputCapabilities::ENavigation, inputCapabilities.FepAwareTextEditor(), inputCapabilities.CaptionRetrieverForFep(), TUid::Uid(KTfep1Uid), this));
-	CEikEdwin& cjkEdwin=*static_cast<CEikEdwin*>(Control(EControlIdCJKEdwin));
-	inputCapabilities=cjkEdwin.InputCapabilities();
-	inputCapabilities.SetCapabilities(TCoeInputCapabilities::EAllText|TCoeInputCapabilities::ENavigation);
-	cjkEdwin.SetInputCapabilitiesL(inputCapabilities);
 	}
 
 
@@ -124,9 +117,6 @@ TBool CTstTestTargetDialog::OkToExitL(TInt /*aKeyCode*/)
 
 	CEikEdwin* edwinPhonetical = static_cast<CEikEdwin*>(Control(EControlIdPhoneticAlphabetEdwin));
 	edwinPhonetical->GetText(gTextPhoneticalEdwin);
-
-	CEikEdwin* edwinCJK = static_cast<CEikEdwin*>(Control(EControlIdCJKEdwin));
-	edwinCJK->GetText(gTextCJKEdwin);
 
 	//It's always ok to return OK in our case...
 	return ETrue;
@@ -813,197 +803,13 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			
 		case 460:
 			{
-			//INFO_PRINTF1(_L("...simulate Key Event Enter ---> Submits 'MNO' (not Fep installed --> No Alphabetical!"));
-			//SendKey(EKeyEnter);			
+			INFO_PRINTF1(_L("...simulate Key Event Enter ---> Submits 'MNO' (not Fep installed --> No Alphabetical!"));
+			SendKey(EKeyEnter);			
 			RecordTestResultL();
 			}
 			break;
 
-//----------------------------------------------------------------------------------------------
 
-/**
-   @SYMTestCaseID 		TI18N-FEPBASE-CIT-4001
-   @SYMPREQ				2471
-   @SYMTestCaseDesc  	Check FEPBASE Unicode 5.0 support.
-   @SYMTestPriority 	High 
-   @SYMTestStatus 		Implemented
-   @SYMTestActions 		1. Pass BMP code points to WORD.exe
-                        2. Pass non-BMP code points to WORD.exe 
- 		
-   @SYMTestExpectedResults 	When the dialog is dismissed, the text box reads as is expected.
- */
-
-//----------------------------------------------------------------------------------------------
-
-		case 461:
-			{
-			SetTestStepID(_L("TI18N-FEPBASE-CIT-4001"));
-			INFO_PRINTF1(_L("Send cursor down events to move the next dialog"));
-			SendKey(EKeyDownArrow);			
-			INFO_PRINTF1(_L("Install the FEP 1"));
-			iCoeEnv->InstallFepL(KUidTFep1);
-			User::After(TTimeIntervalMicroSeconds32(2000000));
-			}
-			break;
-
-		case 462:
-			{
-			INFO_PRINTF1(_L("...simulate Key Event 'Shift + M' ---> Changes to hex fep!"));
-			SendKey('M', EModifierRightShift);			
-			TUint codes[] = {'0', '0', '2', '1'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(200000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-		case 463:  
-			{
-			TUint codes[] = {'0', '4', '1', '1'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(200000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-		case 464:  
-			{
-			TUint codes[] = {'0', 'E', '0', '2'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(200000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-			
-		case 465:
-			{
-			TUint codes[] = {'2', 'E', '8', '1'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-		case 466:
-			{
-			TUint codes[] = {'3', '0', '3', 'A'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-		case 467:
-			{
-			TUint codes[] = {'4', 'E', '1', '9'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-		case 468:
-			{
-			TUint codes[] = {'A', 'D', '0', '0'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-
-		case 469:
-			{
-			INFO_PRINTF1(_L("Uninstall the FEP"));
-			iCoeEnv->InstallFepL(KNullUid);
-			INFO_PRINTF1(_L("Install the FEP 4"));
-			iCoeEnv->InstallFepL(KUidTFep4);
-			User::After(TTimeIntervalMicroSeconds32(2000000));
-			}
-			break;
-
-		case 471:
-			{
-			TUint codes[] = {'2', '0', '0', '0', '0'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-		case 472: 
-			{
-			TUint codes[] =  {'2', 'F', '8', '0', '0'};
-			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
-				{
-				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
-				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
-				}
-			INFO_PRINTF1(_L("...simulate Key Event Enter"));
-			SendKey(EKeyEnter);			
-			}
-			break;
-			
-		case 473:
-			{
-            INFO_PRINTF1(_L("...simulate Key Event 'Shift + X' ---> test SimulateKeyEventsL!"));
-            SendKey('X', EModifierRightShift);
-            User::After(TTimeIntervalMicroSeconds32(2000000));
-			INFO_PRINTF1(_L("...simulate Key Event 'Shift + M' ---> Changes to Pinyin!"));
-			SendKey('M', EModifierRightShift);
-            User::After(TTimeIntervalMicroSeconds32(2000000));
-			}
-			break;
-		case 474:
-			{
-			INFO_PRINTF1(_L("...simulate Key Event 'Shift + M' ---> Changes back to Plain!"));
-			SendKey('M', EModifierRightShift);
-			User::After(TTimeIntervalMicroSeconds32(2000000));
-			}
-			break;
-		case 475:
-			{
-			INFO_PRINTF1(_L("Uninstall the FEP"));
-			iCoeEnv->InstallFepL(KNullUid);
-			SendKey(EKeyEnter);  
-			RecordTestResultL();
-			}
-			break;
-						
 //----------------------------------------------------------------------------------------------
 
 /**
@@ -1043,13 +849,11 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			INFO_PRINTF3(_L("gTextNormalNumEdwin was '%S' (expected '%S')"), &gTextNormalNumEdwin, &KExpectedTextNormalNumEdwin);
 			INFO_PRINTF3(_L("gTextKatakanaEdwin was '%S' (expected '%S')"), &gTextKatakanaEdwin, &KExpectedTextKatakanaEdwin);
 			INFO_PRINTF3(_L("gTextPhoneticalEdwin was '%S' (expected '%S')"), &gTextPhoneticalEdwin, &KExpectedTextPhoneticalEdwin);
-			INFO_PRINTF3(_L("gTextCJKEdwin was '%S' (expected '%S')"), &gTextCJKEdwin, &KExpectedTextCJKEdwin);
 
 			TEST(gTextNormalEdwin == KExpectedTextNormalEdwin);
 			TEST(gTextNormalNumEdwin == KExpectedTextNormalNumEdwin);
 			TEST(gTextKatakanaEdwin == KExpectedTextKatakanaEdwin);
 			TEST(gTextPhoneticalEdwin == KExpectedTextPhoneticalEdwin);
-			TEST(gTextCJKEdwin == KExpectedTextCJKEdwin);
 			RecordTestResultL();
 			CloseTMSGraphicsStep();
 			}

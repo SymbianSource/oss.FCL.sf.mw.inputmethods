@@ -528,6 +528,15 @@ public: // inline
      */     
     inline TBool IsInMenuOpen();
     
+    /**
+     * Get current plugin input mode even if current window is close.
+     * The function is defferent from PluginInputMode(), PluginInputMode() 
+     * return EPluginInputModeNone if current input window is closed
+     * 
+     * @since 5.0
+     * @return current plugin input mode
+     */      
+    inline TPluginInputMode CurrentPluginInputMode();
 private: 
 
     /**
@@ -1211,6 +1220,11 @@ inline TBool CAknFepPluginManager::IsInMenuOpen()
     {
     return iInMenu;
     }
+
+inline TPluginInputMode CAknFepPluginManager::CurrentPluginInputMode()
+	{
+	return iPluginInputMode;
+	}
 
 #endif //RD_SCALABLE_UI_V2    
 

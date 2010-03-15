@@ -29,8 +29,9 @@
 #include <peninputcmd.h>
 #include <PeninputPluginKrRes.rsg>
 #include <peninputclient.h>
+#include <AknFepInternalCRKeys.h>
 
-#include <PtiKoreanQwertyCoreCRDefs.h>
+
 
 #include "PeninputPluginKrDbg.h"
 #include "PeninputPluginKr.hrh"   // CPeninputPluginKr
@@ -55,6 +56,19 @@ const TInt KVkbUiIndex = 1;
 const TInt KFSQUiIndex = 2;
 //const TInt KFSQUiEngIndex = 3;
 const TInt KInvalidImplId = 0;
+
+enum TPeninputKoreanWordCombineFlags
+    {
+    EKoreanWordCombineVersion = 0x00000001,
+    EKoreanWordCombineConsonantSsangKiyeok = 0x00000002,
+    EKoreanWordCombineConsonantSsangTikeut = 0x00000004,
+    EKoreanWordCombineConsonantSsangPieup =  0x00000008,
+    EKoreanWordCombineConsonantSsangSios =   0x00000010,
+    EKoreanWordCombineConsonantCieuc =       0x00000020,
+    EKoreanWordCombineConsonantYaPlusI =     0x00000040,
+    EKoreanWordCombineConsonantYuPlusI =     0x00000080,
+    EKoreanWordCombineConsonantOnSetting =   0x00000100
+    };
 
 LOCAL_C void Cleanup( TAny* aAny )
     {
@@ -113,7 +127,7 @@ void CPeninputPluginKr::ConstructL()
     BaflUtils::NearestLanguageFile(coeEnv->FsSession(), resourceName);
     iResId = coeEnv->AddResourceFileL(resourceName);
     
-    iRepository=CRepository::NewL(KCRUidPtiKoreanQwertyCore);
+    iRepository=CRepository::NewL(KCRUidAknFep);
     
     }
 
@@ -308,9 +322,14 @@ TBool CPeninputPluginKr::HandleMenuCommandL(TInt aCommandId)
     TInt ret(EFalse);
     if (aCommandId==EPeninputPluginKrDoubleConsonentCmd)
         {
-        iRepository->Set(EDblConsonentOnSetting,1);
+        TInt settingValue;
+        iRepository->Get(KAknFepKoreanCombineWordFlag,settingValue);
+        settingValue |= EKoreanWordCombineConsonantOnSetting;
+        iRepository->Set(EKoreanWordCombineConsonantOnSetting,settingValue);
         TRAP_IGNORE(ShowListQueryL(R_AKNEXQUERY_MULTI_SELECTION_LIST_QUERY));
-        iRepository->Set(EDblConsonentOnSetting,0);
+        iRepository->Get(KAknFepKoreanCombineWordFlag,settingValue);
+        settingValue &= 0xFFFFFEFF;
+        iRepository->Set(EKoreanWordCombineConsonantOnSetting,settingValue);
         ret=ETrue;
         }
     return ret;
@@ -563,77 +582,91 @@ void CPeninputPluginKr::ShowListQueryL(const TInt aResourceId)
         new (ELeave) CAknListQueryDialog(arraySelected);
     dlg->PrepareLC(aResourceId);
     
-    TInt set;
-    if (iRepository->Get(EDblConsonentSsangKiyeok,set)==KErrNone)
+
+    TInt settingValue;
+
+    if( iRepository->Get( KAknFepKoreanCombineWordFlag, settingValue ) == KErrNone )
         {
-        if (set) arraySelected->AppendL(0);
-        }
-    if (iRepository->Get(EDblConsonentSsangTikeut,set)==KErrNone)
-        {
-        if (set) arraySelected->AppendL(1);
-        }
-    if (iRepository->Get(EDblConsonentSsangPieup,set)==KErrNone)
-        {
-        if (set) arraySelected->AppendL(2);
-        }
-    if (iRepository->Get(EDblConsonentSsangSios,set)==KErrNone)
-        {
-        if (set) arraySelected->AppendL(3);
-        }
-    if (iRepository->Get(EDblConsonentSsangCieuc,set)==KErrNone)
-        {
-        if (set) arraySelected->AppendL(4);
-        }
-    if (iRepository->Get(EDblConsonentYaPlusI,set)==KErrNone)
-        {
-        if (set) arraySelected->AppendL(5);
-        }
-    if (iRepository->Get(EDblConsonentYuPlusI,set)==KErrNone)
-        {
-        if (set) arraySelected->AppendL(6);
+        if( settingValue & EKoreanWordCombineConsonantSsangKiyeok )
+            {
+            arraySelected->AppendL(0);
+            }
+
+
+        if( settingValue & EKoreanWordCombineConsonantSsangTikeut )
+            {
+            arraySelected->AppendL(1);
+            }
+
+
+        if( settingValue & EKoreanWordCombineConsonantSsangPieup )
+            {
+            arraySelected->AppendL(2);
+            }
+
+
+        if( settingValue & EKoreanWordCombineConsonantSsangSios )
+            {
+            arraySelected->AppendL(3);
+            }
+
+
+        if( settingValue & EKoreanWordCombineConsonantCieuc )
+            {
+            arraySelected->AppendL(4);
+            }
+
+
+        if( settingValue & EKoreanWordCombineConsonantYaPlusI )
+            {
+            arraySelected->AppendL(5);
+            }
+
+
+        if( settingValue & EKoreanWordCombineConsonantYuPlusI )
+            {
+            arraySelected->AppendL(6);
+            }
         }
     dlg->ListBox()->SetSelectionIndexesL(arraySelected);
     
     if (dlg->RunLD())
         {
-        iRepository->Set(EDblConsonentSsangKiyeok,0);
-        iRepository->Set(EDblConsonentSsangTikeut,0);
-        iRepository->Set(EDblConsonentSsangPieup,0);
-        iRepository->Set(EDblConsonentSsangSios,0);
-        iRepository->Set(EDblConsonentSsangCieuc,0);
-        iRepository->Set(EDblConsonentYaPlusI,0);
-        iRepository->Set(EDblConsonentYuPlusI,0);
 
+        settingValue &= 0xFFFFFF01; 
+        iRepository->Set( KAknFepKoreanCombineWordFlag, settingValue );
         for (TInt i=0;i<arraySelected->Count();i++)
             {
             switch (arraySelected->At(i))
                 {
                 case 0:
-                    iRepository->Set(EDblConsonentSsangKiyeok,1);
+                    settingValue |= EKoreanWordCombineConsonantSsangKiyeok; 
                     break;
                 case 1:
-                    iRepository->Set(EDblConsonentSsangTikeut,1);
+                    settingValue |= EKoreanWordCombineConsonantSsangTikeut; 
                     break;
                 case 2:
-                    iRepository->Set(EDblConsonentSsangPieup,1);
+                    settingValue |= EKoreanWordCombineConsonantSsangPieup;
                     break;
                 case 3:
-                    iRepository->Set(EDblConsonentSsangSios,1);
+                    settingValue |= EKoreanWordCombineConsonantSsangSios;
                     break;
                 case 4:
-                    iRepository->Set(EDblConsonentSsangCieuc,1);
+                    settingValue |= EKoreanWordCombineConsonantCieuc;
                     break;
                 case 5:
-                    iRepository->Set(EDblConsonentYaPlusI,1);
+                    settingValue |= EKoreanWordCombineConsonantYaPlusI;
                     break;
                 case 6:
-                    iRepository->Set(EDblConsonentYuPlusI,1);
+                    settingValue |= EKoreanWordCombineConsonantYuPlusI;
                     break;
                 default:
                     break;
                 }
             }
         }
+
+    iRepository->Set( KAknFepKoreanCombineWordFlag, settingValue );
     CleanupStack::PopAndDestroy(arraySelected);
     }
 

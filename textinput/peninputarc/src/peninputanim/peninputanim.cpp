@@ -131,13 +131,6 @@ CPeninputAnim::~CPeninputAnim()
 	// Modify for bug ETMA-7X2C5Y begin
 	delete iPointerEventSuppressor;
 	// Modify for bug ETMA-7X2C5Y end
-	if (iDiscreetPopSubscriber)
-	    {
-	    iDiscreetPopSubscriber->StopSubscribe();
-	    }
-	iDiscreetPopProperty.Close();
-	delete iDiscreetPopSubscriber;
-	iAknUiSrv.Close();
     }
 
 // ---------------------------------------------------------------------------
@@ -155,19 +148,6 @@ void CPeninputAnim::ConstructL(TAny* /*aParameters*/)
 	// Modify for bug ETMA-7X2C5Y begin
     iPointerEventSuppressor = CPenPointerEventSuppressor::NewL();
     // Modify for bug ETMA-7X2C5Y end
-    User::LeaveIfError(iDiscreetPopProperty.Attach(KPSUidAvkonDomain, 
-                                         KAknGlobalDiscreetPopupNumChanged));
-    iDiscreetPopSubscriber = new (ELeave) CSubscriber(
-			TCallBack( DiscreetPopChangeNotification, this), 
-			iDiscreetPopProperty);
-    iDiscreetPopSubscriber->SubscribeL();
-	
-	User::LeaveIfError(iAknUiSrv.Connect());
-	iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
-    if(iDiscreetPopArea.Size().iWidth > 0)
-    	{
-		iDiscreetPoped = ETrue;
-    	}
     }
 
 
@@ -704,6 +684,14 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             
             }
             break;
+        case EPeninputOpSetDiscreeptPop:
+        	{
+            TRect area;
+            TPckg<TRect> msgData(area);
+            msg->ReadL(KMsgSlot1,msgData);
+            SetDiscreeptPop(area); 
+        	}
+        	break;
         default:
             // unsupported opcode, panic the client
             {                
@@ -791,10 +779,6 @@ TBool CPeninputAnim::OnRawButton1Down(const TRawEvent& aRawEvent)
 		return EFalse;
 	    }
 		
-    if(iDirty )
-        {
-        Refresh();
-        }
     
 	if(iDiscreetPoped && iDiscreetPopArea.Contains(aRawEvent.Pos()))
 		{
@@ -1141,22 +1125,10 @@ TBool CPeninputAnim::MatchItemByControlIDAndArea (const TTactileControlInfo& aFi
 	return EFalse;
 	}
 #endif // RD_TACTILE_FEEDBACK    
-TInt CPeninputAnim::DiscreetPopChangeNotification(TAny* aObj)
-    {
-    if (aObj)
-        {
-        static_cast<CPeninputAnim*>(aObj)->HandleDiscreetPopNotification();
-        return KErrNone;
-        }
-    else
-        {
-        return KErrArgument;
-        }
-    }
 
-void CPeninputAnim::Refresh()
-    {
-    iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
+void CPeninputAnim::SetDiscreeptPop(TRect aArea)
+	{
+	iDiscreetPopArea = aArea;
     if(iDiscreetPopArea.Size().iWidth > 0)
         {
         iDiscreetPoped = ETrue;
@@ -1166,51 +1138,5 @@ void CPeninputAnim::Refresh()
         iDiscreetPoped = EFalse;
         iDiscreetPopedCapture = EFalse;
         }
-    iDirty = EFalse;
-    }
-
-void CPeninputAnim::HandleDiscreetPopNotification()
-    {
-    iDirty = ETrue;
-    }
-    
-CSubscriber::CSubscriber(TCallBack aCallBack, RProperty& aProperty)
-    :
-    CActive(EPriorityNormal), iCallBack(aCallBack), iProperty(aProperty)
-    {
-    CActiveScheduler::Add(this);
-    }
-
-CSubscriber::~CSubscriber()
-    {
-    Cancel();
-    }
-
-void CSubscriber::SubscribeL()
-    {
-    if (!IsActive())
-        {
-        iProperty.Subscribe(iStatus);
-        SetActive();
-        }
-    }
-
-void CSubscriber::StopSubscribe()
-    {
-    Cancel();
-    }
-
-void CSubscriber::RunL()
-    {
-    if (iStatus.Int() == KErrNone)
-        {
-        iCallBack.CallBack();
-        SubscribeL();
-        }
-    }
-
-void CSubscriber::DoCancel()
-    {
-    iProperty.Cancel();
-    }
+	}
 // End of File

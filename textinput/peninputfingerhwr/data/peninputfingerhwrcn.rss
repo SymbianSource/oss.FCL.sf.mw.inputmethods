@@ -180,7 +180,7 @@ RESOURCE AKN_FEP_FINGERHWR_ICF r_fingerhwr_icf
     {
     colormajorskinid = EAknsMajorSkin;
     textcolorgrp = EAknsMinorQsnTextColors;
-    textcoloridx = 50;
+    textcoloridx = 59;
     bordercolorgrp = EAknsMinorQsnOtherColors;
     bordercoloridx = 8;
     }    

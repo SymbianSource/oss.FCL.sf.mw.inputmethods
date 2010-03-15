@@ -468,7 +468,7 @@ RESOURCE VIRTUAL_ITUT_ICF r_finger_icf
     {
     colormajorskinid = EAknsMajorSkin;
     textcolorgrp = EAknsMinorQsnTextColors;
-    textcoloridx = 50;
+    textcoloridx = 59;
     bordercolorgrp = EAknsMinorQsnOtherColors;
     bordercoloridx = 8;
     }

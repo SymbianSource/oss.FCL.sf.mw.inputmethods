@@ -13524,10 +13524,11 @@ TBool CAknFepManager::IsAbleToLaunchSCT() const
         // The editor doesn't allow SCT.
         return EFalse;
         }
-
+    
+    TInt numberModeSctId = NumericModeSCTResourceId(); 
     if (iMode == ENumber || iMode == ENativeNumber)
         {
-        if (iPermittedInputModes == EAknEditorNumericInputMode || !NumericModeSCTResourceId()) 
+        if (iPermittedInputModes == EAknEditorNumericInputMode || !numberModeSctId) 
             {
             // SCT is not launched if the number mode is the only input mode or
             // if there is not keymap resource for the current numeric keymap mode.
@@ -13542,13 +13543,26 @@ TBool CAknFepManager::IsAbleToLaunchSCT() const
             // allowed and the keymap is EAknEditorAlphanumericNumberModeKeymap.
             ableToLaunchSCT = ETrue;
             }
+        
+        if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == numberModeSctId)
+           {
+           TBool isEmpty = ETrue;
+           TRAP_IGNORE(isEmpty = GetSctLengthL(numberModeSctId));
+           if(isEmpty)
+               {
+               ableToLaunchSCT = EFalse;
+               }
+            }
+        
         }
     if (!(EditorHasFreeSpace() && EditorState() 
         && EditorState()->SpecialCharacterTableResourceId()))
         {
         ableToLaunchSCT = EFalse;
         }
-
+    
+   
+    
     return ableToLaunchSCT;
     }
 
@@ -20628,7 +20642,10 @@ void CAknFepManager::StopDisplayingMenuBar()
         iEditMenuBar = NULL;
         }
 #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__    
-    if (iOptionsMenuBar)
+    // temporary solution for Entering key on virtual QWERTY not working 
+    // like enter on virtual ITU-T or on external keyboard
+    if ( iOptionsMenuBar && !( iFepPluginManager && 
+    		iFepPluginManager->CurrentPluginInputMode() == EPluginInputModeFSQ ) )
         {
         iOptionsMenuBar->StopDisplayingMenuBar();
         iOptionsMenuBar = NULL;
@@ -20761,6 +20778,72 @@ void CAknFepManager::ConvertCharToKey(TChar aChar, TUint16& aKey) const
 
     aKey = ch;
     }
+
+TBool CAknFepManager::GetSctLengthL(TInt resourceId)const
+	{
+	CCoeEnv* coeEnv = CCoeEnv::Static();
+	TResourceReader reader;
+	CEikonEnv::Static()->CreateResourceReaderLC(reader,resourceId);
+	TInt component_count=reader.ReadInt16();
+	TInt length = 0;
+	TBool isEmpty = ETrue;
+	HBufC* sctChar = NULL;
+	
+	for (TInt ii=0;ii<component_count;ii++)
+		{
+		TInt component_id=reader.ReadInt16();
+		switch(component_id)
+			{
+			case EAknSCTLowerCase:
+				{
+		        sctChar = reader.ReadHBufCL();
+		        length += (sctChar != NULL)? sctChar->Length(): 0;
+		        break;
+				}
+			case EAknSCTUpperCase:
+				{
+		        sctChar = reader.ReadHBufCL();
+		        length += (sctChar != NULL)? sctChar->Length(): 0;
+		        break;
+				}
+			case EAknSCTNumeric:
+				{
+		        sctChar = reader.ReadHBufCL();
+		        length += (sctChar != NULL)? sctChar->Length(): 0;
+		    	break;
+				}
+		    case EAknSCTFullCase:
+		        {
+		        sctChar = reader.ReadHBufCL();
+		        length += (sctChar != NULL)? sctChar->Length(): 0;
+		        break;
+		        }
+		    case EAknSCTHalfCase:
+		       	{
+		        sctChar = reader.ReadHBufCL();
+		        length += (sctChar != NULL)? sctChar->Length(): 0;
+		        break;
+		       	}
+		    case EAknSCTQwerty:
+		        {
+		        sctChar = reader.ReadHBufCL();
+		        length += (sctChar != NULL)? sctChar->Length(): 0;
+		        break;
+		        }
+		   	default:
+		        break;
+			}
+	    delete sctChar;
+	    sctChar = NULL;
+	    if(length > 0)
+	    	{
+            isEmpty = EFalse;
+	    	break;
+	    	}
+		}
+	CleanupStack::PopAndDestroy();  //reader 
+	return isEmpty;
+	}
 
 // ---------------------------------------------------------------------------
 // LOCAL METHODS

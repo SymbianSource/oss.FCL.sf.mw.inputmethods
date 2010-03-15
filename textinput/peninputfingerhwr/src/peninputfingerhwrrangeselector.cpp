@@ -230,7 +230,7 @@ CFepUiBaseCtrl* CPeninputFingerHwrRangeSelector::HandlePointerMoveEventL(
 //
 CPeninputFingerHwrRangeSelector::CPeninputFingerHwrRangeSelector( 
     CFepUiLayout* aFepUiLayout, TInt aControlId )
-    : CControlGroup( aFepUiLayout, aControlId )
+    : CControlGroup( aFepUiLayout, aControlId, EFalse )
     {
  
     }

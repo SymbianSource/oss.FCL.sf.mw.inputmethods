@@ -287,13 +287,11 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
     switch( aDisPostion )
         {
         case EDispBottomRight:
-            rtPopup.SetRect( TPoint( offsetRect.iTl.iX, offsetRect.iBr.iY ), szPopup );
+            rtPopup.SetRect( TPoint( offsetRect.iTl.iX, offsetRect.iBr.iY ), szPopup );            
             if( rtPopup.iBr.iY > ptScreenSize.iPixelSize.iHeight )
                 {
-                //we need move x also
-                rtPopup.Move( aOffsetRect.Width(), 
-                              ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
-                }
+                rtPopup.Move( 0, ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
+                }            
             if(rtPopup.iBr.iX > ptScreenSize.iPixelSize.iWidth )
                 {
                 rtPopup.Move ( ptScreenSize.iPixelSize.iWidth - rtPopup.iBr.iX, 0 );
@@ -304,9 +302,8 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
                              szPopup );
             if( rtPopup.iBr.iY > ptScreenSize.iPixelSize.iHeight )
                 {
-                //we need move x also
-                rtPopup.Move( aOffsetRect.Width(), 
-                              ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
+                //we need move the pop wnd up to ensure it not to be out of screen
+                rtPopup.Move( 0, ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
                 }
             if( rtPopup.iTl.iX < 0 )
                 {
@@ -315,11 +312,11 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
             break;
         case EDispTopRight:
             rtPopup.SetRect( TPoint( offsetRect.iTl.iX, offsetRect.iTl.iY - szPopup.iHeight ), 
-                             szPopup );
+                             szPopup );            
             if( rtPopup.iTl.iY < 0 )
                {
-               rtPopup.Move ( aOffsetRect.Width(), -rtPopup.iTl.iY );
-               }
+               rtPopup.Move ( 0, -rtPopup.iTl.iY );
+               }                       
             if(rtPopup.iBr.iX > ptScreenSize.iPixelSize.iWidth )
                 {
                 rtPopup.Move ( ptScreenSize.iPixelSize.iWidth - rtPopup.iBr.iX, 0 );
@@ -332,7 +329,7 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
                                      
             if( rtPopup.iTl.iY < 0 )
                {
-               rtPopup.Move ( -aOffsetRect.Width(), -rtPopup.iTl.iY );
+               rtPopup.Move ( 0, -rtPopup.iTl.iY );
                }
                
             if( rtPopup.iTl.iX < 0 )

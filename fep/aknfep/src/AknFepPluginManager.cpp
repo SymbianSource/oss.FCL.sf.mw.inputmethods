@@ -290,7 +290,8 @@ void CAknFepPluginManager::ActivatePenInputL()
     if( !iPenInputSvrConnected || !iPenInputServer.IsVisible() || iPenInputServer.IsDimmed() )
         {
         if( iFepMan.FepAwareTextEditor() )
-            {
+            {            
+  			iPreferredUiMode = ETrue;	
             TryChangePluginInputModeByModeL((TPluginInputMode)(iSharedData.PluginInputMode()),
                                             EPenInputOpenManually,
                                             ERangeInvalid);
@@ -1196,6 +1197,12 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
 		    iFepMan.UpdateCbaL( NULL );
 		    }
         
+        if ( iFepMan.EditorState() )
+            {
+            iFepMan.EditorState()->SetFlags( 
+                iFepMan.EditorState()->Flags() | EAknEditorFlagTouchInputModeOpened );
+            }		
+		
         // Notify application touch window state
         NotifyAppUiImeTouchWndStateL( ETrue );
 
@@ -1277,6 +1284,12 @@ void CAknFepPluginManager::ClosePluginInputModeL( TBool aRestore )
                 
     iFepMan.UiInterface()->TouchPaneSetInputMethodIconActivated(EFalse);
     
+	if ( iFepMan.EditorState() )
+	{
+	iFepMan.EditorState()->SetFlags( 
+		iFepMan.EditorState()->Flags() & ~EAknEditorFlagTouchInputModeOpened );
+	}
+	
     if ( prePluginInputMode == EPluginInputModeVkb )
         {
         iFepMan.UpdateIndicators();
@@ -1503,6 +1516,15 @@ void CAknFepPluginManager::ProcessMenuCommandL(TInt aCommandId)
                                                     ERangeInvalid);
                     }
                     break;
+                case EPeninputCmdHwr:
+                	{
+                	ClosePluginInputModeL(ETrue);               
+                	iFepMan.TryCloseUiL();  
+                	TryChangePluginInputModeByModeL( EPluginInputModeFingerHwr, 
+                	                                 EPenInputOpenManually,
+                	                                 ERangeInvalid );
+                	}
+                	break;
                 case EFepInputCmdHelp:
                     {
                     if (iInMenu)
@@ -1852,16 +1874,22 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
     	TInt curInputMode = iLangMan.CurrentImePlugin()->CurrentMode();
     	TBool isChinese = iFepMan.IsChineseInputLanguage();
     	
-    	if ( !isChinese && ( curInputMode == EPluginInputModeItut ) && 
-    	        !( disabledInputMode & EPluginInputModeFSQ ))
+    	if ( !isChinese && ( curInputMode != EPluginInputModeFSQ ) 
+    			&& !( disabledInputMode & EPluginInputModeFSQ ))
     	    {
     	    aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
     	    }
     	
-    	if ( !isChinese && ( curInputMode == EPluginInputModeFSQ ) &&
-    	        !( disabledInputMode & EPluginInputModeItut ))
+    	if ( !isChinese && ( curInputMode != EPluginInputModeItut ) 
+    			&& !( disabledInputMode & EPluginInputModeItut ))
     	    {
     	    aMenuPane->SetItemDimmed(EPenInputCmdVITUT, EFalse);
+    	    }
+    	
+    	if ( iFepMan.IsArabicInputLanguage() && ( curInputMode != EPluginInputModeFingerHwr )
+    			&& !( disabledInputMode & EPluginInputModeFingerHwr ))
+    	    {
+    	    aMenuPane->SetItemDimmed( EPeninputCmdHwr, EFalse );
     	    }
         //For arabic finger hwr input orientation.
         TInt index = 0;        

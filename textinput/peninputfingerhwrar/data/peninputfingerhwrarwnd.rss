@@ -180,7 +180,7 @@ RESOURCE AKN_FEP_FINGERHWR_ICF r_fingerhwr_icf
     {
     colormajorskinid = EAknsMajorSkin;
     textcolorgrp = EAknsMinorQsnTextColors;
-    textcoloridx = 50;
+    textcoloridx = 59;
     bordercolorgrp = EAknsMinorQsnOtherColors;
     bordercoloridx = 8;
     }    
@@ -1195,7 +1195,7 @@ RESOURCE PENINPUT_FINGERHWR_KEYPAD r_arabic_finger_hwr_landscape_symbol_table
             leftstr = <0x005D>;
             scancode = 0x005D;
             },            
-        PENINPUT_FINGERHWR_KEYPAD_KEY  //half  \
+        PENINPUT_FINGERHWR_KEYPAD_KEY  //half  revert /
             {
             leftstr = <0x005C>;
             scancode = 0x005C;

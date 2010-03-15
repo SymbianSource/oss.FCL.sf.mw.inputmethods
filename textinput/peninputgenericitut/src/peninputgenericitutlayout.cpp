@@ -371,11 +371,14 @@ CGenericItutUiMgrBase* CGenericItutUiLayout::UiMgr()
     
 void CGenericItutUiLayout::SetInputModeL(TInt aMode)
     {
-    // fix EJML-7HM6GM, e.g. both EStrokeFind and EStroke will be stored as EStroke
-    if (aMode != iDataMgr->InputMode() || 
-        aMode == EStroke || aMode == EStrokeFind ||
-        aMode == EZhuyin || aMode == EZhuyinFind ||
-        ( iDataMgr->IsNumericOnly() && iDataMgr->IsCharFlagChanged() ) )
+		TBool numericOnlyChanged = iDataMgr->IsCharFlagChanged() ? ETrue : EFalse;
+		//only number mode need judge it
+
+		// fix EJML-7HM6GM, e.g. both EStrokeFind and EStroke will be stored as Estroke  ///// 
+		if ( aMode != iDataMgr->InputMode() || 
+			 aMode == EStroke || aMode == EStrokeFind || 
+			 aMode == EZhuyin || aMode == EZhuyinFind || 
+			 numericOnlyChanged )
         {
         // deactivate original uimgr first
         if (iCurrentUiMgr 

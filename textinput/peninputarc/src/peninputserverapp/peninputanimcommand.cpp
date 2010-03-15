@@ -352,4 +352,13 @@ TBool TAnimEnableSpriteCmd :: ExecuteAnimCommand() const
 	iAnim.EnableSprite(iSpriteFlag);
 	return ETrue;
 	}
-    
+TAnimSetDiscreeptPopCmd::TAnimSetDiscreeptPopCmd(RPeninputAnim& aAnim,TRect aArea)
+                        :TAnimCmd(aAnim),iArea(aArea)
+	{
+	}
+
+TBool TAnimSetDiscreeptPopCmd :: ExecuteAnimCommand() const
+	{
+    iAnim.SetDiscreeptPop(iArea);
+    return ETrue;
+	}

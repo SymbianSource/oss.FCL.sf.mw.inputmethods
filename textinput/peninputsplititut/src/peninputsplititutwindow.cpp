@@ -760,7 +760,7 @@ void CSplitItutWindow::CreateICFL()
     iICF->SetFocus(ETrue);
     iICF->SetResourceId( R_SPLIT_ITUT_ICF );
     ConstructIcfFromResourceL();
-    iICF->SetBgImgSkinId( KAknsIIDQsnFrCall2Rect );
+    iICF->SetBgImgSkinId( KAknsIIDQgnGrafFepInputBg);
     
     AddControlL( iICF );
     

@@ -172,7 +172,9 @@ void CWesternItutUiStateSpelling::OnEntryL()
     ReCalcLayoutL();
     CAknFepCtrlLabel* indilabel = static_cast<CAknFepCtrlLabel*>
                                   (iOwner->LayoutContext()->Control(ECtrlIdSpellIndicator));
-    if ( indilabel )
+    // Modify begin
+    if ( indilabel && iOwner->DataMgr()->IsChinese())
+    // Modify end
         {
         indilabel->Hide( EFalse );
         }

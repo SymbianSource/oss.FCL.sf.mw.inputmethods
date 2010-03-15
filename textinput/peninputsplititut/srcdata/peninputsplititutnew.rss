@@ -437,7 +437,7 @@ RESOURCE SPLIT_VIRTUAL_ITUT_ICF r_split_itut_icf
     {
     colormajorskinid = EAknsMajorSkin;
     textcolorgrp = EAknsMinorQsnTextColors;
-    textcoloridx = 50;
+    textcoloridx = 59;
     bordercolorgrp = EAknsMinorQsnOtherColors;
     bordercoloridx = 8;
     }	

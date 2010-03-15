@@ -38,11 +38,8 @@ ECOM_PLUGIN(tfep1plugin.dll,tfep1plugin.rsc)
 data=DATAZ_\resource\data\tfep1_ui.r01 				resource\data\tfep1_ui.r01
 data=DATAZ_\resource\data\tfep1_ui.r10 				resource\data\tfep1_ui.r10
 ECOM_PLUGIN(tfep3plugin.dll,tfep3plugin.rsc)
-ECOM_PLUGIN(tfep4plugin.dll,tfep4plugin.rsc)
 data=DATAZ_\resource\data\tfep3_ui.r01                          resource\data\tfep3_ui.r01
 data=DATAZ_\resource\data\tfep3_ui.r10                          resource\data\tfep3_ui.r10
-data=DATAZ_\resource\data\tfep4_ui.r01                          resource\data\tfep4_ui.r01
-data=DATAZ_\resource\data\tfep4_ui.r10                          resource\data\tfep4_ui.r10
 
 data=DATAZ_\system\test\fepbasetest\tfep1testtarget.r01		System\test\fepbasetest\tfep1testtarget.r01
 data=DATAZ_\system\test\fepbasetest\tfep1testtarget.r10		System\test\fepbasetest\tfep1testtarget.r10

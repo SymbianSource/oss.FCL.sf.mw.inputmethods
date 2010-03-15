@@ -381,6 +381,7 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
         AknLayoutScalable_Avkon::popup_fep_char_preview_window_t1(0).LayoutLine();
     previewWndText.LayoutText(previewWndRect.Rect(), iPreviewWndText);
     iBubbleFont = previewWndText.Font();
+	iArrowPaddingSize = TSize(10,10);
     //==========================================================================
     // going to be removed if the LAF data is ready
     //
@@ -429,7 +430,7 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
         iRectBtnArrowRight.Move(TPoint(buttonWidth,0));
         
 		iSizeBtnPadding = TSize(6,6);
-
+        iArrowPaddingSize = TSize(8,8);
 	    
 	    iRectSpase = iRectBtnClose;
 	    iRectSpase.Move(TPoint(0,buttonHight));
@@ -450,6 +451,10 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
     	// iwriting box
     	iRectWritingBox	= TRect(TPoint(KMarginLayout,2*buttonHight+KMarginLayout),iLayoutRect.iBr-TPoint(KMarginLayout,KMarginLayout));
     	
+		iIndicatorRect.iTl = iRectWritingBox.iTl;
+		iIndicatorRect.iTl = iIndicatorRect.iTl + TPoint(20,20);
+		iIndicatorRect.SetSize(TSize(80,80));
+		
     	// construct symbol table
     	iRectOfSymbolTable = iRectWritingBox;
     	iRectOfSymbolTable.Move(TPoint(buttonWidth,-buttonHight));
@@ -513,6 +518,7 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
         
         // button padding
 		iSizeBtnPadding = TSize(6,6);
+		iArrowPaddingSize = TSize(12,12);
 		
         // candate position
         iCandidateLTPos = iRectBtnClose.iTl + TPoint(0,buttonHight);
@@ -521,6 +527,10 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 		
         // HWR Box Rect
         iRectWritingBox = TRect(TPoint(iRectBtnArrowUp.iTl.iX,iRectBtnArrowUp.iBr.iY),iLayoutRect.iBr-TPoint(KMarginLayout,KMarginLayout));
+		
+		iIndicatorRect.iTl = iRectWritingBox.iTl;
+		iIndicatorRect.iTl = iIndicatorRect.iTl + TPoint(20,20);
+		iIndicatorRect.SetSize(TSize(80,80));
 		
 		// construct symbol table
     	iRectOfSymbolTable = iRectWritingBox;
@@ -926,7 +936,18 @@ void CPeninputFingerHwrArLafManager::ConstructL()
     }
 
 TSize CPeninputFingerHwrArLafManager::SymbolGroupButtonSize()
-   {
-   return iSymButtonSize;
-   }
+    {
+    return iSymButtonSize;
+    }
+
+TRect CPeninputFingerHwrArLafManager::GetIndicatorRect()
+    {
+    return iIndicatorRect;
+    }
+
+TSize CPeninputFingerHwrArLafManager::GetArrowPaddingSize()
+    {
+	return iArrowPaddingSize;
+	}
+   
 // End Of File

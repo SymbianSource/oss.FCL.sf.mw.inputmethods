@@ -141,6 +141,9 @@ private:
 	                       MEikCommandObserver* aCommandObserver,
 	                       TInt aResourceId );
 	
+	// Embeded or not
+	TBool CbaEmbeddedInDialog( const TInt& aFlags );
+
     /**
      *  Show cba of aResourceId using owns cba object(iCba)
      *

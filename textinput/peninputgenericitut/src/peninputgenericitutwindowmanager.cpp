@@ -464,6 +464,11 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
                         iDataMgr->IndicatorData().iIndicatorTextMaskID);
                 }
             }
+        else
+        	{
+			iWindow->Icf()->HideBubble();
+			iWindow->MsgBubbleForChinese();
+        	}
         iWindow->Icf()->ShowBubble(aInfo,iWindow->Icf()->MsgBubbleCtrl()->Rect());
         }
     else

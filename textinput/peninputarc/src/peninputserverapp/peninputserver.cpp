@@ -47,6 +47,7 @@
 #include <aknappui.h> 
 
 #include "peninputcrpclient.h"
+#include <avkondomainpskeys.h>
 //#define __WND_TEST_
 
 // CONSTANTS
@@ -264,6 +265,19 @@ void CPeninputServer::ConstructL( )
     iCurScrMode = CCoeEnv::Static()->ScreenDevice()->CurrentScreenMode();
     iCrpService = CPenInputCrpServiceClient::NewL();
     iSensorRepository = CRepository::NewL(KCRUidSensorSettings);
+    User::LeaveIfError(iDiscreetPopProperty.Attach(KPSUidAvkonDomain, 
+                                         KAknGlobalDiscreetPopupNumChanged));
+    iDiscreetPopSubscriber = new (ELeave) CSubscriber(
+            TCallBack( DiscreetPopChangeNotification, this), 
+            iDiscreetPopProperty);
+    iDiscreetPopSubscriber->SubscribeL();
+    // Get the pop area
+    User::LeaveIfError(iAknUiSrv.Connect());
+    iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
+    if(iDiscreetPopArea.Size().iWidth > 0)
+        {
+        HandleDiscreetPopNotification();
+        }
     }
 
 void CPeninputServer::CleanAll()
@@ -332,6 +346,13 @@ void CPeninputServer::CleanAll()
 #ifdef __LOG_WNDGROU__    
     iLogFile.Close();    
 #endif
+    if (iDiscreetPopSubscriber)
+	    {
+	    iDiscreetPopSubscriber->StopSubscribe();
+	    }
+    iDiscreetPopProperty.Close();
+    delete iDiscreetPopSubscriber;
+    iAknUiSrv.Close();
     delete iAnimObj;
     iAnimObj = NULL;
     
@@ -2303,7 +2324,9 @@ void CPeninputServer::HandleWsEventL(const TWsEvent &aEvent,
                 */
                 if(IsGlobalNotesApp(focusApp))
                         {
-                        iInGlobalNotesState = ETrue; 	             
+                        iInGlobalNotesState = ETrue;
+                        // add this to enable global dim   
+                        DeactivatePenUiLayout(EFalse);           
                         break;            
                         }
                     
@@ -2716,7 +2739,34 @@ TInt CPeninputServer::GetSupportModeL()
         }    
     return supportMode;
     }
-    
+	
+// ---------------------------------------------------------------------------
+// CPeninputServer::DiscreetPopChangeNotification
+// handle notification of discreept pop changing
+// ---------------------------------------------------------------------------
+// 
+TInt CPeninputServer::DiscreetPopChangeNotification(TAny* aObj)
+    {
+    if (aObj)
+        {
+        static_cast<CPeninputServer*>(aObj)->HandleDiscreetPopNotification();
+        return KErrNone;
+        }
+    else
+        {
+        return KErrArgument;
+        }
+    }
+// ---------------------------------------------------------------------------
+// CPeninputServer::HandleDiscreetPopNotification
+// handle notification of discreept pop changing
+// ---------------------------------------------------------------------------
+// 
+void CPeninputServer::HandleDiscreetPopNotification()
+    {
+	iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
+	iAnimObj->SetDiscreetPopArea(iDiscreetPopArea);
+    }
 // ======== class CEventQueue========
 //
 // ---------------------------------------------------------------------------
@@ -2926,5 +2976,47 @@ GLDEF_C void PanicServer(TPeninputServerPanic aPanic)
     {
     User::Panic( KPeninputServerName, aPanic );
     } 
+	
+// ======== class CSubscriber========
+//
+CSubscriber::CSubscriber(TCallBack aCallBack, RProperty& aProperty)
+    :
+    CActive(EPriorityNormal), iCallBack(aCallBack), iProperty(aProperty)
+    {
+    CActiveScheduler::Add(this);
+    }
+
+CSubscriber::~CSubscriber()
+    {
+    Cancel();
+    }
+
+void CSubscriber::SubscribeL()
+    {
+    if (!IsActive())
+        {
+        iProperty.Subscribe(iStatus);
+        SetActive();
+        }
+    }
+
+void CSubscriber::StopSubscribe()
+    {
+    Cancel();
+    }
+
+void CSubscriber::RunL()
+    {
+    if (iStatus.Int() == KErrNone)
+        {
+        iCallBack.CallBack();
+        SubscribeL();
+        }
+    }
+
+void CSubscriber::DoCancel()
+    {
+    iProperty.Cancel();
+    }
 // End of File
 

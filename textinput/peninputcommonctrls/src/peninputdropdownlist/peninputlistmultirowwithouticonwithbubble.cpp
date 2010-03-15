@@ -21,7 +21,7 @@
 #include <AknLayoutDef.h>
 #include <peninputdropdownlistcontext.h>
 #include <peninputdropdownlist.h>
-#include <aknsdrawutils.h>
+#include <AknsDrawUtils.h>
 #include "peninputlistmultirowwithouticonwithbubble.h"
 #include "peninputlayout.h"
 

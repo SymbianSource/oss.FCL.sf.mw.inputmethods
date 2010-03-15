@@ -344,6 +344,23 @@ const TUint32 KAknFepShiftCopyPasteOnQwerty = 0x00000022;
  * 0 is for portrait and 1 is for landscape.
  */
 const TUint32 KAknFepDefaultArabicFingerHwrOrientation = 0x00000023;
+
+/**
+ * This key is required for the Korean Combine Word flag. Korean
+ * peninputplugin uses it to store the user selection for Korean Combine 
+ * Words settings.
+ * Korean Combining Version is 0x00000001,
+ * Korean ConsonantSsangKiyeok combining stage is 0x00000002,
+ * Korean ConsonantSsangTikeut combining stage is 0x00000004,
+ * Korean ConsonantSsangPieup combining stage is 0x00000008,
+ * Korean ConsonantSsangSios combining stage is 0x00000010,
+ * Korean ConsonantSsangCieuc combining stage is 0x00000020,
+ * Korean ConsonantYaPlusI combining stage is 0x00000040,
+ * Korean ConsonantYuPlusI combining stage is 0x00000080,
+ * Korean Combining Word Setting On is 0x00000100
+ *
+ */
+const TUint32 KAknFepKoreanCombineWordFlag = 0x00000024;              
 #endif
 
 // End of file

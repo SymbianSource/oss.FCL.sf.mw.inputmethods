@@ -223,6 +223,14 @@ public:
     void OnExiting();           
     
     void GetDSAState(TBool& aState);
+	
+    /**
+     *
+     * @since S60 v4.0
+     * @aArea The rect of the discreet pop 
+     * @return ETrue if command added successfully.
+     */	    
+    TBool SetDiscreetPopArea(const TRect& aArea);
 private:
     /**
      * Default constructor.

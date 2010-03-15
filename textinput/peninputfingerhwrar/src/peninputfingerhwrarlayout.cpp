@@ -683,6 +683,7 @@ void CPeninputFingerHwrArLayout::OnCtrlButtonUpL( TInt /*aEventType*/,
         case EHwrCtrlIdLanguageOption:
             {
             SignalOwner( ESignalLaunchOptionMenu );
+            OnDeActivate();
             }
             break;
         case EHwrCtrlIdSymbolButton:
@@ -1050,6 +1051,7 @@ void CPeninputFingerHwrArLayout::SetGuideLineOn(TBool aGuideLineOn)
 // 
 void CPeninputFingerHwrArLayout::ChangeCurStateToStandby()
     {
+	iHwrWnd->CancelWriting();
     iStateMgr->SetState( CPeninputFingerHwrArStateManagerBase::EStateStandBy );
     }
 

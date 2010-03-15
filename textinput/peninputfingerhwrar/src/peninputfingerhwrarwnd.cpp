@@ -839,14 +839,8 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     iWritingBox->SetRect( rect );
     
 	//resize indicator
-	TRect indicatorRect;
-	indicatorRect.iTl = rect.iTl;
-	indicatorRect.Move(TPoint(10,10));
-	
-	indicatorRect.SetSize(TSize(50,30));
-	
 	iHandwritingIndicator->ConstructFromResourceL(R_AKN_FEP_HWR_INDICATOR_ICON);
-	iHandwritingIndicator->SizeChanged(indicatorRect,ETrue);
+	iHandwritingIndicator->SizeChanged(iLafManager->GetIndicatorRect(),ETrue);
 	
     //Move buttons
     TSize siBtnPadding = iLafManager->ButtonInnerPadding();
@@ -861,22 +855,25 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     
     rect = iLafManager->CtrlRect( iBackspaceBtn->ControlId() );
     MoveIconButton( iBackspaceBtn, rect,  pdx, pdy, ETrue );
-
-    rect = iLafManager->CtrlRect( iArrowUpBtn->ControlId() );
-    MoveIconButton( iArrowUpBtn, rect,  pdx, pdy, ETrue );
-    
-    rect = iLafManager->CtrlRect( iArrowLeftBtn->ControlId() );
-    MoveIconButton( iArrowLeftBtn, rect,  pdx, pdy, ETrue );
-    
-    rect = iLafManager->CtrlRect( iArrowRightBtn->ControlId() );
-    MoveIconButton( iArrowRightBtn,   rect,  pdx, pdy, ETrue );
-
-    rect = iLafManager->CtrlRect( iArrowDownBtn->ControlId() );
-    MoveIconButton( iArrowDownBtn,    rect,  pdx, pdy, ETrue );
     
     rect = iLafManager->CtrlRect( iOptionBtn->ControlId() );
     MoveIconButton( iOptionBtn, rect,  pdx, pdy, ETrue );
     
+	pdx = iLafManager->GetArrowPaddingSize().iWidth;
+	pdy = iLafManager->GetArrowPaddingSize().iHeight;
+	
+	rect = iLafManager->CtrlRect( iArrowUpBtn->ControlId() );
+    MoveIconButton( iArrowUpBtn, rect, pdx, pdy, ETrue );
+    
+    rect = iLafManager->CtrlRect( iArrowLeftBtn->ControlId() );
+    MoveIconButton( iArrowLeftBtn, rect, pdx, pdy, ETrue );
+    
+    rect = iLafManager->CtrlRect( iArrowRightBtn->ControlId() );
+    MoveIconButton( iArrowRightBtn, rect, pdx, pdy, ETrue );
+
+    rect = iLafManager->CtrlRect( iArrowDownBtn->ControlId() );
+    MoveIconButton( iArrowDownBtn, rect,  pdx, pdy, ETrue );
+	
     // load vkb key image
     TSize keysize = iLafManager->VirtualSctpadCellSize().Size();
     iSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_SCTPAD_IMAGE, keysize );
@@ -956,7 +953,9 @@ void CPeninputFingerHwrArWnd::SwitchToSymbolTableView()
 	// avoid overlap refresh problem after opening symbil table
 	// so set this control to be not ready
     iContextField->SetReady(EFalse);
+    
     iSymbolTable->OpenSymbolTable();
+    iSymbolTable->BringToTop();
     }
 
 
@@ -1164,7 +1163,7 @@ void CPeninputFingerHwrArWnd::ReadICFInfoL( const TInt aResId )
         }
 
     iContextField->SetBorderColor( icfframecolor );
-    iContextField->SetBgImgSkinId( KAknsIIDQsnFrCall2Rect );
+    iContextField->SetBgImgSkinId( KAknsIIDQgnGrafFepInputBg );
     CleanupStack::PopAndDestroy( 1 ); // icfreader       
     }
 
@@ -1340,6 +1339,7 @@ void CPeninputFingerHwrArWnd::CloseSymbolTable()
 	if(iSymbolTable->IsPopup())
 		{
 	    iSymbolTable->CloseSymbolTable();
+	    iSymbolTable->BringToBack();
 	    SwitchToStandbyView();		
 	    }	
     }

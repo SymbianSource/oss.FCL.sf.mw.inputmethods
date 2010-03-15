@@ -163,11 +163,12 @@ CFepUiBaseCtrl* CPeninputArabicFingerHwrSymbolTable::HandlePointerMoveEventL(
 	CFepUiBaseCtrl* ctrl = CControlGroup::HandlePointerMoveEventL( aPoint );
 	if(ctrl)
 	    {
+		HandlePointerEnter(aPoint);
 		ctrl->UpdateArea(ctrl->Rect(),EFalse);
 		}
 	else
 	    {
-	    CControlGroup::HandlePointerLeave(aPoint);
+	    HandlePointerLeave(aPoint);
 	    UpdateArea(iRect,EFalse);
 	    }
 	
@@ -208,10 +209,12 @@ void CPeninputArabicFingerHwrSymbolTable::SizeChanged(
 	
 	// relayout the button group
 	TRect spaceBtnRect(iRect.iTl,iRect.iTl+TPoint(aButtonSize.iWidth,aButtonSize.iHeight));
-	MoveIconButton(iSpaceBtn,spaceBtnRect,KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
 	
-	TRect innerRect = spaceBtnRect;
-	innerRect.Shrink(4*KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
+	TInt pdx = (spaceBtnRect.Size().iWidth/3)/2;
+	MoveIconButton(iSpaceBtn,spaceBtnRect,pdx,KSymbolButtonInnerPadding);
+	
+	TRect pieceInnerRect = spaceBtnRect;
+	pieceInnerRect.Shrink(pdx*2,KSymbolButtonInnerPadding);
 	
 	// that's a not good algrithm in funciton AknPenInputDrawUtils::Draw3PiecesColorIcon for drawing 3Pieces icons 
 	// as when the  outter rect's height was not equal to the inter rect's height, the target rects the left icons and right icons 
@@ -221,11 +224,11 @@ void CPeninputArabicFingerHwrSymbolTable::SizeChanged(
 									  TDraw3PiecesFrame(KAknsIIDQgnIndiInputSpaceL,
 									  KAknsIIDQgnIndiInputSpaceMiddle,
 									  KAknsIIDQgnIndiInputSpaceR,
-									  innerRect));
+									  pieceInnerRect));
 	TRect enterBtnRect = spaceBtnRect;
 	enterBtnRect.Move(TPoint(aButtonSize.iWidth,0));
 	
-	MoveIconButton(iEnterBtn,enterBtnRect,KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
+	MoveIconButton(iEnterBtn,enterBtnRect,pdx,KSymbolButtonInnerPadding);
 	
 	TRect pageBtnRect = enterBtnRect;
 	pageBtnRect.Move(TPoint(aButtonSize.iWidth,0));
@@ -278,6 +281,9 @@ void CPeninputArabicFingerHwrSymbolTable::CreateVirtualKeypadL()
     AddControlL( iMutiPageKeypad );
     iMutiPageKeypad->AddEventObserver( UiLayout() );
     
+	iMutiPageKeypad->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonNormal );
+    iMutiPageKeypad->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonPressed );
+    iMutiPageKeypad->SetKeySkinId( EKeyBmpDim, KAknsIIDQsnFrKeypadButtonInactive );
     iMutiPageKeypad->SetResourceId( KInvalidResId );
         
     iMutiPageKeypad->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG68 );

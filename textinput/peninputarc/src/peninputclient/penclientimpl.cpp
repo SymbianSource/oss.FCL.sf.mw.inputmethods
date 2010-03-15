@@ -29,6 +29,9 @@
 #include <coemain.h>
 #include <apgwgnam.h>
 #include "peninputclient.h"
+#ifndef FIX_FOR_NGA
+#define FIX_FOR_NGA
+#endif
 const TUint KDefaultMessageSlots = 4;
 
 const TInt KMaxSupportLanguages = 100;
@@ -374,7 +377,16 @@ void RPeninputServerImpl::DimUiLayoutL(TBool aFlag)
     else //undim the window
         {
         if(iBackgroundCtrl)
-            iBackgroundCtrl->Hide();    
+#ifdef FIX_FOR_NGA
+            {
+            delete iBackgroundCtrl;
+            iBackgroundCtrl = 0;
+            }
+#else            
+            {
+            iBackgroundCtrl->Hide();
+            }
+#endif   
         }
     }
 // ---------------------------------------------------------------------------
@@ -1498,11 +1510,14 @@ void CPenUiBackgroundWnd::Show(const TRect& aExtend, TBool aGlobalNotes,
 
         Window().SetOrdinalPosition(0,aPriority);      
      
-        Window().SetFaded(ETrue,RWindowTreeNode::EFadeWindowOnly);
+        // For fix ELLI-82JD3K for tb92.
+        // The code runs well on 5.0 platform, but on tb92,
+        // it will make the backgourd screen black purely.
+        //Window().SetFaded(ETrue,RWindowTreeNode::EFadeWindowOnly);   
         }
      else
         {
-        Window().SetFaded(ETrue,RWindowTreeNode::EFadeWindowOnly);    
+        Window().SetFaded(ETrue,RWindowTreeNode::EFadeWindowOnly);
         }
  
     Window().Invalidate();

@@ -748,7 +748,7 @@ void CGenericItutWindow::CreateICFL()
 
     iICF->SetResourceId(R_FINGER_ICF);
     ConstructIcfFromResourceL();
-    iICF->SetBgImgSkinId(KAknsIIDQsnFrCall2Rect);
+    iICF->SetBgImgSkinId(KAknsIIDQgnGrafFepInputBg);
     //iDataMgr->SetTextAlignment();
     
     AddControlL(iICF);
@@ -2063,6 +2063,23 @@ void CGenericItutWindow::IndiBubbleWithoutText()
         }
     }
 
+void CGenericItutWindow::MsgBubbleForChinese()
+	{
+	if ( iICF )
+		{
+		iBubbleSize = AknLayoutScalable_Apps::popup_char_count_window().LayoutLine();
+	    iBubbleTextLayout = AknLayoutScalable_Apps::popup_char_count_window_t1(0).LayoutLine();
+		
+	    iICF->MsgBubbleCtrl()->SetTextFormat(iBubbleTextLayout);
+	    iICF->MsgBubbleCtrl()->SetBitmapParam(NULL,
+	    									  NULL,
+	    									  KAknsIIDQsnFrInputPreviewSideL,
+	    									  KAknsIIDQsnFrInputPreviewMiddle,
+	    									  KAknsIIDQsnFrInputPreviewSideR);  
+	    iICF->SetMsgBubbleCtrlSize(TSize(iBubbleSize.iW,iBubbleSize.iH));
+	    iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
+		}
+	}
 void CGenericItutWindow::SetIndiWithTextFlag( TBool aFlag )
     {
     iIndiWithText = aFlag;

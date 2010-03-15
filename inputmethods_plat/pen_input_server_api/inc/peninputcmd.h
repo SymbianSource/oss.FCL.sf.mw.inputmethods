@@ -139,7 +139,8 @@ enum TSignalEvent
     ESignalShowCandidate,
     ESignalSelectCandidate,
     ESignalAcceptTooltip,
-    ESignalCommitITIInlineText,    
+    ESignalCommitITIInlineText,  
+    EPeninputOpSetDiscreeptPop,  
     ESignalUserEventBase = 2000
     };
 

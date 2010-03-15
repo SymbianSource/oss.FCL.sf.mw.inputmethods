@@ -30,6 +30,7 @@
 #include "peninputgenericitutdatamgr.h"
 #include "peninputgenericitutlayoutcontext.h"
 #include "peninputgenericitutwindowmanager.h"
+#include <peninputlayoutbubblectrl.h>
 
 CWesternItutUiStateNonPredict* CWesternItutUiStateNonPredict::NewL(CGenericItutUiMgrBase* aOwner)
     {
@@ -111,10 +112,18 @@ void CWesternItutUiStateNonPredict::OnEntryL()
             }
         else
             {
-            //iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(EFalse);
             iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(EFalse);
             iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(EFalse);
-            //iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
+            if ( iOwner->LayoutContext()->Control(ECtrlIdSwitch) != NULL )
+				{
+				iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(ETrue);
+				}
+            if ( iOwner->LayoutContext()->Control(ECtrlIdIndicator) != NULL )
+				{
+				iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);
+				}
+            
+            iIcf->MsgBubbleCtrl()->Hide( EFalse );
             
             iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight);    
             if(iOwner->LayoutContext()->IsSecretEdtior())

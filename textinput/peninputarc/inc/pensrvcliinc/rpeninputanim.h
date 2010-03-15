@@ -184,6 +184,8 @@ public:
     void EnableSprite(TBool aFlag);    
     
     void GetDSAState(TBool& aState);
+	
+    void SetDiscreeptPop(const TRect& aArea);
 private:
 
     /**

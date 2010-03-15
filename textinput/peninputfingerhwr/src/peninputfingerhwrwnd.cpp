@@ -2250,7 +2250,7 @@ void CPeninputFingerHwrWnd::ReadICFInfoL( const TInt aResId )
         }
 
     iContextField->SetBorderColor( icfframecolor );
-    iContextField->SetBgImgSkinId( KAknsIIDQsnFrCall2Rect );
+    iContextField->SetBgImgSkinId( KAknsIIDQgnGrafFepInputBg );
     CleanupStack::PopAndDestroy( 1 ); // icfreader       
     }
 

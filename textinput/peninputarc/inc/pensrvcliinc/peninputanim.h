@@ -29,7 +29,6 @@
 
 #include "peninputmsgqueue.h"
 
-class CSubscriber;
 #include "peninputcmdparamext.h"
 /**
  * Animation DLL creation class.
@@ -294,11 +293,10 @@ private:
 #endif // RD_TACTILE_FEEDBACK  
 
     void SetDSAState(TBool aFlag);
+	
     //For discreetPop
-    static TInt DiscreetPopChangeNotification(TAny* aObj);
-    void HandleDiscreetPopNotification();
+    void SetDiscreeptPop(TRect aArea);
     
-    void Refresh();
 private:    // Data
     /**
      * Current state 
@@ -400,13 +398,21 @@ private:    // Data
      * Flag to detect primary touch device at startup
      */
     TBool  iPrimaryTouchPtDetected;
-    CSubscriber*    iDiscreetPopSubscriber;
-    RProperty       iDiscreetPopProperty;
+	
+    /**
+     * Flag there is a discreept popped
+     */	
     TBool iDiscreetPoped;
+	
+    /**
+     * Flag need capture for key event when discreept pop
+     */	
     TBool iDiscreetPopedCapture;
+	
+    /**
+     * the discreept pop area
+     */	
     TRect iDiscreetPopArea;
-    RAknUiServer iAknUiSrv; 
-    TBool iDirty;
     
     /**
      * Fix bug HMNN-82CDU5
@@ -417,23 +423,5 @@ private:    // Data
 
 
 
-class CSubscriber : public CActive
-    {
-public:
-    CSubscriber(TCallBack aCallBack, RProperty& aProperty);
-    ~CSubscriber();
-
-public: // New functions
-    void SubscribeL();
-    void StopSubscribe();
-
-private: // from CActive
-    void RunL();
-    void DoCancel();
-
-private:
-    TCallBack   iCallBack;
-    RProperty&  iProperty;
-    };
 #endif //C_CPENINPUTANIMDLL_H
 // End of File

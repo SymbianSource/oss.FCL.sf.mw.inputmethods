@@ -312,7 +312,8 @@ public: // candidate list
      * @return font of candidate list.
      */     
     const CFont* CandidateFont();
-    
+    TRect GetIndicatorRect();
+	TSize GetArrowPaddingSize();
 public: //sct paging buttons
     /**
      * get text layout of sct paging button.
@@ -406,6 +407,8 @@ private: //datas
 	TAknTextLineLayout iPreviewWndText;
 	TSize iSymButtonSize;
 	TRect iRectOfSymbolTable;
+	TRect iIndicatorRect;
+	TSize iArrowPaddingSize;
     };
 
 #endif // C_PENINPUTFINGERHWRARLAFMANAGER_H

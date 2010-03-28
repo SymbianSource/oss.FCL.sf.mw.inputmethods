@@ -309,7 +309,7 @@ public:
      */
     IMPORT_C virtual TBool ReconfigUnitSize(TInt aClientLayoutId);
        
-    IMPORT_C void CPeninputLayoutWindow::SetTextAlignmentL( TInt aAlignment );  
+    IMPORT_C void SetTextAlignmentL( TInt aAlignment );  
     
 protected:
 
@@ -448,7 +448,7 @@ private:
      * @param aResId resource ID
      * @return None
      */    
-    void CPeninputLayoutWindow::ReadBackgroundInfoL( TInt aResId );
+    void ReadBackgroundInfoL( TInt aResId );
     
     /**
      * Read laf of shadow

@@ -373,7 +373,7 @@ public:
      * @return 1 for on or 0 for off
  	 * Since 5.0    
      */
-	TInt CAknFepSharedDataInterface::PredictiveTextAutoCompleteOn();
+	TInt PredictiveTextAutoCompleteOn();
 
     
     /**
@@ -381,7 +381,7 @@ public:
      * is used to represent predictive text Auto Word Completion being on
  	 * Since 5.0    
      */    
-	void CAknFepSharedDataInterface::SetPredictiveTextAutoCompleteOn();
+	void SetPredictiveTextAutoCompleteOn();
 
 
     /**
@@ -389,7 +389,7 @@ public:
      * is used to represent predictive text Auto Word Completion being off
  	 * Since 5.0    
      */    
-	void CAknFepSharedDataInterface::ResetPredictiveTextAutoCompleteOn();
+	void ResetPredictiveTextAutoCompleteOn();
 #ifndef RD_INTELLIGENT_TEXT_INPUT
 
     /**

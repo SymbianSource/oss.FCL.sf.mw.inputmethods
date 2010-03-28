@@ -178,7 +178,7 @@ private:
         CPtiEngine* /*aPtiEngine*/,
         RArray<TImePlguinImplDetail>& aSupportList) const; 
 
-    CPluginKrFepManagerBase* CPeninputPluginKr::GetCurrentUi();
+    CPluginKrFepManagerBase* GetCurrentUi();
 
     /**
      * Get VKB UI interface

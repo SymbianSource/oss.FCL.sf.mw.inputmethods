@@ -84,10 +84,10 @@ public:
     /* 
     * Handles the Fn key event to change the state appropriately.
     */
-    TKeyResponse CAknFepFnKeyManager::HandleFnKeyEventL( const TKeyEvent& aKeyEvent, 
-                                                TEventCode aEventCode,
-                                                TCoeInputCapabilities aInputCapabilities
-                                                );
+    TKeyResponse HandleFnKeyEventL( const TKeyEvent& aKeyEvent, 
+                           TEventCode aEventCode,
+                           TCoeInputCapabilities aInputCapabilities
+                           );
 
     void SetCase( TCase aCase );
     

@@ -333,7 +333,7 @@ public:
      */ 
     virtual TInt GetNumKeymappingResId() = 0;
     
-    IMPORT_C void CPeninputLayoutWindowExt::SetTextAlignmentL( TInt aAlignment );
+    IMPORT_C void SetTextAlignmentL( TInt aAlignment );
        
 protected:
 

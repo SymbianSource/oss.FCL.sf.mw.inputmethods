@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -100,21 +100,39 @@ public:
 	 * sizechanged
 	 *
 	 */
-	void SizeChanged(const TSize aKeypadSize, const TSize aButtonSize,
+	void SizeChanged(const TRect aVirtualKeypadRect, const RArray<TRect> aBtnRects,
                      const TInt aKeypadRow, const TInt aKeypadCol, TBool aIsLandscape = ETrue);
     
+	/**
+	 * Load VKB image
+	 *
+	 */
     void LoadVkbKeyImageL(TInt aResId, const TSize& aKeySize);
 	
+	/**
+	 * Load virutal Key and set key rects.
+	 *
+	 */
 	void LoadVirtualKeypadKeyL(const TInt aResId, const RArray<TRect>& aCellRects);
     
+	/**
+	 * Return keypad control
+	 *
+	 */
 	inline CMultiPageVirtualKeyboard* KeyPad(){return iMutiPageKeypad;}
     
+	/**
+	 * Navigate page
+	 *
+	 */
 	void NavigatePage(TInt aPageNo, TInt aPos);
+    
+	/**
+	 * Construct from resource
+	 * This funciton will be called when the resource has changed for example skin was changed
+	 */
+	void ConstructFromResourceL();	
 	
-	void UpdatePageButtonsUi();
-	
-	void UpdateAllVirtualKeysFeedback();
-
 protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 
     /**
@@ -220,6 +238,29 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 	                    const TRect aKeyRect );
     void OnActivate();
 	
+	/**
+	 * Show the visible page button
+	 *
+	 */
+	void UpdatePageButtonsUi();
+	
+	/**
+	 * Update the virtual key feedback
+	 *
+	 */
+	void UpdateAllVirtualKeysFeedback();
+	
+	/**
+	 * Draw group control
+	 */
+	void Draw();
+	
+	/**
+	 * Load background from resource
+	 *
+	 */
+	void LoadBackgroundFromResourceL(const TInt aResId);
+		
 private:
     /**
 	 * multipage viritual keyboard
@@ -278,16 +319,6 @@ private:
 	 * store the layout mode
 	 */
 	TBool iIsLandscape;
-	
-	/**
-	 * remember the pointer down contrl
-	 */
-	CFepUiBaseCtrl* iPenDownCtrl;
-	
-	/**
-	 * check if the the pointer is moved out
-	 */
-	TBool iPointerMoveBack;
     };
 
 #endif // C_PENINPUTARABICFINGERHWRSYMBOLTABLE_H

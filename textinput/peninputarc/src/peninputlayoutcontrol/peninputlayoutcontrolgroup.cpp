@@ -308,7 +308,7 @@ EXPORT_C TBool CControlGroup::RemoveControl(CFepUiBaseCtrl* aControl)
             }
         }
         
-    if(bFound && !aControl->Hiden())
+    if(bFound && aControl != NULL && !aControl->Hiden())
         {
         //change iRect
         if(iCtrlList.Count())

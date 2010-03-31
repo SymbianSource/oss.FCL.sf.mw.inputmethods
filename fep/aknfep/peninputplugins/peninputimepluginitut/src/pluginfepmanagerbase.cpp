@@ -290,6 +290,50 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
 			CleanupStack::PopAndDestroy(buf);
             }
             break;
+        case ECmdPeninputSpellICFDisplayContent:
+        	{
+        	TFepSpellICFDisplayContent* pContent = 
+        			reinterpret_cast<TFepSpellICFDisplayContent*>( aParam );
+        	
+            TInt dataSize = sizeof( TFepSpellICFDisplayContent );
+            TInt icfTextSize = pContent->iICFText.Size();
+            TInt promptTextSize = pContent->iPromptText.Size();
+        	
+        	HBufC8* buf = HBufC8::NewLC( dataSize + 
+        			icfTextSize + promptTextSize + 3 * sizeof(TInt));
+        	TPtr8 bufPtr = buf->Des();
+        				
+			RDesWriteStream writeStream;
+			writeStream.Open( bufPtr );
+			CleanupClosePushL(writeStream);
+			
+			writeStream.WriteInt32L(dataSize);
+			writeStream.WriteInt32L(icfTextSize);
+			writeStream.WriteInt32L(promptTextSize);
+			
+			const TUint8* pData = reinterpret_cast<const TUint8*>( pContent );
+			writeStream.WriteL( pData, dataSize );
+			
+			if ( icfTextSize != 0 )
+				{
+				const TUint16* pIcfText = pContent->iICFText.Ptr();
+				writeStream.WriteL( pIcfText, icfTextSize/2 );
+				}
+			
+			if ( promptTextSize != 0 )
+				{
+				const TUint16* pPromptText = pContent->iPromptText.Ptr();
+				writeStream.WriteL( pPromptText, promptTextSize/2 );
+				}
+			
+			writeStream.CommitL();
+		
+			SendCommandToServer( aCommandId, bufPtr );
+	
+			CleanupStack::PopAndDestroy(&writeStream);
+			CleanupStack::PopAndDestroy(buf);
+        	}
+        	break;
         case ECmdPenInputFingerMatchIndicator:
             {
             TFepIndicatorInfo* pIndicatorData = 

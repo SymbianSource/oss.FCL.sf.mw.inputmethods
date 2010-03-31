@@ -64,6 +64,8 @@ public: // Constructors and destructor
     CAknFepUiSpellInputPane* InputPane();
     
     void SetInputWinObserver( MEikEdwinObserver* aObserver );
+    
+    void SetInputWinFocus( TBool aFocus );
 
 private:
     

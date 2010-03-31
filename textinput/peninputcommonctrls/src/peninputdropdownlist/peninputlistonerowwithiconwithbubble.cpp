@@ -186,6 +186,8 @@ void CListOneRowWithIconWithBubble::HandlePointerDragL(const TPoint& aPoint)
             iOwner->ClearBubble();
             iClickedRect = KEmptyRect;
             iMoveLatestRect = iClickedRect;
+            
+            CompareRect(iMoveLatestRect, iClickedRect);
             }
         }
     }

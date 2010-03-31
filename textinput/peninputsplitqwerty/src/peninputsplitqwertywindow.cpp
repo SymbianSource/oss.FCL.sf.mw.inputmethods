@@ -566,7 +566,11 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
                 iLayoutContext->SetData( EAkninputDataTypeLatchedSet, &deadKeyChange );
                 
                 // Submit DeadKey + Space or Enter at the same time
-                UiLayout()->SignalOwner( ESignalKeyEvent, *newCharBuf );
+                
+                if( newCharBuf != NULL )
+                    {
+                    UiLayout()->SignalOwner( ESignalKeyEvent, *newCharBuf );
+                    }
                 iNewDeadKeyBuf = KNullDesC;
                 delete newCharBuf;
                 }

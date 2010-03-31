@@ -134,10 +134,10 @@ public:
     /**
      * Get supported input mode
      *
-     * @since S60 v4.0
+     * @param aLanguage: the specific language
      * @return input mode
      */	
-	IMPORT_C TInt SupportInputMode();
+    IMPORT_C TInt SupportInputMode( TInt aLanguage );
 
 	 /**
 	 * Set Input Language Id

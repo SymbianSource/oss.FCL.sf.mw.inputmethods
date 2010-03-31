@@ -91,14 +91,7 @@ void CPeninputFingerHwrLAFManager::ReadLafInfo()
     TAknTextLineLayout icflefttext1, icflefttext2, icflefttext3; 
     TAknLayoutRect icfrectlatin, icfrectcn;
 
-    if (iIsLandscape)
-        {
-        icflayoutcn = AknLayoutScalable_Avkon::fshwr2_icf_pane(1).LayoutLine();
-        }
-    else
-        {
-        icflayoutcn = AknLayoutScalable_Avkon::fshwr2_icf_pane(0).LayoutLine();
-        }
+    icflayoutcn = AknLayoutScalable_Avkon::fshwr2_icf_pane(0).LayoutLine();
     
     icfrectcn.LayoutRect(fshwrRect.Rect(), icflayoutcn);
 	
@@ -134,17 +127,10 @@ void CPeninputFingerHwrLAFManager::ReadLafInfo()
     TAknWindowLineLayout candrowpane, candrowpane2, candlistpane, cellpane, candbgpane;
     TAknLayoutRect candpaneRect, candrowpaneRect, candrowpaneRect2, cellpaneRect1, cellpaneRect2;
     TAknLayoutRect cellpaneRect3, cellpaneRect;
-	
-    if (iIsLandscape)
-        {
-		candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(1).
-										LayoutLine();        
-        }
-    else
-        {
-       	candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(0).
+
+    candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(0).
 										LayoutLine();
-        }
+
     candpaneRect.LayoutRect( fshwrRect.Rect(), candlistpane );
     rect = candpaneRect.Rect();
     candrowpane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 1).

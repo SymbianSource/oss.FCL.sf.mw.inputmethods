@@ -639,7 +639,7 @@ TBool TAknFepInputStateEntryWesternPredictive::HandleStarKeyL(TKeyPressLength aL
 
     if (aLength == ELongKeyPress)
         { 
-// Fix for BSAN-7G5944. 
+
 // In non-ITI mode, during long star key press, initially it is treated as short key press 
 // and the next candidate word is shown. So before displaying the SCT, we revert to
 // the previous candidate. In ITI, long star key press does not result in showing the next

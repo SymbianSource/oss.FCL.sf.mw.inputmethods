@@ -428,7 +428,7 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::HandleWordBreakingKeysL(TIn
 					    ptiengine->HandleCommandL( EPtiCommandLockCurrentCandidate);
 					    TPtrC selectedWord = ptiengine->CurrentWord();
                         fepMan->UpdateInlineEditL( selectedWord, selectedWord.Length() );  //selection.iAnchorPosition
-                        // To fix the bug: STAA-7GYBJC Suggested word is not committed when Arrow right key is pressed.
+                        // To fix the Suggested word is not committed when Arrow right key is pressed.
                         ptiengine->CommitCurrentWord();
                         fepMan->TryCloseUiL();
                         // Asyncronous case update after the editor has handled the key
@@ -619,10 +619,7 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::HandleNaviKeysL(TInt aKey, 
 
     if (aKey == EKeyBackspace)
         {
-        TInt activeIdx = KErrNone;
         TPtrC newText = ptiengine->DeleteKeyPress();
-        // To fix the Backspace Key issue in which focused word needs to be present in the editor.
-        ptiengine->HandleCommandL( EPtiCommandUserActionSetCurrentIndexOfCandidates, &activeIdx );
         TPtrC selectedWord = ptiengine->CurrentWord();
         fepMan->UpdateInlineEditL(selectedWord, selectedWord.Length());
 

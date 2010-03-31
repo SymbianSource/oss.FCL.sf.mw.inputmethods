@@ -580,7 +580,11 @@ EXPORT_C void CPeninputHiraganaKanji::SetEditorTextL(const TFepInputContextField
         else
             {
             iStatus = EStatusConversion;
-            iInputContextField->StartInlineL();
+            
+            if( iInputContextField != NULL )
+                {
+                iInputContextField->StartInlineL();
+                }
             }
         UpdateContextFieldL();
         }

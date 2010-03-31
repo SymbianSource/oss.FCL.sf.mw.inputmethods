@@ -61,25 +61,15 @@ TBool TAknFepInputStateInitialStrokeFind::HandleKeyL(TInt aKey, TKeyPressLength 
         {
         if (aKey == EPtiKeyStar)
             {
-            if (aLength == EShortKeyPress)
-            	{
-       	        if (fepMan->EditSubmenuInUse())
-        		 	{
-					fepMan->ClearCcpuFlag(CAknFepManager::ECcpuStateIgnoreStarUp);
-        	        return ret;
-        	        }                        
-                else if (fepMan->IsAbleToLaunchSCT())
-                    {
-                    fepMan->LaunchSpecialCharacterTableL();
-                    }    	
-            	}
-         	else
+       	    if (fepMan->EditSubmenuInUse())
         	    {
-       	        if (fepMan->EditSubmenuInUse())
-            	    {
-       			    fepMan->LaunchSpecialCharacterTableL();                
-        	        }        	
-                }
+				fepMan->ClearCcpuFlag(CAknFepManager::ECcpuStateIgnoreStarUp);
+        	    return ret;
+        	    }                        
+            else if (fepMan->IsAbleToLaunchSCT())
+                {
+                fepMan->LaunchSpecialCharacterTableL();
+                }    
             }   
         else if (iOwner->IsValidChineseInputKey(aKey))
             {

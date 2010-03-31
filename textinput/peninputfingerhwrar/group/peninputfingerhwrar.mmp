@@ -41,6 +41,7 @@ SOURCE    peninputfingerhwrarmultipagevkb.cpp
 SOURCE    peninputfingerhwrarsymboltable.cpp
 SOURCE    peninputfingerhwrarindicator.cpp
 SOURCE    hbufcarrayar.cpp 
+SOURCE    peninputfingerhwrarwritingwnd.cpp
 
 USERINCLUDE     ../inc
 

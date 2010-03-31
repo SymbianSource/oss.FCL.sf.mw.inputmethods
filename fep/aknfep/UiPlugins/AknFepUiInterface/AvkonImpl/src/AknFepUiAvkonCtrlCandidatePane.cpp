@@ -1155,7 +1155,6 @@ TBool CAknFepUICtrlCandidatePane::NeedGetNewCandidatePage()
 
     }
 
-//Bug Fixing for ESSG-7P5CSZ
 void CAknFepUICtrlCandidatePane::Enable(TBool aEnable)
 	{
 	if (!aEnable)

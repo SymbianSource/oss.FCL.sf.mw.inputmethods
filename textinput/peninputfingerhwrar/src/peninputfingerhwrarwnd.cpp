@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -43,9 +43,9 @@
 #include "peninputfingerhwrarmultipagevkb.h"
 #include "peninputfingerhwrarlayout.h"
 #include "peninputfingerhwrardatastore.h"
-#include "peninputlayouthwrwnd.h"
 #include "peninputfingerhwrarsymboltable.h"
 #include "peninputfingerhwrarindicator.h"
+#include "peninputfingerhwrarwritingwnd.h"
 
 const TUint32 KDefaultTextColor          = 0x000000;
 const TUint   KDefaultFrameColor         = 0x000000;
@@ -84,7 +84,11 @@ CPeninputFingerHwrArWnd* CPeninputFingerHwrArWnd::NewLC( CFepUiLayout* aFepUiLay
 // ---------------------------------------------------------------------------
 //
 CPeninputFingerHwrArWnd::~CPeninputFingerHwrArWnd()
-    {    
+    {
+    #ifdef RD_TACTILE_FEEDBACK    
+	UiLayout()->DeRegisterFeedbackArea(reinterpret_cast<TInt>(iWritingBox),
+	                                 iWritingBox->Rect());
+	#endif								 
     delete iLafManager;
     }
 
@@ -125,7 +129,6 @@ void CPeninputFingerHwrArWnd::ConstructFromResourceL()
   
         ReadWritingBoxInfoL( boxwndResId );
         ReadBackgroundInfoL( bgImageResId );
-		//iHandwritingIndicator->ConstructFromResourceL(R_AKN_FEP_HWR_INDICATOR_ICON);
         }
     else
         {
@@ -167,12 +170,7 @@ void CPeninputFingerHwrArWnd::Draw()
 			 
 		CControlGroup::Draw();
 		
-		// Set guide line
-		DrawGuideLine();
-		
-		//iHandwritingIndicator->BringToTop();
-		iHandwritingIndicator->Draw();
-		// update whole area
+		// Update whole area
 		UpdateArea( Rect(), EFalse );
 		}
     }
@@ -209,8 +207,19 @@ void CPeninputFingerHwrArWnd::SizeChangedL()
             iLafManager->IcfTextHeight(),
             iLafManager->IcfFont()->FontMaxHeight(),
             iLafManager->IcfFont() );
+    
+    CalculateGuideLinePos();
     Draw();
 }
+
+// ---------------------------------------------------------------------------
+// Handle window open
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArWnd::HandleWindowOpenCommandL()
+    {
+    CalculateGuideLinePos();
+    }
 
 // ---------------------------------------------------------------------------
 // accept editor's text alignment.
@@ -371,10 +380,12 @@ void CPeninputFingerHwrArWnd::SetBoxPenSize( const TSize aPenSize )
 // set writing speed hwr writing.
 // ---------------------------------------------------------------------------
 //
-void CPeninputFingerHwrArWnd::SetBoxWritingSpeed( const TTimeIntervalMicroSeconds32& aCharDelay )
+void CPeninputFingerHwrArWnd::SetBoxWritingSpeed( TTimeIntervalMicroSeconds32& aCharDelay )
     {
     iWritingBox->SetCharacterDelay( aCharDelay );
-    iWritingBox->SetStrokeDelay( 90000 );   
+    TInt strokeDelay = aCharDelay.Int()/5;
+    TTimeIntervalMicroSeconds32 sDelay(strokeDelay);
+    iWritingBox->SetStrokeDelay( sDelay);   
     }
 
 // ---------------------------------------------------------------------------
@@ -438,34 +449,34 @@ CFepCtrlDropdownList* CPeninputFingerHwrArWnd::NumCandidateList()
 //	
 void CPeninputFingerHwrArWnd::OpenCandidateList()
     {
-	typedef CFepCtrlDropdownList::TListType TDropListType;
-        
 	CPeninputFingerHwrArLayout* hwrLayout = NULL;
 	hwrLayout = static_cast<CPeninputFingerHwrArLayout*>( UiLayout() );
 	CPeninputFingerHwrArDataStore& datastore = hwrLayout->DataStore();
 	
 	const RPointerArray<HBufC>& candidates = datastore.Candidate();
 	
-													 
-	TDropListType unexpandable = CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble;
+	if(candidates.Count() > 0)
+        {
+		CFepCtrlDropdownList::TListType unexpandable = CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble;
 	
-	if ( datastore.PrimaryRange() == ERangeNative )
-		{
-		iCandidateList->Hide( EFalse );
-		TRAP_IGNORE(iCandidateList->SetCandidatesL( candidates, unexpandable ));
-		iCandidateList->SetHighlightCell( 0, datastore.Highlight() ); 		   
-		}
-	else
-		{
-		iNumCandidateList->Hide( EFalse );
-	    TRAP_IGNORE(iNumCandidateList->SetCandidatesL( candidates, unexpandable ));
-		iNumCandidateList->SetHighlightCell( 0, datastore.Highlight() );         
-		}
-		
-	iArrowLeftBtn->Hide(ETrue);
-    iArrowRightBtn->Hide(ETrue);
-    iArrowUpBtn->Hide(ETrue);
-    iArrowDownBtn->Hide(ETrue);	
+		if ( datastore.PrimaryRange() == ERangeNative )
+			{
+			iCandidateList->Hide( EFalse );
+			TRAP_IGNORE(iCandidateList->SetCandidatesL( candidates, unexpandable ));
+			iCandidateList->SetHighlightCell( 0, datastore.Highlight() ); 		   
+			}
+		else
+			{
+			iNumCandidateList->Hide( EFalse );
+			TRAP_IGNORE(iNumCandidateList->SetCandidatesL( candidates, unexpandable ));
+			iNumCandidateList->SetHighlightCell( 0, datastore.Highlight() );         
+			}
+			
+		iArrowLeftBtn->Hide(ETrue);
+		iArrowRightBtn->Hide(ETrue);
+		iArrowUpBtn->Hide(ETrue);
+		iArrowDownBtn->Hide(ETrue);
+		}	
 	}
 
 // ---------------------------------------------------------------------------
@@ -521,10 +532,11 @@ void CPeninputFingerHwrArWnd::ConstructL( TBool /*aLandscapeStyle*/ )
 	
     //crate writing 
     CreateWritingBoxL();
-    
+	
 	//create the handwriting indicator
 	iHandwritingIndicator = CPeninputArabicFingerHwrIndicator::NewL(UiLayout(),EHwrCtrlIdHandwringIndicator);
-	AddControlL(iHandwritingIndicator);
+	iWritingBox->InstallIndicator(iHandwritingIndicator);
+	iWritingBox->ShowIndicator(ETrue);
 	
     //create icf 
     CreateContextFieldL();
@@ -543,6 +555,15 @@ void CPeninputFingerHwrArWnd::ConstructL( TBool /*aLandscapeStyle*/ )
     
 	//set controls postion and extent
     SizeChangedL();
+	
+	#ifdef RD_TACTILE_FEEDBACK
+	if (UiLayout()->SupportTactileFeedback())
+		{
+	    UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(iWritingBox),
+	                                     iWritingBox->Rect(),
+	                                     iWritingBox->TactileFeedbackType());
+		}
+    #endif
 	
 	//switch to standby view
     SwitchToStandbyView();
@@ -711,7 +732,7 @@ void CPeninputFingerHwrArWnd::CreateNumCandidateListL()
 //
 void CPeninputFingerHwrArWnd::CreateWritingBoxL()
     {
-    iWritingBox = CTransparentHwrWndExt::NewL( TRect( 0,0,0,0 ), UiLayout(), 
+    iWritingBox = CPeninputArabicFingerHwrWritingWnd::NewL( TRect( 0,0,0,0 ), UiLayout(), 
                                             EHwrCtrlIdWritingBox, EFalse );
     
     AddControlL( iWritingBox );
@@ -722,7 +743,6 @@ void CPeninputFingerHwrArWnd::CreateWritingBoxL()
     iWritingBox->AddEventObserver( UiLayout() );
     iWritingBox->EnableTraceOutsideWindow( EFalse );
     iWritingBox->SetWndTransparencyFactor( 0 );
-
     iWritingBox->InstallPenTraceDecoratorL( KNullDesC,EFalse);
     }
 
@@ -757,6 +777,8 @@ void CPeninputFingerHwrArWnd::CreateSymbolTableL()
     {
     iSymbolTable = CPeninputArabicFingerHwrSymbolTable::NewL(UiLayout(),EHwrCtrlIdSymbolTableVkbGroup);
 	iSymbolTable->Hide(ETrue);
+	iSymbolTable->SetResourceId(R_FINGERHWR_ARABIC_SYMBOLTABLE);
+	iSymbolTable->ConstructFromResourceL();
     AddControlL( iSymbolTable );
 	iSymbolTable->AddEventObserver( UiLayout() );
     }
@@ -837,7 +859,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     //Move Writing box
     rect = iLafManager->CtrlRect( iWritingBox->ControlId() );
     iWritingBox->SetRect( rect );
-    
+		
 	//resize indicator
 	iHandwritingIndicator->ConstructFromResourceL(R_AKN_FEP_HWR_INDICATOR_ICON);
 	iHandwritingIndicator->SizeChanged(iLafManager->GetIndicatorRect(),ETrue);
@@ -873,7 +895,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
 
     rect = iLafManager->CtrlRect( iArrowDownBtn->ControlId() );
     MoveIconButton( iArrowDownBtn, rect,  pdx, pdy, ETrue );
-	
+		
     // load vkb key image
     TSize keysize = iLafManager->VirtualSctpadCellSize().Size();
     iSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_SCTPAD_IMAGE, keysize );
@@ -882,7 +904,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     RArray<TRect> rects;
 	CleanupClosePushL( rects );
     iLafManager->GetVirtualKeyRects( rects );
-    
+	
     // load keys
 	if(iLafManager->IsLandscape())
 	    {
@@ -892,6 +914,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
 	    {
 		LoadSymbolVirtualKeysL(R_ARABIC_FINGER_HWR_PORTRAIT_SYMBOL_TABLE, rects);
 		}
+		
     CleanupStack::PopAndDestroy();//rects
     
 	//move virtual Sctpad
@@ -901,8 +924,9 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
 	rect = iLafManager->CtrlRect(iSymbolTable->ControlId());
 	iSymbolTable->SetRect(rect);
 	
-	TSize symButtonSize = iLafManager->SymbolGroupButtonSize();
-	iSymbolTable->SizeChanged(TSize(),symButtonSize,rows,cols,iLafManager->IsLandscape());
+	iSymbolTable->SizeChanged(iLafManager->GetVirtualKeyRect(),
+	                          iLafManager->GetSymBtnArray(), rows, cols,
+							  iLafManager->IsLandscape());
     }
 
 
@@ -1289,6 +1313,8 @@ void CPeninputFingerHwrArWnd::CalculateGuideLinePos()
       
       iGuideLineBottomBr.iX = rect.iBr.iX - leftrightmargin;
       iGuideLineBottomBr.iY = rect.iTl.iY + bottommargin;
+      
+      iWritingBox->SetBottomGuideLinePosition(iGuideLineBottomTl, iGuideLineBottomBr);
       }
 
 // --------------------------------------------------------------------------
@@ -1298,21 +1324,21 @@ void CPeninputFingerHwrArWnd::CalculateGuideLinePos()
 //
 void CPeninputFingerHwrArWnd::DrawGuideLine()
     {
-    if(!iGuideLineOn)
+    if(iGuideLineOn)
         {
-        iWritingBox->HideGuideLine(ETrue);
-        }
-    else
-        {
-        iWritingBox->HideGuideLine(EFalse);
         TInt style = CTransparentHwrWndExt::EGuideLineBottom;    
         iWritingBox->SetGuideLineStyle( style );
     
         // if size changing, or guide line pos has not been set
         CalculateGuideLinePos();
         
-        iWritingBox->SetBottomGuideLinePosition(iGuideLineBottomTl, iGuideLineBottomBr);
+        iWritingBox->HideGuideLine(ETrue);
         }
+    else
+        {
+        iWritingBox->HideGuideLine(EFalse);
+        }
+		
 	iWritingBox->RefreshUI();	
     }
 
@@ -1375,11 +1401,7 @@ TBool CPeninputFingerHwrArWnd::IsCandidateShowup()
 //	
 void CPeninputFingerHwrArWnd::HideIndicator()
     {
-	if(!iHandwritingIndicator->Hiden())
-	    {
-		iHandwritingIndicator->Hide(ETrue);
-	    Draw();
-		}
+    iWritingBox->ShowIndicator(EFalse);
 	}
 
 // --------------------------------------------------------------------------
@@ -1391,15 +1413,15 @@ TBool CPeninputFingerHwrArWnd::GetCharBeforeCursor(TInt aCharPos, TUint16& aChar
     {
 	TBuf<1> dataBeforeCursor;
 	iContextField->ExtractText( dataBeforeCursor, aCharPos, 1 );
+	
+	TBool isFound = EFalse;
 	if(dataBeforeCursor!= KNullDesC)
 	    {
 		aCharBeforeCursor = dataBeforeCursor[0];
-		return ETrue;
+		isFound = ETrue;
 		}
-	else
-	    {
-		return EFalse;
-		}
+	
+	return isFound;
 	}
 	
 //  End Of File

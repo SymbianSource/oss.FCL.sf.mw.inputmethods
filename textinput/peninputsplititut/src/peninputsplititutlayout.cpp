@@ -396,7 +396,7 @@ CSplitItutUiMgrBase* CSplitItutUiLayout::UiMgr()
 //
 void CSplitItutUiLayout::SetInputModeL(TInt aMode)
     {
-    // fix EJML-7HM6GM, e.g. both EStrokeFind and EStroke will be stored as EStroke
+    // both EStrokeFind and EStroke will be stored as EStroke
     if (aMode != iDataMgr->InputMode() || 
         aMode == EStroke || aMode == EStrokeFind ||
         aMode == EZhuyin || aMode == EZhuyinFind ||

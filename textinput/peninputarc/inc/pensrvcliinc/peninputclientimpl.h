@@ -154,10 +154,10 @@ public:
     /**
      * Get the all support input mode
      *
-     * @since S60 v4.0
+     * @param aLanguage: The specific language
      * @return input mode
      */
-    TInt SupportInputMode();
+    TInt SupportInputMode( TInt aLanguage );
 
     /**
      * Set input language Id

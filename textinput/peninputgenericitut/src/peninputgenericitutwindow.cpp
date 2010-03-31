@@ -1472,6 +1472,82 @@ void CGenericItutWindow::SetPromptTextL(TUint8* aData)
 	  CleanupStack::PopAndDestroy(&readStream);
     }
 
+void CGenericItutWindow::SetSpellDisplayContentL( TUint8* aData )
+	{
+	RDesReadStream readStream;
+
+	TPtr8 countPtr( aData, 3 * sizeof(TInt), 3 * sizeof(TInt));
+	readStream.Open( countPtr );
+	CleanupClosePushL( readStream );
+	
+	const TInt dataCount = readStream.ReadInt32L();
+	const TInt icfTextCount = readStream.ReadInt32L();
+	const TInt promptTextCount = readStream.ReadInt32L();
+	CleanupStack::PopAndDestroy( &readStream );
+	
+	TPtr8 ptr( aData + 3 * sizeof(TInt), 
+		dataCount + icfTextCount + promptTextCount, 
+		dataCount + icfTextCount + promptTextCount );
+	
+    readStream.Open( ptr );
+    CleanupClosePushL(readStream);
+    
+    HBufC8* dataBuf = HBufC8::NewLC( dataCount );
+    TPtr8 dataBufPtr = dataBuf->Des();
+    readStream.ReadL( dataBufPtr, dataCount );
+    
+    TFepSpellICFDisplayContent* pContent = 
+    		reinterpret_cast<TFepSpellICFDisplayContent*>(
+    				const_cast<TUint8*>(dataBufPtr.Ptr()));
+    
+    TFepInputContextFieldData icfData;
+	icfData.iCmd = EPeninputICFInitial;
+	icfData.iCurSel.iCursorPos = pContent->iCurPos;
+	icfData.iCursorSelVisible = ETrue;
+	icfData.iCursorVisibility = ETrue;
+    		
+    if ( icfTextCount > 0 )
+    	{
+		HBufC* textIcfBuf;
+		textIcfBuf = HBufC::NewLC( icfTextCount/2 );
+		TPtr textBufPtr = textIcfBuf->Des();
+		readStream.ReadL( textBufPtr, icfTextCount/2 );
+		
+		icfData.iLength = icfTextCount;
+		icfData.iText.Set( textIcfBuf->Des());
+		
+		iICF->SetTextL( icfData );
+		
+		CleanupStack::PopAndDestroy( textIcfBuf );
+    	}
+    else
+    	{
+		icfData.iLength = 0;
+		icfData.iText.Set( KNullDesC );
+		
+		iICF->SetTextL( icfData );
+    	}
+    
+    if ( promptTextCount > 0 )
+    	{
+		HBufC* textPromptBuf;
+		textPromptBuf = HBufC::NewLC( promptTextCount/2 );
+		TPtr promptBufPtr = textPromptBuf->Des();
+		readStream.ReadL( promptBufPtr, promptTextCount/2 );
+		
+		iICF->SetPromptTextL( textPromptBuf->Des(), ETrue );	
+		
+		CleanupStack::PopAndDestroy( textPromptBuf );
+    	}
+    else
+    	{
+		iICF->SetPromptTextL( KNullDesC, ETrue );
+    	}
+    
+    CleanupStack::PopAndDestroy( dataBuf );
+	CleanupStack::PopAndDestroy( &readStream );
+	}
+
 TInt CGenericItutWindow::PenInputType()
     {
     return EPluginInputModeItut;
@@ -1659,7 +1735,7 @@ void CGenericItutWindow::ApplyVariantLafDataL(TBool aResolutionChange)
 
     iICF->Hide(EFalse);    
     
-    if ( IsPortraitWest() && (!iDataMgr->IsChineseGlobalLanguage()))
+    if ( IsPortraitWest() && (!iDataMgr->IsChineseSpellMode()))
         {
         iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
         iIndiWithText = EFalse;
@@ -1685,6 +1761,49 @@ void CGenericItutWindow::ApplyVariantLafDataL(TBool aResolutionChange)
     // resize all controls
     SetCtrlRect(iStandardItutKp, EKeypadRect); 
     
+    iStandardItutKp->SetTextLineLayout(
+        TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadLeftTextLine)),
+        EPosLeft);
+    iStandardItutKp->SetTextLineLayout(
+        TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine1)),
+        EPosRight1);
+    iStandardItutKp->SetTextLineLayout(
+        TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine2)),
+        EPosRight2);
+    iStandardItutKp->SetTextLineLayout(
+        TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine3)),
+        EPosRight3);
+    
+    RPointerArray<CVirtualKey>& keys = 
+        const_cast<RPointerArray<CVirtualKey>&>(iStandardItutKp->KeyArray());
+    RArray<TRect>& cellRects = 
+        TItutDataConverter::AnyToRectArray(iDataMgr->RequestData(EKeypadCellRects));
+
+    for (TInt i = 0 ; i < keys.Count(); i++)
+        {
+        keys[i]->SetRect(cellRects[i]);
+        TRect innerrect = cellRects[i];
+        innerrect.Shrink(TSize(4, 4));
+        keys[i]->SetInnerRect(innerrect);
+        }
+	// set key background image size
+	TSize curSize = cellRects[0].Size();
+	if( iStandardItutKp->NonIrregularKeyBitmap(EKeyBmpNormal) )
+		{
+		TSize size = iStandardItutKp->NonIrregularKeyBitmap(EKeyBmpNormal)->SizeInPixels();
+		if( curSize != size )	
+			{
+	        for ( TInt i = 0; i <= EKeyBmpLastType; i++ )
+	            {
+	            if( iStandardItutKp->NonIrregularKeyBitmap((TVirtualKeyBmpType)i) )
+	            	{
+	                AknIconUtils::SetSize( 
+                                   iStandardItutKp->NonIrregularKeyBitmap((TVirtualKeyBmpType)i), 
+                                   curSize, EAspectRatioNotPreserved );                    		
+	            	}
+	            }	
+			}
+		}
     // Handle control res when language direction changing here.
     if( iDataMgr->IsLangDirectionSwitch() || 
     	( bSizeChanged && iDataMgr->IsRtoLLanguage() ) )

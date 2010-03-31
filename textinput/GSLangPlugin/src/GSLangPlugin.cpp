@@ -734,10 +734,11 @@ void CGSLangPlugin::ShowInputSelectionSettingPageL()
             Container()->UpdateListBoxL( EGSLangIdPredictiveMode );
             }
         TInt current = Container()->Model()->LanguageL( CGSLangModel::EGSInputLanguage );
+        
         if ( ( (current == ELangPrcChinese || current == ELangHongKongChinese
             || current == ELangTaiwanChinese) && previous != current)
-            || ( (current != ELangPrcChinese || current != ELangHongKongChinese
-            || current != ELangTaiwanChinese) && previous != current) )
+            || ( (current != ELangPrcChinese || current != ELangHongKongChinese ) 
+                 && previous != current) )
             {
             if (current == ELangPrcChinese )
                 {
@@ -953,8 +954,8 @@ void CGSLangPlugin::ShowDefaultInputMethodSettingPageL()
     if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
         {
         TInt newInputMethodCode=EPinyin;
-
-        for (TInt j = 0; j < KGSMapSize; j++)
+        
+        for (TInt j = 0; j < itemsNum && j < KGSMapSize; j++)
             {
             TInt val = 0;
             if ( lang == ELangPrcChinese )      { val = methodMap[j].index0; }

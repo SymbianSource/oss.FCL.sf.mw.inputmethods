@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -96,10 +96,13 @@ void CPeninputFingerHwrArLayout::ConstructL( const TAny* aInitData )
 
     //create state manager   
     CreateStateManagerL();
-
+    
+	//create the arabic window control
     CreateHwrWindowL();
-
+	
+	//retrieve the settings
     LoadAndPublishDefaultL();
+	
     //set screen layout extent
     SetRect( TRect( TPoint( 0, 0 ), ScreenSize() ) );
     }
@@ -133,7 +136,7 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
         return KErrNone;
         }
 
-    TInt ret = KErrUnknown;
+    TInt ret = KErrNone;
     switch ( aCmd )
         {
         case ECmdPenInputEditorNumericKeyMap:
@@ -146,77 +149,69 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
             TInt len = *( TInt* )( aData - KIntSize );
             TPtrC16 keymapRes( (TUint16*)aData, len / 2 );
             iDataStore->SetCustomNumberModeL( keymapRes );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputPermittedRange:
             {
             TInt ranges = *(TInt*)aData;
             iDataStore->SetPermittedRanges( ranges );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputLanguage:
             {
             TInt language = *( TInt* )aData;
             iDataStore->SetLanguageL( language );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputPermittedCase:
             {
             TInt cs = *( TInt* )aData;
             iDataStore->SetPermittedCases( cs );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputCase:
             {
             TInt cs = *( TInt* )aData;
             iDataStore->SetCase( cs );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputWindowOpen:
             {
             LayoutOwner()->Hide( EFalse );
             RootControl()->UpdateValidRegion( NULL, EFalse );
-
+            
+			// tell the engine the hwr writing area
             TRect hwrRect = iHwrWnd->WritingBoxRect();
             TSize hwrSize = hwrRect.Size();
             iDataStore->SetInputAreaSize(hwrSize);
             iDataStore->SetScreenSize(hwrSize);
+			
+			// tell the HWR window to handle the window open command
+            iHwrWnd->HandleWindowOpenCommandL();
+			
+			// switch to standby state
             ChangeCurStateToStandby();
-            
-            iDataStore->GetKeyboardType();
-            iDataStore->SetKeyboardToQwerty();
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputWindowClose:
             {
-            iDataStore->ResetKeyboardType();
             LayoutOwner()->Hide( ETrue );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputSetTextAlignment:
             {
-            iHwrWnd->SetTextAlignmentL( *aData, ELangArabic );
-            ret = KErrNone;            
+            iHwrWnd->SetTextAlignmentL( *aData, ELangArabic );           
             }
             break;
         case ECmdPenInputSetPromptText:
             {
             iHwrWnd->SetPromptTextL( aData );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputDimArrowKeys:
             {
             TBool IsDimArrowKeys = *aData;
             iHwrWnd->DimArrowKeys( IsDimArrowKeys );
-            ret = KErrNone;
             }
             break;
         case ECmdPenInputCharacterPreview:
@@ -231,6 +226,7 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
             }
             break;
         default:
+		    ret = KErrUnknown;
             break;
         }
 
@@ -261,6 +257,10 @@ TInt CPeninputFingerHwrArLayout::OnAppEditorTextComing(
     if ( iHwrWnd )
         {
         TRAPD( err, iHwrWnd->SetEditorTextL( aData ) );
+		if(err != KErrNone)
+		    {
+			return err;
+			}
 		//
 	    // implement the feature: the candiates will be filtered according to the char after the cursor
 	    //
@@ -279,7 +279,11 @@ TInt CPeninputFingerHwrArLayout::OnAppEditorTextComing(
 			return KErrNone;
 			}
 			
-		iDataStore->SetFirstCandidateType(ECandDefaultFirst);	
+		iDataStore->SetFirstCandidateType(ECandDefaultFirst);
+		if(iDataStore->PrimaryRange() == ERangeEnglish)
+		    {
+		    return KErrNone;
+		    }
 		TUint16 charBeforeCursor = 0;
 		
         if(iHwrWnd->GetCharBeforeCursor(aData.iCurSel.LowerPos()-1, charBeforeCursor))
@@ -301,7 +305,7 @@ TInt CPeninputFingerHwrArLayout::OnAppEditorTextComing(
 			iDataStore->SetFirstCandidateType(candtype);	
 			}
         
-        return err;
+        return KErrNone;
         }
 
     return KErrNone;
@@ -351,14 +355,7 @@ TInt CPeninputFingerHwrArLayout::PenInputType()
 //
 void CPeninputFingerHwrArLayout::OnDeActivate()
     {
-    // cancel writing
-    iHwrWnd->CancelWriting();
-    
-	// close the symbol table if it's showing up
-    iHwrWnd->CloseSymbolTable();
-    
-	// close the candidate list if it's showing up
-    iHwrWnd->CloseCandidateList();
+    ChangeCurStateToStandby();
     
     CFepUiLayout::OnDeActivate();
     }
@@ -442,7 +439,6 @@ void CPeninputFingerHwrArLayout::HandleControlEventL( TInt aEventType,
         case EHwrEventOutsideEvent:
             {
             ChangeCurStateToStandby();
-            iHwrWnd->CloseSymbolTable();
             }
             break;
             
@@ -533,11 +529,6 @@ TInt CPeninputFingerHwrArLayout::HandleGSRepositoryCallBack( TAny* aPtr )
                 self->SetWritingSpeed( newValue );
                 }
                 break;
-            case KSettingsPenWidth:
-                {
-                self->SetBoxPenSize( TSize( newValue, newValue ) );
-                }
-                break;
             case KSettingsPenColor:
                 {
                 self->SetBoxPenColor( newValue );
@@ -570,7 +561,10 @@ void CPeninputFingerHwrArLayout::LoadAndPublishDefaultL()
 
     iRepositorySetting->Get( KSettingsWritingSpeed, newValue );
     SetWritingSpeed( newValue );
-
+    
+	iRepositorySetting->Get(KSettingsPenInputGuideLine,newValue);
+	SetGuideLineOn(newValue);
+	
     iRepositorySetting->Get( KSettingsPenWidth, newValue );
     SetBoxPenSize( TSize( newValue, newValue ) );
 
@@ -668,15 +662,8 @@ void CPeninputFingerHwrArLayout::OnCtrlButtonUpL( TInt /*aEventType*/,
         {
         case EHwrCtrlIdClose:
             {
-            // Go to standby when button up before character timeout    
-            if ( iDataStore->StartCharacter())
-                {
-                iDataStore->SetStartCharacter(EFalse);
-                iHwrWnd->CancelWriting();
-                ChangeCurStateToStandby();
-                iHwrWnd->CloseCandidateList();
-                }
-        
+            // Go to standby before closing layout   
+            ChangeCurStateToStandby();
             SignalOwner( ESignalLayoutClosed );
             }
             break;
@@ -688,24 +675,9 @@ void CPeninputFingerHwrArLayout::OnCtrlButtonUpL( TInt /*aEventType*/,
             break;
         case EHwrCtrlIdSymbolButton:
             {
-            // Go to standby when button up before character timeout    
-            if ( iDataStore->StartCharacter())
-                {
-                iDataStore->SetStartCharacter(EFalse);
-                iHwrWnd->CancelWriting();
-                ChangeCurStateToStandby();
-                iHwrWnd->CloseCandidateList();
-                }
-            
-            if(iHwrWnd->IsSymbolTableShowingUp())
-            	{
-                iHwrWnd->CloseSymbolTable();
-                }
-            else
-                {
-                ChangeCurStateToStandby();
-                iHwrWnd->OpenSymbolTable();
-                }
+            // Go to standby before opening symbol table
+			ChangeCurStateToStandby();
+			iHwrWnd->OpenSymbolTable();
             }
             break;
         case EHwrCtrlId3Page1Btn:
@@ -801,19 +773,16 @@ void CPeninputFingerHwrArLayout::OnBackspaceClickedL()
 	iHwrWnd->CancelWriting();
     if (iHwrWnd->IsCandidateShowup())
         {
-        // goto standby and clear screen
-        iDataStore->SetStartCharacter(EFalse);
+        // goto standby and clear screen	
 		ChangeCurStateToStandby();
-	    iHwrWnd->CloseCandidateList();
         }
     else
         {
         SubmitCharToFep( EKeyBackspace );
         iStateMgr->HandleEventL( EHwrEventKeyBack, KNullDesC );
-		if(iDataStore->StartCharacter())
+		if(iIsStrokeOfDrawingCharacerStarted)
 		    {
 			ChangeCurStateToStandby();
-		    iHwrWnd->CloseCandidateList();;
 			}
         }
     }
@@ -872,8 +841,6 @@ void CPeninputFingerHwrArLayout::OnCandidateSelectedL( CFepUiBaseCtrl* aCtrl,
     iStateMgr->HandleEventL( EHwrEventCandidateSelected, aData );
     
     ChangeCurStateToStandby();
-
-    iHwrWnd->CloseCandidateList();;
     }
 
 
@@ -885,10 +852,6 @@ void CPeninputFingerHwrArLayout::OnIcfClicked()
     {
     // Go to standby
 	ChangeCurStateToStandby();
-	if(iHwrWnd->IsCandidateShowup())
-	    {
-		iHwrWnd->CloseCandidateList();
-		}
 	}
 
 // ---------------------------------------------------------------------------
@@ -909,7 +872,8 @@ void CPeninputFingerHwrArLayout::OnHwrStrokeStartedL()
 		}
     
 	// remember the start writing position.
-    iDataStore->SetStartCharacter(ETrue);
+	iIsStrokeOfDrawingCharacerStarted = ETrue;
+	
     iStateMgr->HandleEventL( EEventHwrStrokeStarted, KNullDesC );
     }
 
@@ -931,13 +895,13 @@ void CPeninputFingerHwrArLayout::OnHwrStrokeFinishedL()
 // 
 void CPeninputFingerHwrArLayout::OnHwrCharacterFinishedL()
     {
-    iDataStore->SetStartCharacter( EFalse );
-
+    iIsStrokeOfDrawingCharacerStarted = EFalse;
+	
     RArray<TPoint> points = iHwrWnd->StrokeList();
     TPtrC ptr;
     ptr.Set( reinterpret_cast<TText*>( &points ), sizeof(&points) );
     iStateMgr->HandleEventL( EEventHwrCharacterTimerOut, ptr );
-  
+    
 	iHwrWnd->OpenCandidateList();
 	}
 
@@ -1051,7 +1015,22 @@ void CPeninputFingerHwrArLayout::SetGuideLineOn(TBool aGuideLineOn)
 // 
 void CPeninputFingerHwrArLayout::ChangeCurStateToStandby()
     {
+	iIsStrokeOfDrawingCharacerStarted = EFalse;
 	iHwrWnd->CancelWriting();
+	
+	// close the candidate list if it's currently showing up	
+	if(iHwrWnd->IsCandidateShowup())
+	    {
+		iHwrWnd->CloseCandidateList();
+		}
+	
+	// close the symbol table
+    if(iHwrWnd->IsSymbolTableShowingUp())
+		{
+		iHwrWnd->CloseSymbolTable();
+		}
+    
+    // set the state to be standby	
     iStateMgr->SetState( CPeninputFingerHwrArStateManagerBase::EStateStandBy );
     }
 

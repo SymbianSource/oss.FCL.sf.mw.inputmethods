@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -422,7 +422,7 @@ private:
      * set hwr writing pen width.
      * 
      * @since S60 v5.0
-     * @param aWritingSpeed speed
+     * @param aPenSize The pen size
      * @return none
      */     
     void SetBoxPenSize(const TSize aPenSize);
@@ -443,7 +443,7 @@ private:
      * @param aGuideLineOn  guide line on or off.
      * @return none
      */    
-    void SetGuideLineOn(TBool aGuideLineOn);
+    void SetGuideLineOn(const TBool aGuideLineOn);
     
     /**
      * change current state manager to standby state.
@@ -489,6 +489,12 @@ private:
      */
     CRepository* iRepositorySetting;
     
+	/**
+	 * Check if the stroke of drawing the character on the 
+	 * HWR box is started
+	 */
+	TBool iIsStrokeOfDrawingCharacerStarted;
+	
     /**
      * Last overlap index.
      */

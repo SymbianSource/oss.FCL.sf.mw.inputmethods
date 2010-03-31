@@ -131,6 +131,8 @@
 #include <eikedwin.h>
 #include <aknCharMap.h>
 
+#include <AknFepInternalPSKeys.h>
+
 const TInt KSelectItemSize(10);
 _LIT(KAknFepResourceFileName, "z:\\resource\\fep\\aknfep.rsc");
 
@@ -761,8 +763,9 @@ TBool CAknFepManager::TryCloseUiL()
 //#endif // __ITI_LONGPRESS_NUM_SHIFT_COPYPASTE__
                 
 #ifdef RD_SCALABLE_UI_V2 
-               
-            if (iFepPluginManager->BeforeSpell())
+            
+            if ( iFepPluginManager != NULL && 
+                 iFepPluginManager->BeforeSpell() )
                 {
                 iFepPluginManager->SetBeforeSpell(EFalse);
                 }
@@ -2415,7 +2418,11 @@ TKeyResponse CAknFepManager::HandleShiftKeyEventL(TEventCode aEventCode)
 #ifdef __HALF_QWERTY_KEYPAD               
 #ifdef __SHIFT_KEY_LOOP
 				// Cancel multitap timer
-				iPtiEngine->CancelTimerActivity();
+                
+                if( iPtiEngine != NULL )
+                    {
+				    iPtiEngine->CancelTimerActivity();
+                    }
 #endif //__SHIFT_KEY_LOOP       
 #endif //__HALF_QWERTY_KEYPAD      
 #endif //RD_INTELLIGENT_TEXT_INPUT
@@ -3114,9 +3121,6 @@ TKeyResponse CAknFepManager::HandleQwertyControlKeyEventL(const TKeyEvent& aKeyE
 #endif   
         ResetCcpuFlags();               
         }
-
-
-//Removed as part of the fix STAA-7FXCTK 
 
 /*    if (EPtiKeyboardQwerty4x10 == KeyboardLayout())
     	{
@@ -4086,7 +4090,7 @@ void CAknFepManager::ExitPluginSpellModeByOkL()
         HBufC* spell = iFepPluginManager->SpellTextInput();
         
         iFepPluginManager->SetITUTSpellingStateL(EFalse); 
-        iFepPluginManager->DestroySpellEditor();
+        iFepPluginManager->HideSpellEditor();
         
         if (spell)
             {
@@ -4145,7 +4149,7 @@ void CAknFepManager::ExitPluginSpellModeByCancel()
     if (iFepPluginManager->IsSpellVisible())
         {
         TRAP_IGNORE(iFepPluginManager->SetITUTSpellingStateL(EFalse)); 
-        iFepPluginManager->DestroySpellEditor();
+        iFepPluginManager->HideSpellEditor();
 
         TRAP_IGNORE(UpdateCbaL(NULL)); 
         if (iFepPluginManager->CaseUpdatesSupressed())
@@ -4891,7 +4895,7 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
         	LaunchPredictiveSettingDialogL();
         	break;
         /*
-	    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+	    This code is the part of fixing TSW Error 
 	    "Matches" and "insert word" options are not available under Edit Menu.
 	    This is For Insert Word Functionality*/	
         case EAknEditMenuCmdInsertWord:
@@ -5184,10 +5188,16 @@ void CAknFepManager::DynInitMenuPaneL(TInt aResourceId, CAknFepUiInterfaceMenuPa
     if (R_AVKON_TOUCH_TOUCHINPUT_MENU == aResourceId )
         {
         oldPermitModes = iPermittedInputModes;
-        iPermittedInputModes = iFepPluginManager->PreviousPermitMode();   
+        
+        if( iFepPluginManager != NULL )
+            {
+            iPermittedInputModes = iFepPluginManager->PreviousPermitMode();
+            }
         }
-
-    iFepPluginManager->InitMenuPaneL( iRememberEditorState, aMenuPane, aResourceId );
+    if( iFepPluginManager != NULL )
+        {
+        iFepPluginManager->InitMenuPaneL( iRememberEditorState, aMenuPane, aResourceId );
+        }
     if (oldPermitModes != -1)
         {
         iPermittedInputModes = oldPermitModes;    
@@ -5341,12 +5351,9 @@ void CAknFepManager::DynInitMenuPaneL(TInt aResourceId, CAknFepUiInterfaceMenuPa
             // Predictive QWERTY (XT9) changes ---->
         case R_AKNFEP_PRED_INPUT_OPTIONS_SUBMENU:
         	{
-            	// This part of code fixing TSW Errors :STAA-7GZE5W
-            	//									   :STAA-7GZEBX 
+            	// This part of code fixing TSW Errors
             	// "Edit word" option is not available under edit menu in ITU-T mode.
             	// "Insert word" Should not be available QWERTY mode.
-            //TSW: AKSS-7P87XG
-            //TSW: AKSS-7P88Wf	
           	if (IsKoreanInputLanguage() || 
                     iPtiEngine->CurrentLanguage()->LanguageCode() == ELangPrcChinese || 
                     iPtiEngine->CurrentLanguage()->LanguageCode() == ELangTaiwanChinese || 
@@ -5378,7 +5385,7 @@ void CAknFepManager::DynInitMenuPaneL(TInt aResourceId, CAknFepUiInterfaceMenuPa
         }
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 	/*
-    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+    This code is the part of fixing TSW Error Edit Menu : 
     "Matches" and "insert word" options are not available under Edit Menu.
     This is To make visible/invisible the Insert Word in Optios menu & Edit Menu*/
     iIsLastResourceEditMenu = aResourceId;
@@ -6384,7 +6391,7 @@ void CAknFepManager::DoWesternTouchMenu(CAknFepUiInterfaceMenuPane* aMenuPane)
             aMenuPane->SetItemDimmed(EAknCmdEditModeNumber, EFalse);
             }
         }
-    //modified by zhangfeiyan, fix bug SKIN-7LABJ3
+    
     if ( IsModePermitted( ENativeNumber ) )
         {
        if ( iLanguageCapabilities.iArabicIndicDigitsAllowed &&
@@ -6639,7 +6646,7 @@ void CAknFepManager::DoWesternMenu(CAknFepUiInterfaceMenuPane* aMenuPane)
             }
         }
 
-    if ( ( iMode == ENumber || iMode == ENativeNumber ) && 
+    if ( ( iMode == ENumber || iMode == ENativeNumber || iMode == EHangul ) && 
         (iPermittedInputModes & (EAknEditorTextInputMode | EAknEditorSecretAlphaInputMode)) )
         {
         aMenuPane->SetItemDimmed(EAknCmdEditModeAlpha, EFalse);
@@ -7751,7 +7758,7 @@ void CAknFepManager::LaunchPenSupportMenuL()
         {
         TryRemoveNoMatchesIndicatorL();
 		/*
-	    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+	    This code is the part of fixing TSW Error Edit Menu : 
 	    "Matches" and "insert word" options are not available under Edit Menu.
 	    When we launch Edit Menu.the word which in Inline Editing in the BackGorund 
 	    Should not Commit*/        
@@ -7759,7 +7766,7 @@ void CAknFepManager::LaunchPenSupportMenuL()
         CommitInlineEditL();
 #endif
 		/*
-	    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+	    This code is the part of fixing TSW ErrorEdit Menu : 
 	    "Matches" and "insert word" options are not available under Edit Menu.
 	    This Flag is useful for deciding whether "Matches" Menu Item can Visible 
 	    or not*/
@@ -7767,7 +7774,7 @@ void CAknFepManager::LaunchPenSupportMenuL()
         SetFlag(EFlagInlineEditInBackground);
 #endif
 		/*
-	    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+	    This code is the part of fixing TSW Error  Edit Menu : 
 	    "Matches" and "insert word" options are not available under Edit Menu.*/
 #ifndef RD_INTELLIGENT_TEXT_INPUT        
         ClearFlag(EFlagInsideInlineEditingTransaction);
@@ -7846,7 +7853,7 @@ void CAknFepManager::LaunchSelectModeMenuL()
         {
         TryRemoveNoMatchesIndicatorL();
 		/*
-	    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+	    This code is the part of fixing TSW Error :  Edit Menu : 
 	    "Matches" and "insert word" options are not available under Edit Menu.
 	    When we launch Edit Menu.the word which in Inline Editing in the BackGorund 
 	    Should not Commit*/        
@@ -7854,7 +7861,7 @@ void CAknFepManager::LaunchSelectModeMenuL()
         CommitInlineEditL();
 #endif
 		/*
-	    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+	    This code is the part of fixing TSW Error :  Edit Menu : 
 	    "Matches" and "insert word" options are not available under Edit Menu.
 	    This Flag is useful for deciding whether "Matches" Menu Item can Visible 
 	    or not*/
@@ -7862,7 +7869,7 @@ void CAknFepManager::LaunchSelectModeMenuL()
         SetFlag(EFlagInlineEditInBackground);
 #endif
 		/*
-	    This code is the part of fixing TSW Error ID: BSAN-7G58DB :  Edit Menu : 
+	    This code is the part of fixing TSW Error :  Edit Menu : 
 	    "Matches" and "insert word" options are not available under Edit Menu.*/
 #ifndef RD_INTELLIGENT_TEXT_INPUT        
         ClearFlag(EFlagInsideInlineEditingTransaction);
@@ -7911,7 +7918,11 @@ void CAknFepManager::LaunchSelectModeMenuL()
                 if ( charResourceId != ENoCharacters && IsAbleToLaunchSCT()&& 
                         EditorType() != CAknExtendedInputCapabilities::EEikSecretEditorBased)
                     {
-                    menuPane->ConstructMenuSctRowL( iEditCharsPtr, charResourceId );
+                    
+                    if( menuPane != NULL )
+                        {
+                        menuPane->ConstructMenuSctRowL( iEditCharsPtr, charResourceId );
+                        }
                     }
                 else
                     {
@@ -8150,7 +8161,7 @@ void CAknFepManager::LaunchCandidatePopupListL( TInt aFocusedIndex )
         GetScreenCoordinatesL(inlineEditorBr, height, ascent);
         
         // Focus next word in list ---->
-        // To fix the bug STAA-7GYDB6, Candidate list opens with the highlight on 3rd candidate when Exact typing is use.
+        // To fix the bug Candidate list opens with the highlight on 3rd candidate when Exact typing is use.
         // Show the popup.
         TInt selectedIdx = aFocusedIndex;
         TKeyEvent lastKeyEvent;
@@ -8573,11 +8584,14 @@ void CAknFepManager::LaunchPredictiveSettingDialogL()
 	  }
     TUid fepUid = CCoeEnv::Static()->FepUid();
     ClearExtendedFlag(EExtendedFlagEdwinEditorDestroyed);
+	
+	RProperty::Set(KPSUidAknFep,KAknFepSettingDialogState,1);
 	UiInterface()->LaunchPredictiveSettingDialogL(R_PREDICTIVESETTING_DIALOG,
 												  R_PREDICTIVESETTINGDIALOG_MENUBAR,
 												  R_PREDICTIVETEXTOFF_CONFIRMATION_QUERY,
 												  R_AKNFEP_PRED_INPUT_SETTINGS_TITLE);
     PrepareFepAfterDialogExitL(fepUid);	
+	RProperty::Set(KPSUidAknFep,KAknFepSettingDialogState,0);
 #ifdef RD_SCALABLE_UI_V2	
     // // Addtion of ITI features on FSQ.    
     if ( iFepPluginManager 
@@ -10685,7 +10699,7 @@ void CAknFepManager::ConfigureFEPFromEditorStateL()
         // the default chinese find mode is the first mode in the hash key loop, except PrcChinese
         if( iLanguageCapabilities.iInputLanguageCode == ELangPrcChinese)
             {
-            // Fix bug EHST-6DBFUJ: Default searching language shall be ELatin
+            // Default searching language shall be ELatin
             // Changed from EPinyin to ELatin here
             TryChangeModeL(ELatin);
             }
@@ -12910,7 +12924,7 @@ void CAknFepManager::UpdateIndicators()
                         }
                     }
                 }
-           // Add This condition for Fixing EYYE-7HHBWW: Phonebook, ReTe, PF52.50_2008_wk32: 
+           // Add This condition for  Phonebook, ReTe, PF52.50_2008_wk32: 
            // Navigation bar disappears after tapping find pane and then returning back to Names list view.
            if (!(editingStateIndicator == (MAknEditingStateIndicator*)iIndicator &&
                ( iFepPluginManager && iFepPluginManager->PluginInputMode() == EPluginInputModeItut ) &&
@@ -12938,7 +12952,6 @@ void CAknFepManager::UpdateIndicators()
 void CAknFepManager::UpdateNumberIndicator( TAknEditingState& aNewState )
     {
     
- // chnage for AIYR-6L7DGU; This problrm persist in all variants. 
  // The fix is made only for Hindi
     UpdateNumericEditorDigitType();
     TBool supportsWesternNumericIntegerOrReal =
@@ -13658,7 +13671,7 @@ TBool CAknFepManager::IsAbleToLaunchSmiley() const
     TBool ableToLaunchSmiley(EFalse);
     
     CAknEdwinState* edwinState = EditorState();
-    if(edwinState)
+    if ( edwinState && EditorHasFreeSpace() )
         {
         CAknEdwinFormAccessor* formAccessor = edwinState->FormAccessor();
         if(formAccessor)
@@ -14322,7 +14335,6 @@ void CAknFepManager::UpdateCbaL(TInt aResourceId)
         return;
         }
     
-    //For bug ESSG-7RXC96
     if((iAknEditorFlags & EAknEditorFlagFindPane)&& IsChineseInputLanguage()&& aResourceId != NULL)
         {
         return;
@@ -14446,6 +14458,10 @@ void CAknFepManager::SetWesternPredictive( const TBool aWesternPredictive )
             {
             iSharedDataInterface->ResetPredictiveTextOn();
             }
+        if ( iFepPluginManager && iFepPluginManager->IsSupportITIOnFSQ() )
+        	{
+            SendEventsToPluginManL( EPluginUpdatePenInputITIStatus );
+        	}
         }
     }
 
@@ -15685,12 +15701,10 @@ void CAknFepManager::LaunchLanguagesPopupListL(TBool aLaunchedByTouchWin)
     SetFlag( EFlagForegroundUIComponentVisible );
     CleanupStack::Pop( icons );	// iUiInterface->LaunchListPopupL takes ownership immediately
 #ifdef RD_SCALABLE_UI_V2 
-    /* tp teleca fix 17.9.2009 to IKIM-7VK8GG*/
-    if( iFepFullyConstructed && iFepPluginManager)
+    if( iFepFullyConstructed && iFepPluginManager && !iFepPluginManager->IsInMenuOpen() )
             {
             iFepPluginManager->SetMenuState();            
             }
-    // tp teleca fix end
 #endif              
     // Fire up the dialog
 #ifdef RD_SCALABLE_UI_V2
@@ -15962,7 +15976,7 @@ void CAknFepManager::SetInputLanguageCapabilities(const TInt aInputLanguage)
 
     MAknFepManagerInterface* fepUI = iLangMan->GetFepUI(ELatin, iCharWidth, ETrue);
     MPtiLanguage* ptiLanguage = iPtiEngine->GetLanguage(fepUI->SupportLanguage(ELatin));
-    if (ptiLanguage) // can be NULL in some uncommon situations, see TAVN-6SWB4Z
+    if (ptiLanguage) // can be NULL in some uncommon situations
         {
         iLanguageCapabilities.iSupportsWesternPredictive = 
                                            ptiLanguage->HasInputMode(EPtiEnginePredictive);
@@ -18240,7 +18254,7 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                  iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
                  iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
                 {
-                 SetStopProcessFocus(ETrue, EFalse);
+                SetStopProcessFocus(ETrue, ETrue);
                 iFepPluginManager->SetMenuState();            
                 }            
              else if (!iFepPluginManager->IsGlobleNotes())
@@ -20737,7 +20751,7 @@ void CAknFepManager::ConvertCharToKey(TChar aChar, TUint16& aKey) const
 	if (!iPtiEngine)
 		return;
 		
-    CPtiCoreLanguage* lang = (CPtiCoreLanguage*)iPtiEngine->GetLanguage(iLanguageCapabilities.iInputLanguageCode);    
+    CPtiCoreLanguage* lang = static_cast<CPtiCoreLanguage*>( iPtiEngine->CurrentLanguage() );
     if (!lang)
         return;
 

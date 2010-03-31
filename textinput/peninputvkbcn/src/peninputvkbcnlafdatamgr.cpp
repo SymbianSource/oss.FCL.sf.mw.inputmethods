@@ -1479,6 +1479,9 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
 	dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
 
  	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(2).LayoutLine();
+ 	// why, you asked? well, the reason is it's turned out this is the better one.
+ 	keyText.iB += 3;
+ 	
   	dataInfo->iKeypad.iTextLayout = keyText; 	
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);  	
   	

@@ -297,8 +297,21 @@ MAknFepManagerInterface* CAknFepLanguageManager::GetPluginInputFepUiL(
 
     RArray<TInt> implList;
     CleanupClosePushL(implList);
-    
-    TPluginInputMode secondMode = EPluginInputModeItut;
+    // Now, there is no Landscape mode ITUT anymore, so change SecondMode to FSQ or ITUT
+    // based on current screen mode.   
+
+    TPluginInputMode secondMode;
+    TPixelsTwipsAndRotation size; 
+    CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+    TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
+    if (landscape) // LandScape
+        {
+        secondMode = EPluginInputModeFSQ;
+        }
+    else // Portrait
+        {
+        secondMode = EPluginInputModeItut;
+        } 
     TPluginInputMode curMode = aPreferedMode;
     TInt language = aPenInputLang;
 

@@ -263,7 +263,24 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
             break;
         case EEventVirtualKeyUnLatched:
             {
-            UiLayout()->SignalOwner(ESignalKeyEvent, iNewDeadKeyBuf);
+            HBufC* newCharBuf = HBufC::New( 2*iNewDeadKeyBuf.Length() );
+            if( newCharBuf )
+                {
+                CPeninputGenericVkbLayout* layout 
+                        = static_cast<CPeninputGenericVkbLayout*>( UiLayout() );
+                if( layout->IsEnableITIOnFSQ() )
+                    {
+                    // If ITI is open, double same keys should be send for one dead key,
+                    // core will handle them as one key.
+                    newCharBuf->Des().Append( iNewDeadKeyBuf );
+                    }
+                newCharBuf->Des().Append( iNewDeadKeyBuf );
+                }
+            
+            // Submit DeadKey
+            UiLayout()->SignalOwner(ESignalKeyEvent, *newCharBuf);
+            delete newCharBuf;
+             
             TBool deadKeyChange = EFalse;
             iLayoutContext->SetData(EAkninputDataTypeLatchedSet, &deadKeyChange);
             iNewDeadKeyBuf = KNullDesC;
@@ -292,12 +309,20 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
                                (iLayoutContext->RequestData(EAkninputDataTypeLatchedSet));
             if(latchedFlag)
                 {
-                HBufC* newCharBuf = HBufC::New( aEventData.Length() + iNewDeadKeyBuf.Length() );
+                HBufC* newCharBuf = HBufC::New( aEventData.Length() + 2*iNewDeadKeyBuf.Length() );
                 if( newCharBuf )
                     {
+                    CPeninputGenericVkbLayout* layout 
+                             = static_cast<CPeninputGenericVkbLayout*>( UiLayout() );
+                    if( layout->IsEnableITIOnFSQ() )
+                        {
+                        // If ITI is open, double same keys should be send for one dead key,
+                        // core will handle them as one key.                    
+                        newCharBuf->Des().Append( iNewDeadKeyBuf );
+                        }
                     newCharBuf->Des().Append( iNewDeadKeyBuf );
                     newCharBuf->Des().Append( aEventData );
-                    }                
+                    }
                 
                 UnLatchDeadKey(iNewDeadKeyBuf);
 
@@ -305,7 +330,11 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
                 iLayoutContext->SetData(EAkninputDataTypeLatchedSet, &deadKeyChange);
                 
                 // Submit DeadKey + Space or Enter at the same time
-                UiLayout()->SignalOwner(ESignalKeyEvent,*newCharBuf);
+                
+                if( newCharBuf != NULL )
+                    {
+                    UiLayout()->SignalOwner(ESignalKeyEvent,*newCharBuf);
+                    }
                 iNewDeadKeyBuf = KNullDesC;
                 delete newCharBuf;
                 }
@@ -1830,8 +1859,6 @@ void CPeninputGenericVkbWindow::HandleVirtualKeyLatchedEvent(TInt /*aEventType*/
     TKeyEvent* event = (TKeyEvent*) aEventData.Ptr();
     deadKey.Append(event->iCode);
 
-    CPeninputGenericVkbLayout* layout 
-                                  = static_cast<CPeninputGenericVkbLayout*>( UiLayout() );                                  
     TInt latchedFlag = CPeninputDataConverter::AnyToInt(
                        iLayoutContext->RequestData(EAkninputDataTypeLatchedSet));
     if(latchedFlag)
@@ -1840,15 +1867,24 @@ void CPeninputGenericVkbWindow::HandleVirtualKeyLatchedEvent(TInt /*aEventType*/
         iOldDeadKeyBuf = iNewDeadKeyBuf;
         iNewDeadKeyBuf = deadKey;
 
-        // When type another DeadKey, submit the previous one.
-     	if ( layout->IsEnableITIOnFSQ() )
-     		{
-     		UiLayout()->SignalOwner( ESignalKeyEvent, iNewDeadKeyBuf );
-     		}
-     	else
-     		{
-     		UiLayout()->SignalOwner( ESignalKeyEvent, iOldDeadKeyBuf );
-     		}        
+        HBufC* newCharBuf = HBufC::New( 2*iOldDeadKeyBuf.Length() );
+        if( newCharBuf )
+            {
+            CPeninputGenericVkbLayout* layout 
+                    = static_cast<CPeninputGenericVkbLayout*>( UiLayout() );
+            if( layout->IsEnableITIOnFSQ() )
+                {
+                // If ITI is open, double same keys should be send for one dead key,
+                // core will handle them as one key.
+                newCharBuf->Des().Append( iOldDeadKeyBuf );
+                }
+            newCharBuf->Des().Append( iOldDeadKeyBuf );
+            }
+        
+        // Submit old DeadKey
+        UiLayout()->SignalOwner(ESignalKeyEvent, *newCharBuf);
+        delete newCharBuf;                     
+     
         // Unlatch the previous DeadKey
         UnLatchDeadKey(iOldDeadKeyBuf);
         
@@ -1861,16 +1897,7 @@ void CPeninputGenericVkbWindow::HandleVirtualKeyLatchedEvent(TInt /*aEventType*/
         // Set DeadKey state to latched
         TBool deadKeyChange = ETrue;
         iLayoutContext->SetData(EAkninputDataTypeLatchedSet, &deadKeyChange);
-        
-     	if ( layout->IsEnableITIOnFSQ() )
-     		{
-     		UiLayout()->SignalOwner( ESignalKeyEvent, iNewDeadKeyBuf );
-     		}
         }
-   
-    // Send the char to FEP
-    // Not submit the DeadKey when latch it.
-//    UiLayout()->SignalOwner( ESignalKeyEvent, iNewDeadKeyBuf );
     }
 
 // ---------------------------------------------------------------------------
@@ -1921,8 +1948,20 @@ TBool CPeninputGenericVkbWindow::HandleVirtualKeyUpEvent(TInt aEventType,
  		{
  	    TBuf<KKeyCodeSize> buf;
  	    TKeyEvent* event = (TKeyEvent*) aEventData.Ptr();
- 	    buf.Append(event->iCode); 	    
- 		UiLayout()->SignalOwner( ESignalKeyEvent, buf );
+ 	    buf.Append(event->iCode);
+
+		HBufC* newCharBuf = HBufC::New( iNewDeadKeyBuf.Length() + buf.Length() );
+		if( newCharBuf )
+			{
+			newCharBuf->Des().Append( iNewDeadKeyBuf );
+			newCharBuf->Des().Append( buf );
+			}
+ 	    
+        // Submit DeadKey + Key at the same time
+        UiLayout()->SignalOwner(ESignalKeyEvent,*newCharBuf);
+		
+        delete newCharBuf;
+ 		
  		return ETrue;
  		}
  	

@@ -125,7 +125,10 @@ void CChnItutUiStatePredict::OnEntryL()
     iOwner->LayoutContext()->ShowArrowBtn(0);
     
     //hide indicator 
-    iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);        
+    iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);     
+    // Show ICF, Backspace after position changed to avoid flick
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( EFalse );
     }
 
 void CChnItutUiStatePredict::OnExit()
@@ -143,12 +146,12 @@ void CChnItutUiStatePredict::OnExit()
     iOwner->DataMgr()->ClearChnCandidates(EItutCandidates);
     candlist->Hide(ETrue);
     
-    //show navi button
-    iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight
-             | EBtnArrowUp| EBtnArrowDown);
-    
     //show indicator 
     iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
+    // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
+    iOwner->LayoutContext()->ShowArrowBtn(0);
     
     }
 

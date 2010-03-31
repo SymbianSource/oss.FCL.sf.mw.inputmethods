@@ -793,13 +793,16 @@ void CGSPenInputModel::SetInputModeBySettingPage(const TInt aIndex)
 
     if (iInputLanguage == ELangPrcChinese)
         {
-        if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+        if( ptiLang != NULL )
             {
-            curInputMode = EPinyin;
-            }
-        else
-            {
-            curInputMode = EStroke;    
+            if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+                {
+                curInputMode = EPinyin;
+                }
+            else
+                {
+                curInputMode = EStroke;    
+                }
             }
 
         if (curInputMode != -1)
@@ -810,13 +813,16 @@ void CGSPenInputModel::SetInputModeBySettingPage(const TInt aIndex)
         }
     else if (iInputLanguage == ELangHongKongChinese) 
         {
-        if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+        if( ptiLang != NULL )
             {
-            curInputMode = EStroke;
-            }
-         else
-            {
-            curInputMode = ECangJie;   
+            if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+                {
+                curInputMode = EStroke;
+                }
+            else
+                {
+                curInputMode = ECangJie;   
+                }
             }
             
         if (curInputMode != -1)
@@ -827,29 +833,32 @@ void CGSPenInputModel::SetInputModeBySettingPage(const TInt aIndex)
         }
     else if (iInputLanguage == ELangTaiwanChinese)
         { 
-        if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineZhuyinByPhrase))
+        if( ptiLang != NULL )
             {
-            curInputMode = EZhuyin;
-            }
-        else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
-            {
-            curInputMode = EStroke;
-            }
-        else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
-            {
-            curInputMode = EPinyin;
-            }
-        else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
-            {
-            curInputMode = EStroke;
-            }
-        else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
-            {
-            curInputMode = EPinyin;
-            }
-        else if (aIndex == 2)
-            {
-            curInputMode = EPinyin;            
+            if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineZhuyinByPhrase))
+                {
+                curInputMode = EZhuyin;
+                }
+            else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+                {
+                curInputMode = EStroke;
+                }
+            else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+                {
+                curInputMode = EPinyin;
+                }
+            else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+                {
+                curInputMode = EStroke;
+                }
+            else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+                {
+                curInputMode = EPinyin;
+                }
+            else if (aIndex == 2)
+                {
+                curInputMode = EPinyin;            
+                }
             }
 
         if (curInputMode != -1)
@@ -869,7 +878,11 @@ TInt CGSPenInputModel::InputModeInSettingPage()
     TInt index = 0;
     TInt skipCount = 0;
     MPtiLanguage* ptiLang = iPtiEngine->GetLanguage(iInputLanguage & KGSLanguageMask);    
-
+    
+    if( ptiLang == NULL )
+        {
+        return index;
+        }
     if (iInputLanguage == ELangPrcChinese)
         {
         if (iInputMode == EPinyin && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
@@ -972,8 +985,12 @@ void CGSPenInputModel::ResetInputModeArray(CDesCArrayFlat* aInputModeItems)
         {
         return;
         }
-        
-    MPtiLanguage* ptiLang = iPtiEngine->GetLanguage(iInputLanguage & KGSLanguageMask);                
+    
+    MPtiLanguage* ptiLang = iPtiEngine->GetLanguage(iInputLanguage & KGSLanguageMask);    
+    if( ptiLang == NULL )
+        {
+        return;
+        }
     switch(iInputLanguage)
         {
         case ELangPrcChinese:
@@ -1228,20 +1245,7 @@ TBool CGSPenInputModel::IsSettingItemAvailable( TInt aItemId )
         {
         case EGSInputpenIdHwrTraining:
             {
-            iIsHwrTrainingAviliable = EFalse;
-            TInt supportMode = EPluginInputModeNone;
-            if(KErrNone == iConnectErr)
-                {
-                supportMode = iPenInputServer.SupportInputMode();
-                }
-            TBool supportHWR = EFalse;
-            if(supportMode & EPluginInputModeHwr ||
-               supportMode & EPluginInputModeFSc ||
-               supportMode & EPluginInputModeFingerHwr)
-                {
-                supportHWR = ETrue;
-                }
-              
+            iIsHwrTrainingAviliable = EFalse;              
             CEikonEnv* env = CEikonEnv::Static();
             TUid appUid = env->EikAppUi()
                           ->Application()->AppDllUid();
@@ -1258,15 +1262,17 @@ TBool CGSPenInputModel::IsSettingItemAvailable( TInt aItemId )
                     iIsHwrTrainingAviliable = EFalse;                    
                     }
                 else
-                       {
+                    {
                     iIsHwrTrainingAviliable = IsTruiSupportedLanguage();
-                       }
-                   }                
+                    }
+                }                
             else
                 {
                 iIsHwrTrainingAviliable = IsTruiSupportedLanguage();
                 }
-            res = ( !ChineseLanguage() && !JapaneseLanguage() && iIsHwrTrainingAviliable && supportHWR);
+            res = ( !ChineseLanguage() && !JapaneseLanguage() 
+            		&& iIsHwrTrainingAviliable 
+            		&& IsSupportHWR() );
             }
             break;
         case EGSInputpenIdInputLanguage:
@@ -1288,47 +1294,43 @@ TBool CGSPenInputModel::IsSettingItemAvailable( TInt aItemId )
             
         case EGSInputpenIdGuidLine:
             {
-            TInt supportMode = EPluginInputModeNone;
-            if(KErrNone == iConnectErr)
+            res = ( !ChineseLanguage() && !JapaneseLanguage() && IsSupportHWR());
+            if(FeatureManager::FeatureSupported(KFeatureIdFfCapacitiveDisplay)&&
+                    iInputLanguage == ELangArabic)
                 {
-                supportMode = iPenInputServer.SupportInputMode();
+                res = EFalse;
                 }
-            
-            TBool supportHWR = EFalse;
-            if(supportMode & EPluginInputModeHwr ||
-               supportMode & EPluginInputModeFSc ||
-               supportMode & EPluginInputModeFingerHwr)
-                {
-                supportHWR = ETrue;
-                }
-            
-            res = ( !ChineseLanguage() && !JapaneseLanguage() && supportHWR);
             }
             break;
 
         case EGSInputpenIdRecognitionWithDictionary:
             {
-            TInt currentLanguage = InputLanguage(); // add this line
-            if (currentLanguage == ELangArabic)
-                {
-                res = ETrue;
-                }
+            res = EFalse;//item is useless after updating arabic hwr engine.
+//            TInt currentLanguage = InputLanguage(); // add this line
+//            if (currentLanguage == ELangArabic)
+//                {
+//                res = ETrue;
+//                }
             }              
             break;   
             
         case EGSInputpenIdWritingSpeed:
         case EGSInputpenIdPenTrailWidth:
+            {
+            if(IsSupportHWR())
+                {
+                res = ETrue;
+                }
+            if(FeatureManager::FeatureSupported(KFeatureIdFfCapacitiveDisplay)&&
+                    iInputLanguage == ELangArabic)
+                {//Hide item in setting list in arabic finger hwr.
+                res = EFalse;
+                }            
+            }
+            break;
         case EGSInputpenIdPenTrailColour:
             {
-            TInt supportMode = EPluginInputModeNone;
-            if(KErrNone == iConnectErr)
-                {
-                supportMode = iPenInputServer.SupportInputMode();
-                }
-               
-            if(supportMode & EPluginInputModeHwr ||
-               supportMode & EPluginInputModeFSc ||
-               supportMode & EPluginInputModeFingerHwr)
+            if(IsSupportHWR())
                 {
                 res = ETrue;
                 }
@@ -1389,5 +1391,27 @@ TBool CGSPenInputModel::IsTruiSupportedLanguage()
        }    
     return EFalse;
     }
+
+// ---------------------------------------------------------
+// Check if support hwr.
+// ---------------------------------------------------------
+//
+TBool CGSPenInputModel::IsSupportHWR()
+	{
+	TInt supportMode = EPluginInputModeNone;
+    if(KErrNone == iConnectErr)
+        {
+        supportMode = iPenInputServer.SupportInputMode( iInputLanguage );
+        }
+
+    TBool supportHWR = EFalse;
+    if( supportMode & EPluginInputModeHwr ||
+        supportMode & EPluginInputModeFSc ||
+        supportMode & EPluginInputModeFingerHwr)
+        {
+        return ETrue;
+        }    
+    return EFalse;
+	}
 
 //  End Of File

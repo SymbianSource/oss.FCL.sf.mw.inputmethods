@@ -33,7 +33,6 @@
 #include "AknFepUiInputStateInitialMultitapBase.h"
 
 // Reverting the change of deriving from TAknFepInputStateBase to fix the bugs
-// BSAN-7G4G3K and BSAN-7GD8ZW.
 class TAknFepInputStateInitialWesternPredictive : public TAknFepInputStateInitialMultitapBase
     {
 public:

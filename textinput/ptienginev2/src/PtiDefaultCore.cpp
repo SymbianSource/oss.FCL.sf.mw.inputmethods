@@ -518,7 +518,11 @@ void CPtiDefaultCore::AppendKeyPress(TPtiKey aKey)
 						{	
 						SetFlag(EPtiDeadKeyRootFlag); // This will indicate PtiEngine that extra character 
 						                             // was added to buffer.
-						iTextBuffer->Append(maps->StartMapping(aKey, iOwner->Case()));	
+                        chr = maps->StartMapping(aKey, iOwner->Case());
+                        if ( chr )
+                            {
+                            iTextBuffer->Append( chr );
+                            }
 						}
 					}
 				else if ((qmap->VowelSequenceFlag()) &&

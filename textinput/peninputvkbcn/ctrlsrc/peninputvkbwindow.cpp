@@ -363,7 +363,9 @@ void CAknFepVkbWindow::SizeChanged(TBool /*aLandscapeStyle*/)
 void CAknFepVkbWindow::SizeChangedForTitle()
     	{
 	TRect innerRect;
-    if (iLafMgr && !iLafMgr->IsValid())
+	
+    if (( iLafMgr == NULL ) || 
+        ( iLafMgr && !iLafMgr->IsValid() ))
         {
         return;
         }

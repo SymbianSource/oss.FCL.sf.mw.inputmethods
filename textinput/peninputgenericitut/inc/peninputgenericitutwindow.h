@@ -135,6 +135,7 @@ public:
                         const TInt aMaskID2 );
     void SetIndiWithTextFlag( TBool aFlag );
     void MsgBubbleForChinese();
+    void SetSpellDisplayContentL( TUint8* aData );
 private:
     CGenericItutWindow(CGenericItutWindowManager* aWindowMgr, 
                        CGenericItutUiLayout* aLayoutOwner,

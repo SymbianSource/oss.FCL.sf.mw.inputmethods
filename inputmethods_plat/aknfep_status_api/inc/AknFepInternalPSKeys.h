@@ -45,6 +45,15 @@ const TUid KPSUidAknFep = { 0x100056de };
  */
 const TUint32 KAknFepFnKeyState = 0x00000001;
 
+/**
+ * The Predictive Setting Dialog State
+ *
+ * Possible values:
+ * 0: Closed
+ * 1: Launched
+ */
+const TUint32 KAknFepSettingDialogState = 0x00000002;
+
 #endif
 
 // End of file

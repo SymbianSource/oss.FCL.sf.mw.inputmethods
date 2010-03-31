@@ -484,8 +484,13 @@ TBool  CAknFepUIManagerChinese::IsKeyMappedStroke(TInt aKey) const
 TBool CAknFepUIManagerChinese::IsValidChineseInputKeyQwerty(TInt aKey) const
     {
     TBool response = EFalse;
-#ifdef RD_INTELLIGENT_TEXT_INPUT        
-    TPtiKeyboardType keyboardType = iPtiEngine->KeyboardType();
+#ifdef RD_INTELLIGENT_TEXT_INPUT     
+    
+    TPtiKeyboardType keyboardType = EPtiKeyboardNone;
+    if( iPtiEngine != NULL )        
+        {
+        keyboardType = iPtiEngine->KeyboardType();
+        }
 #endif
 
     if(iMode == EPinyin)
@@ -654,7 +659,8 @@ TBool CAknFepUIManagerChinese::IsValidChineseInputKeyQwerty(TInt aKey) const
         }
 #endif        
 #ifdef RD_INTELLIGENT_TEXT_INPUT        
-    if(EPtiKeyboardQwerty4x12 == iPtiEngine->KeyboardType())
+    
+    if( iPtiEngine != NULL && EPtiKeyboardQwerty4x12 == iPtiEngine->KeyboardType())
         {
 #endif
     if(iMode == EZhuyin && IsFlagSet(ESupportZhuyinPhrase) && aKey == EPtiKeyQwertyApostrophe)

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -190,14 +190,6 @@ public: //symbol table
     TRect VirtualSctpadCellSize();
     
     /**
-     * Get cell size of Space and Enter
-     * 
-     * @since Symbian TB9.2
-     * @return cell size of virtual sctpad.
-     */     
-    TRect FixVirtualSctpadCellSize();
-    
-    /**
      * get cell rect of virtual sctpad.
      * 
      * @since Symbian TB9.2
@@ -213,14 +205,6 @@ public: //symbol table
      * @return a TAknTextLineLayout object to layout cell text.
      */    
     TAknTextLineLayout SctpadKeyTxtLayout();
-    
-    /**
-     * Get text layout about Space and Enter
-     * 
-     * @since Symbian TB9.2
-     * @return a TAknTextLineLayout object to layout cell text.
-     */    
-    TAknTextLineLayout FixSctpadKeyTxtLayout();
     
     /**
      * get preview bubble rect.
@@ -271,7 +255,6 @@ public: // candidate list
      * @return height unit of candidate list.
      */ 
     TInt CandidateUnitHeight();  
-    
 
     /**
      * get horizontal margin of candidate list.
@@ -312,7 +295,15 @@ public: // candidate list
      * @return font of candidate list.
      */     
     const CFont* CandidateFont();
+	
+	/**
+	 * Get indicator rect
+	 */
     TRect GetIndicatorRect();
+	
+	/**
+	 * Get arrow padding size
+	 */
 	TSize GetArrowPaddingSize();
 public: //sct paging buttons
     /**
@@ -322,7 +313,16 @@ public: //sct paging buttons
      * @return a TAknTextLineLayout object to layout text.
      */    
     TAknTextLineLayout SctPageBtnTxtLayout();
-	TSize SymbolGroupButtonSize();
+	
+	/**
+	 * Get buttons rects for symbol table
+	 */
+	RArray<TRect>& GetSymBtnArray();
+	
+	/**
+	 * Get virtual key pad rect
+	 */
+	TRect GetVirtualKeyRect(); 
 private:
     
     /**
@@ -340,23 +340,76 @@ private:
      * @return None
      */    
     void ConstructL();    
+
+private:
+    /**
+	 * Retrieve layout data
+	 */
+	void RetrieveLayoutData();
+	
+    /**
+	 * Retrieve the laf data for ICF editor
+	 */
+	void RetrieveLafDataForICF();
+	
+	/**
+	 * Retrieve the laf data for function button: 
+	 * Close, optons, symbol, delete, and arrows buttons.
+	 */
+	void RetrieveLafDataForFunctionalButton();
     
+	/**
+	 * Retrieve the laf data for candidate list
+	 */
+	void RetrieveLafDataForCandidateList();
+	
+    /**
+	 * Retrieve the laf data for symbol table
+	 */
+    void RetrieveLafDataForSymbolTable();
+	
+	/**
+	 * Retrieve the landscape laf data for symbol table
+	 */
+	void RetrieveLandscapeLafDataForSymbolTable();
+	
+	/**
+	 * Retrieve the portrait laf data for symbol table
+	 */
+	void RetrievePortraitLafDataForSymbolTable();
+
+    /**
+	 * Retrieve the laf data for HWR writing box
+	 */
+    void RetrieveLafDataForHwrBox();	 
+    
+	 /**
+	 * Retrieve the laf data for Candidate Preview bubble
+	 */
+    void RetrieveLafDataForPreviewBubble();
+	
 private: //datas
     
     TBool iIsLandscape;
-    
-    // constrols position
+    TRect iLayoutRect;
+    TPoint iLayoutOffset;
+	TSize iScreenSize;
+    /**
+	 * control rects
+	 *
+	 */
     TRect iRectIcf;
     TRect iRectWritingBox;
     TRect iRectNumpad;
     TRect iRectSctpad;
     TRect iRectSpase;
     TRect iRectEnter;
-        
+    TRect iIndicatorRect;
+	
+    /**
+     * Functinal button laf
+     */	 
     TRect iRectBtnClose;
-    TRect iRectBtnRangeChn;
-    TRect iRectBtnRangeEng;
-    TRect iRectBtnRangeNum;
     TRect iRectBtnRangeSmb;
     TRect iRectBtnBackspace;
     TRect iRectBtnArrowLeft;
@@ -364,51 +417,54 @@ private: //datas
     TRect iRectBtnArrowUp;
     TRect iRectBtnArrowDown;
     TRect iRectBtnOption;
-    TRect iRectBtnImeSwitch;
     TRect iRectBtnSctPage;
-    
+    TSize iArrowPaddingSize;
     TSize iSizeBtnPadding;
-    TSize iSizeNumpadCell;
-    
-    TInt iSctpadRowCount;
-    TInt iSctpadColCount;
-    TSize iSizeSctpadCell;
 
-    TRect iLayoutRect;
-    TPoint iLayoutOffset;
-    
-	TInt iIcfTextLeftMarginCn;
-	TInt iIcfTextRightMarginCn;
-	TInt iIcfTextTopMarginCn;
-	TInt iIcfTextBottomMarginCn;
-	TInt iIcfTextLineSpaceMarginCn;
-	TInt iIcfTextHeightCn;
+	/**
+	 * ICF laf
+	 */
+	TInt iIcfTextLeftMargin;
+	TInt iIcfTextRightMargin;
+	TInt iIcfTextTopMargin;
+	TInt iIcfTextBottomMargin;
+	TInt iIcfTextLineSpaceMargin;
+	TInt iIcfTextHeight;
     TInt iIcfTextAlignment;
     CFont* iIcfFont;
     
+	/**
+	 * Candidate laf
+	 */
     TInt iCandsHorizontalMargin;
     TInt iCandsVerticalMargin;
     TInt iCandsUnitWidth;
     TInt iCandsUnitHeight;
-    TInt iCandsNaviHeight;
     TPoint iCandidateLTPos;
-    TPoint iPredictiveLTPos;
     CFont* iCandsFont;
     TInt iCandsTextMargin;
     
-    TSize iScreenSize;
-    
+	/**
+	 * Symbol table laf data
+	 */
+	TRect iRectOfSymbolTable;
+	TInt iSctpadRowCount;
+    TInt iSctpadColCount;
+    TSize iSizeSctpadCell;
+	RArray<TRect> iSymBtnRectArray;
+	
+	/**
+	 * virtual key rects array
+	 */
     RArray<TRect> iSCTrectArray;
     
-    // preview bubble
+    /**
+	 * Preview bubble
+	 */
     TRect iPreviewWndRect;
     TRect iPreviewWndInnerRect;
     const CFont* iBubbleFont;
 	TAknTextLineLayout iPreviewWndText;
-	TSize iSymButtonSize;
-	TRect iRectOfSymbolTable;
-	TRect iIndicatorRect;
-	TSize iArrowPaddingSize;
     };
 
 #endif // C_PENINPUTFINGERHWRARLAFMANAGER_H

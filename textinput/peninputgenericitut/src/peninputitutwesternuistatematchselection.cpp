@@ -85,6 +85,9 @@ void CWesternItutUiStateMatchSelection::OnEntryL()
         MItutPropertySubscriber::EItutPropertyKeypadResourceId, 
         keypadResId);
 
+    // Show ICF, Backspace after position changed to avoid flick
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( EFalse );
     if (iOwner->DataMgr()->IsChinese())
         {
         iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight
@@ -98,7 +101,10 @@ void CWesternItutUiStateMatchSelection::OnEntryL()
 
 void CWesternItutUiStateMatchSelection::OnExit()
     {
+    // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
     iOwner->LayoutContext()->ShowArrowBtn(0);
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( ETrue );
     iSelList->CloseWindow();
     iIcf->SetOverLapState(EFalse);
     }

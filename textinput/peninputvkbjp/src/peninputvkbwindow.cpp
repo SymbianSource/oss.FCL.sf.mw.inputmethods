@@ -380,9 +380,10 @@ void CPeninputVkbWindow::CreateAllControlsL()
     AddButtonL( EPeninutWindowCtrlIdSwitchToHwrBtn,
                 EPeninputLayoutEventToHwr,
                 R_PENINPUT_LAYOUT_VKB_HWR );
-    for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
+    
+    if( iCtrlPool != NULL )
         {
-        if ( iCtrlPool )
+        for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
             {
             iCtrlPool->ControlByIndex( i )->AddEventObserver( UiLayout() );
             }
@@ -711,7 +712,11 @@ void CPeninputVkbWindow::SetSizeToRangeButtons()
 
         CFepUiBaseCtrl* ctrl = iCtrlPool->Control( EPeninutWindowCtrlIdRangeBar );
         TRect rect = TRect( TPoint(0,0), TSize( unitWidth, unitHeight ) );
-        static_cast<CAknFepCtrlRangeBar*> (ctrl)->SizeChanged(rect);
+        
+        if( ctrl != NULL )
+            {
+            static_cast<CAknFepCtrlRangeBar*> (ctrl)->SizeChanged(rect);
+            }
         }
     }
 

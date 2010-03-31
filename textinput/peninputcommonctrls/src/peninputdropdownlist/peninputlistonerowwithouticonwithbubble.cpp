@@ -106,6 +106,10 @@ void CListOneRowWithoutIconWithBubble::HandlePointerDragL(const TPoint& aPoint)
                 {
                 iMoveLatestRect = iClickedRect;
                 iClickedRect.SetRect(candidate->GetRect().iTl, candidate->GetRect().Size());
+                
+                // Compare the two rect, then decide draw it or not
+                CompareRect(iMoveLatestRect, iClickedRect);               
+                
                 iOwner->ClearBubble();
                 iOwner->DrawBubble(iClickedRect, candidate->GetCandidate());
                 }
@@ -116,10 +120,10 @@ void CListOneRowWithoutIconWithBubble::HandlePointerDragL(const TPoint& aPoint)
             
             iMoveLatestRect = iClickedRect;
             iClickedRect = KEmptyRect;
-            }         
-        
-        // Compare the two rect, then decide draw it or not
-        CompareRect(iMoveLatestRect, iClickedRect);
+            
+            // Compare the two rect, then decide draw it or not
+            CompareRect(iMoveLatestRect, iClickedRect);
+            }
         }
     }
 

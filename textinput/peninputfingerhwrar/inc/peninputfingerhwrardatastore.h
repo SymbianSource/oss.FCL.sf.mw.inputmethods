@@ -128,16 +128,7 @@ public:
      */            
     void SetPermittedCases( TInt aPermittedCases );
     
-   
-    /**
-     * Set Primary range
-     *
-     * @since Symbian TB9.2
-     * @param aPrimaryRange The Primary range
-     * @return None
-     */            
-    void SetPrimaryRange( TInt aPrimaryRange );
-    
+       
     /**
      * Get Primary range
      *
@@ -268,33 +259,6 @@ public:
     HBufC* KeyMappingStringL() const;
     
     /**
-     * Check if the char is the special display char
-     * 
-     * @since Symbian TB9.2
-     * @param aChar The checked char
-     * @return TBool Wheater or not the input char is the special display char
-     */
-    TBool IsSpecialDisplayChars( const TDesC& aChar ) const;
-     
-    /**
-     * Check if the char is need to be sent to app directly which not need to be shown  in candidate window.
-     * 
-     * @since Symbian TB9.2
-     * @param aChar The checked char
-     * @return TBool Wheater or not the input char is the directly sent char
-     */
-    TBool IsDirectlySentCandidate( const TDesC& aChar ) const;
-    
-    /**
-     * Convert the special display char to the keycode.
-     *
-     * @since Symbian TB9.2
-     * @param aChar The special display char.
-     * @return HBufC* The converted keycode char.
-     */
-    HBufC* ConvertDisplayChars( const TDesC& aChar ) const;
-    
-    /**
      * Get start writing char flag
      *
      * @since Symbian TB9.2
@@ -362,26 +326,6 @@ public:
                              TInt aSrcStartIdx,
                              TInt aTgtStartIdx);
     
-    /**
-     * Reset key board type
-     *
-     * @since Symbian TB9.2
-     */   
-    void ResetKeyboardType();
-    
-    /**
-     * Set key board type to qwerty
-     *
-     * @since Symbian TB9.2
-     */   
-    void SetKeyboardToQwerty();
-    
-    /**
-     * Get key board type
-     *
-     * @since Symbian TB9.2
-     */   
-    void GetKeyboardType();
     
 	/**
      * Get top guide line from hwr engine

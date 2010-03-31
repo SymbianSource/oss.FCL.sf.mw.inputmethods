@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -75,6 +75,18 @@ CPeninputArabicFingerHwrSymbolTable* CPeninputArabicFingerHwrSymbolTable::NewLC(
     }
 
 // ---------------------------------------------------------------------------
+// C++ constructor.
+// ---------------------------------------------------------------------------
+//
+CPeninputArabicFingerHwrSymbolTable::CPeninputArabicFingerHwrSymbolTable( 
+    CFepUiLayout* aFepUiLayout, TInt aControlId )
+    : CControlGroup( aFepUiLayout, aControlId )
+    {
+	SetControlType(ECtrlControlGroup|ECtrlTactileFeedback);
+	SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
+    }
+	
+// ---------------------------------------------------------------------------
 // c++ destructor
 // ---------------------------------------------------------------------------
 //
@@ -90,7 +102,7 @@ void CPeninputArabicFingerHwrSymbolTable::OpenSymbolTable()
     {
     CapturePointer( ETrue );
     iPopupVisible = ETrue; 
-	UiLayout()->LockArea(UiLayout()->Rect(),this);
+	UiLayout()->LockArea(UiLayout()->Rect(),this);  
     NavigatePage(0,EPagePosPageNo);
 	}
 
@@ -130,6 +142,12 @@ CFepUiBaseCtrl* CPeninputArabicFingerHwrSymbolTable::HandlePointerDownEventL(
 	   }
 	else
        {
+	    #ifdef RD_TACTILE_FEEDBACK
+        if (UiLayout()->SupportTactileFeedback())
+            {
+            UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
+            }
+        #endif //RD_TACTILE_FEEDBACK
 	   ctrl->UpdateArea(ctrl->Rect(),EFalse);
 	   }	
 	   
@@ -174,16 +192,6 @@ CFepUiBaseCtrl* CPeninputArabicFingerHwrSymbolTable::HandlePointerMoveEventL(
 	
     return ctrl;
     }
-
-// ---------------------------------------------------------------------------
-// C++ constructor.
-// ---------------------------------------------------------------------------
-//
-CPeninputArabicFingerHwrSymbolTable::CPeninputArabicFingerHwrSymbolTable( 
-    CFepUiLayout* aFepUiLayout, TInt aControlId )
-    : CControlGroup( aFepUiLayout, aControlId )
-    {
-    }
     
 // ---------------------------------------------------------------------------
 // Symbian second-phase constructor.
@@ -193,22 +201,28 @@ void CPeninputArabicFingerHwrSymbolTable::ConstructL()
     {
     BaseConstructL(); 
 	
-    //disable border
+    // disable border
     SetBorderSize( TSize(0,0) );
     
+	// construct virtual keypad
 	CreateVirtualKeypadL();
 	
+	// construct button group
     CreateButtonGroupL();
     }
 
+// ---------------------------------------------------------------------------
+// SizeChanged
+// ---------------------------------------------------------------------------
+//	
 void CPeninputArabicFingerHwrSymbolTable::SizeChanged(
-                     const TSize /*aKeypadSize*/, const TSize aButtonSize,
+                     const TRect aVirtualKeypadRect, const RArray<TRect> aBtnRects,
                      const TInt aKeypadRow, const TInt aKeypadCol, TBool aIsLandscape)
     {
 	iIsLandscape = aIsLandscape;
 	
 	// relayout the button group
-	TRect spaceBtnRect(iRect.iTl,iRect.iTl+TPoint(aButtonSize.iWidth,aButtonSize.iHeight));
+	TRect spaceBtnRect(aBtnRects[0]);
 	
 	TInt pdx = (spaceBtnRect.Size().iWidth/3)/2;
 	MoveIconButton(iSpaceBtn,spaceBtnRect,pdx,KSymbolButtonInnerPadding);
@@ -218,48 +232,45 @@ void CPeninputArabicFingerHwrSymbolTable::SizeChanged(
 	
 	// that's a not good algrithm in funciton AknPenInputDrawUtils::Draw3PiecesColorIcon for drawing 3Pieces icons 
 	// as when the  outter rect's height was not equal to the inter rect's height, the target rects the left icons and right icons 
-    // would be bitblited onto are Rect(0.0.0.0.0) [[which should not be that behavior]].
+    // would be bitblited onto are set to be Rect(0.0.0.0.0) [[which should not be that behavior]].
 	// Please theck the codes: AknPenInputDrawUtils::Draw3PiecesColorIcon: this function should be Updated.
 	iSpaceBtn->SetDraw3PieceFrameInfo(
 									  TDraw3PiecesFrame(KAknsIIDQgnIndiInputSpaceL,
 									  KAknsIIDQgnIndiInputSpaceMiddle,
 									  KAknsIIDQgnIndiInputSpaceR,
 									  pieceInnerRect));
-	TRect enterBtnRect = spaceBtnRect;
-	enterBtnRect.Move(TPoint(aButtonSize.iWidth,0));
+	TRect enterBtnRect(aBtnRects[1]);
 	
 	MoveIconButton(iEnterBtn,enterBtnRect,pdx,KSymbolButtonInnerPadding);
 	
-	TRect pageBtnRect = enterBtnRect;
-	pageBtnRect.Move(TPoint(aButtonSize.iWidth,0));
-	
+	TRect pageBtnRect(aBtnRects[2]);
+
 	if(aIsLandscape)
 	    {
-		i3Page1Btn->Hide(ETrue);
-		i3Page2Btn->Hide(ETrue);
-		i3Page3Btn->Hide(ETrue);
-		i2Page1Btn->Hide(EFalse);
-		i2Page2Btn->Hide(EFalse);
+	    i2Page1Btn->Hide(EFalse);
+	    i2Page2Btn->Hide(EFalse);
+	    
+	    i3Page1Btn->Hide(ETrue);
+	    i3Page2Btn->Hide(ETrue);
+	    i3Page3Btn->Hide(ETrue);
 		MoveIconButton(i2Page1Btn,pageBtnRect,KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
 	    MoveIconButton(i2Page2Btn,pageBtnRect,KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
 		}
 	else
         {
-		i2Page1Btn->Hide(EFalse);
-		i2Page2Btn->Hide(EFalse);
-		i3Page1Btn->Hide(EFalse);
-        i3Page2Btn->Hide(ETrue);
-        i3Page3Btn->Hide(ETrue);
+	    i2Page1Btn->Hide(ETrue);
+        i2Page2Btn->Hide(ETrue);
+        
+        i3Page1Btn->Hide(EFalse);
+        i3Page2Btn->Hide(EFalse);
+        i3Page3Btn->Hide(EFalse);
 		MoveIconButton(i3Page1Btn,pageBtnRect,KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
 	    MoveIconButton(i3Page2Btn,pageBtnRect,KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
 	    MoveIconButton(i3Page3Btn,pageBtnRect,KSymbolButtonInnerPadding,KSymbolButtonInnerPadding);
-		}	
-
+		}
+    
 	// relayout the virtual key pad
-	TRect keypadRect = iRect;
-	keypadRect.iTl = keypadRect.iTl + TPoint(0,aButtonSize.iHeight);
-	
-	iMutiPageKeypad->SetRect(keypadRect);
+	iMutiPageKeypad->SetRect(aVirtualKeypadRect);
 	
 	iMutiPageKeypad->UpdatePaging(aKeypadRow,aKeypadCol);
 	}
@@ -281,9 +292,9 @@ void CPeninputArabicFingerHwrSymbolTable::CreateVirtualKeypadL()
     AddControlL( iMutiPageKeypad );
     iMutiPageKeypad->AddEventObserver( UiLayout() );
     
-	iMutiPageKeypad->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonNormal );
-    iMutiPageKeypad->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonPressed );
-    iMutiPageKeypad->SetKeySkinId( EKeyBmpDim, KAknsIIDQsnFrKeypadButtonInactive );
+	iMutiPageKeypad->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonFrNormal );
+    iMutiPageKeypad->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonFrPressed );
+    iMutiPageKeypad->SetKeySkinId( EKeyBmpDim, KAknsIIDQsnFrKeypadButtonFrInactive );
     iMutiPageKeypad->SetResourceId( KInvalidResId );
         
     iMutiPageKeypad->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG68 );
@@ -352,13 +363,93 @@ void CPeninputArabicFingerHwrSymbolTable::MoveIconButton( CAknFepCtrlEventButton
 void CPeninputArabicFingerHwrSymbolTable::OnActivate()
     {
     CControlGroup::OnActivate();
-	/*if(IsPopup())
-	    {
-	    CapturePointer( ETrue );
-	    NavigatePage(0,EPagePosPageNo);
-		}*/
+	}
+
+// ---------------------------------------------------------------------------
+//  Read control's background info.
+// ---------------------------------------------------------------------------
+//	
+void CPeninputArabicFingerHwrSymbolTable::ConstructFromResourceL()
+    {
+	if ( iResourceId == KInvalidResId )
+        {
+        User::Leave( KErrArgument );
+        }
+    
+    TResourceReader reader;
+    CCoeEnv::Static()->CreateResourceReaderLC( reader, iResourceId );
+    
+	const TInt32 bgImageResId = reader.ReadInt32();
+	LoadBackgroundFromResourceL(bgImageResId);
+	
+	CleanupStack::PopAndDestroy( 1 ); //reader
+	
+	
+	CControlGroup::ConstructFromResourceL();
 	}
 	
+// ---------------------------------------------------------------------------
+//  Read control's background info.
+// ---------------------------------------------------------------------------
+//
+void CPeninputArabicFingerHwrSymbolTable::LoadBackgroundFromResourceL( const TInt aResId )
+    {
+    if ( aResId == 0 )
+        return;
+    
+    if ( BackgroundBmp() )
+        {
+        CFbsBitmap* bkBmp = BackgroundBmp();
+        delete bkBmp;   
+        SetBackgroundBmp( NULL );
+        }
+    if ( BkMaskBmp() )
+        {
+        CFbsBitmap* bkMaskBmp = BkMaskBmp();
+        delete bkMaskBmp;
+        SetBackgroundMaskBmp( NULL );
+        }    
+
+    TResourceReader resReader;
+    CCoeEnv::Static()->CreateResourceReaderLC( resReader, aResId ); 
+     
+    TPtrC bmpFileName = resReader.ReadTPtrC();
+    TInt32 imgMajorSkinId = resReader.ReadInt32();
+
+    TAknsItemID id;
+    TInt skinitemid;
+    
+    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    const TInt16 bmpId = resReader.ReadInt16();
+    const TInt16 bmpMskId = resReader.ReadInt16();
+    skinitemid = resReader.ReadInt16();   
+    id.Set( TInt( imgMajorSkinId ), skinitemid );
+    
+    if ( bmpId != KInvalidImg )
+        {
+        CFbsBitmap* backgroundImg = NULL;
+        CFbsBitmap* backgroundMaskImg = NULL;
+        if ( bmpMskId != KInvalidImg )
+            {
+            AknsUtils::CreateIconL( skininstance, id, backgroundImg,
+                    backgroundMaskImg, bmpFileName, bmpId, bmpMskId );
+            }
+        else
+            {
+            AknsUtils::CreateIconL( skininstance, id, backgroundImg,
+                    bmpFileName, bmpId );
+            }
+       
+        SetBackgroundBmp( backgroundImg );
+        SetBackgroundMaskBmp( backgroundMaskImg );           
+        }
+    CleanupStack::PopAndDestroy( 1 ); //reader
+    }
+	
+// ---------------------------------------------------------------------------
+// Load virtual keys image
+// ---------------------------------------------------------------------------
+//	
 void CPeninputArabicFingerHwrSymbolTable::LoadVkbKeyImageL(TInt aResId, const TSize& aKeySize)
     {
 	TResourceReader reader;    
@@ -409,7 +500,11 @@ void CPeninputArabicFingerHwrSymbolTable::LoadVkbKeyImageL(TInt aResId, const TS
     // Pop and destroy reader
     CleanupStack::PopAndDestroy( 1 );        
 	}
-	
+
+// ---------------------------------------------------------------------------
+// Load virtual keys
+// ---------------------------------------------------------------------------
+//	
 void CPeninputArabicFingerHwrSymbolTable::LoadVirtualKeypadKeyL(const TInt aResId, const RArray<TRect>& aCellRects)
     {
 	iMutiPageKeypad->SetResourceId(aResId);
@@ -434,6 +529,7 @@ void CPeninputArabicFingerHwrSymbolTable::LoadVirtualKeypadKeyL(const TInt aResI
             CVirtualKey* vk = CreateVkbKeyL( reader, aCellRects[i%rectCount] );
             CleanupStack::PushL( vk );
             iMutiPageKeypad->AddKeyL( vk );
+            
             CleanupStack::Pop( vk );
             }
         }
@@ -476,14 +572,13 @@ CVirtualKey* CPeninputArabicFingerHwrSymbolTable::CreateVkbKeyL( TResourceReader
 
     CleanupStack::PopAndDestroy( keytexts ); //keytexts
 
-
+    
     TRect innerrect = aKeyRect;
     innerrect.Shrink( TSize(10, 10) );
     vk->SetInnerRect( innerrect );
     
     return vk;
     }
-
 
 // ---------------------------------------------------------------------------
 // update virtual key info.
@@ -524,7 +619,7 @@ void CPeninputArabicFingerHwrSymbolTable::UpdateVkbKeyL( CVirtualKey* aVirtualKe
     }
 
 // ---------------------------------------------------------------------------
-// Change SCT page.
+// Navigate the symbol page
 // ---------------------------------------------------------------------------
 //
 void CPeninputArabicFingerHwrSymbolTable::NavigatePage( TInt aPageNo, TInt aPos )
@@ -564,14 +659,21 @@ void CPeninputArabicFingerHwrSymbolTable::NavigatePage( TInt aPageNo, TInt aPos 
             break;
         }
 		
+	// Show page button
     UpdatePageButtonsUi();
+	
+	// Draw the symbol table 
     Draw();
+	
+	// Update the feedback for the virtual key
     UpdateAllVirtualKeysFeedback();
+	
+	// Bitblt the whole symbol table to screen
 	UpdateArea(iRect);
     }
 
 // ---------------------------------------------------------------------------
-// sync sct paging buttons.
+// Show the button page which should be visible
 // ---------------------------------------------------------------------------
 //
 void CPeninputArabicFingerHwrSymbolTable::UpdatePageButtonsUi()
@@ -610,5 +712,30 @@ void CPeninputArabicFingerHwrSymbolTable::UpdateAllVirtualKeysFeedback()
         iMutiPageKeypad->EnableKeyFeedback( vk, enable );
         }
     }
+
+// ---------------------------------------------------------------------------
+//  Draw new content to the screen
+// ---------------------------------------------------------------------------
+//
+void CPeninputArabicFingerHwrSymbolTable::Draw()
+    {
+	if(AbleToDraw())
+        {
+		DrawOpaqueMaskBackground( Rect() );
+
+		if( BackgroundBmp() && BackgroundBmp()->SizeInPixels() != Rect().Size() )
+			{
+			AknIconUtils::SetSize(BackgroundBmp(), Rect().Size(), EAspectRatioNotPreserved);
+			}
+        // draw background
+		DrawBackground();    
+		
+        // draw group		
+		CControlGroup::Draw();
+		
+		// bitblt the new content to screen
+		UpdateArea(iRect);
+		}
+	}
 
 // End Of File

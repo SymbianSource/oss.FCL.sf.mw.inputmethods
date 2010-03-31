@@ -133,7 +133,7 @@ TBool TAknFepInputStateInitialKoreanMultitap::HandleKeyL(TInt aKey, TKeyPressLen
           
  	    if (aKey == EPtiKeyStar)
             {
-            /* Fix bug for EHQN-7ZWE9F 
+            /* 
            	ptiengine->DeleteKeyPress();
             TPtrC text = ptiengine->PreviousCandidate();
             fepMan->UpdateInlineEditL(text, text.Length());

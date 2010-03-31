@@ -368,11 +368,6 @@ void CPeninputFingerHwrArStateWriting::HandleEventL( const TInt aEventType,
             OnEndWritingL( aEventData );
             }
             break;
-        case EHwrEventCandidateSelected:
-            {
-            OnSelectedCandidatesL(aEventData);
-            }    
-            break;                  
         default:
             break;
         }
@@ -410,78 +405,13 @@ void CPeninputFingerHwrArStateWriting::OnEndWritingL( const TDesC& /*aEventData*
     if ( candidates.Count() > 0 )
         {
         HBufC* defaultCandiate = candidates[0];
-        
-        if( iDataStore.IsSpecialDisplayChars( *defaultCandiate ) )
-            {
-            HBufC* realCandidate = iDataStore.ConvertDisplayChars( *defaultCandiate );
-            iStateManager.HwrLayout().SubmitStringToFep( *realCandidate );
-            delete realCandidate;
-            }
-        else
-            {
-            iStateManager.HwrLayout().SubmitStringToFep( *defaultCandiate );
-            }
+        iStateManager.HwrLayout().SubmitStringToFep( *defaultCandiate );
             
-        //check if the default candidate is need to be sent directly
-        if( iDataStore.IsDirectlySentCandidate( *defaultCandiate ) )
-            {
-            iStateManager.SetState( CPeninputFingerHwrArStateManager::
-                EPeninputFingerHwrArStateStandby );
-            }
-        else
-            {
-            
-            iStateManager.SetState( CPeninputFingerHwrArStateManager::
+        iStateManager.SetState( CPeninputFingerHwrArStateManager::
                 EPeninputFingerHwrArStateCandidateSelecting );  
-            }        
         
         } 
 	}
-
-// -----------------------------------------------------------------------------
-// CPeninputFingerHwrArStateWriting::OnSelectedCandidatesL()
-// .
-// -----------------------------------------------------------------------------
-//	
-void CPeninputFingerHwrArStateWriting::OnSelectedCandidatesL( 
-    const TDesC& aEventData )
-    {
-    const TInt cellNo = aEventData[aEventData.Length() - 1];
-    if (!iDataStore.IsValidCandidate( cellNo ))
-        {
-        iStateManager.SetState(CPeninputFingerHwrArStateManager::
-                        EPeninputFingerHwrArStateStandby );
-        return;
-        }    
-    
-    TPtrC ptr;
-    ptr.Set(( aEventData.Left( aEventData.Length() - 1 ) ) );
-    RPointerArray<HBufC> candidates = iDataStore.Candidate();
-
-    //handle special display char
-    if( iDataStore.IsSpecialDisplayChars( ptr ) )
-        {
-        HBufC* realCandidate = iDataStore.ConvertDisplayChars( ptr );
-        iStateManager.HwrLayout().SubmitStringToFep( ptr );
-        delete realCandidate;
-        }
-    else
-        {
-        iStateManager.HwrLayout().SubmitStringToFep( ptr );         
-        }        
-        
-    iDataStore.SetArabicSymbolL();
-    
-    // record the default cell highlight flag
-    iDataStore.SetHighlight(EFalse);
-    
-//    iStateManager.SetState( 
-//        CPeninputFingerHwrArStateManager::
-//        EPeninputFingerHwrArStateStandby );     
-    }
-    
-
-	
 
 // -----------------------------------------------------------------------------
 // CPeninputFingerHwrArStateWriting::OnEntry()
@@ -592,22 +522,9 @@ void CPeninputFingerHwrArStateCandidateSelecting::OnSelectedCandidatesL(
     HBufC* defaultCandidate = candidates[0];
     if( *defaultCandidate != ptr )
         {
-        if( iDataStore.IsSpecialDisplayChars( ptr ) )
-            {
-            HBufC* realCandidate = iDataStore.ConvertDisplayChars( ptr );
-            iStateManager.HwrLayout().Replace( *defaultCandidate, 
-                *realCandidate );
-            delete realCandidate;
-            }
-        else
-            {
-            iStateManager.HwrLayout().Replace( *defaultCandidate, ptr );         
-            }        
+        iStateManager.HwrLayout().Replace( *defaultCandidate, ptr );         
         }
     iDataStore.SetArabicSymbolL();
-//    iStateManager.SetState( CPeninputFingerHwrArStateManager::
-//            EPeninputFingerHwrArStateStandby );
-    
     }
 
 

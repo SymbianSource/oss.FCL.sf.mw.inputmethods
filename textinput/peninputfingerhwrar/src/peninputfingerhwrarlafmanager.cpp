@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -24,8 +24,14 @@
 #include "peninputfingerhwrarlafmanager.h"
 #include "peninputfingerhwrarcontrolid.h"
 
-#define LAF_MODIFY 1
-#define HackerVersion 
+//#define HackerVersion 
+#define ARABIC_LAF
+
+const TInt KSymButtonNum = 3;
+const TInt KFuncButtonRowNum = 2;
+const TInt KFuncButtonColNum = 4;
+const TInt KLandscapeVirtualKeypadRow = 4;
+const TInt KLandscapeVirtualKeypadCol = 6;
 
 // ---------------------------------------------------------------------------
 // Symbian Constructor
@@ -51,24 +57,40 @@ CPeninputFingerHwrArLafManager* CPeninputFingerHwrArLafManager::NewLC()
     }
 
 // ---------------------------------------------------------------------------
+// c++ constructor
+// ---------------------------------------------------------------------------
+//
+CPeninputFingerHwrArLafManager::CPeninputFingerHwrArLafManager()
+    {
+    
+    }
+    
+// ---------------------------------------------------------------------------
+// Symbian second-phase constructor
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArLafManager::ConstructL()
+    {
+    }
+	
+// ---------------------------------------------------------------------------
 // c++ destructor
 // ---------------------------------------------------------------------------
 //
 CPeninputFingerHwrArLafManager::~CPeninputFingerHwrArLafManager()
     {
-    //nothing
-    iSCTrectArray.Reset();
     iSCTrectArray.Close();
+	iSymBtnRectArray.Close();
     }
 
-
 // ---------------------------------------------------------------------------
-// read laf data.
+// CPeninputFingerHwrArLafManager::RetrieveLayoutData()
+// Retrieve layout data
 // ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArLafManager::ReadLafInfo()
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLayoutData()
     {
-    // Screen
+	// Screen
     TRect rect;
     AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EScreen, rect);
     iScreenSize = rect.Size();
@@ -86,288 +108,424 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 
     iLayoutRect = fshwrRect.Rect();
     iLayoutOffset = iLayoutRect.iTl;
-    
-    // ICF & Keypad
-    TAknWindowLineLayout icflayoutcn,icflayoutbgcn;
-    TAknTextLineLayout icflefttext;    
-    TAknTextLineLayout icflefttext1, icflefttext2, icflefttext3; 
-    TAknLayoutRect icfrectlatin, icfrectcn;
+	}
 
-    if (iIsLandscape)
-        {
-        icflayoutcn = AknLayoutScalable_Avkon::fshwr2_icf_pane(1).LayoutLine();
-        }
-    else
-        {
-        icflayoutcn = AknLayoutScalable_Avkon::fshwr2_icf_pane(0).LayoutLine();
-        }
-    
-    icfrectcn.LayoutRect(fshwrRect.Rect(), icflayoutcn);
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrieveLafDataForICF()
+// Retrieve laf data for ICF editor
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLafDataForICF()
+    {
+	// ICF laf data
+    TAknWindowLineLayout icfLayout;
+    TAknLayoutRect icfLayoutRect;
 	
-    TAknLayoutScalableParameterLimits entryPaneVariety = 
-                AknLayoutScalable_Avkon::fshwr2_icf_pane_t1_ParamLimits(0);
-    TInt maxRow = entryPaneVariety.LastRow();
+    // read the icf layout 
+    icfLayout = AknLayoutScalable_Avkon::fshwr2_icf_pane(1).LayoutLine();
+
+    icfLayoutRect.LayoutRect(iLayoutRect, icfLayout);
+	iRectIcf = icfLayoutRect.Rect();
     
-    icflefttext = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1(0, 0, 0).LayoutLine();
+	// read icf text line layout
+    TAknTextLineLayout icfTextLineLayoutRow1 = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1(0, 0, 0).LayoutLine();   
+    TAknTextLineLayout icfTextLineLayoutRow2 = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1(0, 0, 1).LayoutLine();
+	TInt maxRow = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1_ParamLimits(0).LastRow();
+    TAknTextLineLayout icfTextLineLayoutLastRow = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1(0, 0, maxRow-1).LayoutLine();
     
-    icflefttext1 = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1(0, 0, 1).LayoutLine();
-    icflefttext2 = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1(0, 0, 2).LayoutLine();
-    icflefttext3 = AknLayoutScalable_Avkon::fshwr2_icf_pane_t1(0, 0, maxRow).LayoutLine();
-    iIcfTextLeftMarginCn = icflefttext.il;
-    iIcfTextRightMarginCn = iIcfTextLeftMarginCn;
-    
-    TAknLayoutText ctxt, ctxt1, ctxt2, ctxt3;
-    ctxt.LayoutText( icfrectcn.Rect(), icflefttext );
-    ctxt1.LayoutText( icfrectcn.Rect(), icflefttext1 );
-    ctxt2.LayoutText( icfrectcn.Rect(), icflefttext2 );
-    ctxt3.LayoutText( icfrectcn.Rect(), icflefttext3 );
+	// read icf layout text
+	TAknLayoutText icfLayoutText1;
+	TAknLayoutText icfLayoutText2;
+	TAknLayoutText icfLayoutTextLastRow;
+  
+    icfLayoutText1.LayoutText( iRectIcf, icfTextLineLayoutRow1 );
+    icfLayoutText2.LayoutText( iRectIcf, icfTextLineLayoutRow2 );
+    icfLayoutTextLastRow.LayoutText( iRectIcf, icfTextLineLayoutLastRow );
 	
-    iIcfTextTopMarginCn = ctxt.TextRect().iTl.iY - icfrectcn.Rect().iTl.iY;
-    iIcfTextLineSpaceMarginCn = ctxt1.TextRect().iTl.iY - ctxt.TextRect().iBr.iY;
-    iIcfTextBottomMarginCn = icfrectcn.Rect().iBr.iY - ctxt3.TextRect().iBr.iY 
-                                                     - iIcfTextLineSpaceMarginCn;
-    iIcfTextHeightCn = ctxt.TextRect().Height();    
+	// get the margins
+	iIcfTextLeftMargin      = icfTextLineLayoutRow1.il;
+    iIcfTextRightMargin     = iIcfTextLeftMargin;
+    iIcfTextTopMargin       = icfLayoutText1.TextRect().iTl.iY - iRectIcf.iTl.iY;
+    iIcfTextLineSpaceMargin = icfLayoutText2.TextRect().iTl.iY - icfLayoutText1.TextRect().iBr.iY;
+    iIcfTextBottomMargin    = iRectIcf.iBr.iY - icfLayoutTextLastRow.TextRect().iBr.iY - iIcfTextLineSpaceMargin;
+    iIcfTextHeight          = icfLayoutText1.TextRect().Height();    
  	
-    iIcfFont = const_cast<CFont*>(AknLayoutUtils::FontFromId(icflefttext.iFont, NULL));
+	// get font for text
+    iIcfFont = const_cast<CFont*>(AknLayoutUtils::FontFromId(icfTextLineLayoutRow1.iFont, NULL));
+	}
 
-    iRectIcf = icfrectcn.Rect();
-    
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrieveLafDataForCandidateList()
+// Retrieve the laf data for candidate list
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLafDataForCandidateList()
+    {
+	// retrieve the cell flow:
+	// fshwr2_func_candi_pane->fshwr2_func_candi_row_pane->fshwr2_func_candi_cell_pane
+	// ->fshwr2_func_candi_cell_bg_pane
+	
 	// candidate list
-    TAknWindowLineLayout candrowpane, candrowpane2, candlistpane, cellpane, candbgpane;
-    TAknLayoutRect candpaneRect, candrowpaneRect, candrowpaneRect2, cellpaneRect1, cellpaneRect2;
-    TAknLayoutRect cellpaneRect3, cellpaneRect;
-	
-    if (iIsLandscape)
-        {
-		candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(1).
-										LayoutLine();        
-        }
-    else
-        {
-       	candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(0).
-										LayoutLine();
-        }
-    candpaneRect.LayoutRect( fshwrRect.Rect(), candlistpane );
-    rect = candpaneRect.Rect();
-    candrowpane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 1).
-										LayoutLine();
-    candrowpaneRect.LayoutRect( rect, candrowpane );
+	TAknWindowLineLayout candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(1).LayoutLine();        
     
-    candrowpane2 = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 2).
+	TAknLayoutRect candpaneRect;
+    candpaneRect.LayoutRect( iLayoutRect, candlistpane );
+    TRect rect = candpaneRect.Rect();
+	
+	// get candiate row1 pane
+    TAknWindowLineLayout candRow1Pane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 1).
 										LayoutLine();
-    candrowpaneRect2.LayoutRect( rect, candrowpane2 );
+    TAknLayoutRect candrow1paneRect;
+	candrow1paneRect.LayoutRect( rect, candRow1Pane );
      
+	// get candidate cell pane with row 1 and col 0
+    TAknWindowLineLayout cellPane1Row1 = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , 0 , 1 ).
+										LayoutLine();
+    TAknLayoutRect cellPane1Row1Rect;
+	cellPane1Row1Rect.LayoutRect( candrow1paneRect.Rect(), cellPane1Row1 );
+    
+	// get candidate cell bg pane 
+    TAknWindowLineLayout candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).LayoutLine();
+	TAknLayoutRect cellPane1Row1BgRect;
+    cellPane1Row1BgRect.LayoutRect( cellPane1Row1Rect.Rect(), candbgpane );   
 	
-    cellpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 3 , 0 , 0 ).
+	// get candidate cell pane with row 1 and col 1
+    TAknWindowLineLayout cellPane2Row1 = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , 1 , 1 ).
 										LayoutLine();
-    cellpaneRect.LayoutRect( candrowpaneRect.Rect(), cellpane );
-    
-    candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(3).LayoutLine();
-    cellpaneRect1.LayoutRect( cellpaneRect.Rect(), candbgpane );   
-    
-    cellpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 3 , 1 , 0 ).
-										LayoutLine();
-    cellpaneRect.LayoutRect( candrowpaneRect.Rect(), cellpane );
-    
-    candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(3).LayoutLine();
-    cellpaneRect2.LayoutRect( cellpaneRect.Rect(), candbgpane );   
-    
-    
-    
-    cellpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 3 , 0 , 1 ).
-										LayoutLine();
-    cellpaneRect.LayoutRect( candrowpaneRect2.Rect(), cellpane );
-    
-    candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(3).LayoutLine();
-    cellpaneRect3.LayoutRect( cellpaneRect.Rect(), candbgpane );   
-    
-									
-    iCandsHorizontalMargin = cellpaneRect2.Rect().iTl.iX - cellpaneRect1.Rect().iBr.iX;
-    iCandsVerticalMargin = cellpaneRect3.Rect().iTl.iY - cellpaneRect1.Rect().iBr.iY;
+    TAknLayoutRect cellPane2Row1Rect;
+	cellPane2Row1Rect.LayoutRect( candrow1paneRect.Rect(), cellPane2Row1 );
 	
-    iCandsUnitWidth = cellpaneRect1.Rect().Width();
-    iCandsUnitHeight = cellpaneRect1.Rect().Height() ;
+	// get candidate cell2 bg pane
+	candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).LayoutLine();
+    TAknLayoutRect cellPane2Row1BgRect;
+	cellPane2Row1BgRect.LayoutRect( cellPane2Row1Rect.Rect(), candbgpane );
+	
+	// ====================================================================================================
+	// get candidate row2 pane
+    TAknWindowLineLayout candRow2Pane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 2).
+										LayoutLine();
+    TAknLayoutRect candrow2paneRect;
+	candrow2paneRect.LayoutRect( rect, candRow2Pane );
+	
+	// get candidate cell pane with row 2 and col 0
+    TAknWindowLineLayout cellPane1Row2 = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , 0 , 0 ).
+										LayoutLine();
+    TAknLayoutRect cellPane1Row2Rect;
+	cellPane1Row2Rect.LayoutRect( candrow2paneRect.Rect(), cellPane1Row2 );
     
-    iCandsNaviHeight = cellpaneRect1.Rect().Height();
-    iCandidateLTPos = candrowpaneRect.Rect().iTl;
-    iPredictiveLTPos = candrowpaneRect2.Rect().iTl;
+	// get the candidate cell bg pane with row 2 and col 0
+    candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).LayoutLine();
+	TAknLayoutRect cellPane1Row2BgRect;
+	cellPane1Row2BgRect.LayoutRect( cellPane1Row2Rect.Rect(), candbgpane );   
+	
+    // calculate the margins	
+    iCandsHorizontalMargin = cellPane2Row1BgRect.Rect().iTl.iX - cellPane1Row1BgRect.Rect().iBr.iX;
+    iCandsVerticalMargin = cellPane1Row2BgRect.Rect().iTl.iY - cellPane1Row1BgRect.Rect().iBr.iY;
+	
+    iCandsUnitWidth = cellPane1Row1BgRect.Rect().Width();
+    iCandsUnitHeight = cellPane1Row1BgRect.Rect().Height();
     
-    TAknTextLineLayout candstxtlayout = 
-                     AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane_t1(3).LayoutLine();
-    TAknLayoutText candstxt;
-    candstxt.LayoutText( cellpaneRect1.Rect(), candstxtlayout );
-    iCandsFont = const_cast<CFont*>( AknLayoutUtils::FontFromId( candstxtlayout.iFont, NULL ) );
-    iCandsTextMargin = candstxt.TextRect().iTl.iX - cellpaneRect1.Rect().iTl.iX;
+    iCandidateLTPos = candrow1paneRect.Rect().iTl;
     
-    
-    TAknWindowLineLayout btnrowpane, btnpane, btnbgpane;
-    TAknLayoutRect btnrowRect, btnRect, btnbgRect;
-    
-    // Get the first row rect *************************************************
-    btnrowpane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 0).
-                                            LayoutLine();
-    btnrowRect.LayoutRect(candpaneRect.Rect(), btnrowpane);
-    // Close Button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , 0 , 0 ).
-										LayoutLine();    
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane); 
-    iRectBtnClose = btnbgRect.Rect();
-    
-    // Range Button with mark
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , 1 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane); 
-    iRectBtnRangeChn = btnbgRect.Rect();
-    iRectBtnRangeEng = iRectBtnRangeChn;
-    iRectBtnRangeNum = iRectBtnRangeEng;
-    
-    // SCT button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , 2 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane); 
-    iRectBtnRangeSmb = btnbgRect.Rect();
-    
-    // Backspace button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , 3 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);
-    iRectBtnBackspace = btnbgRect.Rect();    
-    
-    // Get the second row rect **************************************************
-    btnrowpane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 1).
-                                            LayoutLine();
-    btnrowRect.LayoutRect(candpaneRect.Rect(), btnrowpane);
-    
-    // Option button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1 , 0 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);
-    iRectBtnOption = btnbgRect.Rect();     
-    
-    // Switch mode button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1 , 1 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane); 
-    
-    // Arrow up button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1 , 2 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);  
-    iRectBtnArrowUp = btnbgRect.Rect();
-    iRectBtnSctPage = iRectBtnArrowUp;  
+	// get candidate text laf data
+    TAknTextLineLayout candsTextLayout = 
+                     AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane_t1(1).LayoutLine();
+    TAknLayoutText candsText;
+    candsText.LayoutText( cellPane1Row1Rect.Rect(), candsTextLayout );
+    iCandsFont = const_cast<CFont*>( AknLayoutUtils::FontFromId( candsTextLayout.iFont, NULL ) );
+    iCandsTextMargin = candsText.TextRect().iTl.iX - cellPane1Row1Rect.Rect().iTl.iX;
+	}
 
-
-    // Get the third row rect **************************************************
-    btnrowpane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 2).
-                                            LayoutLine();
-    btnrowRect.LayoutRect(candpaneRect.Rect(), btnrowpane);
-
-    // Arrow left button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1 , 0 , 0 ).
-										LayoutLine();									
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).
-										LayoutLine();
-    btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane); 
-    iRectBtnArrowLeft = btnbgRect.Rect();    
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrieveLafDataForFunctionalButton()
+// Retrieve the laf data for functional group
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLafDataForFunctionalButton()
+    {
+	// retrieve the button laf flow:
+	// fshwr2_func_candi_pane->fshwr2_func_candi_row_pane->fshwr2_func_candi_cell_pane
+	// ->fshwr2_func_candi_cell_bg_pane
+	
+	// candidate list
+	TAknWindowLineLayout candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(1).LayoutLine();        
     
-    // Arrow right button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1 , 1 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).
-										LayoutLine();
-	btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);									    
-    iRectBtnArrowRight = btnbgRect.Rect();
-    
-    // Arrow down button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1 , 2 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).
-										LayoutLine();
-	btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);									    
-    iRectBtnArrowDown = btnbgRect.Rect();
-    
-    // Space button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 0 , 0 , 0 ).
-										LayoutLine();
-    btnRect.LayoutRect(btnrowRect.Rect(), btnpane);
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(0).
-										LayoutLine();
-	btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);									    
-    
-
-
-    // Enter button
-    btnpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 0 , 1 , 0 ).
-										LayoutLine();
-	btnRect.LayoutRect(btnrowRect.Rect(), btnpane);																		
-    btnbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(0).
-										LayoutLine();									
-	btnbgRect.LayoutRect(btnRect.Rect(), btnbgpane);
-										    
-    iRectEnter = btnbgRect.Rect();
-
-    
-    // Writing box
-    TAknWindowLineLayout writingboxpane;
-    TAknLayoutRect boxRect;
-    writingboxpane = AknLayoutScalable_Avkon::fshwr2_hwr_syb_pane(0).LayoutLine();
-    boxRect.LayoutRect(fshwrRect.Rect(), writingboxpane);
-    iRectWritingBox = boxRect.Rect();
-    iRectNumpad = iRectWritingBox;
-    iRectSctpad = iRectWritingBox;
-    
-    // virtual key size
-    TAknWindowLineLayout keypane, keybgpane;
-    TAknLayoutRect keyRect, keybgRect;
-  
-    TAknLayoutScalableParameterLimits sctPaneVariety =
-        AknLayoutScalable_Avkon::cell_fshwr2_syb_pane_ParamLimits(0);
-    
-    iSctpadRowCount = sctPaneVariety.LastRow() + 1;
-    iSctpadColCount = sctPaneVariety.LastColumn() + 1;    
-  
-    iSizeBtnPadding = TSize(6, 6);
-  
-    iSCTrectArray.Reset();
-    for(TInt i = 0; i < iSctpadRowCount; i++)
-        {
-        for ( TInt j = 0; j < iSctpadColCount; j++ )
+	TAknLayoutRect candpaneRect;
+    candpaneRect.LayoutRect( iLayoutRect, candlistpane );
+    TRect rect = candpaneRect.Rect();
+	
+	TAknWindowLineLayout candRowPane;
+	TAknLayoutRect candRowPaneRect;
+	
+	TAknWindowLineLayout cellPane;
+    TAknLayoutRect cellPaneRect;
+	
+	TAknWindowLineLayout buttonBgPane;
+	TAknLayoutRect cellPaneRowBgRect;
+	
+	RArray<TRect> buttonRect;
+	for(TInt row = 0; row < KFuncButtonRowNum; row++)
+	    {
+		candRowPane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, row).LayoutLine();
+		candRowPaneRect.LayoutRect( rect, candRowPane );
+		
+		for(TInt col = 0; col < KFuncButtonColNum; col++)
             {
-            keypane = AknLayoutScalable_Avkon::cell_fshwr2_syb_pane(0, j, i).LayoutLine();
-            keyRect.LayoutRect(boxRect.Rect(), keypane);
-            keybgpane = AknLayoutScalable_Avkon::cell_fshwr2_syb_bg_pane(0).LayoutLine();
-            keybgRect.LayoutRect(keyRect.Rect(), keybgpane);
-            iSCTrectArray.Append( keybgRect.Rect());
-            }
-        }
-    iSizeNumpadCell = keybgRect.Rect().Size();
-    iSizeSctpadCell = iSizeNumpadCell;
+			// cell pane
+			cellPane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 2 , col , row ).LayoutLine();
+			cellPaneRect.LayoutRect(candRowPaneRect.Rect(),cellPane);
+			
+			// cell bg pane
+			buttonBgPane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(2).LayoutLine();
+            cellPaneRowBgRect.LayoutRect( cellPaneRect.Rect(), buttonBgPane );
+			buttonRect.Append(cellPaneRowBgRect.Rect());
+			}			
+		}
+	
+	// assign the functional button
+    TInt i = 0;	
+	iRectBtnClose =      buttonRect[i++];
+    iRectBtnOption =     buttonRect[i++];
+    iRectBtnRangeSmb = 	 buttonRect[i++];
+	iRectBtnBackspace =  buttonRect[i++];
+	iRectBtnArrowUp =    buttonRect[i++];
+	iRectBtnArrowDown =  buttonRect[i++];
+	iRectBtnArrowLeft =  buttonRect[i++];
+	iRectBtnArrowRight = buttonRect[i++];
+	buttonRect.Close();
+	
+	// padding size of Btn
+	iSizeBtnPadding = TSize(6, 6);
+	
+	// padding size of arrow button
+	if(iIsLandscape)
+	    {
+	    iArrowPaddingSize = TSize(8,8);	
+		}
+	else
+        {
+		iArrowPaddingSize = TSize(12,12);
+		}	
+	}
+
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrieveLafDataForHwrBox()
+// Retrieve the laf data for hwr writing area
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLafDataForHwrBox()
+    {
+	TAknWindowLineLayout writingBoxPane;
+    TAknLayoutRect boxRect;
+    writingBoxPane = AknLayoutScalable_Avkon::fshwr2_hwr_syb_pane(1).LayoutLine();
+    boxRect.LayoutRect(iLayoutRect, writingBoxPane);
+    iRectWritingBox = boxRect.Rect();
+	
+	// need read laf data?
+	iIndicatorRect.iTl = iRectWritingBox.iTl;
+	iIndicatorRect.iTl = iIndicatorRect.iTl + TPoint(20,20);
+	iIndicatorRect.SetSize(TSize(80,80));
+	}
+	
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrieveLafDataForSymbolTable()
+// Retrieve the laf data for symbol table area
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLafDataForSymbolTable()
+    {
+	if(iIsLandscape)
+	    {
+	    RetrieveLandscapeLafDataForSymbolTable();
+		}
+	else
+        {
+		RetrievePortraitLafDataForSymbolTable();
+		}	    	
+    }
+
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrieveLandscapeLafDataForSymbolTable()
+// Retrieve the landscape laf data for symbol table area
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLandscapeLafDataForSymbolTable()
+    {
+	TAknLayoutScalableParameterLimits candiPaneVariety = AknLayoutScalable_Avkon::fshwr2_func_candi_pane_ParamLimits(2);
     
-    // preview popup window 
+	iSctpadRowCount = KLandscapeVirtualKeypadRow;//candiPaneVariety.LastRow();
+	iSctpadColCount = KLandscapeVirtualKeypadCol;//candiPaneVariety.LastColumn() + 1;
+
+	// get the functional buttons laf data for symbol table
+	// candidate list
+	TAknWindowLineLayout candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(2).LayoutLine(); 
+	TAknLayoutRect candpaneRect;
+	candpaneRect.LayoutRect( iLayoutRect, candlistpane );
+	iRectOfSymbolTable = candpaneRect.Rect();
+	
+	// get candidate row1 pane
+	TAknWindowLineLayout candRow1Pane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(1, 0, 0).LayoutLine();
+	TAknLayoutRect candrow1paneRect;
+	candrow1paneRect.LayoutRect( iRectOfSymbolTable, candRow1Pane );
+	
+	iSymBtnRectArray.Reset();
+	for(TInt i = 0; i < 2; i++)
+		{
+		// get candidate cell pane with row 0 and col i
+		TAknWindowLineLayout cellPane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 0, i , 0 ).
+											LayoutLine();
+		TAknLayoutRect cellPaneRect;
+		cellPaneRect.LayoutRect( candrow1paneRect.Rect(), cellPane );
+
+		// get the candidate cell bg pane with row 0 and col i
+		TAknWindowLineLayout candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).LayoutLine();
+		TAknLayoutRect BgRect;
+		BgRect.LayoutRect( cellPaneRect.Rect(), candbgpane ); 
+		iSymBtnRectArray.Append(BgRect.Rect());
+		}
+	
+	TInt xGap = iSymBtnRectArray[1].iTl.iX - iSymBtnRectArray[0].iBr.iX;
+	TRect thirdBtn(iSymBtnRectArray[1]);
+	thirdBtn.Move(TPoint(iSymBtnRectArray[1].Width(),0));
+	iSymBtnRectArray.Append(thirdBtn);
+	
+	TAknWindowLineLayout rowPane, key1bgpane, keypane;
+	TAknLayoutRect rowRect, key1bgRect, keyRect;
+	
+	TAknWindowLineLayout row1Pane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(1, 0, 1).LayoutLine();
+	TAknLayoutRect row1Rect;
+	row1Rect.LayoutRect(iRectOfSymbolTable,row1Pane);
+	iRectSctpad.iTl = row1Rect.Rect().iTl;
+	iRectSctpad.iBr = iRectOfSymbolTable.iBr;
+	
+	keypane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 3, 0 , 0 ).
+																LayoutLine();
+	keyRect.LayoutRect(row1Rect.Rect(), keypane);
+	
+	key1bgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(3).LayoutLine();
+	key1bgRect.LayoutRect(keyRect.Rect(), key1bgpane);
+	
+	keypane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 3, 1 , 0 ).
+																		LayoutLine();
+	keyRect.LayoutRect(row1Rect.Rect(), keypane);
+	
+	TAknWindowLineLayout key2bgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(3).LayoutLine();
+	TAknLayoutRect key2bgRect;
+	key2bgRect.LayoutRect(keyRect.Rect(), key2bgpane);
+	
+	TAknWindowLineLayout row2Pane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(1, 0, 2).LayoutLine();
+	TAknLayoutRect row2Rect;
+	row2Rect.LayoutRect(iRectOfSymbolTable,row2Pane);
+	
+	keypane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 3, 0 , 0 ).LayoutLine();
+	keyRect.LayoutRect(row2Rect.Rect(), keypane);
+	
+	TAknWindowLineLayout key3bgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(3).LayoutLine();
+	TAknLayoutRect key3bgRect;
+	key3bgRect.LayoutRect(keyRect.Rect(), key3bgpane);
+			
+	TInt keyHorizontalGap = key2bgRect.Rect().iTl.iX - key1bgRect.Rect().iBr.iX;
+	TInt keyVerticalGap = key3bgRect.Rect().iTl.iY - key1bgRect.Rect().iBr.iY;
+	
+	TRect cursorRect(key1bgRect.Rect());
+	TRect originRect(key1bgRect.Rect());
+	TInt rectHeight = cursorRect.Height();
+	TInt rectWidth = cursorRect.Width();
+	
+	iSCTrectArray.Reset();
+	for(TInt i = 0; i < iSctpadRowCount; i++)
+		{
+		cursorRect = originRect;
+		cursorRect.Move(0,i*(rectHeight+keyVerticalGap));
+		iSCTrectArray.Append(cursorRect);
+		for(TInt j = 1; j < iSctpadColCount; j++)
+			{
+			cursorRect.Move((rectWidth+keyHorizontalGap),0);
+			iSCTrectArray.Append(cursorRect);
+			}
+		}
+	}
+
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrievePortraitLafDataForSymbolTable()
+// Retrieve the portrait laf data for symbol table area
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrievePortraitLafDataForSymbolTable()
+    {
+	// get the functional buttons laf data for symbol table
+	// candidate list
+	TAknWindowLineLayout candlistpane = AknLayoutScalable_Avkon::fshwr2_func_candi_pane(1).LayoutLine();        
+	
+	TAknLayoutRect candpaneRect;
+	candpaneRect.LayoutRect( iLayoutRect, candlistpane );
+	TRect rect = candpaneRect.Rect();
+	
+	// get candidate row2 pane
+	TAknWindowLineLayout candRow2Pane = AknLayoutScalable_Avkon::fshwr2_func_candi_row_pane(0, 0, 1).
+										LayoutLine();
+	TAknLayoutRect candrow2paneRect;
+	candrow2paneRect.LayoutRect( rect, candRow2Pane );
+	iRectOfSymbolTable.iTl = candrow2paneRect.Rect().iTl;
+	
+	iSymBtnRectArray.Reset();
+	for(TInt i = 0; i < KSymButtonNum; i++)
+		{
+		// get candidate cell pane with row 0 and col i
+		TAknWindowLineLayout cellPaneRow = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_pane( 1, i , 0 ).
+											LayoutLine();
+		TAknLayoutRect cellPaneRect;
+		cellPaneRect.LayoutRect( candrow2paneRect.Rect(), cellPaneRow );
+
+		// get the candidate cell bg pane with row 0 and col i
+		TAknWindowLineLayout candbgpane = AknLayoutScalable_Avkon::fshwr2_func_candi_cell_bg_pane(1).LayoutLine();
+		TAknLayoutRect BgRect;
+		BgRect.LayoutRect( cellPaneRect.Rect(), candbgpane ); 
+		iSymBtnRectArray.Append(BgRect.Rect());
+		}
+	
+	// get the virtual key rects
+	TAknWindowLineLayout writingBoxPane;
+	TAknLayoutRect boxRect;
+	writingBoxPane = AknLayoutScalable_Avkon::fshwr2_hwr_syb_pane(0).LayoutLine();
+	boxRect.LayoutRect(iLayoutRect, writingBoxPane);
+	iRectSctpad = boxRect.Rect();
+	
+	TAknWindowLineLayout keypane, keybgpane;
+	TAknLayoutRect keyRect, keybgRect;
+  
+	TAknLayoutScalableParameterLimits sctPaneVariety =
+		AknLayoutScalable_Avkon::cell_fshwr2_syb_pane_ParamLimits(0);
+	
+	iSctpadRowCount = sctPaneVariety.LastRow() + 1;
+	iSctpadColCount = sctPaneVariety.LastColumn() + 1;    
+  
+	iSCTrectArray.Reset();
+	for(TInt i = 0; i < iSctpadRowCount; i++)
+		{
+		for ( TInt j = 0; j < iSctpadColCount; j++ )
+			{
+			keypane = AknLayoutScalable_Avkon::cell_fshwr2_syb_pane(0, j, i).LayoutLine();
+			keyRect.LayoutRect(iRectSctpad, keypane);
+			keybgpane = AknLayoutScalable_Avkon::cell_fshwr2_syb_bg_pane(0).LayoutLine();
+			keybgRect.LayoutRect(keyRect.Rect(), keybgpane);
+			iSCTrectArray.Append( keybgRect.Rect());
+			}
+		}
+	iSizeSctpadCell = keybgRect.Rect().Size();
+
+	// calculate the symbol table rect	 
+	iRectOfSymbolTable.iBr = iRectSctpad.iBr;
+	}
+	
+// ---------------------------------------------------------------------------
+// CPeninputFingerHwrArLafManager::RetrieveLafDataForPreviewBubble()
+// Retrieve the laf data for preview bubble
+// ---------------------------------------------------------------------------
+//	
+void CPeninputFingerHwrArLafManager::RetrieveLafDataForPreviewBubble()
+    {
+	// preview popup window 
   	TAknWindowLineLayout previewWnd, previewWndInner;
   	TAknLayoutRect previewWndRect, previewWndInnerRect;
   	TAknLayoutText previewWndText;
@@ -381,20 +539,54 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
         AknLayoutScalable_Avkon::popup_fep_char_preview_window_t1(0).LayoutLine();
     previewWndText.LayoutText(previewWndRect.Rect(), iPreviewWndText);
     iBubbleFont = previewWndText.Font();
-	iArrowPaddingSize = TSize(10,10);
+	}
+   
+// ---------------------------------------------------------------------------
+// read laf data.
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArLafManager::ReadLafInfo()
+    {
+    // retrieve the layout rect
+	RetrieveLayoutData();
+	
+	// retrieve the laf data of icf
+	RetrieveLafDataForICF();
+	
+    #ifdef HackerVersion
+    #else 
+	// retrieve the laf data of functional button
+	RetrieveLafDataForFunctionalButton();
+    #endif
+	// retrieve the laf data of candidate list
+	RetrieveLafDataForCandidateList();
+	
+    #ifdef HackerVersion
+    #else
+	// retrieve the laf data of symbol table
+    RetrieveLafDataForSymbolTable();
+    
+	// retrieve the laf data of hwr box
+    RetrieveLafDataForHwrBox();	 
+    #endif
+    
+    // retrieve the laf data of preview bubble
+    RetrieveLafDataForPreviewBubble();
+
     //==========================================================================
     // going to be removed if the LAF data is ready
     //
     #ifdef HackerVersion
+	
 	const TUint KMarginLayout = 4;
 	// hardcode those and remove them after the laf data is ready
 	// do we really need to read ui data from laf system?
 	// icf margins
-	iIcfTextLeftMarginCn = 14;
-	iIcfTextRightMarginCn = 14;
-    iIcfTextTopMarginCn = 14;
-    iIcfTextBottomMarginCn = 20;
-    iIcfTextLineSpaceMarginCn = 5;	
+	iIcfTextLeftMargin = 14;
+	iIcfTextRightMargin = 14;
+    iIcfTextTopMargin = 14;
+    iIcfTextBottomMargin = 20;
+    iIcfTextLineSpaceMargin = 5;	
 	
 	// candiate margin
 	iCandsHorizontalMargin = 1;
@@ -437,8 +629,6 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 	    
 	    iRectEnter = iRectSpase;
 	    iRectEnter.Move(TPoint(buttonWidth,0));
-	            
-
 	    
         // candate position
         iCandidateLTPos = iRectBtnClose.iTl + TPoint(0,buttonHight);
@@ -467,7 +657,18 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
     	iRectSctpad.SetWidth(6*buttonWidth);
 		
 		// the button size for symbol table control 
-		iSymButtonSize = TSize(2*buttonWidth,buttonHight);
+		iSymBtnRectArray.Reset();
+		TRect btnRect;
+		btnRect.iTl = iRectOfSymbolTable.iTl;
+		btnRect.SetSize(TSize(2*buttonWidth,buttonHight));
+		iSymBtnRectArray.Append(btnRect);
+		
+		btnRect.Move(TPoint(btnRect.Width(),0));
+		iSymBtnRectArray.Append(btnRect);
+		
+		btnRect.Move(TPoint(btnRect.Width(),0));
+		iSymBtnRectArray.Append(btnRect);
+		
 		iSctpadRowCount = 4;
 		iSctpadColCount = 6;
 		
@@ -544,7 +745,17 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
     	iRectSctpad.SetWidth(4*buttonWidth);
 		
 		// the button size for symbol table control 
-		iSymButtonSize = TSize((4*buttonWidth)/3,buttonHight);
+		iSymBtnRectArray.Reset();
+		TRect btnRect;
+		btnRect.iTl = iRectOfSymbolTable.iTl;
+		btnRect.SetSize(TSize((4*buttonWidth)/3,buttonHight));
+		iSymBtnRectArray.Append(btnRect);
+		
+		btnRect.Move(TPoint(btnRect.Width(),0));
+		iSymBtnRectArray.Append(btnRect);
+		
+		btnRect.Move(TPoint(btnRect.Width(),0));
+		iSymBtnRectArray.Append(btnRect);
 		
 		iSctpadRowCount = 4;
 		iSctpadColCount = 4;
@@ -564,7 +775,6 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
     //==========================================================================
     
     }
-        
 
 // ---------------------------------------------------------------------------
 // get screen orientation.
@@ -573,8 +783,7 @@ void CPeninputFingerHwrArLafManager::ReadLafInfo()
 TBool CPeninputFingerHwrArLafManager::IsLandscape()
     {
     return iIsLandscape;
-    }
-    
+    }    
     
 // ---------------------------------------------------------------------------
 // get rect of layout.
@@ -584,7 +793,6 @@ TRect CPeninputFingerHwrArLafManager::LayoutRect()
     {        
     return iLayoutRect;
     }
-
 
 // ---------------------------------------------------------------------------
 // get rect of specified control.
@@ -665,7 +873,7 @@ TRect CPeninputFingerHwrArLafManager::IcfRect()
 // 
 TInt CPeninputFingerHwrArLafManager::IcfLeftMargin()
     {
-    return iIcfTextLeftMarginCn;
+    return iIcfTextLeftMargin;
     }
     
 // ---------------------------------------------------------------------------
@@ -674,7 +882,7 @@ TInt CPeninputFingerHwrArLafManager::IcfLeftMargin()
 // 
 TInt CPeninputFingerHwrArLafManager::IcfRightMargin()
     { 
-    return iIcfTextRightMarginCn;
+    return iIcfTextRightMargin;
     }    
 
 // ---------------------------------------------------------------------------
@@ -683,7 +891,7 @@ TInt CPeninputFingerHwrArLafManager::IcfRightMargin()
 // 
 TInt CPeninputFingerHwrArLafManager::IcfTopMargin()
     {
-    return iIcfTextTopMarginCn;
+    return iIcfTextTopMargin;
     }
     
 // ---------------------------------------------------------------------------
@@ -692,7 +900,7 @@ TInt CPeninputFingerHwrArLafManager::IcfTopMargin()
 // 
 TInt CPeninputFingerHwrArLafManager::IcfBottomMargin()
     {      
-    return iIcfTextBottomMarginCn;
+    return iIcfTextBottomMargin;
     }
     
 // ---------------------------------------------------------------------------
@@ -701,7 +909,7 @@ TInt CPeninputFingerHwrArLafManager::IcfBottomMargin()
 // 
 TInt CPeninputFingerHwrArLafManager::IcfLineSpaceMargin()
     {  
-    return iIcfTextLineSpaceMarginCn;
+    return iIcfTextLineSpaceMargin;
     }    
     
 // ---------------------------------------------------------------------------
@@ -710,14 +918,6 @@ TInt CPeninputFingerHwrArLafManager::IcfLineSpaceMargin()
 // 
 CFont* CPeninputFingerHwrArLafManager::IcfFont()
     {
-//    //workaround
-//    TAknTextLineLayout textPaneTextLayout;
-//    TAknLayoutText txt;
-//    textPaneTextLayout = 
-//        AknLayoutScalable_Avkon::fep_hwr_top_text_pane_t1().LayoutLine();
-//    const CFont* icffont = AknLayoutUtils::FontFromId( textPaneTextLayout.iFont, NULL );
-//    
-//    return const_cast<CFont*>(icffont);
     return iIcfFont;
     }
    
@@ -727,7 +927,7 @@ CFont* CPeninputFingerHwrArLafManager::IcfFont()
 // 
 TInt CPeninputFingerHwrArLafManager::IcfTextHeight()
     { 
-    return iIcfTextHeightCn;
+    return iIcfTextHeight;
     }
        
 
@@ -833,17 +1033,6 @@ TAknTextLineLayout CPeninputFingerHwrArLafManager::SctpadKeyTxtLayout()
     }
 
 // ---------------------------------------------------------------------------
-// get text layout of space and enter.
-// ---------------------------------------------------------------------------
-//
-TAknTextLineLayout CPeninputFingerHwrArLafManager::FixSctpadKeyTxtLayout()
-    {
-    TAknTextLineLayout layout = AknLayoutScalable_Avkon::
-        cell_fshwr2_syb_bg_pane_t1(0).LayoutLine();
-    return layout;
-    }
-
-// ---------------------------------------------------------------------------
 // get width unit of candidate list.
 // ---------------------------------------------------------------------------
 //
@@ -887,18 +1076,9 @@ TPoint CPeninputFingerHwrArLafManager::CandidateLTPos()
     {
     return iCandidateLTPos;
     }
-
-// ---------------------------------------------------------------------------
-// get top-left position of predictive list.
-// ---------------------------------------------------------------------------
-//
-TPoint CPeninputFingerHwrArLafManager::PredictiveLTPos()
-    {
-    return iPredictiveLTPos;
-    }
    
 // ---------------------------------------------------------------------------
-// get font of candidate list.
+// get font for candidate list.
 // ---------------------------------------------------------------------------
 //
 const CFont* CPeninputFingerHwrArLafManager::CandidateFont()
@@ -906,45 +1086,37 @@ const CFont* CPeninputFingerHwrArLafManager::CandidateFont()
     return iCandsFont;
     }
 
+// ---------------------------------------------------------------------------
+// get rects for symbol buttons
+// ---------------------------------------------------------------------------
+//	
+RArray<TRect>& CPeninputFingerHwrArLafManager::GetSymBtnArray()
+    {
+	return iSymBtnRectArray;
+	}
 
 // ---------------------------------------------------------------------------
-// get text layout of sct paging button.
+// get rect for virtual key
 // ---------------------------------------------------------------------------
-//
-TAknTextLineLayout CPeninputFingerHwrArLafManager::SctPageBtnTxtLayout()
+//	
+TRect CPeninputFingerHwrArLafManager::GetVirtualKeyRect()
     {
-    TAknTextLineLayout layout =  AknLayoutScalable_Apps::
-        field_vitu2_entry_pane_t1(0, 0, 0).LayoutLine();
-    return layout;
-    }
-
+	return iRectSctpad;
+	} 	
+    	
 // ---------------------------------------------------------------------------
-// c++ constructor
+// get rect for hwr indicator
 // ---------------------------------------------------------------------------
-//
-CPeninputFingerHwrArLafManager::CPeninputFingerHwrArLafManager()
-    {
-    
-    }
-    
-// ---------------------------------------------------------------------------
-// Symbian second-phase constructor
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArLafManager::ConstructL()
-    {
-    }
-
-TSize CPeninputFingerHwrArLafManager::SymbolGroupButtonSize()
-    {
-    return iSymButtonSize;
-    }
-
+//		
 TRect CPeninputFingerHwrArLafManager::GetIndicatorRect()
     {
     return iIndicatorRect;
     }
 
+// ---------------------------------------------------------------------------
+// get padding size for arrow button
+// ---------------------------------------------------------------------------
+//	
 TSize CPeninputFingerHwrArLafManager::GetArrowPaddingSize()
     {
 	return iArrowPaddingSize;

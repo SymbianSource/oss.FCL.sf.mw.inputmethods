@@ -84,7 +84,8 @@ enum TPluginCmd
     EPluginHideTooltip,
     EPluginSwitchToPortrait,
     EPluginSwitchToLandscape,
-    EPluginSwitchMode
+    EPluginSwitchMode,
+    EPluginUpdatePenInputITIStatus
     };
 
 /** 
@@ -340,7 +341,7 @@ public:
     void DisplaySpellEditorL(const TInt aEditorFlag, const TDesC& aInitText, 
                            TCursorSelection aCurSel);                            
     
-    void DestroySpellEditor();
+    void HideSpellEditor();
     
     HBufC* SpellTextInput();
     void SetTCursorSelection();
@@ -842,6 +843,7 @@ private:
      */
     TBool IsEditorSupportSplitIme();
     
+    void SetICFTextForSpellL();
 private:    // Data
     
     /**
@@ -1051,9 +1053,7 @@ private:    // Data
      */       
     TBool iTooltipOpenOnFSQ;    
 	
-	// Modify for bug ELZG-7WZC35 begin
 	TInt iAlignment;
-	// Modify for bug ELZG-7WZC35 end
 
     CConnectAo* iConnectAo;
     };

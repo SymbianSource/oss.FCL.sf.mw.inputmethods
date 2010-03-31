@@ -388,7 +388,6 @@ public: // from CCoeControl
     virtual void Draw(const TRect& aRect) const;
     
     
-    //Bug Fixing for ESSG-7P5CSZ
     void Enable(TBool aEnable);
 
 protected:

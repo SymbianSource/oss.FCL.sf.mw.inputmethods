@@ -256,6 +256,11 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
 			CleanupStack::PopAndDestroy(buf);
             }
             break;
+		case ECmdPeninputSpellICFDisplayContent:
+			{
+			// for set icf text before enter spell mode
+			}
+			break;
         case ECmdPenInputPopupTooltip:
             {
             TPtrC* tooltipTextPtr = reinterpret_cast<TPtrC*>( aParam );

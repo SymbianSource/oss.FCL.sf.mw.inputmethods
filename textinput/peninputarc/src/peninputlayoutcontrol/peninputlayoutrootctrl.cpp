@@ -588,7 +588,8 @@ CFepUiBaseCtrl* CFepUiLayoutRootCtrl::CapturePointer(CFepUiBaseCtrl* aCtrl,
             }
             
         iPointerCaptureCtrl = aCtrl;    
-        if(iCtrlWithPointerDown && ! aCtrl->PointerDown())
+        
+        if(iCtrlWithPointerDown && aCtrl != NULL && !aCtrl->PointerDown())
             {
             //if someone else has pointer down, we must cancel the down event.
             TRAP_IGNORE(iCtrlWithPointerDown->CancelPointerDownL());

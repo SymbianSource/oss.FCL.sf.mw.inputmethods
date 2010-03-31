@@ -95,7 +95,7 @@ public:
     TInt PageCount();
     
     /**
-     * 
+     * The page size
      * 
      */
     TInt PageSize();
@@ -174,8 +174,19 @@ private:
     void ConstructL();
     
 private: //datas
+    /**
+	 * The current page index
+	 */
     TInt iCurPageIndex;
+	
+	/**
+	 * The page size
+	 */
     TInt iPageSize;
+	
+	/**
+	 * The page count
+	 */
     TInt iPageCount;
     
     };

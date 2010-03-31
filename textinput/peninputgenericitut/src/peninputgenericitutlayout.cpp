@@ -46,6 +46,8 @@
 #include "peninputgenericitutconverter.h"
 #include "peninputgenericitutwindowmanager.h"
 
+const TInt KChineseSpell = 100;
+const TInt KWesternSpell = 101;
 
 
 CGenericItutUiLayout* CGenericItutUiLayout::NewL(MLayoutOwner* aLayoutOwner,
@@ -204,14 +206,6 @@ TInt CGenericItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputFingerSpelling:
             {
 
-            // Fix bug EZLG-7YUAP7
-            // When writing language is Chinese, and Spell On, enforce setting language to English 
-            if( (*(reinterpret_cast<TBool*>(aData))) && iDataMgr->IsChinese() )  
-            	{
-            	iDataMgr->SetLanguageL( ELangEnglish );
-            	}
-           //
-
             if (UiMgr())
                 {
                 TInt handled = KErrNone;
@@ -298,6 +292,26 @@ TInt CGenericItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
             iWindowMgr->ShowBubble(*aData);    
             }
             break;
+        case ECmdPeninputSpellLanguageMode:
+        	{
+            if ( *data == KChineseSpell )
+            	{
+				iDataMgr->SetChineseSpellFlag( ETrue );
+				return KErrNone;
+            	}
+            
+            if ( *data == KWesternSpell )
+            	{
+				iDataMgr->SetChineseSpellFlag( EFalse );
+				return KErrNone;
+            	}
+        	}
+        	break;
+        case ECmdPeninputSpellICFDisplayContent:
+        	{
+        	TRAP_IGNORE( iWindowMgr->HandleCommandL( aCmd, aData ));
+        	}
+        	break;
         default:
             break;
         }
@@ -374,7 +388,7 @@ void CGenericItutUiLayout::SetInputModeL(TInt aMode)
 		TBool numericOnlyChanged = iDataMgr->IsCharFlagChanged() ? ETrue : EFalse;
 		//only number mode need judge it
 
-		// fix EJML-7HM6GM, e.g. both EStrokeFind and EStroke will be stored as Estroke  ///// 
+		//  both EStrokeFind and EStroke will be stored as Estroke  ///// 
 		if ( aMode != iDataMgr->InputMode() || 
 			 aMode == EStroke || aMode == EStrokeFind || 
 			 aMode == EZhuyin || aMode == EZhuyinFind || 
@@ -402,8 +416,6 @@ void CGenericItutUiLayout::SetInputLanguageL(TInt aLanguage)
     
     if (previousLang != aLanguage)
         {
-
-        // Fix bug for EZLG-7YUAP7 
         // When state is spelling, don¡¯t apply LAF Data   
         if(iCurrentUiMgr 
            && iCurrentUiMgr->CurrentState()

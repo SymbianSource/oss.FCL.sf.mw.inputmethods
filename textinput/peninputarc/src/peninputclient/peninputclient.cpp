@@ -246,9 +246,9 @@ EXPORT_C TBool RPeninputServer::IsDimmed()
 // RPeninputServer::SupportInputMode
 // ---------------------------------------------------------------------------
 //
-EXPORT_C TInt RPeninputServer::SupportInputMode()
+EXPORT_C TInt RPeninputServer::SupportInputMode( TInt aLanguage )
     {
-    return iSingletonServer->SupportInputMode();
+    return iSingletonServer->SupportInputMode( aLanguage );
     }
 
 EXPORT_C TInt RPeninputServer::SetInputLanguage( TInt aLanguage )

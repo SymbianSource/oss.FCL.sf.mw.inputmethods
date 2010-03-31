@@ -2453,7 +2453,9 @@ EXPORT_C CFepUiBaseCtrl* CAknFepCtrlRepeatButton::HandlePointerDownEventL(const 
     
     //PRINTF((_L("Set long press Timer\n")));
     iLongPressTimer->SetTimer(iLongPressInterval);
-    
+    TInt unicode = Unicode();
+    TPtrC ptr = (TUint16*)(&unicode);
+    ReportEvent(Event(), ptr);  
     return CAknFepCtrlCommonButton::HandlePointerDownEventL(aPt);
     }
                                                           
@@ -2467,7 +2469,7 @@ EXPORT_C CFepUiBaseCtrl* CAknFepCtrlRepeatButton::HandlePointerUpEventL(const TP
     
     CancelRepeat();
     
-    return CAknFepCtrlEventButton::HandlePointerUpEventL(aPt);
+    return CAknFepCtrlCommonButton::HandlePointerUpEventL(aPt);
     }
 
 // ---------------------------------------------------------
@@ -3903,7 +3905,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::Draw()
 		TRect src2Rect( TPoint( 0, 0 ), iForground2Bmp->SizeInPixels() );	
 		if( bmpMask2 )
 			{
-			gc->BitBltMasked( rect.iTl, //fix EVWG-7PKC6J. layout of 2nd foreground is determined by image itself, but not hard code.   
+			gc->BitBltMasked( rect.iTl, // layout of 2nd foreground is determined by image itself, but not hard code.   
 							  iForground2Bmp, 
 							  src2Rect,
 							  bmpMask2,
@@ -3911,7 +3913,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::Draw()
 			}
 		else
 			{
-			gc->BitBlt( rect.iTl, //fix EVWG-7PKC6J.
+			gc->BitBlt( rect.iTl, 
 						iForground2Bmp,
 						src2Rect );	
 			}		

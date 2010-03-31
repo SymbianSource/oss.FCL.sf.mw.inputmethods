@@ -401,11 +401,15 @@ void CPeninputHwrBxAbWnd::CreateAllControlsL()
 //    rect.iTl.iY = rect.iTl.iY + 2*iUnitHeight;
 //    
 //    iHwBox->SetRect(rect);
-    for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
+    
+    if( iCtrlPool != NULL )
         {
-        if ( iCtrlPool && iCtrlPool->ControlByIndex( i ))
+        for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
             {
-            iCtrlPool->ControlByIndex( i )->AddEventObserver( UiLayout() );
+            if ( iCtrlPool->ControlByIndex( i ) )
+                {
+                iCtrlPool->ControlByIndex( i )->AddEventObserver( UiLayout() );
+                }
             }
         }
     }

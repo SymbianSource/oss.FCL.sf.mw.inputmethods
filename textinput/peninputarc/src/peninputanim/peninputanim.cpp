@@ -31,9 +31,7 @@
 #include "peninputcmdparam.h"
 #include "peninputcmdparamext.h"
 #include "peninputcmd.h"
-// Modify for bug ETMA-7X2C5Y begin
 #include "penpointereventsuppressor.h"
-// Modify for bug ETMA-7X2C5Y end
 // ----------- Touch feedback additions start
 #ifdef RD_TACTILE_FEEDBACK
 #include <coecntrl.h>
@@ -128,9 +126,7 @@ CPeninputAnim::~CPeninputAnim()
 	iTactileControl.Close();
 	iBackupTactileControl.Close();
 #endif // RD_TACTILE_FEEDBACK	
-	// Modify for bug ETMA-7X2C5Y begin
 	delete iPointerEventSuppressor;
-	// Modify for bug ETMA-7X2C5Y end
     }
 
 // ---------------------------------------------------------------------------
@@ -145,9 +141,7 @@ void CPeninputAnim::ConstructL(TAny* /*aParameters*/)
 	iFlushTimer = CPeriodic::NewL(CActive::EPriorityStandard);
 	
     iFunctions->RegisterForNotifications(EDirectScreenAccess);
-	// Modify for bug ETMA-7X2C5Y begin
     iPointerEventSuppressor = CPenPointerEventSuppressor::NewL();
-    // Modify for bug ETMA-7X2C5Y end
     }
 
 
@@ -234,7 +228,7 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
         }
 
     
-	// Suppress unexpected drag events, refer to error ETMA-7X2C5Y
+	// Suppress unexpected drag events
     TPointerEvent pointerEvent;
     switch ( aRawEvent.Type() )
         {
@@ -795,7 +789,6 @@ TBool CPeninputAnim::OnRawButton1Down(const TRawEvent& aRawEvent)
 #endif // RD_TACTILE_FEEDBACK	
 		iIsPenDown = ETrue;
 
-        // Fix bug HMNN-82CDU5 
         // When button downing event is happened, iIsMove is reset to EFalse
 	    iIsMove = EFalse;              
 
@@ -834,8 +827,7 @@ TBool CPeninputAnim::OnRawButton1Up(const TRawEvent& aRawEvent)
 		}
 	if(iIsPenDown)
 	    {      
-    
-        // Fix bug HMNN-82CDU5 
+  
         // When the control key pressing down in is different with the control key pressing up 
         // and pointer moving event isn¡¯t happened,
         // pointer moving event will is supplied 
@@ -855,7 +847,6 @@ TBool CPeninputAnim::OnRawButton1Up(const TRawEvent& aRawEvent)
 			//send pen up event immediately
 			SendRawEvent(aRawEvent);
             
-            // Fix bug HMNN-82CDU5 
             // When key pressing up event is completed, iIsMove is reset to EFalse.
             iIsMove = EFalse;   
             //
@@ -891,8 +882,6 @@ TBool CPeninputAnim::OnRawPointerMove(const TRawEvent& aRawEvent)
 	if( iIsPenDown && iIsPointerCaptured)
 	    {                
 	    //give tactile feedback	    
-
-        // Fix bug HMNN-82CDU5 
         // When pointer moving event is happened, iIsMove is set to ETrue
         iIsMove = ETrue;        
         //
@@ -904,8 +893,6 @@ TBool CPeninputAnim::OnRawPointerMove(const TRawEvent& aRawEvent)
 
 	if(iIsPointerCaptured || iIsPenDown)
 	    {                    
-
-        // Fix bug HMNN-82CDU5 
         // When pointer moving event is happened, iIsMove is set to ETrue
         iIsMove = ETrue;        
         //

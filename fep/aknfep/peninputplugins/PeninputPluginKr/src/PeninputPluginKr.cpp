@@ -263,6 +263,8 @@ TInt CPeninputPluginKr::LayoutUiImplId()
         	{
         	id = KItutUiId;
         	}
+        	
+        	break;
         default:
             {
             id = KInvalidImplId;

@@ -570,14 +570,14 @@ RESOURCE AVKON_SETTING_PAGE r_gs_trailwidth_text_setting_page
 // Trail width setting page.
 //----------------------------------------------------
 //
-//RESOURCE AVKON_SETTING_PAGE r_gs_guidline_text_setting_page
-//    {
-//    number=EAknSettingPageNoOrdinalDisplayed; 
-//    label=qtn_tin_settings_guiding_line;
-//    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
-//    type=EAknSetListBox;
-//    editor_resource_id=r_peninputsetting_listbox;
-//    } 
+RESOURCE AVKON_SETTING_PAGE r_gs_guidline_text_setting_page
+    {
+    number=EAknSettingPageNoOrdinalDisplayed; 
+    label=qtn_tin_settings_guiding_line;
+    softkey_resource=R_AVKON_SOFTKEYS_OK_CANCEL;
+    type=EAknSetListBox;
+    editor_resource_id=r_peninputsetting_listbox;
+    } 
 
 //----------------------------------------------------
 // r_gs_recognitionwithdictionary_text_setting_page    

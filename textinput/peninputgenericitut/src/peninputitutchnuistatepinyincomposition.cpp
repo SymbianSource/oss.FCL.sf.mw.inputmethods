@@ -69,6 +69,9 @@ void CChnItutUiStatePinyinComposition::OnEntryL()
     
     //hide navi button
     iOwner->LayoutContext()->ShowArrowBtn(0);
+    // Show ICF, Backspace after position changed to avoid flick
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( EFalse );
     
     //hide indicator 
     iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);    
@@ -91,10 +94,10 @@ void CChnItutUiStatePinyinComposition::OnExit()
     candlist->Hide(ETrue);
 
     iOwner->DataMgr()->PtiEngine()->ClearCurrentWord();
-    
-    //show navi button
-    iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight
-             | EBtnArrowUp| EBtnArrowDown);
+    // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
+    iOwner->LayoutContext()->ShowArrowBtn( 0 );
     
     //show indicator 
     iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);

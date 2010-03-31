@@ -105,6 +105,8 @@ _LIT(KVITU_HLP_MAIN_VIEW, "VITU_HLP_MAIN_VIEW");
 const TInt KDefaultCandidateArraySize = 16;
 const TInt KNumberOfCases = 6;
 
+const TInt KChineseSpellMode = 100;
+const TInt KWesternSpellMode = 101;
  _LIT_SECURE_ID(KPhoneSecureId, 0x100058b3);
 
 #define iAvkonAppUi ((CAknAppUi*)CEikonEnv::Static()->EikAppUi())
@@ -253,9 +255,7 @@ CAknFepPluginManager::CAknFepPluginManager( CAknFepManager& aFepMan,
     iIsInEditWordQueryDlg = EFalse;    
     iClosePluginInputMode = EFalse;
     iDimGainForeground = ETrue;
-	// Modify for bug ELZG-7WZC35 begin
     iAlignment = 0;
-    // Modify for bug ELZG-7WZC35 end
     }
 
 // ---------------------------------------------------------------------------
@@ -417,7 +417,6 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                                     {
                                     curSor.iAnchorPos = iCharStartPostion;  
                                     iLastSubmitCount = curSor.iCursorPos - iCharStartPostion;
-                                    //Fixed bug ID SAHN-7JDDC8
                                     }
                                 }
                             
@@ -961,7 +960,7 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
                 {
                 if(landscape)
                     {
-                    defaultMode = EPluginInputModeVkb;
+                    defaultMode = EPluginInputModeFSQ;
                     }
                 else
                     {
@@ -970,13 +969,29 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
                 }
             else
                 {
-                defaultMode = EPluginInputModeItut;
+                if(landscape)
+                    {
+                    defaultMode = EPluginInputModeFSQ;
+                    }
+                else
+                    {
+                    defaultMode = EPluginInputModeItut;
+                    }
                 }
             TryChangePluginInputModeByModeL(defaultMode,
                                             EPenInputOpenManually,
                                             ERangeInvalid);
             }
             break;
+        case EPluginUpdatePenInputITIStatus:
+        	{
+        	if ( iCurrentPluginInputFepUI )
+        		{
+                iCurrentPluginInputFepUI->HandleCommandL( ECmdPeninputITIStatus,
+                                              iFepMan.WesternPredictive() );        	
+        		}
+        	}
+        	break;
         default:
             break;
         }
@@ -1090,13 +1105,15 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
                 iOrientationChanged = ETrue;
                 }
         
-		    CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
-            landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;  
-            if( !landscape )
-                {
-                iPluginInputMode = tempInputMode;
-                aSuggestMode = EPluginInputModeItut;
-                }
+		    /*CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+              landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;  
+              if( !landscape )
+                  {
+                  iPluginInputMode = tempInputMode;
+                  aSuggestMode = EPluginInputModeItut;
+                  }*/
+            //
+            
             }
         }
     else if(aSuggestMode == EPluginInputModeFingerHwr 
@@ -1149,7 +1166,6 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
     
     if ( iCurrentPluginInputFepUI )     
         {
-        // fix EVWG-7U73HS
         iPenInputServer.DimUiLayout(EFalse);
         
         AddCurrentWinToOpenListL();
@@ -1265,7 +1281,7 @@ void CAknFepPluginManager::ClosePluginInputModeL( TBool aRestore )
         {
 	    RestorePredictStateL();
         
-        // Fix bug EAHN-82C9M7, comment out the following code
+        //  comment out the following code
         //if ( iFepMan.EditorType() == CAknExtendedInputCapabilities::EPhoneNumberEditor )
         //    {
         //    if( AknTextUtils::NumericEditorDigitType() == EDigitTypeEasternArabicIndic || 
@@ -1280,7 +1296,7 @@ void CAknFepPluginManager::ClosePluginInputModeL( TBool aRestore )
         //        }
         //    }
         }
-    //iFepMan.UpdateCbaL( NULL ); //pls refer to bug ESZG-7G7CGF
+    //iFepMan.UpdateCbaL( NULL ); 
                 
     iFepMan.UiInterface()->TouchPaneSetInputMethodIconActivated(EFalse);
     
@@ -1324,7 +1340,7 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
                 iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputWindowClose);
                 }
             
-            //iFepMan.UpdateCbaL(NULL); //pls refer to bug ESZG-7G7CGF
+            //iFepMan.UpdateCbaL(NULL); 
             
             if (iPluginInputMode == EPluginInputModeItut)
                 {
@@ -1338,7 +1354,7 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
 	     && iSharedData.InputTextLanguage() == ELangArabic)) && iOrientationChanged 
     	                                            && !iITISettingDialogOpen )
         {
-		// This TRAP_IGNORE is essential to fix bug ECJA-7JDCKR, never delete it
+		// This TRAP_IGNORE is essential , never delete it
         TRAP_IGNORE( iAvkonAppUi->SetOrientationL( (CAknAppUiBase::TAppUiOrientation)iDefaultOrientation ) );
         iOrientationChanged = EFalse;
         } 
@@ -1726,7 +1742,7 @@ void CAknFepPluginManager::HandleKeyEventL(TInt aKeyId)
             {
 			ClosePluginInputUiL( ETrue );			
 			iFepMan.SetNotifyPlugin( EFalse );
-            DestroySpellEditor();
+            HideSpellEditor();
             }
             break;
        }
@@ -2055,7 +2071,7 @@ void CAknFepPluginManager::OnFocusChangedL( TBool aGainForeground )
             ResetMenuState();
             InformMfneUiStatusL( EFalse );
 			// If need to open setting app automatically, 
-			// do not open Touch window again. Fix for ESCN-7NVAWF
+			// do not open Touch window again. 
 			TBool langChange = iCurLanguage != iSharedData.InputTextLanguage();
 					
 			TryChangePluginInputModeByModeL(
@@ -2494,6 +2510,39 @@ TBool CAknFepPluginManager::SetSyncIcfDataL( TFepInputContextFieldData& aIcfData
     return ETrue;
 	}
 	
+void CAknFepPluginManager::SetICFTextForSpellL()
+	{
+	MCoeFepAwareTextEditor* edit = iFepMan.FepAwareTextEditor();
+	
+	if ( edit )
+		{
+		TInt length = edit->DocumentLengthForFep();
+		HBufC* icfTextBuf = HBufC::NewLC( length );
+    	TPtr icfText = icfTextBuf->Des();
+
+		edit->GetEditorContentForFep( icfText, 0, length );
+		
+		TCursorSelection curSel;
+		edit->GetCursorSelectionForFep( curSel );
+		TInt curPos = curSel.iCursorPos;
+		
+		HBufC* titleStr = StringLoader::LoadL(R_AKNFEP_PROMPT_TEXT);                          
+		CleanupStack::PushL( titleStr );
+		TPtr16 promptText = titleStr->Des();
+		
+		TFepSpellICFDisplayContent displayContent;
+		displayContent.iCurPos = curPos;
+		displayContent.iICFText.Set( icfText );
+		displayContent.iPromptText.Set( promptText );
+		
+		iCurrentPluginInputFepUI->HandleCommandL( 
+        	ECmdPeninputSpellICFDisplayContent,
+            reinterpret_cast<TInt>(&displayContent));
+        
+        CleanupStack::PopAndDestroy( titleStr );
+		CleanupStack::PopAndDestroy( icfTextBuf );
+		}
+	}
 TBool CAknFepPluginManager::SetSyncCurSelIcfDataL( TFepInputContextFieldData& aIcfData )
 	{
 	MCoeFepAwareTextEditor* edit = iFepMan.FepAwareTextEditor();
@@ -3164,7 +3213,9 @@ void CAknFepPluginManager::SubmitUiPluginTextL(const TDesC& aData,
                     TRawEvent eventUp; 
                     eventUp.Set( TRawEvent::EKeyUp, EStdKeyBackspace); 
                     eventUp.SetTip( ETrue );
-                    CCoeEnv::Static()->WsSession().SimulateRawEvent( eventUp ); 
+                    CCoeEnv::Static()->WsSession().SimulateRawEvent( eventUp );
+                    
+                    break;
                     }
                 else if ( keyEvent.iScanCode == EStdKeyEnter && iHasSWEventCap )
                     {
@@ -3181,7 +3232,9 @@ void CAknFepPluginManager::SubmitUiPluginTextL(const TDesC& aData,
                     {
                     // For addition of ITI features on FSQ.
                     // If FSQ is opened with ITI enabled, ensure keycatcher to handle key events
-                    // else, remain the old logic.                   
+                    // else, remain the old logic.
+                    // But, simulating raw key events is needed, as raw key down + raw key up is a complete key process, 
+                    // then EEventDown, EEventKey, EEventUp will be generated, each event may be used differently.
                     if ( IsITISupportedKey( keyEvent ) )
                         {                            
                         // check if need to change current text case
@@ -3191,14 +3244,14 @@ void CAknFepPluginManager::SubmitUiPluginTextL(const TDesC& aData,
                             {
                             iFepMan.PtiEngine()->SetCase( textCase );
                             }                        
-                        env->SimulateKeyEventL(keyEvent, EEventKey);
-                        }
-                    else if ( keyEvent.iScanCode == EStdKeyBackspace 
-                              || keyEvent.iScanCode == EStdKeyEnter
-                              || keyEvent.iScanCode == EStdKeySpace )
-                        {
-                        // For these keys, clear the flag to make sure ptiengine handle this key.                            
-                        env->SimulateKeyEventL(keyEvent, EEventKey);
+                        TRawEvent eventDown; 
+                        eventDown.Set( TRawEvent::EKeyDown, keyEvent.iScanCode ); 
+                        iAvkonAppUi->DisableNextKeySound( keyEvent.iScanCode ); 
+                        CCoeEnv::Static()->WsSession().SimulateRawEvent( eventDown ); 
+                        
+                        TRawEvent eventUp; 
+                        eventUp.Set( TRawEvent::EKeyUp, keyEvent.iScanCode ); 
+                        CCoeEnv::Static()->WsSession().SimulateRawEvent( eventUp );                        
                         }
                     else
                         {
@@ -3519,6 +3572,22 @@ TBool CAknFepPluginManager::GetCurSuggestMode( TPluginInputMode& aSuggestMode )
 			break;
         case EPluginInputModeVkb:
             {
+            // When in Capacitive hardware, there should be no MiniVKB.
+            // So we use FSQ for Landscape mode and ITUT for Portrait instead.
+            if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
+                {
+                TPixelsTwipsAndRotation size; 
+                CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+                TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
+                if ( landscape ) // LandScape
+                    {
+                    aSuggestMode = EPluginInputModeFSQ;
+                    }
+                else // Portrait
+                    {
+                    aSuggestMode = EPluginInputModeItut;
+                    }
+                }
             }
             break;
         case EPluginInputModeFSQ:
@@ -3719,7 +3788,7 @@ void CAknFepPluginManager::NotifyLayoutL(TInt aOpenMode, TInt aSuggestRange,
         }
     else
         {
-        DestroySpellEditor();
+        HideSpellEditor();
         if (PluginInputMode() == EPluginInputModeFSQ ||
             PluginInputMode() == EPluginInputModeVkb ||
             PluginInputMode() == EPluginInputModeFingerHwr)
@@ -3930,14 +3999,11 @@ void CAknFepPluginManager::NotifyLayoutKeymappingL()
             keymapRes->Des().Append(decimalSep);
             keymapRes->Des().Append(minusSign);
 
-            if( keymapRes )
-                {
-                CleanupStack::PushL(keymapRes);
-                iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputEditorCustomNumericKeyMap,
+            CleanupStack::PushL(keymapRes);
+            iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputEditorCustomNumericKeyMap,
                                                     reinterpret_cast<TInt>(keymapRes) );
-                CleanupStack::PopAndDestroy(keymapRes);
-                return;
-                }
+            CleanupStack::PopAndDestroy(keymapRes);
+            return;
             }
 
         iCurrentPluginInputFepUI->SetNumberModeKeyMappingL(EAknEditorPlainNumberModeKeymap);
@@ -4427,6 +4493,7 @@ void CAknFepPluginManager::SetITUTSpellingStateL(TBool aState)
     {
     if (aState)
         {
+		SetICFTextForSpellL();
         iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputFingerSpelling, 1);
 
         HBufC* titleStr = StringLoader::LoadL(R_AKNFEP_PROMPT_TEXT);                          
@@ -4469,6 +4536,18 @@ void CAknFepPluginManager::DisplaySpellEditorL(const TInt aEditorFlag,
                                               const TDesC& aInitText, 
                                               TCursorSelection aCurSel)
     {
+	TInt inputLang = iFepMan.InputLanguageCapabilities().iInputLanguageCode;
+	if ( inputLang == ELangPrcChinese || inputLang == ELangHongKongChinese ||
+		 inputLang == ELangTaiwanChinese )
+		{
+	    iCurrentPluginInputFepUI->HandleCommandL( 
+	    		ECmdPeninputSpellLanguageMode, KChineseSpellMode );
+		}
+	else
+		{
+		iCurrentPluginInputFepUI->HandleCommandL( 
+				ECmdPeninputSpellLanguageMode, KWesternSpellMode );
+		}
     TInt editorFlag = 0;
     TInt editorCase = 0;
     TInt editorSCTResId = 0;
@@ -4504,11 +4583,17 @@ void CAknFepPluginManager::DisplaySpellEditorL(const TInt aEditorFlag,
         editorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG;
         }
  
-    delete iSpell;
-    iSpell = NULL;
     iSpellCba = ESpellCBACancelEmpty;
     iSpellOn = ETrue;
-    iSpell = CAknFepUiSpellContainer::NewL(editorFlag, editorCase, editorSCTResId, IsEditorSupportSplitIme());
+   if( !iSpell )
+    	{
+        iSpell = CAknFepUiSpellContainer::NewL(editorFlag, editorCase, editorSCTResId, IsEditorSupportSplitIme());
+    	}
+    else
+    	{
+        iSpell->MakeVisible( ETrue );
+        iSpell->SetInputWinFocus( ETrue );
+    	}
    
     iSpell->SetInputWinObserver(this);
    
@@ -4517,12 +4602,17 @@ void CAknFepPluginManager::DisplaySpellEditorL(const TInt aEditorFlag,
     AddWinToOpenListL( iSpell->DrawableWindow() );
     }    
 
-void CAknFepPluginManager:: DestroySpellEditor()
+void CAknFepPluginManager::HideSpellEditor()
     {
     iSpellOn = EFalse;
     iSpellCba = ESpellCBANone;
-    delete iSpell;
-    iSpell = NULL;
+    // Hide spell container instead to delete spell container to avoid flicker
+    if( iSpell )
+    	{
+        iSpell->SetInputWinObserver( NULL );
+        iSpell->SetInputWinFocus( EFalse );
+        iSpell->MakeVisible( EFalse );
+    	}
     }
 
 HBufC*  CAknFepPluginManager::SpellTextInput()
@@ -4637,13 +4727,11 @@ void CAknFepPluginManager::SetPromptText( TBool aCleanContent )
 
 void CAknFepPluginManager::SetIcfAlignment()
     {
-	// Modify for bug ELZG-7WZC35 begin
-    // fix TINA-7HNEKA, spell editor is not really background editor.
+    // spell editor is not really background editor.
     //if ( iSpellOn )
     //    {
     //    return;
     //    }
-	// Modify for bug ELZG-7WZC35 end
     
     TUint cap = iFepMan.ExtendedInputCapabilities();
 
@@ -4665,19 +4753,15 @@ void CAknFepPluginManager::SetIcfAlignment()
         {
         alignment = EAknEditorAlignLeft;
         }
-	// Modify for bug ELZG-7WZC35 begin
     else
         {
         alignment = iAlignment;
         }
-    // Modify for bug ELZG-7WZC35 end
 		
     TRAP_IGNORE(iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputSetTextAlignment,
                                                          alignment));
 														 
-	// Modify for bug ELZG-7WZC35 begin
     iAlignment = alignment;
-    // Modify for bug ELZG-7WZC35 end
     }
     
 void CAknFepPluginManager::HasNoFreeSpace()
@@ -4818,7 +4902,7 @@ void CAknFepPluginManager::AdjustDataCase( TDes& aData )
                 }
             for( TInt i = 0; i<aData.Length(); i++ )
 	   			{
-	   			if ( aData[i] != 0x03C2 ) //fix CSTI-7THJR2, final sigma exists in capslock mode
+	   			if ( aData[i] != 0x03C2 ) //final sigma exists in capslock mode
 	   				{
 	   				aData.UpperCase();
 	   				}
@@ -5384,6 +5468,16 @@ TInt CAknFepPluginManager::GetScanCodeFromHwKeymapping( TUint aKeyCode )
         TInt retKey = keymapping->KeyForCharacter( aKeyCode );
         // Restore the old input mode
         iFepMan.PtiEngine()->SetInputMode( oldInputMode );
+        
+#if defined(__WINS__)
+    // In Emulator, Window server will not handle EPtiKeyQwertyPlus key raw event
+    // as normal, it will not produce EKeyEvent event for EPtiKeyQwertyPlus key.
+    // And winodw server will handle EStdKeyNkpPlus key raw event as normal.
+    if (retKey == EPtiKeyQwertyPlus)
+        {
+        retKey = EStdKeyNkpPlus;
+        }
+#endif
         return retKey;
         }
     return EPtiKeyNone;
@@ -5399,15 +5493,17 @@ TInt CAknFepPluginManager::GetScanCodeFromHwKeymapping( TUint aKeyCode )
 TBool CAknFepPluginManager::IsITISupportedKey( const TKeyEvent& aKeyEvent )
     {
 // ITI supported conditions
-// 1. scan code != EPtiKeyNone
-// 2. Basic alpha characters
-// 3. 
+// 1. Not in keymapping: some function keys, space, enter, backspace
+// 2. In keymappings: keys on AB/Native range.
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-    if ( aKeyEvent.iScanCode != EPtiKeyNone 
-         && ( iPluginPrimaryRange == ERangeNative 
-              || iPluginPrimaryRange == ERangeEnglish
-              || ( iPluginPrimaryRange == 0 && iFepMan.InputMode() != ENumber 
-                   && iFepMan.InputMode() != ENativeNumber) ) )
+    if ( aKeyEvent.iScanCode == EStdKeySpace
+    	 || aKeyEvent.iScanCode == EStdKeyEnter
+    	 || aKeyEvent.iScanCode == EStdKeyBackspace
+    	 || ( aKeyEvent.iScanCode != EPtiKeyNone 
+    	      && ( iPluginPrimaryRange == ERangeNative 
+    	           || iPluginPrimaryRange == ERangeEnglish
+    	           || ( iPluginPrimaryRange == 0 && iFepMan.InputMode() != ENumber 
+    	                   && iFepMan.InputMode() != ENativeNumber ) ) ) )
         {
         return ETrue;
         }

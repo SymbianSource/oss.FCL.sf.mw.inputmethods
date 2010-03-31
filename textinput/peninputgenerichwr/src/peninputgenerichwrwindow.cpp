@@ -346,10 +346,10 @@ void CPeninputGenericHwrWindow::CreateAllControlsL()
     iModeSwitchChoice->SetListSkinID( KAknsIIDQsnFrList, KAknsIIDQsnFrPopupSub );
     iModeSwitchChoice->AddEventObserver( UiLayout() );             
     AddControlL( iModeSwitchChoice );
-      
-    for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
+    
+    if( iCtrlPool != NULL )
         {
-        if ( iCtrlPool )
+        for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
             {
             iCtrlPool->ControlByIndex( i )->AddEventObserver( UiLayout() );
             }

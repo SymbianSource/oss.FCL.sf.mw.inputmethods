@@ -21,6 +21,7 @@
 
 #include "AknInputLanguageInfo.h"
 #include "ptiInputLanguageInfo.h"
+#include "e32cmn.h"
 
 // CONSTANTS
 const TInt KInputLanguageArrayGranularity = 10;
@@ -167,7 +168,17 @@ EXPORT_C TAknInputLanguageCapabilities CT9InputLanguageInfo::LanguageCapabilitie
 EXPORT_C TAknLanguageName CT9InputLanguageInfo::LanguageName( TLanguage aLanguageCode ) const
 	{
     MPtiLanguage* lang = iPtiEngineInterface->GetLanguage(aLanguageCode);
-    return lang->LocalizedName();
+    
+    TAknLanguageName buf;
+    if( lang != NULL )
+        {
+        buf.Copy( lang->LocalizedName() );
+        }
+    else
+        {
+        buf.Copy( KNullDesC );
+        }
+    return buf;
 	}
 
 EXPORT_C TLanguage CT9InputLanguageInfo::UrlLanguage() const

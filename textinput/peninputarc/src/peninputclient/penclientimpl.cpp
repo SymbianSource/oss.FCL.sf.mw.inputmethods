@@ -649,13 +649,16 @@ TBool RPeninputServerImpl::IsDimmed()
 // RPeninputServerImpl::IsDimmed
 // ---------------------------------------------------------------------------
 //
-TInt RPeninputServerImpl::SupportInputMode()
+TInt RPeninputServerImpl::SupportInputMode( TInt aLanguage )
     {
     TInt supportMode = 0;
     TIpcArgs arg;        
     
     TPckg<TInt> msg(supportMode);
-    arg.Set(KMsgSlot0,&msg);    
+    arg.Set(KMsgSlot0,&msg);
+    
+    TPckg<TInt> language( aLanguage );
+    arg.Set( KMsgSlot1,&language );
     SendReceive(EPeninputRequestSupportInputMode,arg);
 
     return supportMode;
@@ -1510,7 +1513,6 @@ void CPenUiBackgroundWnd::Show(const TRect& aExtend, TBool aGlobalNotes,
 
         Window().SetOrdinalPosition(0,aPriority);      
      
-        // For fix ELLI-82JD3K for tb92.
         // The code runs well on 5.0 platform, but on tb92,
         // it will make the backgourd screen black purely.
         //Window().SetFaded(ETrue,RWindowTreeNode::EFadeWindowOnly);   

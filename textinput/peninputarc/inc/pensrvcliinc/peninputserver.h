@@ -565,6 +565,8 @@ private:    // New functions
      * @since S60 v4.0
      */
     TInt GetSupportModeL();
+    
+    TInt GetSupportModeByLanguageL( TInt aInputLanguage );
 
 #ifdef RD_TACTILE_FEEDBACK    
     /**

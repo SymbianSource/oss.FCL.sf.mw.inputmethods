@@ -45,7 +45,7 @@ PRJ_EXPORTS
 ../inc/AknFepUIStylusPopupMenu.h	|../../../../../inc/AknFepUIStylusPopupMenu.h
 ../inc/aknfepuictrleditpane.h     |../../../../../inc/aknfepuictrleditpane.h
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-../inc/AknFepCandidatePopup.h 		|../../../../../inc/aknfepcandidatepopup.h
+../inc/AknFepCandidatePopup.h 		|../../../../../inc/AknFepCandidatePopup.h
 ../inc/AknFepCandidatePopupCallback.h   |../../../../../inc/AknFepCandidatePopupCallback.h
 ../inc/AknFepUiWordPopupContent.h	|../../../../../inc/AknFepUiWordPopupContent.h
 #endif //RD_INTELLIGENT_TEXT_INPUT

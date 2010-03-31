@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -48,12 +48,15 @@ enum TPeninputFingerHwrEvent
     //This defintion is user click arrow-down of drop down list
     EHwrEventGetNextCandidatePage,
     
-    
+    // close penui layout
     EHwrEventClose,
-
-    EHwrEventNavKeyClicked,
     
+	// arrow control clicked
+    EHwrEventNavKeyClicked,
+	
+	// the event is sent out when clicking the screen outside of the symbol table
     EHwrEventOutsideEvent,
+	
     //This definition is the last event
     EHwrEventLast
     };

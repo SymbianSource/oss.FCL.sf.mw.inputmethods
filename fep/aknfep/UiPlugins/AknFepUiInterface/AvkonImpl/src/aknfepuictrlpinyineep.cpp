@@ -1106,7 +1106,7 @@ void CAknFepUICtrlPinyinEEP::CalculateVisualTextForMoveLeft()
             }
         }
         
-    //Fix for bug ESXU-7U68JT, let adjustment of visualBeg before caculation of visualEnd. 
+    //let adjustment of visualBeg before caculation of visualEnd. 
     //For one, calculation always start before "(" for miniqwertyzhuyin
     //For two, because characters(markers) might have different length in pixel, it's better recalculate visualEnd
     // after changing visualBeg, therefore move changing visualBeg ahead of caculation take effect too.

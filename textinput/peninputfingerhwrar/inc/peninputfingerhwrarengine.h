@@ -180,30 +180,6 @@ public:
      */            
     TInt SetScreenSize(TSize& aSize);
     
-    /**
-     * Reset keyboard type
-     *
-     * @since S60 v3.2
-     * @return None
-     */            
-    void ResetKeyboardType();
-    
-    /**
-     * Set keyboard to Qwerty
-     *
-     * @since S60 v3.2
-     * @return None
-     */            
-    void SetKeyboardToQwerty();
-    
-    /**
-     * Get current keyboard
-     *
-     * @since S60 v3.2
-     * @return None
-     */            
-    void GetKeyboardType();
-    
     void GetTopGuideLinePos(TInt& aPos);
     
     void GetBottomGuideLinePos(TInt& aPos);
@@ -339,10 +315,6 @@ private: //data
      */
     TInt iNumberMode;
  
-    /**
-     * Key board type
-     */
-    TInt iKeyboardType;
     };
 
 #endif //C_PENINPUTFINGERHWRARENGINE_H

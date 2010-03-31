@@ -89,16 +89,10 @@ void CPenUiWndCtrl::Draw(const TRect& aRect) const
         rect.Intersection( iLayoutClipRect );        
         TPoint pos = rect.iTl - iLayoutClipRect.iTl;
         gc.BitBlt( pos, iBitmap, rect );
-        // Add to fix NGA refresh problem
-        CCoeEnv::Static()->WsSession().Flush();
-        CCoeEnv::Static()->WsSession().Finish(); 
         return;
         }
     
     gc.BitBlt(aRect.iTl,iBitmap,aRect);
-    // Add to fix NGA refresh problem
-    CCoeEnv::Static()->WsSession().Flush();
-    CCoeEnv::Static()->WsSession().Finish(); 
     }
 
 TInt CPenUiWndCtrl::WndPriority()
@@ -177,6 +171,10 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
         CAknTransitionUtils::GetDemarcation(CAknTransitionUtils::EPopup, 
                                             demarcation);
         GfxTransEffect::SetDemarcation(this, demarcation);
+
+        //todo fix NGA effects error
+        CCoeEnv::Static()->WsSession().Finish();
+        User::After( 1 );
         
         this->MakeVisible(ETrue);
         
@@ -217,6 +215,10 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
         CAknTransitionUtils::GetDemarcation(CAknTransitionUtils::EPopup, 
                                             demarcation);
         GfxTransEffect::SetDemarcation(this, demarcation);
+
+        //todo fix NGA effects error
+        CCoeEnv::Static()->WsSession().Finish();
+        User::After( 1 );
         
         this->MakeVisible(EFalse);
         
@@ -285,7 +287,10 @@ void CPenUiWndCtrl::Invalidate(const TRect& aRect,TBool /*aFullUpdate*/)
         {
         iInvalidateRect = aRect;
         Window().Invalidate(aRect);
+        DrawNow(aRect);
         }
+    CCoeEnv::Static()->WsSession().Flush();
+    CCoeEnv::Static()->WsSession().Finish(); 
     }
 
 void CPenUiWndCtrl::OnActivate(EditorType aType)
@@ -509,8 +514,5 @@ void CPenUiPopWnd::Draw(const TRect& /*aRect*/) const
     {
     CWindowGc& gc = SystemGc();
     gc.BitBlt( TPoint(0,0), iBitmap, iRectInLayout ); 
-    // Add to fix NGA refresh problem
-    CCoeEnv::Static()->WsSession().Flush();
-    CCoeEnv::Static()->WsSession().Finish(); 
     }
 

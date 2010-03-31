@@ -1836,7 +1836,7 @@ TPeninputCandidateListLayoutData CPeninputLafDataFSQ::
     arrowDownRect.LayoutRect( scrollRect.Rect(), arrowDownPane );
     
 	layoutData.iSelectionNaviSize = arrowUpRect.Rect().Size();
-	layoutData.iSelectionNaviInnerSize = arrowUpImagePane.Rect().Size();
+	layoutData.iSelectionNaviInnerSize = arrowUpImageRect.Rect().Size();
     
 	layoutData.iSelectionTextLine 
 	           = AknLayoutScalable_Apps::list_vitu2_match_list_item_pane_t1()

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -183,50 +183,6 @@ void CPeninputFingerHwrArDataStore::SetPermittedCases( TInt aPermittedCases )
     {
     iPermittedCases = aPermittedCases;
     }
-
-// ----------------------------------------------------------------------------
-// Set Primary range
-// ----------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArDataStore::SetPrimaryRange( TInt aPrimaryRange )
-    {
-    const TInt oldIndex = iPermittedRanges.Find( aPrimaryRange );
-    
-    // store the current range
-    switch(aPrimaryRange)
-        {
-        case ERangeNative:
-            {
-            iCurrentRange = EFingerHwrNativeRange;
-            }
-            break;
-        case ERangeEnglish:
-            {
-            iCurrentRange = EFingerHwrEnglishRange;
-            }
-            break;
-        case ERangeNumber:
-            {
-            iCurrentRange = EFingerHwrNumberRange;
-            }
-            break;
-        default:
-            break;
-        }
-        
-    if ( oldIndex > 0 )
-        {
-        iPermittedRanges.Sort();
-        const TInt index = iPermittedRanges.Find( aPrimaryRange );
-        
-        iPermittedRanges.Remove( index );
-        iPermittedRanges.Insert( aPrimaryRange, 0 );
-
-        // set primary range for hwr engine
-        iHwrEngine->SetRanges( iPermittedRanges );
-        }
-    }
-
 // ----------------------------------------------------------------------------
 // get Primary range
 // ----------------------------------------------------------------------------
@@ -437,68 +393,7 @@ HBufC* CPeninputFingerHwrArDataStore::KeyMappingStringL() const
         
     return rs.AllocL();          
     }
-
-// ------------------------------------------------------------------------
-// CPeninputFingerHwrArDataStore::IsSpecialDisplayChars
-// ------------------------------------------------------------------------
-//       
-TBool CPeninputFingerHwrArDataStore::IsSpecialDisplayChars( const TDesC& aChar ) const
-    { 
-    if( aChar.Compare( KGestureEnter ) == 0 
-       || aChar.Compare( KDisplayBackspace ) == 0
-       || aChar.Compare( KGestureSpace )== 0 )
-        {
-        return ETrue;
-        }
-            
-    return EFalse;
-    }    
-
-// -----------------------------------------------------------------------------
-// CPeninputFingerHwrArDataStore::IsDirectlySentCandidate
-// -----------------------------------------------------------------------------
-//  
-TBool CPeninputFingerHwrArDataStore::IsDirectlySentCandidate( const TDesC& aChar ) const
-    {
     
-    if( aChar.Compare( KGestureEnter ) == 0 ||
-        aChar.Compare( KDisplayBackspace ) == 0)
-       {
-       return ETrue;
-       }
-           
-    return EFalse;
-    }    
-    
-// ------------------------------------------------------------------------
-// CPeninputFingerHwrArDataStore::ConvertDisplayChars
-// ------------------------------------------------------------------------
-//   
-HBufC* CPeninputFingerHwrArDataStore::ConvertDisplayChars( const TDesC& aChar ) const   
-    {
-    HBufC* convertedCan = NULL;
-    TBuf<KSpecialConvertedCharCount> str;
-    if( aChar.Compare( KGestureEnter ) == 0 )
-        {
-        str.Append( EKeyEnter );
-        } 
-    else if( aChar.Compare( KDisplayBackspace ) == 0 )
-        {
-        str.Append( EKeyBackspace );
-        }
-    else if( aChar.Compare( KGestureSpace )== 0 )
-        {
-        str.Append( EKeySpace );
-        }
-                 
-    if( str.Length() > 0 )
-    	{
-    	convertedCan = str.Alloc();	
-    	}
-    	
-    return convertedCan;
-    }
-
 // -----------------------------------------------------------------------------
 // CPeninputFingerHwrArDataStore::StartCharacter
 // -----------------------------------------------------------------------------
@@ -685,34 +580,6 @@ TInt CPeninputFingerHwrArDataStore::RemoveDuplicateCand(const RPointerArray<HBuf
      AknPenInputUtils::GetISOLanguageCode( TLanguage( aLanguage ), 
          iLanguageShowText );
      }
-
-    
- // ----------------------------------------------------------------------------
- // Reset key board type
- // ----------------------------------------------------------------------------
- //   
-void CPeninputFingerHwrArDataStore::ResetKeyboardType()
-    {
-    iHwrEngine->ResetKeyboardType();        
-    }
- 
- // ----------------------------------------------------------------------------
- // Set key board type to Qwerty
- // ----------------------------------------------------------------------------
- //   
-void CPeninputFingerHwrArDataStore::SetKeyboardToQwerty()
-    {
-    iHwrEngine->SetKeyboardToQwerty(); 
-    }
-
- // ----------------------------------------------------------------------------
- // Get key board type
- // ----------------------------------------------------------------------------
- //       
-void CPeninputFingerHwrArDataStore::GetKeyboardType()
-    {
-    iHwrEngine->GetKeyboardType();
-    }
 
 // ----------------------------------------------------------------------------
 // CPeninputFingerHwrArDataStore::GetTopGuideLinePos

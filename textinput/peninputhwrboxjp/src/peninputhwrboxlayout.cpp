@@ -941,8 +941,12 @@ void CPeninputHwrBoxLayout::ToPenStandBy(TBool aNotStandBy/* = EFalse*/)
         if (!aNotStandBy)
             {
             iUiStatePenMgr->SetCurrentUiState(EPeninputHwrUiStatePenStandBy);
-            iHwrWindow->CancelWriting();   // Standby::OnEntry()
-            iHwrWindow->DimInputContextField(EFalse);
+            
+            if( iHwrWindow != NULL )
+                {
+                iHwrWindow->CancelWriting();   // Standby::OnEntry()
+                iHwrWindow->DimInputContextField(EFalse);
+                }
             }
         delete iSubmitText;
         iSubmitText = NULL;
@@ -1012,7 +1016,10 @@ void CPeninputHwrBoxLayout::ClearInputToPenStandByL()
             }
         }
     ToPenStandBy();
-    if (UiStateMgr() && UiStateMgr()->CurrentUiState() == UiStateMgr()->GetUiState(EPeninputHwrUiStateWithTransitoryChars))
+    
+    if ( iHiraganaKanji != NULL && UiStateMgr() && 
+         UiStateMgr()->CurrentUiState() == 
+         UiStateMgr()->GetUiState(EPeninputHwrUiStateWithTransitoryChars))
         {
         iHiraganaKanji->HandleControlEventJpL(EEventVirtualKeyUp,KNullDesC);
         }

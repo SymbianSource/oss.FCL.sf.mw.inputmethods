@@ -304,7 +304,7 @@ EXPORT_C void CBubbleCtrl::Draw()
 	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
 	                               color, KAknsIIDQsnTextColors, iTextColorIndex );
 	        }
-	     textLayout.DrawText(*gc, *iText, EFalse, color);
+	     textLayout.DrawText(*gc, *iText, ETrue, color);
         }
     }
            	

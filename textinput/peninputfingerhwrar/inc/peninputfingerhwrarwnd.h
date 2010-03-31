@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -27,10 +27,10 @@ class CFepLayoutMultiLineIcf;
 class CAknFepCtrlEventButton;
 class CAknFepCtrlRepeatButton;
 class CFepCtrlDropdownList;
-class CTransparentHwrWndExt;
 class CPeninputFingerHwrArLafManager;
 class CPeninputArabicFingerHwrSymbolTable;
 class CPeninputArabicFingerHwrIndicator;
+class CPeninputArabicFingerHwrWritingWnd;
 
 /**
  *  class CPeninputFingerHwrArWnd.
@@ -206,7 +206,7 @@ public: //hwr
      * @since Symbian TB9.2
      * @return none
      */    
-    void SetBoxWritingSpeed( const TTimeIntervalMicroSeconds32& aCharDelay );
+    void SetBoxWritingSpeed( TTimeIntervalMicroSeconds32& aCharDelay );
     
     /**
      * retrieve rect of hwr writingbox.
@@ -323,7 +323,7 @@ public: // symbol table & candidate list
      * Check if the symbol table is alreay opened up
      * 
      * @since Symbian TB9.2
-     * @return none
+     * @return ETrue if the symbol table was already opened up, EFalse otherwise
      */
     TBool IsSymbolTableShowingUp();
 	
@@ -331,7 +331,7 @@ public: // symbol table & candidate list
      * Check if the candidate list was opened up
      * 
      * @since Symbian TB9.2
-     * @return none
+     * @return ETrue if the candidate list was already opened up, EFalse otherwise
      */
 	TBool IsCandidateShowup();
 
@@ -351,6 +351,11 @@ public: // symbol table & candidate list
      * @return TBool ETrue if char have been retrieved, EFalse otherwise
 	 */
 	TBool GetCharBeforeCursor(TInt aCharPos, TUint16& aCharBeforeCursor); 
+	
+	/**
+	 * Handle window open
+	 */
+	void HandleWindowOpenCommandL();
 	
 protected:
 
@@ -571,7 +576,7 @@ private: // datas
      * Writing box control.
      * Not own.
      */
-    CTransparentHwrWndExt* iWritingBox;
+    CPeninputArabicFingerHwrWritingWnd* iWritingBox;
 
     /**
      * Close button control.

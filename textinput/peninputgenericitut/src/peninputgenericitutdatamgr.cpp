@@ -303,12 +303,16 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 		} 
 	 
 
-	iVkNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(0).LayoutLine(); 
+	// Num text row
+	iVkBigNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(0).LayoutLine(); 
+	iVkNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(1).LayoutLine();
+	
 	// Key text row 1                               
-	iVkAlphaText1ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t2(0).LayoutLine();
-	iVkAlphaText3ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t4(0).LayoutLine();                                                              
+	iVkAlphaText1ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t2(1).LayoutLine();
+	// Key text row 3
+	iVkAlphaText3ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t4(1).LayoutLine();
 	// Key text row 2                               
-	iVkAlphaText2ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t3(0).LayoutLine();
+	iVkAlphaText2ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t3(1).LayoutLine();
 	
 	// close button
 	TAknWindowLineLayout funcbtn, funcbtnbg, funcbtninner;
@@ -1199,23 +1203,20 @@ void CGenericItutDataMgr::SetInputModeL(TInt aMode)
         }
     }
 
-TBool CGenericItutDataMgr::IsChineseGlobalLanguage()
-    {
-    CRepository* repository = NULL;
-    TRAPD(ret, repository = CRepository::NewL(KCRUidAknFep));
-    if (ret != KErrNone)
-        {
-        return EPluginInputModeAll;
-        }
-    TInt curLanguage ;
-    repository->Get(KAknFepInputTxtLang, curLanguage);
-    delete repository;
-    
-    return (curLanguage == ELangPrcChinese || curLanguage == ELangHongKongChinese 
-         || curLanguage == ELangTaiwanChinese);
-    }
 
-TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
+
+
+void CGenericItutDataMgr::SetChineseSpellFlag( TBool aFlag )
+	{
+	iIsChineseSpell = aFlag;
+	}
+
+TBool CGenericItutDataMgr::IsChineseSpellMode()
+	{
+	return iIsChineseSpell;
+	}
+
+TAny* CGenericItutDataMgr::RequestDataForPortraitWestUIAndChineseSpellUI(TInt aDataType)
     {
     switch ( aDataType )
         {
@@ -1229,14 +1230,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case ELayoutRect:
             {
-            if ( IsChineseGlobalLanguage())
-                {
-                return &iLayoutRect;
-                }
-            else
-                {
-                return &iLayoutRectForPrtWest;
-                }
+            return &iLayoutRectForPrtWest;
             }
         case EIcfRect:
             {
@@ -1244,11 +1238,10 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case EIcfFont:
             {
-            if ( IsChineseGlobalLanguage())
-                {
-                return IsChinese() ? reinterpret_cast<TAny*>(iIcfFontCn) : 
-                    reinterpret_cast<TAny*>(iIcfFont);
-                }
+            if ( IsChineseSpellMode())
+            	{
+				return reinterpret_cast<TAny*>(iIcfFont);
+            	}
             else
                 {
                 return reinterpret_cast<TAny*>(iIcfFontForPrtWest);
@@ -1261,10 +1254,10 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case EKeypadRect:
             {
-            if ( IsChineseGlobalLanguage())
-                {
-                return IsChinese() ? &iKeypadRectCn : &iKeypadRect;
-                }
+			if ( IsChineseSpellMode())
+            	{
+				return &iKeypadRect;
+            	}
             else
                 {
                 return &iKeypadRectForPrtWest;
@@ -1272,10 +1265,10 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }               
         case EKeypadCellRects:
             {
-            if ( IsChineseGlobalLanguage())
-                {
-                return IsChinese() ? &iKeypadCellRectsCn : &iKeypadCellRects;
-                }
+            if ( IsChineseSpellMode())
+            	{
+				return &iKeypadCellRects;
+            	}
             else
                 {
                 return &iKeypadCellRectsForPrtWest;
@@ -1283,18 +1276,27 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case EKeypadLeftTextLine:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iVkNumText;
                 }
             else
                 {
-                return &iVkNumTextForPrtWest;
+                // Modify new begin
+                if ( iInputMode == ENumber || iInputMode == ENativeNumber )
+                	{
+					return &iVkBigNumTextForPrtWest;
+                	}
+                else
+                	{
+					return &iVkNumTextForPrtWest;
+                	}
+                // Modify new end
                 }
             }
         case EKeypadRightTextLine1:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return IsThai() ? &iVkAlphaText1ForThai : &iVkAlphaText1;
                 }
@@ -1305,7 +1307,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case EKeypadRightTextLine2:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return IsThai() ? &iVkAlphaText2ForThai : &iVkAlphaText2;
                 }
@@ -1316,7 +1318,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case EKeypadRightTextLine3:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return IsThai() ? &iVkAlphaText3ForThai : &iVkAlphaText3;
                 }
@@ -1487,7 +1489,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }         
         case EItutPosOk:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iOkRect;
                 }
@@ -1498,7 +1500,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case EItutPosCancel:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iCancelRect;
                 }
@@ -1509,7 +1511,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case EBtnTextLine:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iBtnTextFormat;
                 }
@@ -1520,7 +1522,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case ESpellTextCancle:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iBtnTextFormat1;
                 }
@@ -1531,7 +1533,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case ESpellICFRect:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iSpellICFRect;
                 }
@@ -1542,7 +1544,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case ESpellClrRect:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iSpellClrRect;
                 }
@@ -1553,7 +1555,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case ESpellClrInnerRect:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iSpellClrInnerRect;
                 }
@@ -1568,7 +1570,7 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWest(TInt aDataType)
             }
         case ESpellQueryPaneRect:
             {
-            if ( IsChineseGlobalLanguage())
+            if ( IsChineseSpellMode())
                 {
                 return &iSpellQueryPaneRect;
                 }
@@ -1665,7 +1667,7 @@ TAny* CGenericItutDataMgr::RequestData(TInt aDataType)
     {
     if ( IsPortraitWest())
         {
-        return RequestDataForPortraitWest( aDataType );
+        return RequestDataForPortraitWestUIAndChineseSpellUI( aDataType );
         }
     switch ( aDataType )
         {
@@ -1861,6 +1863,7 @@ CGenericItutDataMgr::CGenericItutDataMgr(MItutLayoutContext* aLayoutContext,
                                          iLanguage(ELangNone),
                                          iInputMode(KInvalidImMode),
                                          iCase(EAknEditorUpperCase),
+                                         iIsChineseSpell( EFalse ),
                                          iConfigResId(0),
                                          iLayoutContext(aLayoutContext),
                                          iCurrentScriptIdx(KInvalidIndex),

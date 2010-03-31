@@ -474,7 +474,7 @@ TBool TAknFepUiInputStateEntryHalfQwertyWesternPredictive::HandleWordBreakingKey
 					    ptiengine->HandleCommandL( EPtiCommandLockCurrentCandidate);
 					    TPtrC selectedWord = ptiengine->CurrentWord();
                         fepMan->UpdateInlineEditL( selectedWord, selectedWord.Length() );  //selection.iAnchorPosition
-                        // To fix the bug: STAA-7GYBJC Suggested word is not committed when Arrow right key is pressed.
+                        // To fix  Suggested word is not committed when Arrow right key is pressed.
                         ptiengine->CommitCurrentWord();
                         fepMan->TryCloseUiL();
                         // Asyncronous case update after the editor has handled the key

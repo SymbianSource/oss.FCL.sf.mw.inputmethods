@@ -150,4 +150,11 @@ struct TFepSymbolOfHardwareOne
     TInt iSymbol2;
 	TInt iSymbol3;
 	};
+	
+struct TFepSpellICFDisplayContent
+	{
+	TInt iCurPos;
+	TPtrC iICFText;
+	TPtrC iPromptText;
+	};
 #endif

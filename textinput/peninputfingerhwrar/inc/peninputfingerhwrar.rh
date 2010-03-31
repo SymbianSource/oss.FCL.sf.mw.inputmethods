@@ -97,6 +97,15 @@ STRUCT AKN_FEP_FINGERHWR_ICON_IMAGE
 	WORD iconimagemsk=0xffff;
 	WORD iconimageskinid=0xffff;    
    	}
+
+// ---------------------------------------------------------------------------
+// fingerhwr symbol table
+// ---------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_FINGERHWR_SYMBOLTABLE
+    {
+    LLINK bgimage=0;
+    }
 #endif // PENINPUTFINGERHWRAR_RH
 
 // End Of File

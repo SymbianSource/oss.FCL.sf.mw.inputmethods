@@ -811,7 +811,6 @@ void CPeninputFingerHwrWnd::UpdateLayoutL( const TBool aIsStandby,
         iCandidateList->Hide( ETrue );
         iPredictList->Hide( ETrue );
         
-        //todo : fix EVWG-7U76JF, 2 lines
         iCandidateList->ClearBubble();
         iPredictList->ClearBubble();
         

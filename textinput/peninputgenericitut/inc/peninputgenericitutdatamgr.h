@@ -74,7 +74,7 @@ public:
     void SetCase(TInt aCase);
 
     TAny* RequestData(TInt aDataType);
-    TAny* RequestDataForPortraitWest(TInt aDataType);
+    TAny* RequestDataForPortraitWestUIAndChineseSpellUI(TInt aDataType);
 
     inline CPtiEngine* PtiEngine();
 
@@ -103,7 +103,6 @@ public:
 
     inline TBool IsPortraitWest();
     
-    TBool IsChineseGlobalLanguage();
 	void SetUpdate(TBool aNeedUpdate);
 	TBool IsUpdate() const;
     // when user press navi-next button on dropdownlist, there is need to 
@@ -142,6 +141,9 @@ public:
     inline TBool IsNumericOnly() const;
 	
     TMenuItem* GetMenuItem(TInt aCommand); 
+    void SetChineseSpellFlag( TBool aFlag );
+    
+    TBool IsChineseSpellMode();
     	
 	TPoint iSelectionTl;
     TSize iSelectionItemSize;
@@ -208,6 +210,7 @@ private: // data member
     TInt iLanguage;
     TInt iInputMode;
     TInt iCase;
+    TBool iIsChineseSpell;
 
     TSize iScreenSize;
 
@@ -376,6 +379,7 @@ private: // data member
     TAknTextLineLayout iVkAlphaText2ForPrtWest;
     TAknTextLineLayout iVkAlphaText3ForPrtWest;
     TAknTextLineLayout iVkNumTextForPrtWest;
+    TAknTextLineLayout iVkBigNumTextForPrtWest;
     TRect iCloseRectForPrtWest;
     TRect iCloseInnerRectForPrtWest;
     TRect iArrowLeftRectForPrtWest;

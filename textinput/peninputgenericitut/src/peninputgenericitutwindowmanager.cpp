@@ -305,7 +305,7 @@ TBool CGenericItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
             break;
         case ECmdPenInputFingerMatchIndicator:
             {
-            if ( IsPortraitWest() && ( !iDataMgr->IsChineseGlobalLanguage()))
+            if ( IsPortraitWest() && ( !iDataMgr->IsChineseSpellMode()))
                 {
                 iWindow->UpdateIndiBubbleL( aData );
                 }
@@ -390,6 +390,12 @@ TBool CGenericItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
             iInEditWordQueryDlg = *data;
             }
             break;
+        case ECmdPeninputSpellICFDisplayContent:
+        	{
+        	iWindow->SetSpellDisplayContentL( aData );
+        	handle = ETrue;
+        	}
+        	break;
         default:
         break;
             
@@ -446,7 +452,7 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
             CGenericItutUiMgrBase::EStateSpelling && 
          !iInEditWordQueryDlg)
         {
-        if ( IsPortraitWest() && (!iDataMgr->IsChineseGlobalLanguage()))
+        if ( IsPortraitWest() && (!iDataMgr->IsChineseSpellMode()))
             {
 			iWindow->Icf()->HideBubble();
             iWindow->SetIndiWithTextFlag( ETrue );
@@ -473,7 +479,7 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
         }
     else
         {
-        if ((!IsPortraitWest()) || iDataMgr->IsChineseGlobalLanguage())
+        if ((!IsPortraitWest()) || iDataMgr->IsChineseSpellMode())
             {
             iWindow->Icf()->HideBubble();
             }

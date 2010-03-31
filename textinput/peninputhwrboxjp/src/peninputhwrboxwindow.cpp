@@ -424,10 +424,10 @@ void CPeninputHwrBoxWindow::CreateAllControlsL()
     AddButtonL( EPeninutWindowCtrlIdSwitchToVkbBtn,
                 EPeninputLayoutEventToVkb,
                 R_PENINPUT_LAYOUT_HWR_VKB );
-
-    for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
+    
+    if( iCtrlPool != NULL )
         {
-        if ( iCtrlPool )
+        for ( TInt i = 0; i < iCtrlPool->ControlCount(); i++ )
             {
             iCtrlPool->ControlByIndex( i )->AddEventObserver( UiLayout() );
             }

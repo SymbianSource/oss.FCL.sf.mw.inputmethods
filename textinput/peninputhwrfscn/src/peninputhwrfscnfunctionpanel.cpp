@@ -325,11 +325,11 @@ void CPeninputHwrfscnFunctionPanel::CreateSymbolTableL()
         EHwrCtrlIdSymbolTableVkb,
         font );
         
-    //This modification is for EVWG-7VW2Z7, change another smaller layout font 
+    //This modification is for change another smaller layout font 
     TAknTextLineLayout keypadText =
 		//AknLayoutScalable_Avkon::cell_hwr_fs_pane_t1().LayoutLine();  
         AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
-    //Modification for EVWG-7VW2Z7 end  
+    //Modification for end  
     iVkbCtrl->SetTextLineLayout(keypadText);
 	iVkbCtrl->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG60 );
 	iVkbLayout = CAknFepCtrlVkbLayout::NewL();
@@ -708,11 +708,10 @@ void CPeninputHwrfscnFunctionPanel::ResetSymbolTableSize()
 	iVkbCtrl->SetRect( SymbolTableRect() );
     iVkbCtrl->SetFont( font );
     
-    //This modification is for EVWG-7VW2Z7, change another smaller layout font 
+    //This modification is for change another smaller layout font 
     TAknTextLineLayout keypadText =
 		//AknLayoutScalable_Avkon::cell_hwr_candidate_pane_t1().LayoutLine();
         AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
-    //Modification for EVWG-7VW2Z7 end
     iVkbCtrl->SetTextLineLayout(keypadText);
     }
 

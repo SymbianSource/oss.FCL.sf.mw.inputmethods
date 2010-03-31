@@ -90,7 +90,9 @@ void CChnItutUiStateStandby::OnEntryL()
         default:
             break;
         }
-    
+    // Show ICF, Backspace, Arrow after position changed to avoid flick
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
+	iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( EFalse );
 
     iOwner->LayoutContext()->ShowArrowBtn(
         EBtnArrowLeft | EBtnArrowRight | EBtnArrowUp | EBtnArrowDown);
@@ -100,7 +102,10 @@ void CChnItutUiStateStandby::OnExit()
     {
     // hide input mode indicator
 
+   // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
     iOwner->LayoutContext()->ShowArrowBtn(0);
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
     }
 
 TBool CChnItutUiStateStandby::HandleKeyL(TInt aCmd, TInt aKey)

@@ -118,7 +118,7 @@ EXPORT_C void CHwrWndBase::AddGuidingLine(const TPoint& /*aStart*/, const TPoint
 // (other items were commented in a header).
 // ---------------------------------------------------------------------------
 //   
-void CHwrWndBase::EndStrokeL(TBool aCharacterTimerFlag)
+EXPORT_C void CHwrWndBase::EndStrokeL(TBool aCharacterTimerFlag)
     {
     if(iHasNewTrace)    //only do this when we have new trace
         {               
@@ -241,7 +241,6 @@ EXPORT_C CFepUiBaseCtrl* CHwrWndBase::HandlePointerUpEventL( const TPoint& aPoin
     iListOfPoints.AppendL(iStrokeEndMark);
     iStrokeTimer->SetTimer(iStrokeDelay);  
     CFepUiBaseCtrl::HandlePointerUpEventL(aPoint); 
-    // For EKZG-7JCBGW
     // iCtrlWithPointerDown of its CControlGroup must be set to NULL
     // when its up event occurs.
     CFepUiBaseCtrl* parent = ParentCtrl();
@@ -764,7 +763,7 @@ TRect CTransparentHwrWnd::DrawLine(const TPoint& aPt1,const TPoint& aPt2,TBool a
     return affectedRect;
     } 
 
-void CTransparentHwrWnd::DrawFrame( const TRect& aFrameRect )
+EXPORT_C void CTransparentHwrWnd::DrawFrame( const TRect& aFrameRect )
 	{
     CFbsBitGc* gc= static_cast<CFbsBitGc*> ( BitGc() );        
 	
@@ -1200,7 +1199,7 @@ EXPORT_C TRect CTransparentHwrWndExt::DrawStroke(TBool aDrawFlag)
 // (other items were commented in a header).
 // ---------------------------------------------------------------------------
 //       
-TRect CTransparentHwrWndExt::DrawPoint(const TPoint& aPoint,TBool aDrawFlag)
+EXPORT_C TRect CTransparentHwrWndExt::DrawPoint(const TPoint& aPoint,TBool aDrawFlag)
     {
     TRect affectedRect(0,0,0,0);
         {
@@ -1247,7 +1246,7 @@ TRect CTransparentHwrWndExt::DrawPoint(const TPoint& aPoint,TBool aDrawFlag)
 // (other items were commented in a header).
 // ---------------------------------------------------------------------------
 //   
-TRect CTransparentHwrWndExt::DrawLine(const TPoint& aPt1,const TPoint& aPt2,TBool aDrawFlag)
+EXPORT_C TRect CTransparentHwrWndExt::DrawLine(const TPoint& aPt1,const TPoint& aPt2,TBool aDrawFlag)
     {
     TRect affectedRect(0,0,0,0);
         {
@@ -1330,7 +1329,7 @@ EXPORT_C void CTransparentHwrWndExt::OnLayoutDraggingStart()
 // (other items were commented in a header).
 // ---------------------------------------------------------------------------
 //   
-void CTransparentHwrWndExt::EndStrokeAndClearL()
+EXPORT_C void CTransparentHwrWndExt::EndStrokeAndClearL()
     {
     iFadeTimer->Cancel();
     iListOfShownPoints.Reset();
@@ -1344,7 +1343,7 @@ void CTransparentHwrWndExt::EndStrokeAndClearL()
 // (other items were commented in a header).
 // ---------------------------------------------------------------------------
 //   
-void CTransparentHwrWndExt::CancelPointerDownL()
+EXPORT_C void CTransparentHwrWndExt::CancelPointerDownL()
     {
     if( !PointerDown() )
         {

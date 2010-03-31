@@ -418,14 +418,6 @@ private:
     */
     void OnEndWritingL( const TDesC& aEventData );
     
-    /**
-    * Handle the candidate selection event
-    *
-    * @since Symbian TB9.2
-    * @param aEventData The trace data
-    */
-    void OnSelectedCandidatesL( const TDesC& aEventData );
-    
     };
 
 /**

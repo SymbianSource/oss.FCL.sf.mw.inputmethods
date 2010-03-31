@@ -277,13 +277,13 @@ void CAknFepVkbClientArea::ConstructL()
     AddButtonL(EAknFepVkbCtrlIdSwitchToHwrBtn,EVkbEventHwr,R_AKN_FEP_VKB_HWR);   
     
     SetTextProperty();
-   
-    for (TInt i=0; i < iCtrlPool->ControlCount(); i++)
+    
+    if( iCtrlPool != NULL )
         {
-        if ( iCtrlPool )
+        for( TInt i=0; i < iCtrlPool->ControlCount(); i++ )
             {
-            iCtrlPool->ControlByIndex(i)->AddEventObserver(UiLayout());    
-            }       
+            iCtrlPool->ControlByIndex(i)->AddEventObserver( UiLayout() );           
+            }
         }
     }
 

@@ -264,17 +264,17 @@ TBool TAknFepInputStateHalfQwerty::HandleKeyL(TInt aKey, TKeyPressLength aLength
             	}
             fepMan->NewCharacterL(chr);
             
-            if ( aKey == EStdKeyEnter)
-                {
-                fepMan->CommitInlineEditL();      
-                ptiengine->ClearCurrentWord();                
-                iData = 0;
-                }
-            else            
-                {    
+           // if ( aKey == EStdKeyEnter)
+           //     {
+           //     fepMan->CommitInlineEditL();      
+           //     ptiengine->ClearCurrentWord();                
+           //     iData = 0;
+           //     }
+           // else            
+           //     {    
                 iData = aKey;            
                 fepMan->SetFlag(CAknFepManager::EFlagInsideMultitapInlineEditingTransaction);                   
-                }
+            //    }
                                   
             }
         if((text.Length() > 0) || (IsKeymapped(aKey)))

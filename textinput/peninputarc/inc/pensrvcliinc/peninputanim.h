@@ -69,9 +69,8 @@ struct TTactileControlInfo
 
 class MTactileFeedbackServer;
 
-// Modify for bug ETMA-7X2C5Y begin
 class CPenPointerEventSuppressor;
-// Modify for bug ETMA-7X2C5Y end
+
 /**
  * CPeninputAnim
  *
@@ -414,9 +413,6 @@ private:    // Data
      */	
     TRect iDiscreetPopArea;
     
-    /**
-     * Fix bug HMNN-82CDU5
-     */
     TPoint iPointerDown;  // record pointer that button is pressing in  
     TBool iIsMove;  //  Is key moving event happened. 
     };

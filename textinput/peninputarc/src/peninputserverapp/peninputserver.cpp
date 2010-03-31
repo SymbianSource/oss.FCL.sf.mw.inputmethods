@@ -212,9 +212,7 @@ CPeninputServer* CPeninputServer::NewL()
 void CPeninputServer::ConstructL( )
     {
 #ifdef RD_TACTILE_FEEDBACK     
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
 	FeatureManager::InitializeLibL();
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
    	iSupportFeedback = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
 
 #endif //RD_TACTILE_FEEDBACK   
@@ -333,9 +331,7 @@ void CPeninputServer::CleanAll()
         
 
 #ifdef RD_TACTILE_FEEDBACK
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
 	FeatureManager::UnInitializeLib();
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
     iFeedbackAreaArray.Close();
 #endif // RD_TACTILE_FEEDBACK    
     delete iPenUiCtrl;
@@ -1114,10 +1110,11 @@ TInt CPeninputServer::HandleMessageL(const RMessage2& aMessage)
             break;
     	case EPeninputRequestSupportInputMode:
     	    {
-            TInt supportMode = GetSupportModeL();
-
-            TPckg<TInt> msg(supportMode);
-            
+    	    TInt language = 0;
+    	    TPckg<TInt> msgLanguage( language );
+    	    aMessage.ReadL( 1, msgLanguage );    	    
+    	    TInt supportMode = GetSupportModeByLanguageL( language );                      
+            TPckg<TInt> msg(supportMode);           
             aMessage.WriteL(0,msg);
     	    }
     	    break;            
@@ -2739,6 +2736,35 @@ TInt CPeninputServer::GetSupportModeL()
         }    
     return supportMode;
     }
+
+TInt CPeninputServer::GetSupportModeByLanguageL( TInt aInputLanguage )
+	{
+    TInt curLanguage = aInputLanguage;
+    
+    if ( curLanguage == 401 )
+    	{
+        curLanguage = 102;
+    	}    
+    if (curLanguage == 402)
+    	{
+        curLanguage = 103;
+    	}        
+    TInt supportMode = EPluginInputModeNone;
+    TInt tempMode = EPluginInputModeHwr;
+    
+    iLayoutEng->InitializeL();
+    
+    while ( tempMode < EPluginInputModeAll )
+        {
+        if ( iLayoutEng->IsSupportPluginMode( ( TLanguage )curLanguage, 
+                                              ( TPluginInputMode )tempMode ) )
+            {
+            supportMode |= tempMode;
+            }
+        tempMode<<=1;
+        }    
+    return supportMode;	
+	}
 	
 // ---------------------------------------------------------------------------
 // CPeninputServer::DiscreetPopChangeNotification

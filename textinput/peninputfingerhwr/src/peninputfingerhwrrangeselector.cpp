@@ -111,7 +111,6 @@ void CPeninputFingerHwrRangeSelector::CancelPopup()
     CapturePointer( EFalse );
     iPopupVisible = EFalse;
 
-    //todo: fix ESXU-7UCC9S, 2 lines
     RootControl()->Draw();
     UpdateArea( extendRect, EFalse );
     }

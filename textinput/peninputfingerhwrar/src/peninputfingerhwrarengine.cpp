@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005-2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -52,8 +52,6 @@ CPeninputFingerHwrArEngine* CPeninputFingerHwrArEngine::NewL( CPtiEngine* aPtiEn
 //
 CPeninputFingerHwrArEngine::~CPeninputFingerHwrArEngine()
     {
-    RProperty::Set(KCRUidAvkon, KAknKeyBoardLayout, iKeyboardType);
-    
     if( iOwnPtiEngine )
         {
         delete iPtiEngine;
@@ -89,14 +87,7 @@ void CPeninputFingerHwrArEngine::DoRecognizeL( const RArray<TPoint>& aTraceData,
     
     aCandidates.ResetAndDestroy();
 
-    TInt primaryCount = iRecognizer->Recognize( aTraceData, aCandidates ); 
-
-    // filter recognized candidate, set start position for all ranges    
-    TPtrC ptr( KSeparator );
-    
-       
-    // remove uncessary primary candidate
-    TInt totallyCount = aCandidates.Count();
+    iRecognizer->Recognize( aTraceData, aCandidates ); 
     }
     
 
@@ -204,14 +195,14 @@ void CPeninputFingerHwrArEngine::SetNumberMode( const TAknEditorNumericKeymap& a
 //
 TPoint CPeninputFingerHwrArEngine::StrokeEndMark() const
     {
+	TPoint strokeEndMark( KDefaultStrokeEndMarkX, KDefaultStrokeEndMarkY );
+	
     if ( iRecognizer )
         {
-        return iRecognizer->StrokeEndMark();
+        strokeEndMark = iRecognizer->StrokeEndMark();
         }
-    else
-        {
-        return TPoint( KDefaultStrokeEndMarkX, KDefaultStrokeEndMarkY );
-        }
+    
+	return strokeEndMark;
     }
 
 // ---------------------------------------------------------------------------------------------
@@ -437,34 +428,6 @@ void CPeninputFingerHwrArEngine::ConvertStrokeEndMark( RArray<TPoint>& aTraceDat
         }
     }    
     
-// ---------------------------------------------------------------------------
-// Reset Keyboard type to original type
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArEngine::ResetKeyboardType()
-    {
-    RProperty::Set(KCRUidAvkon, KAknKeyBoardLayout, iKeyboardType);
-    }        
-     
-     
-// ---------------------------------------------------------------------------
-// Set Keyboard type to Qwerty
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArEngine::SetKeyboardToQwerty()
-    {
-    RProperty::Set(KCRUidAvkon, KAknKeyBoardLayout, EPtiKeyboardQwerty4x12);
-    }        
-
-// ---------------------------------------------------------------------------
-// Get Keyboard type
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArEngine::GetKeyboardType()
-    {
-    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, iKeyboardType);
-    }        
-
 void CPeninputFingerHwrArEngine::GetTopGuideLinePos(TInt& aPos)
     {
     if(iRecognizer)

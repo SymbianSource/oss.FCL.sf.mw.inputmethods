@@ -25,7 +25,6 @@
 #include <peninputcmd.h>
 #include <peninputlabel.h>
 
-// Fix bug for EZLG-7YUAP7
 #include <peninputrawkeybutton.h>
 
 #include "peninputitutwesternuistatespelling.h"
@@ -124,8 +123,6 @@ void CWesternItutUiStateSpelling::OnEntryL()
         {
         baseCtrl->Hide(ETrue);
         }
-    iOwner->LayoutContext()->Control(ECtrlIdArrowLeft)->Hide(ETrue);
-    iOwner->LayoutContext()->Control(ECtrlIdArrowRight)->Hide(ETrue);
     iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(ETrue);
     iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(ETrue);
     baseCtrl = iOwner->LayoutContext()->Control(ECtrlIdIndicator);
@@ -133,7 +130,6 @@ void CWesternItutUiStateSpelling::OnEntryL()
         {
         baseCtrl->Hide(ETrue);
         }
-    // Fix bug for EZLG-7YUAP7 
     // Hide Chinese Arrow Up button and Arrow Down button 
     CAknFepCtrlRawKeyButton* upbtn = 
         static_cast<CAknFepCtrlRawKeyButton *>(iOwner->LayoutContext()->Control(ECtrlIdArrowUp));
@@ -170,10 +166,13 @@ void CWesternItutUiStateSpelling::OnEntryL()
     iICF->SetLineSeparatorAfterPrompt(ETrue);
     
     ReCalcLayoutL();
+    // Show ICF, Backspace after position changed to avoid flicker
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( EFalse );
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
     CAknFepCtrlLabel* indilabel = static_cast<CAknFepCtrlLabel*>
                                   (iOwner->LayoutContext()->Control(ECtrlIdSpellIndicator));
     // Modify begin
-    if ( indilabel && iOwner->DataMgr()->IsChinese())
+    if ( indilabel && iOwner->DataMgr()->IsChineseSpellMode())
     // Modify end
         {
         indilabel->Hide( EFalse );
@@ -189,6 +188,11 @@ void CWesternItutUiStateSpelling::OnExit()
         {
         indilabel->Hide( ETrue );
         }
+    // Hide ICF, Backspace, Arrow contrls when exit to avoid flicker
+    iOwner->LayoutContext()->ShowArrowBtn(0);
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( ETrue );
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    iICF->SetPromptTextL( KNullDesC );
     iOk->Hide(ETrue);
     iCancel->Hide(ETrue);
     iOwner->DataMgr()->SetSpellMode(EFalse);
@@ -200,6 +204,7 @@ void CWesternItutUiStateSpelling::OnExit()
 		{
 		bgCtrl->ShowSubBgItem( 0, EFalse );	
 		}    
+    iOwner->DataMgr()->SetChineseSpellFlag( EFalse );
     }
 
 CGenericItutUiMgrBase::TUiState CWesternItutUiStateSpelling::StateType()
@@ -273,7 +278,7 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
     //iICF->SetRect( TItutDataConverter::AnyToRect(iOwner->DataMgr()->RequestData(ESpellICFRect)) );
     CFont* icffont;
     if ( iOwner->DataMgr()->IsPortraitWest() && 
-            (!iOwner->DataMgr()->IsChineseGlobalLanguage()))
+            (!iOwner->DataMgr()->IsChineseSpellMode()))
         {
         icffont = TItutDataConverter::AnyToFont(iOwner->DataMgr()->RequestData(ESpellFont));
         }
@@ -291,7 +296,7 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
  
     iICF->SetLineSpace( 1 );
     if ( iOwner->DataMgr()->IsPortraitWest() && 
-            (!iOwner->DataMgr()->IsChineseGlobalLanguage()))
+            (!iOwner->DataMgr()->IsChineseSpellMode()))
         {
         iICF->SizeChangedL(rect, 
                       iOwner->DataMgr()->iSpellIcfTextHeightForPrtWest,
@@ -322,7 +327,7 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
 		iOwner->UiManager()->Window()->HandleButtonResOnLangDirChange( ECtrlIdBackspace );			
 		}
 	if ( iOwner->DataMgr()->IsPortraitWest() && 
-	        (!iOwner->DataMgr()->IsChineseGlobalLanguage()))
+	        (!iOwner->DataMgr()->IsChineseSpellMode()))
 	    {
 		iOwner->LayoutContext()->Control(ECtrlIdArrowLeft)->Hide( EFalse );
 		iOwner->LayoutContext()->Control(ECtrlIdArrowRight)->Hide( EFalse );

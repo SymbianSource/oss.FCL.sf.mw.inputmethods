@@ -335,6 +335,8 @@ TBool CAknFepUICtrlJapaneseKutenQueryDialog::AdjustSjisCode(TText& aSjisCode)
             SjisHi = 0;
             SjisLow = 0;
             }
+        
+        /*
         else
             {
             if (SjisHi == ESjisFirstMax2)
@@ -346,6 +348,7 @@ TBool CAknFepUICtrlJapaneseKutenQueryDialog::AdjustSjisCode(TText& aSjisCode)
                     }
                 }
             }
+        */
         }
 
     if (CheckSjisCode((TText)((SjisHi << 8) + SjisLow)))

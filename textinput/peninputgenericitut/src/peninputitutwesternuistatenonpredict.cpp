@@ -78,7 +78,9 @@ void CWesternItutUiStateNonPredict::OnEntryL()
     // update resource id of keypad, candidate drop list
     iOwner->DataMgr()->NotifyChangeControlLayout(
         MItutPropertySubscriber::EItutPropertyKeypadResourceId, keypadResId);
-
+    // Show ICF, Backspace after position changed to avoid flicker
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(EFalse);
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
     // for secret editor, there is no need to show navigation buttons
         {
         if (iOwner->DataMgr()->IsChinese())
@@ -143,7 +145,10 @@ void CWesternItutUiStateNonPredict::OnEntryL()
 
 void CWesternItutUiStateNonPredict::OnExit()
     {
+    // Hide ICF, Backspace, Arrow controls when exit to avoid flick
     iOwner->LayoutContext()->ShowArrowBtn(0);
+    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
     }
 
 CGenericItutUiMgrBase::TUiState CWesternItutUiStateNonPredict::StateType()

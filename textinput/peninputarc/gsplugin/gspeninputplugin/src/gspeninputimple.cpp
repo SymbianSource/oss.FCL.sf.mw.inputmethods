@@ -497,41 +497,41 @@ TBool CGSPenInputImple::ShowWritingSpeedPageL()
 TBool CGSPenInputImple::ShowGuideLinePageL()
     {
     TInt currentItem = iModel->GuideLine();
-    currentItem = ( 0 == currentItem ) ? 1 : 0;
-    
-    iModel->SetGuideLine(currentItem);
-    
-    return ETrue;
-    
-//    if (currentItem == 1)
-//        {
-//        currentItem = 0;
-//        }
-//    else
-//        {
-//        currentItem = 1;
-//        }
-//
-//    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
-//                                      R_GS_GUIDLINE_TEXT_SETTING_PAGE, 
-//                                      currentItem, 
-//                                      iGuideLineItems);
-//
-//    CleanupStack::PushL(dlg);
+//    currentItem = ( 0 == currentItem ) ? 1 : 0;
 //    
-//    TBool ret = EFalse;
-//    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
-//        {
-//        if(currentItem == iModel->GuideLine())
-//            {
-//            iModel->SetGuideLine(currentItem == 0? 1:0);
-//            ret = ETrue;
-//            }
-//        }
-// 
-//    CleanupStack::Pop(dlg);  
+//    iModel->SetGuideLine(currentItem);
+//    
+//    return ETrue;
     
-//    return ret; 
+    if (currentItem == 1)
+        {
+        currentItem = 0;
+        }
+    else
+        {
+        currentItem = 1;
+        }
+
+    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
+                                      R_GS_GUIDLINE_TEXT_SETTING_PAGE, 
+                                      currentItem, 
+                                      iGuideLineItems);
+
+    CleanupStack::PushL(dlg);
+    
+    TBool ret = EFalse;
+    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
+        {
+        if(currentItem == iModel->GuideLine())
+            {
+            iModel->SetGuideLine(currentItem == 0? 1:0);
+            ret = ETrue;
+            }
+        }
+ 
+    CleanupStack::Pop(dlg);  
+    
+    return ret; 
     }
 
 // ---------------------------------------------------------

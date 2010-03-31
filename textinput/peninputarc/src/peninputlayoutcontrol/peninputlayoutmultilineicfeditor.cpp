@@ -1670,8 +1670,8 @@ void CFepLayoutMultiLineIcfEditor::RemoveOverlappedCtrlIfNeeded()
     }
 
 void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
-                                                TInt aFontHeight,
-                                                TInt aMaxFontHeight,
+                                                TInt /*aFontHeight*/,
+                                                TInt /*aMaxFontHeight*/,
                                                 const CFont* aFont)
     {   
     TRect oriRect = Rect();

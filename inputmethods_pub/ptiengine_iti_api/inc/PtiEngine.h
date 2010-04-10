@@ -1278,6 +1278,6 @@ NONSHARABLE_CLASS(CPtiEngine) : public CBase
         CPtiEngineImpl* iImpl;
         };
                
-#endif  _PTI_ENGINE_H
+#endif // _PTI_ENGINE_H
 
 // End of file

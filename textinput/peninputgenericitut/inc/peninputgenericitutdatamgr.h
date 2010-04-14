@@ -177,7 +177,14 @@ public:
     TInt iIcfTextLineSpaceMarginForPrtWest;
     TInt iIcfTextHeightForPrtWest;
     TRect iShiftIconRectForPrtWest;
+    TRect iStarIconRectForPrtWest;
     TInt iSpellIcfTextHeightForPrtWest;
+    
+	TInt iSpellIcfTextLeftMarginForPrtWest;
+    TInt iSpellIcfTextRightMarginForPrtWest;
+    TInt iSpellIcfTextTopMarginForPrtWest;
+    TInt iSpellIcfTextBottomMarginForPrtWest;
+    TInt iSpellIcfTextLineSpaceMarginForPrtWest;
 private:
     CGenericItutDataMgr(MItutLayoutContext* aLayoutContext, CPtiEngine* aPtiEngine );
 
@@ -461,7 +468,7 @@ inline void CGenericItutDataMgr::SetLatinOnly( TBool aLatinOnly )
 
 inline TBool CGenericItutDataMgr::IsPortraitWest()
     {
-    return !iLandScape && !IsChinese();
+    return !iLandScape && !IsChinese() && !IsKorean();
     }
 inline TBool CGenericItutDataMgr::IsValidLanguage(TInt aLanguage)
 	{

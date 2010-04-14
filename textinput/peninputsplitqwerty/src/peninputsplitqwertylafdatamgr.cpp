@@ -329,7 +329,7 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
     keycellRect.LayoutRect( keypaneRect.Rect(), linelayout );
 
     keyText = AknLayoutScalable_Avkon::cell_vkbss_key_t1(v2).LayoutLine();
-    keyText.iB += 3; //todo split-view, temp solution
+    keyText.iB += 3; 
     
     linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(v2).LayoutLine();
     keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
@@ -378,7 +378,7 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
         TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
         for ( TInt j = 0; j < aCols; j++ )
             {
-            TRect bound = rectXBorder;
+			TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
             bound.Move( indent, 0 );
             

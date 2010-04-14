@@ -125,7 +125,6 @@ public:
     
     void HandleButtonResOnLangDirChange( TInt aControlId );
     void HandleButtonResOnLangDirChangeL( TInt aControlId );
-    TBool IsPortraitWest();
     void IndiBubbleWithText();
     void IndiBubbleWithoutText();
     void UpdateIndiBubbleL( TUint8* aData );
@@ -136,6 +135,7 @@ public:
     void SetIndiWithTextFlag( TBool aFlag );
     void MsgBubbleForChinese();
     void SetSpellDisplayContentL( TUint8* aData );
+    void CreateKoreanSpecificCtrlsIfNeededL();
 private:
     CGenericItutWindow(CGenericItutWindowManager* aWindowMgr, 
                        CGenericItutUiLayout* aLayoutOwner,

@@ -90,7 +90,10 @@ void CAknFepUiSpellContainer::SetInputWinObserver( MEikEdwinObserver* aObserver 
 // 
 void CAknFepUiSpellContainer::SetInputWinFocus( TBool aFocus )
 	{
-	iInputPane->SetFocus( aFocus );
+	if( iInputPane->IsFocused() != aFocus )
+		{
+	    iInputPane->SetFocus( aFocus );
+		}
 	// When release focus, remove from stack.
 	if( aFocus )
 		{

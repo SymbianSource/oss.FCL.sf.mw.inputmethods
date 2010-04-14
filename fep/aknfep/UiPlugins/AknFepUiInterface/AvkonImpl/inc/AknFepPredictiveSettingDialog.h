@@ -131,7 +131,7 @@ class CAknFepPredictiveSettingDialog : public CAknDialog
 		void AttemptToExitL();
 
 #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__		
-	    TInt 						iOriginalKeyboardLayout;
+		TPtiKeyboardType 			iOriginalKeyboardLayout;
 #endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
 	    
 	    // iSettingItemInEditingState is introduced to avoid the crash when we are editing 

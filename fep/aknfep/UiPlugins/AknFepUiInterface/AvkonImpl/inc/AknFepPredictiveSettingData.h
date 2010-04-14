@@ -34,6 +34,7 @@
 #define __AKN_FEP_PREDICTIVESETTING_DATA_H
 
 #include <e32base.h>
+#include <ptidefs.h>
 
 /**
  * Class: 		CAknFepPredictiveSettingData
@@ -153,6 +154,11 @@ public:
     * Returns:      Value of iPhysicalKeyboards member
     */
     inline TInt& AWCBitmask() {return iAWCBitmask; }
+    
+    TPtiKeyboardType ActiveKeyboardType() const;
+    
+    TPtiKeyboardType OwnerKeyboardType() const;      
+    
 private:
 	/**
 	* Function:		CAknFepPredictiveSettingData

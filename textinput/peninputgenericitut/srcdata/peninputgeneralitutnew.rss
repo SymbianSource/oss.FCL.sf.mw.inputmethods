@@ -527,5 +527,15 @@ RESOURCE AKN_FEP_COLOR_ICON_IMAGE r_itut_keypad_shift_icon
 		iconimage = EMbmPeninputgenericitutQgn_indi_input_shift;
 		iconimagemsk = EMbmPeninputgenericitutQgn_indi_input_shift_mask;
 		iconimageskinid = EAknsMinorGenericQgnIndiInputShift;
-		}			    
+		}		
+
+RESOURCE AKN_FEP_COLOR_ICON_IMAGE r_itut_keypad_star_icon
+		{
+		bmpfile = AKN_FEP_ITUT_BMP;
+		imgmajorskinid = EAknsMajorGeneric;
+		
+		iconimage = EMbmPeninputgenericitutQgn_indi_feb_asterisk;
+		iconimagemsk = EMbmPeninputgenericitutQgn_indi_feb_asterisk_mask;
+		iconimageskinid = EAknsMinorGenericQgnIndiInputShift;
+		}
 // End Of File

@@ -187,6 +187,11 @@ void CSplitItutWindow::CreateItutKeypadL()
     shiftIcon->ResizeL( iDataMgr->iShiftIconRect.Size() );
     iStandardItutKp->SetShiftIcon( shiftIcon );
     
+    // read key star icon res
+    CPenInputColorIcon* starIcon = CPenInputColorIcon::NewL( R_ITUT_KEYPAD_STAR_ICON );
+    starIcon->ResizeL( iDataMgr->iStarIconRect.Size() );
+    iStandardItutKp->SetStarIcon( starIcon );    
+    
     //set key to be 9 piece graphics
     iStandardItutKp->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonFrNormal );
     iStandardItutKp->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonFrPressed );
@@ -1155,6 +1160,10 @@ void CSplitItutWindow::OnSkinChange()
     // reconstruct shift icon when skin changed
     TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ReConstructL());
     TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ResizeL(iDataMgr->iShiftIconRect.Size()));
+    
+    // reconstruct star icon when skin changed
+    TRAP_IGNORE(iStandardItutKp->StarIcon()->ReConstructL());
+    TRAP_IGNORE(iStandardItutKp->StarIcon()->ResizeL(iDataMgr->iStarIconRect.Size()));
     
     //Skin change will case the reconstuction of the button graphic.
     //When language is RToL, it should be mirrored again.

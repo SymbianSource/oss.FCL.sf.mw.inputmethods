@@ -47,3 +47,4 @@
 -c8,8 qgn_indi_input_backspace.svg
 -c8,8 qgn_indi_input_shift.svg
 -c8,8 qgn_indi_itut_backspace1.svg
+-c8,8 qgn_indi_feb_asterisk.svg

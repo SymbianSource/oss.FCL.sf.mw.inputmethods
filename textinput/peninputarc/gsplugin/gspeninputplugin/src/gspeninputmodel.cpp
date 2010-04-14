@@ -48,6 +48,8 @@ const TInt KISOCodeLength = 2;
 const TUid KUidtruiApp = { 0x2000B104 };
 const TUid KUidPenInputSettingApp = { 0x2001959B };
 
+const TInt KFepChineseInputModeLength = 10;
+
 _LIT(KLeftBracket, "(" );
 _LIT(KRightBracket, ")" );
 
@@ -1185,7 +1187,9 @@ void CGSPenInputModel::SetFepInputMode(TInt aInputMode)
         case ELangHongKongChinese:
         case ELangTaiwanChinese:
             {
-            iAknfepRepository->Set(KAknFepChineseInputMode, aInputMode);
+            TBuf<KFepChineseInputModeLength> conversion;
+            conversion.Num(aInputMode, EHex);
+            iAknfepRepository->Set( KAknFepChineseInputMode, conversion );
             }
             break;
          default:
@@ -1200,14 +1204,33 @@ void CGSPenInputModel::SetFepInputMode(TInt aInputMode)
 //
 TInt CGSPenInputModel::GetFepInputMode()
     {
-    TInt inputMode = 0;
+    TUint inputMode = 0;
     switch(iInputLanguage)
         {
         case ELangPrcChinese:
         case ELangHongKongChinese:
         case ELangTaiwanChinese:
             {
-            iAknfepRepository->Get(KAknFepChineseInputMode, inputMode);
+            _LIT(Kx, "x");
+            // This conversion is needed because KAknFepChineseInputMode cenrep key original type was 16bit int.
+            // now type is changed to string, so that it can accommodate bigger values like EHangul 0x16000. 
+            TBuf<KFepChineseInputModeLength> conversion;
+            iAknfepRepository->Get( KAknFepChineseInputMode, conversion );
+           
+            TInt len = conversion.Find(Kx);
+            TLex lex;
+            
+            if(len)
+                {
+                TPtrC ptr = conversion.Mid(len +1);
+                lex.Assign(ptr);
+                }
+            else
+                {
+                lex.Assign(conversion);
+                }
+            
+            lex.Val(inputMode, EHex);
             }
             break;
          default:
@@ -1404,7 +1427,6 @@ TBool CGSPenInputModel::IsSupportHWR()
         supportMode = iPenInputServer.SupportInputMode( iInputLanguage );
         }
 
-    TBool supportHWR = EFalse;
     if( supportMode & EPluginInputModeHwr ||
         supportMode & EPluginInputModeFSc ||
         supportMode & EPluginInputModeFingerHwr)

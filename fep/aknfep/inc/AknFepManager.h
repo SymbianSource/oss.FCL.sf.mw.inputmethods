@@ -900,6 +900,8 @@ public:
      */
     TBool EditorHasFreeSpace( TInt aNumberOfCharacter = 0 ) const;
 		TBool IsSpecialNumericEditor();
+		
+	void TryPopExactWordInICFL();
 
 private:
 
@@ -1010,6 +1012,11 @@ private:
      */
     void HandleShiftQwertyChineseL(TEventCode aEventCode);
 #endif //RD_INTELLIGENT_TEXT_INPUT    
+    
+    void GetCandidatesWithIndexL(CDesCArray* aArray, 
+						TInt& aActiveIdx, TInt& aSecondaryIdx);
+    void TryPopExactWordInOtherPlaceL();
+    
     /**
      * Launches the insert word query in western predictive text mode
      */
@@ -1631,6 +1638,8 @@ public:
     void CommitInlineEditL();    
     
     TBool GetIndicatorImgID(TInt& aIndicatorImgID, TInt& aIndicatorTextID);   
+    
+    TInt CurrentInputLangCode();
 
     inline TFepSymbolOfHardwareOne SymbolInfoOfHardKey1();
 public:

@@ -30,6 +30,7 @@
 #include "peninputgenericitutdatamgr.h"
 #include "peninputgenericitutlayoutcontext.h"
 #include "peninputgenericitutconverter.h"
+#include "peninputgenericitutwindowmanager.h"
 
 CWesternItutUiStateMatchSelection* CWesternItutUiStateMatchSelection::NewL(
     CGenericItutUiMgrBase* aOwner)
@@ -142,11 +143,21 @@ TBool CWesternItutUiStateMatchSelection::HandleCtrlEventL(
 
             // if press spell, then enter spell mode, otherwise select an item
             // note that spell do not belong to iCandlist
-            itemidx == iCandlist.Count() ? 
-            iOwner->LayoutContext()->UiLayout()->SignalOwner(ESignalEnterSpellMode) : 
-            // according to updated ui spec, if select an item, do not commit it
-            //ReportItemSelected(ESignalSelectMatchSelectionText, itemidx, ETrue);
-            ReportItemSelected(ESignalSelectMatchSelectionText, itemidx, ETrue); 
+            if ( itemidx == iCandlist.Count())
+            	{
+
+				iOwner->UiManager()->StartPreventSCTTimer();
+
+       
+				iOwner->LayoutContext()->UiLayout()->SignalOwner(ESignalEnterSpellMode); 
+            	}
+            else
+            	{
+				// according to updated ui spec, if select an item, do not commit it
+				//ReportItemSelected(ESignalSelectMatchSelectionText, itemidx, ETrue);
+				ReportItemSelected(ESignalSelectMatchSelectionText, itemidx, ETrue);
+            	}
+            
             return ETrue;
             }
         case EEventChoiceSelected:

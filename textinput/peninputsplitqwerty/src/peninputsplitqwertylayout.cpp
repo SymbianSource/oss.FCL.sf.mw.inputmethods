@@ -266,10 +266,8 @@ TInt CPeninputSplitQwertyLayout::SizeChanged( const TAny* aData )
         
     if ( win )
         {      
-        //todo split-view FSQ, UpdateLafData() can be removed for optimization?
         win->UpdateLafData();
         
-        //todo split-view FSQ, temp codes, when to set layout pos? 
         win->UpdateLayoutPosAndSize();        
         }
     
@@ -299,7 +297,6 @@ void CPeninputSplitQwertyLayout::OnActivate()
         
     if( win )
         {
-        //todo split-view FSQ, temp codes, when to set layout pos? 
         win->UpdateLayoutPosAndSize();
         }
     }

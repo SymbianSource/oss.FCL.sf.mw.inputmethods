@@ -29,6 +29,7 @@
 #include "peninputgenericitutdatamgr.h"
 #include "peninputgenericitutlayoutcontext.h"
 #include "peninputgenericitutconverter.h"
+#include "peninputgenericitutwindowmanager.h"
 
 CChnItutUiStateStrokeZhuyinComposition* CChnItutUiStateStrokeZhuyinComposition::NewL(
     CGenericItutUiMgrBase* aOwner)
@@ -116,21 +117,12 @@ void CChnItutUiStateStrokeZhuyinComposition::OnExit()
     // hide dropdownlist & reset its status
     CFepCtrlDropdownList* candlist = 
         static_cast<CFepCtrlDropdownList*>(iOwner->LayoutContext()->Control(ECtrlIdStdCandsList));
-    candlist->ResetAndClear(CFepCtrlDropdownList::EListExpandable);
     iOwner->DataMgr()->ClearChnCandidates(EItutCandidates);
     candlist->Hide(ETrue);
 
     CFepInputContextField* spellctrl = 
         static_cast<CFepInputContextField*>(iOwner->LayoutContext()->Control(ECtrlIdSpellICF));
-
     spellctrl->Hide(ETrue);
-
-    //show indicator 
-    iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
-    // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
-    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
-    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
-    iOwner->LayoutContext()->ShowArrowBtn(0);
     iOwner->DataMgr()->PtiEngine()->ClearCurrentWord();
     }
 
@@ -285,23 +277,29 @@ TBool CChnItutUiStateStrokeZhuyinComposition::HandleCtrlEventL(TInt aEventType,
         // consume star key at zhuyin composition state
         case EEventRawKeyDownEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            
-            if (key->iScanCode == EStdKeyNkpAsterisk && iOwner->DataMgr()->InputMode() == EZhuyin)
-                {
-                HandleKeyL(ECmdPenInputFingerKeyPress, EPtiKeyStar);
-                return ETrue;
-                }
+            if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				
+				if (key->iScanCode == EStdKeyNkpAsterisk && iOwner->DataMgr()->InputMode() == EZhuyin)
+					{
+					HandleKeyL(ECmdPenInputFingerKeyPress, EPtiKeyStar);
+					return ETrue;
+					}
+            	}
             }
             break;
         case EEventRawKeyUpEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            
-            if (key->iScanCode == EStdKeyNkpAsterisk && iOwner->DataMgr()->InputMode() == EZhuyin)
-                {
-                return ETrue;
-                }
+            if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				
+				if (key->iScanCode == EStdKeyNkpAsterisk && iOwner->DataMgr()->InputMode() == EZhuyin)
+					{
+					return ETrue;
+					}
+            	}
             }
             break;
         default:

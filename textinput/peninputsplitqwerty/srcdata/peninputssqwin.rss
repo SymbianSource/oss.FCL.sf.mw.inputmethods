@@ -914,7 +914,7 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_range_default
     disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseCapital;       
     }
 
-//todo new rangelist
+
 RESOURCE PENINPUT_SPLITQWERTY_RANGELABELS r_peninput_layout_vkb_ranges
     {
     nativeChar   = qtn_tin_vkb_native_characters_range;
@@ -923,7 +923,7 @@ RESOURCE PENINPUT_SPLITQWERTY_RANGELABELS r_peninput_layout_vkb_ranges
     latinNumber  = qtn_tin_vkb_numbers_symbols;      
     }
 
-//todo new rangelist
+
 
 //for Cyrillic
 RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_rangectrl_cyrillic_alpha

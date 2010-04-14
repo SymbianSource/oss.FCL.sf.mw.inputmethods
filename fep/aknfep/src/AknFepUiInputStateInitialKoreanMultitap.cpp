@@ -133,14 +133,20 @@ TBool TAknFepInputStateInitialKoreanMultitap::HandleKeyL(TInt aKey, TKeyPressLen
           
  	    if (aKey == EPtiKeyStar)
             {
-            /* 
-           	ptiengine->DeleteKeyPress();
+
+           	/*ptiengine->DeleteKeyPress();
             TPtrC text = ptiengine->PreviousCandidate();
             fepMan->UpdateInlineEditL(text, text.Length());
             fepMan->CommitInlineEditL();
-            ptiengine->ClearCurrentWord();*/
+            ptiengine->ClearCurrentWord(); */
 
-            fepMan->LaunchSelectModeMenuL();               
+            //fepMan->LaunchSelectModeMenuL();
+            
+            if (fepMan->IsAbleToLaunchSCT())
+                {
+                fepMan->LaunchSpecialCharacterTableL();
+                }
+                           
             }
 		else
 			{

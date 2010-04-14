@@ -99,7 +99,15 @@ public:
     void HideByteWarningBubble();
     void DisplayWarningNote(const TDesC& aInfo);
 	/* Teleca change end, 18.05.2009 ssal */
-    TBool IsPortraitWest();
+    
+    TBool IsAllowHandleRawKeyEvent();
+    
+    void SetAllowHandleRawKeyEventFlag( TBool aFlag );
+    
+    void StartPreventSCTTimer();
+    
+    void StopPreventSCTTimer();
+    void CreateKoreanSpecificCtrlsIfNeededL();
 private:
 
     CGenericItutWindowManager(CGenericItutUiLayout* aLayoutOwner,
@@ -130,6 +138,9 @@ private:
     /* Teleca change begin, 18.05.2009 ssal */
     CPeriodic* iInfoTimer;
     /* Teleca change end, 18.05.2009 ssal */
+    
+    TBool iAllowHandleRawKeyEvent;
+    CPeriodic* iPreventCSTTimer;
     };
 
 inline CGenericItutWindow* CGenericItutWindowManager::Window()

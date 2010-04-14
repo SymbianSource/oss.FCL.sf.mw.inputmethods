@@ -3379,7 +3379,7 @@ TBool CAknFepManager::HandleQwertyKeyEventL(const TKeyEvent& aKeyEvent, TKeyResp
            lang == ELangHongKongChinese ||
            lang == ELangPrcChinese)    
             {        
-            if( iPtiEngine->CurrentLanguage()->LanguageCode()== ELangEnglish 
+            if( CurrentInputLangCode() == ELangEnglish 
                 && IsFlagSet(EFlagQwertyShiftMode)
                 && !IsFlagSet(EFlagLongShiftKeyPress))
                 {
@@ -4091,6 +4091,7 @@ void CAknFepManager::ExitPluginSpellModeByOkL()
         
         iFepPluginManager->SetITUTSpellingStateL(EFalse); 
         iFepPluginManager->HideSpellEditor();
+        iFepPluginManager->SetInSpellModeFlag( EFalse );
         
         if (spell)
             {
@@ -4150,6 +4151,7 @@ void CAknFepManager::ExitPluginSpellModeByCancel()
         {
         TRAP_IGNORE(iFepPluginManager->SetITUTSpellingStateL(EFalse)); 
         iFepPluginManager->HideSpellEditor();
+        iFepPluginManager->SetInSpellModeFlag( EFalse );
 
         TRAP_IGNORE(UpdateCbaL(NULL)); 
         if (iFepPluginManager->CaseUpdatesSupressed())
@@ -4654,7 +4656,7 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
 #endif             
             break;
         case EAknCmdT9PredictiveEditWord:
-            SetStopProcessFocus(ETrue);
+            SetStopProcessFocus( ETrue, EFalse );
             HandleChangeInFocus();
 #ifdef RD_INTELLIGENT_TEXT_INPUT
                 RemoveSuggestedAdvanceCompletionL();
@@ -5355,9 +5357,9 @@ void CAknFepManager::DynInitMenuPaneL(TInt aResourceId, CAknFepUiInterfaceMenuPa
             	// "Edit word" option is not available under edit menu in ITU-T mode.
             	// "Insert word" Should not be available QWERTY mode.
           	if (IsKoreanInputLanguage() || 
-                    iPtiEngine->CurrentLanguage()->LanguageCode() == ELangPrcChinese || 
-                    iPtiEngine->CurrentLanguage()->LanguageCode() == ELangTaiwanChinese || 
-                    iPtiEngine->CurrentLanguage()->LanguageCode() == ELangHongKongChinese  )
+          			CurrentInputLangCode() == ELangPrcChinese || 
+          			CurrentInputLangCode() == ELangTaiwanChinese || 
+          			CurrentInputLangCode() == ELangHongKongChinese  )
           		{
           		// No text prediction for korean.
           		aMenuPane->SetItemDimmed(EAknFepCmdPredActivate, ETrue );
@@ -7577,7 +7579,7 @@ TBool CAknFepManager::IsModePermitted(TInt aMode, TWidthChar aWidth) const
         isModePermitted = EFalse;
         }
     else if (((aMode == EPinyin) || (aMode == EZhuyin) || (aMode == EStroke) || (aMode == ECangJie)
-        ||   (aMode == EHiraganaKanji) || (aMode == EKatakana)
+        ||   (aMode == EHiraganaKanji) || (aMode == EKatakana) || ( aMode == EHangul )
         || (((aMode == ELatin) || (aMode == ENumber) || iMode == ENativeNumber ) && (iCharWidth == EFullWidthChar)))
         && (iAknEditorFlags & EAknEditorFlagLatinInputModesOnly))
         {
@@ -8448,104 +8450,151 @@ void CAknFepManager::StartInlineEditingWithSelectedWord(TDesC& aTextToUncommit)
                         aTextToUncommit.Length(), EFalse));
 
     }
+void CAknFepManager::GetCandidatesWithIndexL(CDesCArray* aArray,
+        TInt& aActiveIdx, TInt& aSecondaryIdx)
+    {
+#ifndef RD_INTELLIGENT_TEXT_INPUT
+	return;
+#endif
+    aActiveIdx = -1;
+    aSecondaryIdx = -1;
+    iPtiEngine->HandleCommandL(
+            EPtiCommandUserActionGetCurrentIndexOfCandidates, &aActiveIdx);
+
+    if (iKeyBackSpaceHit)
+        aSecondaryIdx = aActiveIdx;
+    else
+        iPtiEngine->HandleCommandL(
+                EPtiCommandUserActionGetIndexOfSecondaryCandidate,
+                &aSecondaryIdx);
+
+    if (aArray == NULL || aActiveIdx == aSecondaryIdx)
+        return;
+
+    iPtiEngine->GetCandidateListL(*aArray);
+    iPtiEngine->HandleCommandL(
+            EPtiCommandUserActionGetCurrentIndexOfCandidates, &aActiveIdx);
+    iPtiEngine->HandleCommandL(
+            EPtiCommandUserActionGetIndexOfSecondaryCandidate, &aSecondaryIdx);
+    }
+
 void CAknFepManager::ShowExactWordPopupIfNecessaryL()
     {
+    // Ok, I have to do it here, same logics are in
+    // TryPopExactWordInICFL and ShowExactWordPopupIfNecessaryL.
+    // the code follows the old code's logic: this is a
+    // equivalent of the OLD ShowExactWordPopupIfNecessaryL; but
+    // now I can call TryPopExactWordInICFL and 
+    // TryPopExactWordInOtherPlaceL directly after extracting them from
+    // the OLD ShowExactWordPopupIfNecessaryL.
     iExactWordPopupContent->HidePopUp();
-    
+    SendEventsToPluginManL(EPluginHideTooltip);
+    if (!iWesternPredictive || !IsFlagSet(EFlagInsideInlineEditingTransaction))
+        return;
+
+    if (EPtiKeyboardHalfQwerty == KeyboardLayout())
+        {
+        if (IsFlagSet(CAknFepManager::EFlagNoMatches))
+            UpdateCbaL(R_AKNFEP_SOFTKEYS_SPELL_EMPTY);
+        return;
+        }
+
+    TryPopExactWordInICFL();
+    if (iFepPluginManager && !iFepPluginManager->IsTooltipOpenOnFSQ())
+        TryPopExactWordInOtherPlaceL();
+    }
+
+void CAknFepManager::TryPopExactWordInICFL()
+    {
+#ifndef RD_INTELLIGENT_TEXT_INPUT
+	return;
+#endif
+	
     // Before open tooltip,  
     // also need to check and close tooltip on it.
-    SendEventsToPluginManL( EPluginHideTooltip );
-    
-    if ( iWesternPredictive && iQwertyInputMode 
-    	 && IsFlagSet( EFlagInsideInlineEditingTransaction ) 
-    	 && (EPtiKeyboardHalfQwerty != KeyboardLayout()))
+    SendEventsToPluginManL(EPluginHideTooltip);
+    if (!iWesternPredictive || !IsFlagSet(EFlagInsideInlineEditingTransaction))
+        return;
+
+    TInt activeIdx, secondaryIdx;
+    GetCandidatesWithIndexL(NULL, activeIdx, secondaryIdx);
+    if (activeIdx == secondaryIdx)
+        return;
+
+    CDesCArray* candidates = new (ELeave) CDesCArrayFlat(16);
+    CleanupStack::PushL(candidates);
+    GetCandidatesWithIndexL(candidates, activeIdx, secondaryIdx);
+    CleanupStack::PopAndDestroy(candidates);
+    if (activeIdx == secondaryIdx)
+        return;
+
+    if (iFepPluginManager)
+        SendEventsToPluginManL(EPluginShowTooltip, secondaryIdx);
+    }
+
+void CAknFepManager::TryPopExactWordInOtherPlaceL()
+    {
+#ifndef RD_INTELLIGENT_TEXT_INPUT
+	return;
+#endif
+	
+    iExactWordPopupContent->HidePopUp();
+    if (!iWesternPredictive || !IsFlagSet(EFlagInsideInlineEditingTransaction))
+        return;
+    // In the proactive mode this popup is used to show the exact input if it differs from the
+    // default candidate shown inline.
+    // In the reactive mode it is used to show the best guess candidate if it differs from the
+    // exact word shown inline.
+
+    TBool popupBelowInline = EFalse; // ETrue -> popup is above inline editor
+    TInt activeIdx, secondaryIdx;
+    GetCandidatesWithIndexL(NULL, activeIdx, secondaryIdx);
+    if (activeIdx == secondaryIdx)
+        return;
+
+    CDesCArray* candidates = new (ELeave) CDesCArrayFlat(16);
+    CleanupStack::PushL(candidates);
+    GetCandidatesWithIndexL(candidates, activeIdx, secondaryIdx);
+
+    // In case the active index and the secondary index is same, 
+    // then we do not need to display the popup
+    if (activeIdx == secondaryIdx)
         {
-        // In the proactive mode this popup is used to show the exact input if it differs from the
-        // default candidate shown inline.
-        // In the reactive mode it is used to show the best guess candidate if it differs from the
-        // exact word shown inline.
-        
-        TInt activeIdx = KErrNotFound;
-        TInt secondaryIdx = KErrNotFound;
-                     
-        iPtiEngine->HandleCommandL( EPtiCommandUserActionGetCurrentIndexOfCandidates, &activeIdx );
-        iPtiEngine->HandleCommandL( EPtiCommandUserActionGetIndexOfSecondaryCandidate, 
-        							&secondaryIdx );
-        
-        TBool popupBelowInline = EFalse; // ETrue -> popup is above inline editor                                                                   
-                
-       if(iKeyBackSpaceHit)
-    	    secondaryIdx = activeIdx;
-
-        if ( activeIdx  != secondaryIdx )
-            {
-            popupBelowInline = EFalse;
-            
-            CDesCArray* candidates = new (ELeave) CDesCArrayFlat(16);
-            CleanupStack::PushL(candidates);
-            GetCandidatesL(*candidates, activeIdx);
-            
-            // There is a possibility that the secondary index of the candidate changes
-            iPtiEngine->HandleCommandL( EPtiCommandUserActionGetIndexOfSecondaryCandidate, 
-                                        &secondaryIdx );
-            // In case the active index and the secondary index is same, then we do not need to display the
-            // popup
-            if ( activeIdx  == secondaryIdx )
-                {
-                CleanupStack::PopAndDestroy(candidates);
-                return;
-                }
-            
-            TPtrC secondaryWord = (*candidates)[secondaryIdx];
-            iExactWordPopupContent->SetTextL( secondaryWord );
-            iExactWordPopupContent->SetArrowDirection( MAknFepUiWordPopupContent::EUpwards );
-            CleanupStack::PopAndDestroy(candidates);
-
-            // Open FSQ tooltip if FSQ is opened
-     	    SendEventsToPluginManL( EPluginShowTooltip, secondaryIdx );
-
-          
-            // For addtion of ITI features on FSQ.
-            // Showing tooltip on avkon editor and FSQ ICF editor at same time probably 
-            // cause flicker problem. Add this condition to ensure not to show tooltip on
-            // avkon editor when it is being displayed on FSQ.
-            if ( iFepPluginManager && !( iFepPluginManager->IsTooltipOpenOnFSQ() ) )
-                {
-                TPoint  popupTopRight;
-                TInt    height;
-                TInt    ascent;
-                TInt    documentOffset = iPtiEngine->CurrentWord().Length();
-                
-                GetScreenCoordinatesL(popupTopRight, height, ascent, documentOffset);
-
-                iExactWordPopupContent->UpdateContentSize();
-
-                TBool rightToLeftLang = IsRightToLeftParagraph( DocPos() );
-                if ( !rightToLeftLang )
-                    {
-                    popupTopRight.iX += iExactWordPopupContent->Size().iWidth;       
-                    }
-                    
-                if ( popupBelowInline )
-                    {
-                    popupTopRight.iY += ascent / 2;                                   
-                    }
-                else
-                    {
-                    popupTopRight.iY -= height + iExactWordPopupContent->Size().iHeight;
-                    }
-                    
-                iExactWordPopupContent->SetPosition( popupTopRight );
-                iExactWordPopupContent->ShowPopUp();         
-                }                
-            }  
+        CleanupStack::PopAndDestroy(candidates);
+        return;
         }
-		else if(iWesternPredictive 
-    	 && IsFlagSet( EFlagInsideInlineEditingTransaction ) 
-    	 && IsFlagSet(CAknFepManager::EFlagNoMatches)) 
-    	{
-    	UpdateCbaL(R_AKNFEP_SOFTKEYS_SPELL_EMPTY);
-    	}
+
+    TPtrC secondaryWord = (*candidates)[secondaryIdx];
+    iExactWordPopupContent->SetTextL(secondaryWord);
+    iExactWordPopupContent->SetArrowDirection(
+            MAknFepUiWordPopupContent::EUpwards);
+    CleanupStack::PopAndDestroy(candidates);
+
+    TPoint popupTopRight;
+    TInt height;
+    TInt ascent;
+    TInt documentOffset = iPtiEngine->CurrentWord().Length();
+
+    GetScreenCoordinatesL(popupTopRight, height, ascent, documentOffset);
+    iExactWordPopupContent->UpdateContentSize();
+
+    TBool rightToLeftLang = IsRightToLeftParagraph(DocPos());
+    if (!rightToLeftLang)
+        {
+        popupTopRight.iX += iExactWordPopupContent->Size().iWidth;
+        }
+
+    if (popupBelowInline)
+        {
+        popupTopRight.iY += ascent / 2;
+        }
+    else
+        {
+        popupTopRight.iY -= height + iExactWordPopupContent->Size().iHeight;
+        }
+
+    iExactWordPopupContent->SetPosition(popupTopRight);
+    iExactWordPopupContent->ShowPopUp();
     }
 
 void CAknFepManager::LaunchPredictiveSettingDialogL()
@@ -8584,8 +8633,16 @@ void CAknFepManager::LaunchPredictiveSettingDialogL()
 	  }
     TUid fepUid = CCoeEnv::Static()->FepUid();
     ClearExtendedFlag(EExtendedFlagEdwinEditorDestroyed);
-	
-	RProperty::Set(KPSUidAknFep,KAknFepSettingDialogState,1);
+		
+    if ( iFepPluginManager && iFepPluginManager->IsSupportITIOnFSQ() )
+        {
+	    RProperty::Set( KPSUidAknFep, KAknFepSettingDialogState, 2 );
+	    }
+    else
+        {
+	    RProperty::Set( KPSUidAknFep, KAknFepSettingDialogState, 1 );
+		}
+    
 	UiInterface()->LaunchPredictiveSettingDialogL(R_PREDICTIVESETTING_DIALOG,
 												  R_PREDICTIVESETTINGDIALOG_MENUBAR,
 												  R_PREDICTIVETEXTOFF_CONFIRMATION_QUERY,
@@ -13254,6 +13311,17 @@ void CAknFepManager::UpdateHindiIndicator( TAknEditingState& aNewState )
         aNewState = EIndicatorStateMultitapHindi;
         }
     }
+
+TInt CAknFepManager::CurrentInputLangCode()
+	{
+	ASSERT(iPtiEngine);
+	
+	MPtiLanguage* lang = iPtiEngine->CurrentLanguage();
+	ASSERT(lang);
+	
+	return lang->LanguageCode();
+	}
+
 TBool CAknFepManager::GetIndicatorImgID(TInt& aIndicatorImgID, TInt& aIndicatorTextID)
     {
     if (iPreviousEditingState == EStateNone)
@@ -13538,10 +13606,9 @@ TBool CAknFepManager::IsAbleToLaunchSCT() const
         return EFalse;
         }
     
-    TInt numberModeSctId = NumericModeSCTResourceId(); 
     if (iMode == ENumber || iMode == ENativeNumber)
         {
-        if (iPermittedInputModes == EAknEditorNumericInputMode || !numberModeSctId) 
+        if (iPermittedInputModes == EAknEditorNumericInputMode || !NumericModeSCTResourceId()) 
             {
             // SCT is not launched if the number mode is the only input mode or
             // if there is not keymap resource for the current numeric keymap mode.
@@ -13555,26 +13622,13 @@ TBool CAknFepManager::IsAbleToLaunchSCT() const
             // EAknEditorFlagUseSCTNumericCharmap or if also text input modes are
             // allowed and the keymap is EAknEditorAlphanumericNumberModeKeymap.
             ableToLaunchSCT = ETrue;
-            }
-        
-        if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == numberModeSctId)
-           {
-           TBool isEmpty = ETrue;
-           TRAP_IGNORE(isEmpty = GetSctLengthL(numberModeSctId));
-           if(isEmpty)
-               {
-               ableToLaunchSCT = EFalse;
-               }
-            }
-        
+            }      
         }
     if (!(EditorHasFreeSpace() && EditorState() 
         && EditorState()->SpecialCharacterTableResourceId()))
         {
         ableToLaunchSCT = EFalse;
         }
-    
-   
     
     return ableToLaunchSCT;
     }
@@ -13668,6 +13722,11 @@ TBool CAknFepManager::IsAbleToLaunchPCT() const
 
 TBool CAknFepManager::IsAbleToLaunchSmiley() const
     {
+	if(iLanguageCapabilities.iRightToLeftLanguage)
+		{
+	       return EFalse;
+		}
+	
     TBool ableToLaunchSmiley(EFalse);
     
     CAknEdwinState* edwinState = EditorState();
@@ -18153,6 +18212,15 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
         {
     	currentEditorSCTResId = charMap;
         }
+    if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == charMap && R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_LATIN_ONLY == currentEditorSCTResId)
+        {
+        TBool isEmpty = ETrue;
+        TRAP_IGNORE(isEmpty = GetSctLengthL(charMap));
+        if(isEmpty)
+           {
+           return;
+           }
+        }
 
     if (currentEditorSCTResId)
         {
@@ -18254,7 +18322,7 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                  iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
                  iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
                 {
-                SetStopProcessFocus(ETrue, ETrue);
+                SetStopProcessFocus(ETrue, EFalse);
                 iFepPluginManager->SetMenuState();            
                 }            
              else if (!iFepPluginManager->IsGlobleNotes())
@@ -19800,8 +19868,9 @@ TInt CAknFepManager::GetCurrentCase()
 void CAknFepManager::GetCandidatesL( CDesCArray& aArray, TInt& aActiveIdx )
     {
     iPtiEngine->GetCandidateListL(aArray);
-    iPtiEngine->HandleCommandL( EPtiCommandUserActionGetCurrentIndexOfCandidates, &aActiveIdx );
-    }  
+    iPtiEngine->HandleCommandL(
+            EPtiCommandUserActionGetCurrentIndexOfCandidates, &aActiveIdx);
+    }
 
 void CAknFepManager::GetUpdateCandidatePositionL(TRect& aRect)
     {

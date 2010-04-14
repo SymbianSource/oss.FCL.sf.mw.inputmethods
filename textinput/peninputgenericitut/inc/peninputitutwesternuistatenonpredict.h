@@ -43,6 +43,10 @@ protected:
     CWesternItutUiStateNonPredict(CGenericItutUiMgrBase* aOwner);
 
 private:
+    void AdjustKoreanLayout();
+    void AdjustWesternLayout();
+    void AdjustChineseLayout();
+private:
     CFepLayoutMultiLineIcf* iIcf;
     TBool iConsumeLastKeyDown;
     };

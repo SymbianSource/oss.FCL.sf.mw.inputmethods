@@ -284,8 +284,8 @@ CAknSettingItem * CAknFepPredictiveSettingList::CreateSettingItemL (TInt aIdenti
 	// aIdentifier is used to determine what kind of setting item should be 
 	// created
 	CAknSettingItem* settingItem = NULL;
-	TInt keyboardLayout = 0;
-	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+    TPtiKeyboardType keyboardLayout = iSettingsData.OwnerKeyboardType();	
+	
     switch (aIdentifier)
         {
         case EAknFepCmdPredAutoComplSetting:
@@ -363,8 +363,7 @@ void CAknFepPredictiveSettingList::HandleResourceChange(TInt aType)
     // If layout is changed, close settings with information note
     if(aType==KEikDynamicLayoutVariantSwitch)
         {
-        TInt keyboardLayout = 0;
-        RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+        TPtiKeyboardType keyboardLayout = iSettingsData.OwnerKeyboardType();
         if(keyboardLayout == EPtiKeyboard12Key)
             {
 #ifndef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__

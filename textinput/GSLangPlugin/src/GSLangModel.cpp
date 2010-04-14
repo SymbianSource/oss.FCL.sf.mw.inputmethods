@@ -56,6 +56,8 @@
 //CONSTANTS
 const TInt KGSDiskSpaceLimitForLanguageChange = 300000;
 
+const TInt KFepChineseInputModeLength = 10;
+
 // ================= MEMBER FUNCTIONS =======================
 
 // ----------------------------------------------------------------------------
@@ -841,9 +843,27 @@ TInt CGSLangModel::DefaultInputMethodL()
         {
         // fetch the setting value from shared data etc.
         // return the value
-        TInt MethodItem;
+        TUint MethodItem;
+        _LIT(Kx, "x");
+        // This conversion is needed because KAknFepChineseInputMode cenrep key original type was 16bit int.
+        // now type is changed to string, so that it can accommodate bigger values like EHangul 0x16000. 
+        TBuf<KFepChineseInputModeLength> conversion;
         User::LeaveIfError( iAknFepRepository->
-            Get( KAknFepChineseInputMode, MethodItem ) );
+                    Get( KAknFepChineseInputMode, conversion ) );
+        TInt len = conversion.Find(Kx);
+        TLex lex;
+        
+        if(len)
+            {
+            TPtrC ptr = conversion.Mid(len +1);
+            lex.Assign(ptr);
+            }
+        else
+            {
+            lex.Assign(conversion);
+            }
+        
+        lex.Val(MethodItem, EHex);
         return MethodItem;
         }
     else
@@ -863,8 +883,11 @@ void CGSLangModel::SetDefaultInputMethodL( TInt aMethod )
     {
     if ( FeatureManager::FeatureSupported( KFeatureIdChinese ) )
         {
+        TBuf<KFepChineseInputModeLength> conversion;
+        conversion.Num(aMethod, EHex);
+
         User::LeaveIfError(
-            iAknFepRepository->Set( KAknFepChineseInputMode, aMethod ) );
+                    iAknFepRepository->Set( KAknFepChineseInputMode, conversion ) );
 
         // See if it cannot do predictive text entry
         if( !CheckDictionaryFromPtiL( aMethod ) )

@@ -223,7 +223,7 @@ NONSHARABLE_CLASS(CPtiEngineImpl) : public CBase
                                        RArray<TPtiNumericKeyBinding>& aResult,
                                        TBool aUseExtendedSet,
                                        TPtiKeyboardType aKeyboardtype = EPtiKeyboardNone);	
-        TPtiKeyboardType ActiveKeyboardTypeL();
+        TPtiKeyboardType ActiveKeyboardType() const;        
         TPtiKeyboardType FindFirstAvailableQwertyKeyboardType(TInt aLang) const;                                              	
         TPtiTextCase CaseForMappedCharacter(TChar aCharacter);
         void RemoveTrailingPunctuations();

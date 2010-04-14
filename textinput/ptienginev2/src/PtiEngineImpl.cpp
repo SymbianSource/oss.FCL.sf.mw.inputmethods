@@ -38,6 +38,7 @@
 #include <AknUtils.h>
 #include <e32property.h>
 #include <AknFepInternalCRKeys.h>
+#include <AknFepInternalPSKeys.h>
 #include <AvkonInternalCRKeys.h>
 
 const TInt KDefaultLanguageGran = 5;
@@ -1036,9 +1037,8 @@ TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirect
 		case EPtiEngineStrokePhraseHalfQwerty:
 		case EPtiEngineStrokePhraseQwerty:
 			{
-			TPtiKeyboardType keyboardType = EPtiKeyboardNone;
-			TBool IsStokeKey = EFalse;
-            TRAP_IGNORE(keyboardType = ActiveKeyboardTypeL());
+			TPtiKeyboardType keyboardType = ActiveKeyboardType();
+			TBool IsStokeKey = EFalse;            
              if(EPtiKeyboardQwerty4x10 == keyboardType ||
                      EPtiKeyboardQwerty3x11 == keyboardType )
                  {
@@ -3259,7 +3259,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
 	TPtiKeyboardType keyboardType = aKeyboardType;
 	if (keyboardType == EPtiKeyboardNone)
 	    {
-	    keyboardType = ActiveKeyboardTypeL();
+	    keyboardType = ActiveKeyboardType();
 	    
 	    if (keyboardType == EPtiKeyboard12Key ||
 	        keyboardType == EPtiKeyboardNone)
@@ -3724,9 +3724,7 @@ TPtiKeyboardType CPtiEngineImpl::KeyboardType() const
         }
 		    		    
     return EPtiKeyboardNone;*/
-	TInt keyboardLayout = 0;
-    
-    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+	TInt keyboardLayout = ActiveKeyboardType();          
 
     if (keyboardLayout <= 0 ||
         keyboardLayout > EPtiKeyboardMaxLayout - 1)
@@ -3882,26 +3880,44 @@ void CPtiEngineImpl::KeyboardTypesSupportedByLanguageL(TInt aLanguage,
 
 
 // ---------------------------------------------------------------------------
-// CPtiEngineImpl::ActiveKeyboardTypeL
+// CPtiEngineImpl::ActiveKeyboardType
 // 
 // ---------------------------------------------------------------------------
 //
-TPtiKeyboardType CPtiEngineImpl::ActiveKeyboardTypeL()
+TPtiKeyboardType CPtiEngineImpl::ActiveKeyboardType() const
     {    
-    // Qwerty Keyboard layout
-    TInt keyboardLayout = 0;
-    
-    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+	TInt keyboardType = EPtiKeyboardNone;
+#ifdef RD_SCALABLE_UI_V2
+	// Get physical keyboard type
+	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );
 
-    if (keyboardLayout <= 0 ||
-        keyboardLayout > EPtiKeyboardMaxLayout - 1)
-        {
-        return EPtiKeyboardNone;
-        }
-        
-    return (TPtiKeyboardType)keyboardLayout;
+	// When active keyboard is virtual keyboard, 
+	// need to get the active virtual keyboard type 
+	// and set keyboardType again.
+	
+	// When the default physical keyboard is 0, 
+	// it means that there is no physical keyboard,
+	// also need to get the active virtual keyboard type.
+	TInt isVirtualInputActive = 0;
+	RProperty::Get( KPSUidAknFep, KAknFepTouchInputActive, 
+					isVirtualInputActive );    
+	if ( isVirtualInputActive > 0 || keyboardType == 0 )
+		{
+		// Active keyboard is virtual keyboard          
+		RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, 
+						keyboardType );      
+		}
+#else if
+	// Get physical keyboard type
+	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );	    
+#endif
+
+	if ( keyboardType <= 0 || keyboardType >= EPtiKeyboardMaxLayout )
+		{
+	    keyboardType = EPtiKeyboardNone;
+		}        
+	return (TPtiKeyboardType)keyboardType;
     }
-
         
 // ---------------------------------------------------------------------------
 // CPtiEngineImpl::GetNumericModeKeysForQwertyL

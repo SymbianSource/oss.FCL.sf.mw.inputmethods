@@ -324,8 +324,7 @@ public:
     
     void SetFingerMatchSelectionState(TBool aMatchStateOn);
     TBool IsVisible();
-    TBool DoNextCandidates();
-    void DoPreviousCandidates();
+
     // send all predictive candidates at once
     void ShowAllCandidates();
     
@@ -446,6 +445,7 @@ public:
      */
     void RemoveLastFocusedWinFromOpenList();
     
+    void SetInSpellModeFlag( TBool aFlag );
 public: // inline    
     
     /**
@@ -943,8 +943,7 @@ private:    // Data
     
     RPointerArray<HBufC> iCandidateList;
     TInt iCandidateIndex;
-    
-    TFepInputCandidateList iSendList;
+
     TFepInputAllCandidates iSendAllList;
     
     TBool iMatchState; 
@@ -1056,6 +1055,7 @@ private:    // Data
 	TInt iAlignment;
 
     CConnectAo* iConnectAo;
+    TBool iInSpellMode;
     };
 
 class CConnectAo : public CActive

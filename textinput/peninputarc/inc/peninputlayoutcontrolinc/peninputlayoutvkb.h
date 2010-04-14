@@ -559,7 +559,9 @@ public:
      * @param aIcon shift icon
      */ 	
 	IMPORT_C void SetShiftIcon( CPenInputColorIcon* aIcon );
+	IMPORT_C void SetStarIcon( CPenInputColorIcon* aIcon );
 	inline CPenInputColorIcon* ShiftIcon();
+	inline CPenInputColorIcon* StarIcon();
     
 	/**
 	 * Install preview bubble renderer
@@ -864,6 +866,12 @@ private:
      * The shift icon showing on the key
      */      
     CPenInputColorIcon* iShiftIcon;
+    
+	/**
+     * The star icon showing on the key
+     */      
+    CPenInputColorIcon* iStarIcon;
+    
     MPeninputVkbPreviewBubbleRenderer* iPreviewBubbleRenderer;
 friend class CVirtualKeyCtrl;
 friend class CVirtualRawKeyCtrl;

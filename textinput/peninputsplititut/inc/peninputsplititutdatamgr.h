@@ -354,6 +354,7 @@ public:
     inline TBool IsNumericOnly() const;
 	
 	TRect iShiftIconRect;
+	TRect iStarIconRect;
 	
 private:
     /**
@@ -489,6 +490,7 @@ private: // data member
     TRgb iCandsTextColor;    
     */
 
+    TAknTextLineLayout iVkBigNumTextForPrtWest;
     TAknTextLineLayout iVkAlphaText1;
     TAknTextLineLayout iVkAlphaText2;
     TAknTextLineLayout iVkAlphaText3;

@@ -582,6 +582,7 @@ void CFepLayoutMultiLineIcfEditor::SetMfneTextL(const TFepInputContextFieldData&
         iCursorSel.iAnchorPos = icfdata.iCurSel.iAnchorPos + iPromptTextLen;
         DrawMfneText();
         iSynCursor = EFalse;
+        iOldMfneText.Close();
         iOldMfneText.CreateL(ptr);
         }
         
@@ -1059,8 +1060,11 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(const CFont* aFont)
         iCharFormatMask.ClearAll();
         iCharFormatMask.SetAttrib( EAttFontUnderline );        
         iCharFormat.iFontPresentation.iUnderline = EUnderlineOn ;
-        iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, iPreInlineStartPos, 
-                                    iPreInlineEndPos - iPreInlineStartPos);
+        if( iPreInlineStartPos >= 0 && iPreInlineEndPos <= iRichText->DocumentLength() + 1 )
+            {
+            iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, iPreInlineStartPos, 
+                                        iPreInlineEndPos - iPreInlineStartPos);
+            }
         }
     
     //iRichText->SetInsertCharFormatL(iCharFormat, iCharFormatMask, iRichText->DocumentLength() - iPromptTextLen);
@@ -1705,10 +1709,10 @@ void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
 
     iLayout->SetAmountToFormat(CTextLayout::EFFormatAllText);    
     
-    if ( iFormatChange )
-        {
-        iTextView->HandleGlobalChangeNoRedrawL();
-        }
+//    if ( iFormatChange )
+//        {
+//        iTextView->HandleGlobalChangeNoRedrawL();
+//        }
     
     TBool ready = Ready();
     if( ready )
@@ -1722,13 +1726,18 @@ void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
 	    SetReady( ETrue );    
 	    }
 
-    if ( iFormatChange )	    
-        {
-        iTextView->SetSelectionL( iTextView->Selection() );
-        RecalcualteTextPositionL();
-        SetMsgBubbleRect();
-        Draw();
-        }
+//    if ( iFormatChange )	    
+//        {
+//        iTextView->SetSelectionL( iTextView->Selection() );
+//        RecalcualteTextPositionL();
+//        SetMsgBubbleRect();
+//        Draw();
+//        }
+		iTextView->HandleGlobalChangeNoRedrawL();
+		iTextView->SetSelectionL( iTextView->Selection() );
+		RecalcualteTextPositionL();
+		SetMsgBubbleRect();
+		Draw();
     }
 
 TBool CFepLayoutMultiLineIcfEditor::BelongToPromptText(TInt aPos)
@@ -2474,7 +2483,10 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextFormatL(TInt aPromptTextLen)
     iCharFormat.iFontPresentation.iTextColor = iTextColor;
 
     // set prompt text as bold
-    iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, aPromptTextLen );//- 1
+    if( aPromptTextLen <= iRichText->DocumentLength() + 1)
+        {
+        iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, aPromptTextLen );//- 1
+        }
     iTextView->HandleRangeFormatChangeL(TCursorSelection(0, aPromptTextLen ), ETrue);//- 1
 
     // set remain text as non-bold
@@ -2538,17 +2550,23 @@ void CFepLayoutMultiLineIcfEditor::SetSpecialStateL(TBool aStateOn,
             }
         iCharFormatMask.SetAttrib(aAttribute);
 
+        TInt aPos = Min( aStartPos, aEndPos );
+        TInt aLength = Abs( aEndPos - aStartPos );
         if (aNoMatchState)
             {
-            iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 
-                                        Min(aStartPos,aEndPos), Abs( aEndPos - aStartPos ) + 1);
-            iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos + 1), ETrue);
+            if ( aPos >= 0 && aPos + aLength <= iRichText->DocumentLength())
+                {
+                iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, aPos, aLength + 1);
+                iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos + 1), ETrue);
+                }
             }
         else
             {
-            iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 
-                                        Min(aStartPos,aEndPos), Abs( aEndPos - aStartPos ) );
-            iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos), ETrue);
+            if ( aPos >= 0 && aPos + aLength <= iRichText->DocumentLength() + 1 )
+                {
+                iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, aStartPos, aLength );
+                iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos), ETrue);
+                }
             }
 
         aPreStartPos = aStartPos;
@@ -2693,7 +2711,7 @@ void CFepLayoutMultiLineIcfEditor::ApplyFormatL()
     {
     if( !iFormatChange )
         {
-        return;
+        return ;
         }
     //apply line space
     CParaFormat* paraFormat=CParaFormat::NewL();
@@ -2814,13 +2832,13 @@ void CFepLayoutMultiLineIcfEditor::AdjustSelectionL( const TCursorSelection& aCu
    
     if ( BelongToPromptText(aCurSel.iCursorPos) )
         {
-        //pls refer to bug: ELWG-7MZ5EZ, why to use iPromptText->Length() instead of iPromptTextLen 
+        //why to use iPromptText->Length() instead of iPromptTextLen 
         //iCursorSel.iCursorPos = iPromptTextLen;
         iCursorSel.iCursorPos = iPromptText->Length();
         }
     if ( BelongToPromptText(aCurSel.iAnchorPos) )
         {
-        //pls refer to bug: ELWG-7MZ5EZ, why to use iPromptText->Length() instead of iPromptTextLen
+        //why to use iPromptText->Length() instead of iPromptTextLen
         //iCursorSel.iAnchorPos = iPromptTextLen;
         iCursorSel.iAnchorPos = iPromptText->Length();
         }

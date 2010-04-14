@@ -41,7 +41,7 @@
 #include <StringLoader.h>
 #include <syslangutil.h>        // Display UI language
 #include <ctsydomainpskeys.h>
-#include <SATDomainPSKeys.h>
+#include <satdomainpskeys.h>
 #include <e32property.h>
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 #include "PredictiveSettingDialog.h"

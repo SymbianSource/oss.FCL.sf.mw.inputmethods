@@ -30,7 +30,7 @@
 #define _AKNFEP_SHARED_DATA_INT_H__
 
 #include <e32base.h>
-
+#include <ptidefs.h>
 #include <e32property.h>
 #include <cenrepnotifyhandler.h>
 class CRepository;
@@ -592,6 +592,19 @@ private:
      * Call back function to handle a change in keyboard layout.
      */	
     static TInt HandleKeyboardLayoutChangeNotification(TAny* aObj);
+
+#ifdef RD_SCALABLE_UI_V2
+    /**
+    Handles the change to virtual keyboard layout.
+    */
+    void HandleVirtualKeyboardLayoutChange();
+    
+    /**
+     * Call back function to handle a change to virtual keyboard layout.
+     */	
+    static TInt HandleVirtualKeyboardLayoutChangeNotification(TAny* aObj);
+#endif // RD_SCALABLE_UI_V2
+    
 #endif
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 
@@ -679,6 +692,7 @@ private:
     static TInt HandleRepositoryCallBack(TAny* aPtr);
 #ifdef RD_INTELLIGENT_TEXT_INPUT    
     static TInt HandleGenericRepositoryChange(TAny* aPtr);
+    TPtiKeyboardType ActiveKeyboardType() const; 
 #endif    
     static TInt HandleLocaleRepositoryCallBack(TAny* aPtr);
 
@@ -706,6 +720,10 @@ private:
 #ifdef RD_INTELLIGENT_TEXT_INPUT
     CSubscriber*    iKeyboardLayoutStatusSubscriber;
     RProperty       iKeyboardLayoutStatusProperty;
+#ifdef RD_SCALABLE_UI_V2     
+    CSubscriber*    iVirtualKeyboardLayoutStatusSubscriber;
+    RProperty       iVirtualKeyboardLayoutStatusProperty;
+#endif // #ifdef RD_SCALABLE_UI_V2 
 #endif
 
     friend class CSubscriber;

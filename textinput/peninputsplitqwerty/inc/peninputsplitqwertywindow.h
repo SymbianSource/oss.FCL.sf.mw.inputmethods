@@ -560,7 +560,7 @@ private:
      */
     void HandleRangeListSelectedL( CFepUiBaseCtrl* aCtrl, const TDesC& aData );
 
-    //todo new rangelist
+  
     /**
      * Get resource ids of range button icon
      * 
@@ -572,7 +572,7 @@ private:
      */
     void GetRangeIconResource( TInt aLangId, TInt& aAlphaRange, TInt& aOtherRange  );
     
-    //todo new rangelist
+   
     /**
      * Prepare range list items
      * 

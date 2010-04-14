@@ -188,6 +188,11 @@ inline CPenInputColorIcon* CVirtualKeyboard::ShiftIcon()
 	return iShiftIcon;	
 	}
 
+inline CPenInputColorIcon* CVirtualKeyboard::StarIcon()
+	{
+	return iStarIcon;	
+	}
+
 //class CVirtualKey
 
 

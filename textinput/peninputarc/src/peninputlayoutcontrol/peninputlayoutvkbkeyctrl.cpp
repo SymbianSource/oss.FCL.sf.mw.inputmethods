@@ -29,6 +29,7 @@
 #include "peninputpluginutils.h"
 
 _LIT( KKeyShiftCharacter, "\x2191");
+_LIT( KKeyStarCharacter, "\x002a");
 
 const TInt KDefaultKeyMargin = 10;
 
@@ -142,6 +143,14 @@ void CVirtualKeyCtrl::DrawKeyText()
 					AknPenInputDrawUtils::DrawColorIcon( iKeyboard->ShiftIcon(),
 														 *gc,
 														 textLayout.TextRect() );	
+					}
+				else if(iKeyboard->StarIcon() &&
+						iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyStarCharacter )
+					{
+					CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
+					AknPenInputDrawUtils::DrawColorIcon( iKeyboard->StarIcon(),
+														 *gc,
+														 textLayout.TextRect() );		
 					}
 				else				    
 				    {

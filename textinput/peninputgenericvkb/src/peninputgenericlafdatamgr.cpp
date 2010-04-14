@@ -1517,7 +1517,7 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
   		TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
   		for( TInt j = 0; j < KKeypadLayout[0][0]; j++)
             {
-            TRect bound = rectXBorder;
+			TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
             bound.Move( indent, 0 );
             
@@ -1637,7 +1637,7 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
         TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
         for( TInt j = 0; j < KKeypadLayout[1][0]; j++)
             {
-            TRect bound = rectXBorder;
+		    TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
             bound.Move( indent, 0 );
             
@@ -1741,7 +1741,7 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
         TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
         for( TInt j = 0; j < KKeypadLayout[2][0]; j++)
             {
-            TRect bound = rectXBorder;
+		    TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
             bound.Move( indent, 0 );
             

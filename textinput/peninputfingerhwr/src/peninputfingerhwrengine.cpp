@@ -20,7 +20,8 @@
 #include <aknfeppeninputenums.h>
 #include <PtiHwrRecognizer.h>
 #include <e32property.h>
-#include "PtiDefs.h"
+#include <AknFepInternalPSKeys.h>
+#include <PtiDefs.h>
 
 //USER INCLUDES
 #include "peninputfingerhwrengine.h"
@@ -671,7 +672,7 @@ void CAknFepHwrEngine::ConvertStrokeEndMark( RArray<TPoint>& aTraceData,
 void CAknFepHwrEngine::ResetKeyboardType()
     {
 #ifdef RD_INTELLIGENT_TEXT_INPUT    
-    RProperty::Set(KCRUidAvkon, KAknKeyBoardLayout, iKeyboardType);
+    RProperty::Set( KPSUidAknFep, KAknFepVirtualKeyboardType, iKeyboardType );
 #endif
     }        
      
@@ -682,7 +683,7 @@ void CAknFepHwrEngine::ResetKeyboardType()
 void CAknFepHwrEngine::SetKeyboardToQwerty()
     {
 #ifdef RD_INTELLIGENT_TEXT_INPUT   
-    RProperty::Set(KCRUidAvkon, KAknKeyBoardLayout, EPtiKeyboardQwerty4x12);
+    RProperty::Set( KPSUidAknFep, KAknFepVirtualKeyboardType, EPtiKeyboardQwerty4x12 );
 #endif
     }        
 
@@ -693,7 +694,7 @@ void CAknFepHwrEngine::SetKeyboardToQwerty()
 void CAknFepHwrEngine::GetKeyboardType()
     {
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, iKeyboardType);
+    RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, iKeyboardType );
 #endif    
     }        
 

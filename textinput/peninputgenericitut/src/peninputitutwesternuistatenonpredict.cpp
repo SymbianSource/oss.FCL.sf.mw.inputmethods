@@ -85,60 +85,15 @@ void CWesternItutUiStateNonPredict::OnEntryL()
         {
         if (iOwner->DataMgr()->IsChinese())
             {
-            iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(EFalse);
-            iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(EFalse);
-            iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(EFalse);
-            iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
-
-            iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight
-                 | EBtnArrowUp| EBtnArrowDown);   
-            if(iOwner->LayoutContext()->IsSecretEdtior())
-                {
-                CAknFepCtrlRawKeyButton * leftbtn;
-                CAknFepCtrlRawKeyButton * rightbtn;
-                CAknFepCtrlRawKeyButton * upbtn;
-                CAknFepCtrlRawKeyButton * downbtn;
-                leftbtn = static_cast<CAknFepCtrlRawKeyButton *>
-                                            (iOwner->LayoutContext()->Control(ECtrlIdArrowLeft));
-                rightbtn = static_cast<CAknFepCtrlRawKeyButton *>
-                                            (iOwner->LayoutContext()->Control(ECtrlIdArrowRight));
-                upbtn = static_cast<CAknFepCtrlRawKeyButton *>
-                                            (iOwner->LayoutContext()->Control(ECtrlIdArrowUp));
-                downbtn = static_cast<CAknFepCtrlRawKeyButton *>
-                                            (iOwner->LayoutContext()->Control(ECtrlIdArrowDown)); 
-                leftbtn->SetDimmed(ETrue);   
-                rightbtn->SetDimmed(ETrue);   
-                upbtn->SetDimmed(ETrue);   
-                downbtn->SetDimmed(ETrue);   
-                }
+            AdjustChineseLayout();
+            }
+        else if( iOwner->DataMgr()->IsKorean() )
+            {
+            AdjustKoreanLayout();	
             }
         else
             {
-            iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(EFalse);
-            iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(EFalse);
-            if ( iOwner->LayoutContext()->Control(ECtrlIdSwitch) != NULL )
-				{
-				iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(ETrue);
-				}
-            if ( iOwner->LayoutContext()->Control(ECtrlIdIndicator) != NULL )
-				{
-				iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);
-				}
-            
-            iIcf->MsgBubbleCtrl()->Hide( EFalse );
-            
-            iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight);    
-            if(iOwner->LayoutContext()->IsSecretEdtior())
-                {
-                CAknFepCtrlRawKeyButton * leftbtn;
-                CAknFepCtrlRawKeyButton * rightbtn;
-                leftbtn = static_cast<CAknFepCtrlRawKeyButton *>
-                                            (iOwner->LayoutContext()->Control(ECtrlIdArrowLeft));
-                rightbtn = static_cast<CAknFepCtrlRawKeyButton *>
-                                            (iOwner->LayoutContext()->Control(ECtrlIdArrowRight));
-                leftbtn->SetDimmed(ETrue);   
-                rightbtn->SetDimmed(ETrue);   
-                }
+            AdjustWesternLayout();
             }
         }
     }
@@ -227,37 +182,47 @@ TBool CWesternItutUiStateNonPredict::HandleCtrlEventL(
         {
         case EEventRawKeyDownEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-
-            iConsumeLastKeyDown = EFalse;
-            if (key->iScanCode == EStdKeyNkpAsterisk && 
-                iIcf->InlineStateOn() && iIcf->NomatchState())
-                {
-                iConsumeLastKeyDown = ETrue;
-                iOwner->UiManager()->SetLastRawKeyDown(key->iScanCode, ETrue, aCtrl);
-                return ETrue;
-                }
+            if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+	
+				iConsumeLastKeyDown = EFalse;
+				if (key->iScanCode == EStdKeyNkpAsterisk && 
+					iIcf->InlineStateOn() && iIcf->NomatchState())
+					{
+					iConsumeLastKeyDown = ETrue;
+					iOwner->UiManager()->SetLastRawKeyDown(key->iScanCode, ETrue, aCtrl);
+					return ETrue;
+					}
+            	}
 
             return EFalse;    
             }
         case EEventRawKeyUpEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+            if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+	
+				if (key->iScanCode == EStdKeyNkpAsterisk)
+					{
+					if (iConsumeLastKeyDown)
+						{
 
-            if (key->iScanCode == EStdKeyNkpAsterisk)
-                {
-                if (iConsumeLastKeyDown)
-                    {
-                    iOwner->LayoutContext()->UiLayout()->SignalOwner(ESignalEnterSpellMode);
-                    iOwner->UiManager()->SetLastRawKeyDown(key->iScanCode, EFalse, aCtrl);
-                    return ETrue;
-                    }
-                }
+						iOwner->UiManager()->StartPreventSCTTimer();
+
+						iOwner->LayoutContext()->UiLayout()->SignalOwner(ESignalEnterSpellMode);
+						iOwner->UiManager()->SetLastRawKeyDown(key->iScanCode, EFalse, aCtrl);
+						return ETrue;
+						}
+					}
+            	}
 
             return EFalse;    
             }
         case EEventPointerDownOnNomatch:
             {
+			iOwner->UiManager()->StartPreventSCTTimer();
             iOwner->LayoutContext()->UiLayout()->SignalOwner(ESignalEnterSpellMode);
             return ETrue;
             }
@@ -273,4 +238,77 @@ TBool CWesternItutUiStateNonPredict::HandleCtrlEventL(
     return EFalse;
     }
 
+void CWesternItutUiStateNonPredict::AdjustKoreanLayout()
+    {
+	if(iOwner->LayoutContext()->Control(ECtrlIdIndicator))
+		{
+		iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
+		}
+	
+	if( iOwner->LayoutContext()->Control(ECtrlIdSwitch) )
+		{
+		iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(EFalse);
+		}
+    }
+
+void CWesternItutUiStateNonPredict::AdjustWesternLayout()
+    {
+
+    iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(EFalse);
+    iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(EFalse);
+    if ( iOwner->LayoutContext()->Control(ECtrlIdSwitch) != NULL )
+        {
+        iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(ETrue);
+        }
+    if ( iOwner->LayoutContext()->Control(ECtrlIdIndicator) != NULL )
+        {
+        iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);
+        }
+    
+    iIcf->MsgBubbleCtrl()->Hide( EFalse );
+    
+    iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight);    
+    if(iOwner->LayoutContext()->IsSecretEdtior())
+        {
+        CAknFepCtrlRawKeyButton * leftbtn;
+        CAknFepCtrlRawKeyButton * rightbtn;
+        leftbtn = static_cast<CAknFepCtrlRawKeyButton *>
+                                    (iOwner->LayoutContext()->Control(ECtrlIdArrowLeft));
+        rightbtn = static_cast<CAknFepCtrlRawKeyButton *>
+                                    (iOwner->LayoutContext()->Control(ECtrlIdArrowRight));
+        leftbtn->SetDimmed(ETrue);   
+        rightbtn->SetDimmed(ETrue);   
+        }
+    }
+
+void CWesternItutUiStateNonPredict::AdjustChineseLayout()
+    {
+
+    iOwner->LayoutContext()->Control(ECtrlIdSwitch)->Hide(EFalse);
+    iOwner->LayoutContext()->Control(ECtrlIdOptions)->Hide(EFalse);
+    iOwner->LayoutContext()->Control(ECtrlIdClose)->Hide(EFalse);
+    iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
+
+    iOwner->LayoutContext()->ShowArrowBtn(EBtnArrowLeft | EBtnArrowRight
+         | EBtnArrowUp| EBtnArrowDown);   
+    if(iOwner->LayoutContext()->IsSecretEdtior())
+        {
+        CAknFepCtrlRawKeyButton * leftbtn;
+        CAknFepCtrlRawKeyButton * rightbtn;
+        CAknFepCtrlRawKeyButton * upbtn;
+        CAknFepCtrlRawKeyButton * downbtn;
+        leftbtn = static_cast<CAknFepCtrlRawKeyButton *>
+                                    (iOwner->LayoutContext()->Control(ECtrlIdArrowLeft));
+        rightbtn = static_cast<CAknFepCtrlRawKeyButton *>
+                                    (iOwner->LayoutContext()->Control(ECtrlIdArrowRight));
+        upbtn = static_cast<CAknFepCtrlRawKeyButton *>
+                                    (iOwner->LayoutContext()->Control(ECtrlIdArrowUp));
+        downbtn = static_cast<CAknFepCtrlRawKeyButton *>
+                                    (iOwner->LayoutContext()->Control(ECtrlIdArrowDown)); 
+        leftbtn->SetDimmed(ETrue);   
+        rightbtn->SetDimmed(ETrue);   
+        upbtn->SetDimmed(ETrue);   
+        downbtn->SetDimmed(ETrue);   
+        }
+    }
 // End Of File

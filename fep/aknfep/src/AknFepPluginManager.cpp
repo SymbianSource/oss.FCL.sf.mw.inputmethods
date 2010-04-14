@@ -59,6 +59,7 @@
 #include <eikapp.h>
 #include <AknFepGlobalEnums.h>
 #include <AknFepInternalCRKeys.h>
+#include <AknFepInternalPSKeys.h>
 
 // User includes
 #include "AknFepManagerInterface.h" // MAknFepManagerInterface
@@ -246,7 +247,8 @@ CAknFepPluginManager::CAknFepPluginManager( CAknFepManager& aFepMan,
                                           CAknFepCaseManager& aCaseMan )
     : iFepMan( aFepMan ), iLangMan( aLangMan ), iCaseMan( aCaseMan ),
       iSharedData( aSharedData ), iPluginPrimaryRange( ERangeInvalid ), iCandidateIndex(1),
-      iCharStartPostion( KInvalidValue )
+      iCharStartPostion( KInvalidValue ),
+	  iInSpellMode( EFalse )
     {
     iIndicatorImgID = 0;
     iIndicatorTextID = 0;
@@ -277,6 +279,8 @@ void CAknFepPluginManager::ConstructL()
     iAvkonRepository = CRepository::NewL( KCRUidAvkon ); 
     
     iConnectAo = new (ELeave)CConnectAo(this);
+    
+    RProperty::Define( KPSUidAknFep, KAknFepSettingDialogState, RProperty::EInt );
     }
 
 // -----------------------------------------------------------------------------
@@ -1034,7 +1038,7 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         return EFalse;    
         }
     
-    // add by jiawenjuan to remember the old fep aware editor.
+    // remember the old fep aware editor.
     TBool cleanContent = EFalse;   
     if(iOldFepAwareEditor != iFepMan.FepAwareTextEditor())
         {
@@ -1053,7 +1057,11 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
     if ( iITISettingDialogOpen )
     	{
     	iITISettingDialogOpen = EFalse;
-    	}  
+    	}
+
+    // Set the KAknFepTouchInputActive PS to 1, 
+    // it means that touch input is active now.
+    RProperty::Set( KPSUidAknFep, KAknFepTouchInputActive, 1 );
     
     // getting a new ui manager object corresponded in aMode.
     TInt uiLanguage = iSharedData.DisplayLanguage();
@@ -1157,6 +1165,16 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
     iLangMan.SetSplitView(isSplit);
  
     TInt inputLang = iFepMan.InputLanguageCapabilities().iInputLanguageCode;
+    if( ( aSuggestMode == EPluginInputModeFSc || 
+            aSuggestMode == EPluginInputModeHwr ||
+            aSuggestMode == EPluginInputModeFingerHwr )
+            && ( iSharedData.PenInputLanguage() == ELangPrcChinese 
+                || iSharedData.PenInputLanguage() == ELangHongKongChinese
+                || iSharedData.PenInputLanguage() == ELangTaiwanChinese) )
+        {
+        // Solution for HWR can not be in used after switched to latin-only editor.
+        inputLang = iSharedData.PenInputLanguage();
+        }
     MAknFepManagerInterface* fepUI = iLangMan.GetPluginInputFepUiL(
                                                     aSuggestMode, 
                                                     inputLang,
@@ -1363,6 +1381,10 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
     NotifyAppUiImeTouchWndStateL( EFalse );
     
     iCharStartPostion = KInvalidValue;
+    
+    // Set the KAknFepTouchInputActive PS to 0, 
+    // it means that touch input is inactive now.
+    RProperty::Set( KPSUidAknFep, KAknFepTouchInputActive, 0 );
     }
 
 // ---------------------------------------------------------------------------
@@ -1571,6 +1593,7 @@ void CAknFepPluginManager::ProcessMenuCommandL(TInt aCommandId)
                     break;
                 case EEikCmdEditPaste:
                     {//ctrl + v
+                    ResetMenuState();    
                     TKeyEvent ccpuKey = KAknCcpuPasteEvent;
                     CCoeEnv::Static()->SimulateKeyEventL( ccpuKey, EEventKey );
                     }   // Send copy-event to edwin.
@@ -2068,8 +2091,7 @@ void CAknFepPluginManager::OnFocusChangedL( TBool aGainForeground )
 
         if( iInMenu && iCurEditor == iFepMan.FepAwareTextEditor() )
             {
-            ResetMenuState();
-            InformMfneUiStatusL( EFalse );
+            ResetMenuState();            
 			// If need to open setting app automatically, 
 			// do not open Touch window again. 
 			TBool langChange = iCurLanguage != iSharedData.InputTextLanguage();
@@ -2340,19 +2362,13 @@ void CAknFepPluginManager::SendIcfDataL(  TPluginSync aSyncType )
     TPtr16 currentEditorContent = currentEditorContentBuf->Des();
 	edit->GetEditorContentForFep( currentEditorContent, 0, editContentLen ); 
 	
-	TBool send = ETrue;
-	
-	if ( !SetSyncIcfDataL( icfData, lastEditorContent, currentEditorContent ) )
+	if (SetSyncIcfDataL( icfData, lastEditorContent, currentEditorContent))
     	{
-    	send = EFalse;
+		iCurrentPluginInputFepUI->HandleCommandL
+			(ECmdPenInputSendEditorTextAndCurPos, reinterpret_cast<TInt>(&icfData));
+		iFepMan.TryPopExactWordInICFL();
     	}
 
-    if ( send )
-    	{
-    	iCurrentPluginInputFepUI->HandleCommandL
-            (ECmdPenInputSendEditorTextAndCurPos, reinterpret_cast<TInt>(&icfData));
-    	}
-    	
     if ( secretEditor ) 
         { 
         TBool cursorDisabled = IsEditorCursorDisabled(); 
@@ -2590,6 +2606,10 @@ TBool CAknFepPluginManager::SetSyncCurSelIcfDataL( TFepInputContextFieldData& aI
         aIcfData.iStartPos = iCurSelCur.iCursorPos;
         aIcfData.iMidPos = -1;
         aIcfData.iText.Set(KNullDesC);
+        if( iFepMan.IsFlagSet(CAknFepManager::EFlagSupressAutoUpdate) && iFepMan.InputMode() == EHangul )
+        	{
+			aIcfData.iCursorSelVisible = EFalse;
+        	}
         }
         
     iInlineStateOn = ( aIcfData.iMidPos == 0 );
@@ -3780,7 +3800,12 @@ void CAknFepPluginManager::NotifyLayoutL(TInt aOpenMode, TInt aSuggestRange,
               }
         else
             {
-            SetITUTSpellingStateL(ETrue);
+            if ( !iInSpellMode )
+            	{
+				SetITUTSpellingStateL(ETrue);
+				iInSpellMode = ETrue;
+            	}
+            
             iIndicatorImgID = 0;
             iIndicatorTextID = 0;
             }    
@@ -4245,72 +4270,6 @@ void CAknFepPluginManager::ShowAllCandidates()
                                                          reinterpret_cast<TInt>(&iSendAllList)));
     }
 
-TBool CAknFepPluginManager::DoNextCandidates()
-    {
-    if((iCandidateIndex) * 3 >= iCandidateList.Count())
-        {
-        iCandidateIndex = 0;
-        }
-        
-    iCandidateIndex++;           
-    
-    int nStartIndex = (iCandidateIndex - 1) * 3;
-
-    
-    for (TInt index = 0; index < 3; index++, nStartIndex ++)
-        {
-        if (nStartIndex < iCandidateList.Count())
-            {
-            TPtr16 canDes = iCandidateList[nStartIndex]->Des();
-            iSendList.iCandidate[index].Set(canDes);
-            }
-        else
-            {
-            iSendList.iCandidate[index].Set(KNullDesC);
-            }
-        }
-        
-    
-    TRAP_IGNORE(iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputFingerMatchList, 
-                                                         reinterpret_cast<TInt>(&iSendList)));    
-    
-    if (iCandidateIndex * 3 >= iCandidateList.Count())
-        {
-        return ETrue;
-        }
-    
-    return EFalse;
-    }
-    
-void CAknFepPluginManager::DoPreviousCandidates()
-    {
-    iCandidateIndex--;
-      
-    if(iCandidateIndex < 1)
-        {
-        iCandidateIndex = iCandidateList.Count() / 3 + 1;
-        }
-        
-    int nStartIndex = (iCandidateIndex -1) * 3;
-        
-    for (TInt index = 0; index < 3; index++, nStartIndex ++)
-        {
-        if (nStartIndex < iCandidateList.Count())
-            {
-            TPtr16 canDes = iCandidateList[nStartIndex]->Des();
-            iSendList.iCandidate[index].Set(canDes);
-            }
-        else
-            {
-            iSendList.iCandidate[index].Set(KNullDesC);
-            }
-        }
-        
-    
-    TRAP_IGNORE(iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputFingerMatchList, 
-                                                         reinterpret_cast<TInt>(&iSendList)));    
-    }
-    
 TBool CAknFepPluginManager::GetIndicatorImgID(const TInt IndicatorUID,TInt &aImage, TInt &aMask)
     {
     TBool ret = EFalse;
@@ -4681,6 +4640,11 @@ TInt CAknFepPluginManager::GetSoftKeyResID()
         
     return resId;
     }
+
+void CAknFepPluginManager::SetInSpellModeFlag( TBool aFlag )
+	{
+	iInSpellMode = aFlag;
+	}
 
 void CAknFepPluginManager::SetPromptText( TBool aCleanContent )
     {
@@ -5258,22 +5222,17 @@ void CAknFepPluginManager::ShowTooltipOnFSQL( TInt aSecondaryIdx )
         return;
         }
     
-	CDesCArray* candidates = new ( ELeave ) CDesCArrayFlat( KDefaultCandidateArraySize );
-	CleanupStack::PushL( candidates );
+	CDesCArray* candidates = new (ELeave) CDesCArrayFlat(KDefaultCandidateArraySize);
+	CleanupStack::PushL(candidates);
 	TInt activeIdx = KErrNotFound;
-	iFepMan.GetCandidatesL( *candidates, activeIdx );
-	if ( aSecondaryIdx < candidates->Count() )
+	iFepMan.GetCandidatesL(*candidates, activeIdx);
+	
+	if (aSecondaryIdx < candidates->Count())
 		{
-		TPtrC aText = ( *candidates )[ aSecondaryIdx ];
-
-	    TFepITITooltipText tooltipText;
-	    tooltipText.iDataSize = aText.Size();
-	    tooltipText.iText.Set( aText );    
-	    TPtrC tooltipTextPtr;
-	    tooltipTextPtr.Set( aText );    
-	    iCurrentPluginInputFepUI->HandleCommandL( ECmdPenInputPopupTooltip, 
-	                                reinterpret_cast<TInt>( &tooltipTextPtr ) );
+		TPtrC aText = (*candidates)[aSecondaryIdx];
 	    
+   	    iCurrentPluginInputFepUI->HandleCommandL(
+   	    		ECmdPenInputPopupTooltip,  reinterpret_cast<TInt>(&aText));
 	    iTooltipOpenOnFSQ = ETrue;		
 		}
 	else
@@ -5631,13 +5590,21 @@ void CAknFepPluginManager::ResetItiStateL()
     	}
     
     // Close FSQ then current keyboard type return to the previously-stored one,
-    // 1. The first step is to restore keyboard type, because the value will
-    // be used in iFepMan.SetQwertyMode( EFalse );
-    ResetItiKeyboardLayoutL();
+    // But, if iSharedData.QwertyInputMode() == EFalse, it means that hardware 
+    // is slided, and capserver will be responsible to set the corrected keyboard type
+    // and qwerty input mode. 
+    // So there is no need to do step 1 and step 2 here, otherwise, 
+    // values set by capserver will be overrided.
+    if ( !iSharedData.QwertyInputMode() )
+    	{    
+		// 1. The first step is to restore keyboard type, because the value will
+		// be used in iFepMan.SetQwertyMode( EFalse );
+		ResetItiKeyboardLayoutL();
+		
+		// 2. Change FEP to non qwerty mode.
+		iFepMan.SetQwertyMode( EFalse );    
+    	}
     
-    // 2. Change FEP to non qwerty mode.
-    iFepMan.SetQwertyMode( EFalse );
-
     // 3. Notify the deactivation of ITI to peninputserver        
     iCurrentPluginInputFepUI->HandleCommandL( ECmdPeninputITIStatus, EFalse );    
  
@@ -5655,22 +5622,21 @@ void CAknFepPluginManager::SetItiKeyboardLayoutL()
         {
         return;
         }    
-    // 1. Record the previous keyboard type
-    RProperty keyboardLayoutStatusProperty;
-    keyboardLayoutStatusProperty.Get( KCRUidAvkon, KAknKeyBoardLayout, 
-                                          iLastKeyboardLayout );
-
+    // 1. Record the previous virtual keyboard type    
+    RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, iLastKeyboardLayout );
+    
     // 2. Utilize right qwerty keyboard type
-    keyboardLayoutStatusProperty.Set( KCRUidAvkon, KAknKeyBoardLayout, 
-                                      EPtiKeyboardQwerty4x12 ); 
+    RProperty::Set( KPSUidAknFep, KAknFepVirtualKeyboardType, EPtiKeyboardQwerty4x12 );
+    
     }
+
 // -----------------------------------------------------------------------------
 // Restore keyboard layout after closing FSQ.
 // -----------------------------------------------------------------------------
 //
 void CAknFepPluginManager::ResetItiKeyboardLayoutL()
     {    
-    if ( !iLastKeyboardLayout || iITISettingDialogOpen )
+    if ( !iLastKeyboardLayout )
     	{
     	return;
     	}
@@ -5678,10 +5644,11 @@ void CAknFepPluginManager::ResetItiKeyboardLayoutL()
     // Close FSQ then current keyboard type return to the previously-stored one,
     //Restore keyboard layout type and qwerty mode of FEP        
     // 1. Store the previous keyboard type, 
-    // except that opening predictive setting dialog cause fsq closed.        
-    RProperty keyboardLayoutStatusProperty;
-    keyboardLayoutStatusProperty.Set( KCRUidAvkon, KAknKeyBoardLayout, 
+    // except that opening predictive setting dialog cause fsq closed.    
+    RProperty::Set( KPSUidAknFep, KAknFepVirtualKeyboardType, 
                                           iLastKeyboardLayout );
+    
+    
     iLastKeyboardLayout = 0;        
     }
 

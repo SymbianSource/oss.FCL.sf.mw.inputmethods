@@ -591,4 +591,5 @@ EXPORTS
 	?CancelPointerDownL@CTransparentHwrWndExt@@UAEXXZ @ 590 NONAME ; void CTransparentHwrWndExt::CancelPointerDownL(void)
 	?DrawLine@CTransparentHwrWndExt@@EAE?AVTRect@@ABVTPoint@@0H@Z @ 591 NONAME ; class TRect CTransparentHwrWndExt::DrawLine(class TPoint const &, class TPoint const &, int)
 	?EndStrokeL@CHwrWndBase@@UAEXH@Z @ 592 NONAME ; void CHwrWndBase::EndStrokeL(int)
+	?SetStarIcon@CVirtualKeyboard@@QAEXPAVCPenInputColorIcon@@@Z @ 593 NONAME ; void CVirtualKeyboard::SetStarIcon(class CPenInputColorIcon *)
 

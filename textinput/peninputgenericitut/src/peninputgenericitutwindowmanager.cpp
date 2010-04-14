@@ -48,6 +48,18 @@
 _LIT(KEmptyString, "");
 const TInt KPeriodicTimerIntervalSec(2500000);
 /* Teleca change end, 18.05.2009 ssal */
+
+const TInt KSCTPreventTime = 1000 * 1000;
+
+TInt PreventSCTTimerCallback( TAny* aData )
+	{
+	CGenericItutWindowManager* windowMgr = 
+			static_cast<CGenericItutWindowManager*>( aData );
+	windowMgr->SetAllowHandleRawKeyEventFlag( ETrue );
+	windowMgr->StopPreventSCTTimer();
+	return 0;
+	}
+
 CGenericItutWindowManager* CGenericItutWindowManager::NewL(CGenericItutUiLayout* aLayoutOwner,
                                                            CGenericItutDataMgr* aDataMgr)
     {
@@ -63,7 +75,9 @@ CGenericItutWindowManager::CGenericItutWindowManager(CGenericItutUiLayout* aLayo
                                                      CGenericItutDataMgr* aDataMgr)
                                           :iLayoutOwner(aLayoutOwner),
                                            iDataMgr(aDataMgr),
-                                           iLastRawKeyDown(EStdKeyNull)
+                                           iLastRawKeyDown(EStdKeyNull),
+                                           iAllowHandleRawKeyEvent( ETrue ),
+                                           iPreventCSTTimer( NULL )
                                            
     {
     iInEditWordQueryDlg = EFalse;
@@ -79,6 +93,9 @@ CGenericItutWindowManager::~CGenericItutWindowManager()
     	}
    	delete iInfoTimer;
     /* Teleca change end, 18.05.2009 ssal */
+   	
+	iPreventCSTTimer->Cancel();
+	delete iPreventCSTTimer;
     }
 
 void CGenericItutWindowManager::SetPropertyL(MItutPropertySubscriber::TItutProperty aPropertyName, 
@@ -94,6 +111,8 @@ void CGenericItutWindowManager::ConstructL()
     /* Teleca change begin, 18.05.2009 ssal */
     iInfoTimer = CPeriodic::NewL(CActive::EPriorityStandard);
     /* Teleca change end, 18.05.2009 ssal */
+    
+    iPreventCSTTimer = CPeriodic::NewL( CActive::EPriorityStandard );
     }
 
 void CGenericItutWindowManager::SimulateRawEvent(TInt aScanCode, TRawEvent::TType aType)
@@ -125,20 +144,27 @@ void CGenericItutWindowManager::HandleCtrlEventL(TInt aEventType,
         {
         case EEventRawKeyDownEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            SimulateRawEvent(key->iScanCode,TRawEvent::EKeyDown);
-            SetLastRawKeyDown(key->iScanCode, ETrue, aCtrl);
+            if ( iAllowHandleRawKeyEvent )
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				SimulateRawEvent(key->iScanCode,TRawEvent::EKeyDown);
+				SetLastRawKeyDown(key->iScanCode, ETrue, aCtrl);
+            	}
             }
             break;
         case EEventRawKeyUpEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            SimulateRawEvent(key->iScanCode,TRawEvent::EKeyUp);
-            SetLastRawKeyDown(key->iScanCode, EFalse, aCtrl);
+            if ( iAllowHandleRawKeyEvent )
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				SimulateRawEvent(key->iScanCode,TRawEvent::EKeyUp);
+				SetLastRawKeyDown(key->iScanCode, EFalse, aCtrl);
+            	}
             }
             break;
         case EItutCmdEnterSpellMode:
             {
+            StartPreventSCTTimer();
             iLayoutOwner->SignalOwner(ESignalEnterSpellMode);
             }
             break;        
@@ -224,7 +250,10 @@ void CGenericItutWindowManager::HandleCtrlEventL(TInt aEventType,
                 if (event->iCommand == EItutCmdPredictItemSelected)
                     ReportItemSelected(ESignalSelectMatchSelectionText, event->iIndex, ETrue);
                 else if (event->iCommand == EItutCmdEnterSpellMode)
+                	{
+					StartPreventSCTTimer();
                     iLayoutOwner->SignalOwner(ESignalEnterSpellMode);
+                	}
                 }
             else if (aCtrl->ControlId() == ECtrlIdEditorMenu)
                 {
@@ -305,7 +334,7 @@ TBool CGenericItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
             break;
         case ECmdPenInputFingerMatchIndicator:
             {
-            if ( IsPortraitWest() && ( !iDataMgr->IsChineseSpellMode()))
+            if ( iDataMgr->IsPortraitWest() && ( !iDataMgr->IsChineseSpellMode()))
                 {
                 iWindow->UpdateIndiBubbleL( aData );
                 }
@@ -438,10 +467,6 @@ CFepUiLayout* CGenericItutWindowManager::UiLayout()
     return iLayoutOwner;
     }
     
-TBool CGenericItutWindowManager::IsPortraitWest()
-    {
-    return !iDataMgr->IsChinese() && !iDataMgr->IsLandScape();
-    }
 void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
     {
     CGenericItutUiLayout * itutLayoutOwner;
@@ -452,7 +477,7 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
             CGenericItutUiMgrBase::EStateSpelling && 
          !iInEditWordQueryDlg)
         {
-        if ( IsPortraitWest() && (!iDataMgr->IsChineseSpellMode()))
+        if ( iDataMgr->IsPortraitWest() && (!iDataMgr->IsChineseSpellMode()))
             {
 			iWindow->Icf()->HideBubble();
             iWindow->SetIndiWithTextFlag( ETrue );
@@ -479,7 +504,7 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
         }
     else
         {
-        if ((!IsPortraitWest()) || iDataMgr->IsChineseSpellMode())
+        if ((!iDataMgr->IsPortraitWest()) || iDataMgr->IsChineseSpellMode())
             {
             iWindow->Icf()->HideBubble();
             }
@@ -701,7 +726,31 @@ TInt CGenericItutWindowManager::HideByteWarningBubble(TAny* aPointer)
     manager->HideByteWarningBubble();
     return KErrNone;
     }
-          
+       
+TBool CGenericItutWindowManager::IsAllowHandleRawKeyEvent()
+	{
+	return iAllowHandleRawKeyEvent;
+	}
+
+void CGenericItutWindowManager::SetAllowHandleRawKeyEventFlag( TBool aFlag )
+	{
+	iAllowHandleRawKeyEvent = aFlag;
+	}
+
+void CGenericItutWindowManager::StartPreventSCTTimer()
+	{
+	iAllowHandleRawKeyEvent =  EFalse;
+	
+	TTimeIntervalMicroSeconds32 t = KSCTPreventTime;
+	iPreventCSTTimer->Start( t, t, 
+			TCallBack(PreventSCTTimerCallback, this));
+	}
+
+void CGenericItutWindowManager::StopPreventSCTTimer()
+	{
+	iPreventCSTTimer->Cancel();
+	}
+
 void CGenericItutWindowManager::HideByteWarningBubble()
     {
     if (!iInfoTimer)
@@ -715,4 +764,9 @@ void CGenericItutWindowManager::HideByteWarningBubble()
         iWindow->Icf()->HideInfoBubble();
         }
     }    
+
+void CGenericItutWindowManager::CreateKoreanSpecificCtrlsIfNeededL()
+    {
+    iWindow->CreateKoreanSpecificCtrlsIfNeededL();
+    }
 // End Of File

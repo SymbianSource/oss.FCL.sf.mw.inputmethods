@@ -26,6 +26,7 @@
 #include "peninputgenericitutdatamgr.h"
 #include "peninputgenericitutlayoutcontext.h"
 #include "peninputgenericitutconverter.h"
+#include "peninputgenericitutwindowmanager.h"
 
 CChnItutUiStatePinyinComposition* CChnItutUiStatePinyinComposition::NewL(
     CGenericItutUiMgrBase* aOwner)
@@ -40,6 +41,8 @@ CChnItutUiStatePinyinComposition* CChnItutUiStatePinyinComposition::NewL(
 
 CChnItutUiStatePinyinComposition::~CChnItutUiStatePinyinComposition()
     {
+    iSpellCands.ResetAndDestroy();
+    iSpellCands.Close();
     }
 
 CChnItutUiStatePinyinComposition::CChnItutUiStatePinyinComposition(
@@ -82,25 +85,17 @@ void CChnItutUiStatePinyinComposition::OnExit()
     // hide dropdownlist & reset its status
     CFepCtrlDropdownList* spelllist = static_cast<CFepCtrlDropdownList*>(
         iOwner->LayoutContext()->Control(ECtrlIdSpellCandsList));
-    spelllist->ResetAndClear(CFepCtrlDropdownList::EListExpandableRollWithIcon);
-    iSpellCands.ResetAndDestroy();
-    iSpellCands.Close();
     spelllist->Hide(ETrue);
 
     CFepCtrlDropdownList* candlist = static_cast<CFepCtrlDropdownList*>(
         iOwner->LayoutContext()->Control(ECtrlIdStdCandsList));
-    candlist->ResetAndClear(CFepCtrlDropdownList::EListExpandable);
     iOwner->DataMgr()->ClearChnCandidates(EItutCandidates);
     candlist->Hide(ETrue);
 
     iOwner->DataMgr()->PtiEngine()->ClearCurrentWord();
     // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
-    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
-    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
-    iOwner->LayoutContext()->ShowArrowBtn( 0 );
     
     //show indicator 
-    iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
 
     iOwner->DataMgr()->PtiEngine()->ClearCurrentWord();
     
@@ -289,23 +284,29 @@ TBool CChnItutUiStatePinyinComposition::HandleCtrlEventL(
         // consume star key at pinyin composition state
         case EEventRawKeyDownEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            
-            if (key->iScanCode == EStdKeyNkpAsterisk)
-                {
-                HandleKeyL(ECmdPenInputFingerKeyPress, EPtiKeyStar);
-                return ETrue;
-                }
+            if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				
+				if (key->iScanCode == EStdKeyNkpAsterisk)
+					{
+					HandleKeyL(ECmdPenInputFingerKeyPress, EPtiKeyStar);
+					return ETrue;
+					}
+            	}
             }
             break;
         case EEventRawKeyUpEvent:
             {
-            const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            
-            if (key->iScanCode == EStdKeyNkpAsterisk)
-                {
-                return ETrue;
-                }
+            if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+            	{
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				
+				if (key->iScanCode == EStdKeyNkpAsterisk)
+					{
+					return ETrue;
+					}
+            	}
             }
             break;
         default:

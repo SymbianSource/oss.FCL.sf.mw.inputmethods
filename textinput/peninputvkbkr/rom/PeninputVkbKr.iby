@@ -22,6 +22,5 @@ ECOM_PLUGIN(PeninputVkbKr.dll,EB339F5E.rsc)
 data = DATAZ_\RESOURCE_FILES_DIR\apps\PeninputVkbKr.mif                       RESOURCE_FILES_DIR\apps\PeninputVkbKr.mif
 data = DATAZ_\RESOURCE_FILES_DIR\plugins\PeninputVkbKrWindowKr.rsc            RESOURCE_FILES_DIR\plugins\PeninputVkbKrWindowKr.rsc
 data = DATAZ_\RESOURCE_FILES_DIR\plugins\PeninputVkbKrWindowConfigInfo_65.rsc RESOURCE_FILES_DIR\plugins\PeninputVkbKrWindowConfigInfo_65.rsc
-data=ZSYSTEM\install\PeninputVkbKr_stub.sis    System\Install\PeninputVkbKr_stub.sis
 
 #endif // __PENINPUTVKBKR_IBY__

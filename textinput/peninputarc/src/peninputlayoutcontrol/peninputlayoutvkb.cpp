@@ -157,6 +157,7 @@ EXPORT_C CVirtualKeyboard::~CVirtualKeyboard()
     DestroyIrregularBmps();
     
     delete iShiftIcon;
+    delete iStarIcon;
     }
 
 // ---------------------------------------------------------------------------
@@ -1135,6 +1136,13 @@ EXPORT_C void CVirtualKeyboard::SetShiftIcon( CPenInputColorIcon* aIcon )
 	delete iShiftIcon;
 	iShiftIcon = aIcon;	
 	}
+
+EXPORT_C void CVirtualKeyboard::SetStarIcon( CPenInputColorIcon* aIcon )
+	{
+	delete iStarIcon;
+	iStarIcon = aIcon;	
+	}
+
 /*
 EXPORT_C CFepUiBaseCtrl* CVirtualKeyboard::HandlePointerDownEventL(const TPoint& aPoint)
     {

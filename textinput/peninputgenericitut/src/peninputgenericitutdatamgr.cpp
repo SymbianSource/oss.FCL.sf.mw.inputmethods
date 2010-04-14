@@ -182,7 +182,7 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	// Screen
 	TRect rect;
 
-	AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EApplicationWindow, rect);
+	rect = AknLayoutScalable_Avkon::application_window(0).LayoutLine().Rect();
 
 	TAknWindowLineLayout mainWnd, bottomWnd, bottomPane;
 	TAknLayoutRect mainWndRect, bottomwndtrect, bottompanerect;
@@ -299,12 +299,23 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 				shiftIconRect.LayoutRect( keyrect, shiftIcon );                
 				iShiftIconRectForPrtWest = shiftIconRect.Rect();          
 				}    
+
+			// read star icon rect
+			if( i == 3 &&  j == 0 )
+				{
+				TAknWindowLineLayout starIcon =  AknLayoutScalable_Avkon::
+								cell_ituss_key_pane_g2( 0 ).LayoutLine();
+				TAknLayoutRect starIconRect;
+				starIconRect.LayoutRect( keyrect, starIcon );                
+				iStarIconRectForPrtWest = starIconRect.Rect();          
+				}			
+			
 			}
 		} 
 	 
 
 	// Num text row
-	iVkBigNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(0).LayoutLine(); 
+	iVkBigNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(4).LayoutLine(); 
 	iVkNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(1).LayoutLine();
 	
 	// Key text row 1                               
@@ -383,23 +394,47 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	iBubbleFontForPrtWest = const_cast<CFont*>(previewWndText.Font());	
 	
 	// LAF for spell mode
-	TAknWindowLineLayout btnPaneWnd, okBtnWnd, cancelBtnWnd, spellwnd;
-	TAknLayoutRect btnPaneRect, okBtnRect, cancelBtnRect, spellwndtrect;
+	TAknWindowLineLayout spellwnd;
+	TAknLayoutRect okBtnRect, cancelBtnRect, spellwndtrect;
 	
 	iSpellQueryPaneRectForPrtWest = mainWndRect.Rect();
 	
     spellwnd = AknLayoutScalable_Avkon::popup_fep_ituss_window(1).LayoutLine();
     spellwndtrect.LayoutRect( mainWndRect.Rect(), spellwnd ); 
-    
-	btnPaneWnd = AknLayoutScalable_Avkon::ituss_sks_pane(0).LayoutLine();
-	btnPaneRect.LayoutRect( spellwndtrect.Rect(), btnPaneWnd );
 	
-	okBtnWnd = AknLayoutScalable_Avkon::ituss_sks_pane_g1(0).LayoutLine();
-	okBtnRect.LayoutRect( btnPaneRect.Rect(), okBtnWnd );
+	TAknWindowLineLayout queryTopPane, queryICFPane, icfSpellIndiPane, 
+		middleInnerBtn, middleBtn, bottomInnerBtn;
+	TAknLayoutRect queryTopPaneRect, queryICFPaneRect, icfSpellIndiPaneRect, 
+		bottomButton, bottomInnerRect, middleBtnRect;
+	
+	queryTopPane = AknLayoutScalable_Avkon::popup_fep_vtchi_icf_pane(1).LayoutLine();
+	queryTopPaneRect.LayoutRect( mainWndRect.Rect(), queryTopPane );
+	
+	queryICFPane = AknLayoutScalable_Avkon::vtchi_query_pane(0).LayoutLine();
+	queryICFPaneRect.LayoutRect( queryTopPaneRect.Rect(), queryICFPane );
+	iSpellICFRectForPrtWest = queryICFPaneRect.Rect();
+	
+	// Middle pane
+	TRect middleButtonPaneRect = spellwndtrect.Rect();
+	middleButtonPaneRect.Move( 5, 2 );
+	
+	middleBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane(3).LayoutLine();
+	middleBtnRect.LayoutRect( bottompanerect.Rect(), middleBtn );
+	middleInnerBtn = AknLayoutScalable_Avkon::bg_cell_ituss_key_g1(5).LayoutLine();
+	
+	TRect cellMiddleRect;
+	cellMiddleRect.iTl = middleButtonPaneRect.iTl;
+	cellMiddleRect.SetHeight( middleBtnRect.Rect().Height());
+	cellMiddleRect.SetWidth( middleBtnRect.Rect().Width());
+	
+	// OK button
+	okBtnRect.LayoutRect( cellMiddleRect, middleInnerBtn );
 	iOKRectForPrtWest = okBtnRect.Rect();
 	
-	cancelBtnWnd = AknLayoutScalable_Avkon::ituss_sks_pane_g2(0).LayoutLine();
-	cancelBtnRect.LayoutRect( btnPaneRect.Rect(), cancelBtnWnd );
+	// Cancel button
+	cellMiddleRect.Move( middleBtnRect.Rect().Width(), 0 );
+	
+	cancelBtnRect.LayoutRect( cellMiddleRect, middleInnerBtn );
 	iCancelRectForPrtWest = cancelBtnRect.Rect();
 	
 	iBtnOKTextForPrtWest = AknLayoutScalable_Avkon::ituss_sks_pane_t1(0).LayoutLine();
@@ -410,66 +445,76 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	
 	iBtnCancelTextForPrtWest = iBtnOKTextForPrtWest;
 	
-	TAknWindowLineLayout queryTopPane, queryICFPane, icfSpellIndiPane, middleInnerBtn;
-	TAknLayoutRect queryTopPaneRect, queryICFPaneRect, icfSpellIndiPaneRect, 
-		middleButton, middleInnerRect;
-	
-	queryTopPane = AknLayoutScalable_Avkon::popup_fep_vtchi_icf_pane(1).LayoutLine();
-	queryTopPaneRect.LayoutRect( mainWndRect.Rect(), queryTopPane );
-	
-	queryICFPane = AknLayoutScalable_Avkon::vtchi_query_pane(0).LayoutLine();
-	queryICFPaneRect.LayoutRect( queryTopPaneRect.Rect(), queryICFPane );
-	iSpellICFRectForPrtWest = queryICFPaneRect.Rect();
-	
-	TRect middleButtonPaneRect = spellwndtrect.Rect();
-	middleButtonPaneRect.Move( 5, 3 );
-	
+	// Bottom pane
 	TRect cellSpellRect;
-	cellSpellRect.iTl = middleButtonPaneRect.iTl;
+	cellSpellRect.iTl.iX = middleButtonPaneRect.iTl.iX;
+	cellSpellRect.iTl.iY = middleButtonPaneRect.iTl.iY + 
+			itucellrect.Rect().Height() * 5 + 10;
 	cellSpellRect.SetHeight( itucellrect.Rect().Height());
 	cellSpellRect.SetWidth( itucellrect.Rect().Width());
-
+		
 	// Left
-	middleButton.LayoutRect( cellSpellRect, ituinnercell );
-	iSpellArrowLeftRectForPrtWest = middleButton.Rect();
+	bottomButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowLeftRectForPrtWest = bottomButton.Rect();
 	
-	middleInnerBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane_g1(2).LayoutLine();
-	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
-	iSpellArrowLeftInnerRectForPrtWest = middleInnerRect.Rect();
+	bottomInnerBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane_g1(2).LayoutLine();
+	bottomInnerRect.LayoutRect( bottomButton.Rect(), bottomInnerBtn );
+	iSpellArrowLeftInnerRectForPrtWest = bottomInnerRect.Rect();
 	
 	// Right
 	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
-	middleButton.LayoutRect( cellSpellRect, ituinnercell );
-	iSpellArrowRightRectForPrtWest = middleButton.Rect();
+	bottomButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowRightRectForPrtWest = bottomButton.Rect();
 	
-	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
-	iSpellArrowRightInnerRectForPrtWest = middleInnerRect.Rect();
+	bottomInnerRect.LayoutRect( bottomButton.Rect(), bottomInnerBtn );
+	iSpellArrowRightInnerRectForPrtWest = bottomInnerRect.Rect();
 	
 	// BackSpace
 	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
-	middleButton.LayoutRect( cellSpellRect, ituinnercell );
-	iSpellICFBtnRectForPrtWest = middleButton.Rect();
+	bottomButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellICFBtnRectForPrtWest = bottomButton.Rect();
 	
-	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
-	iSpellICFBtnInnerRectForPrtWest = middleInnerRect.Rect();
+	bottomInnerRect.LayoutRect( bottomButton.Rect(), bottomInnerBtn );
+	iSpellICFBtnInnerRectForPrtWest = bottomInnerRect.Rect();
 	
-	iSpellText1ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t1(0).LayoutLine();
-	iSpellText2ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t2(0).LayoutLine();
+	//iSpellText1ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t1(0).LayoutLine();
+	iSpellText1ForPrtWest = AknLayoutScalable_Avkon::vtchi_icf_list_pane_t1(0, 0, 0).LayoutLine();
+	//iSpellText2ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t2(0).LayoutLine();
+	iSpellText2ForPrtWest = AknLayoutScalable_Avkon::vtchi_icf_list_pane_t1(0, 0, 1).LayoutLine();
 	iSpellText3ForPrtWest = AknLayoutScalable_Avkon::vtchi_query_pane_t3(0).LayoutLine();
+	
+	iSpellIcfTextLeftMarginForPrtWest = iSpellText1ForPrtWest.il;
+	iSpellIcfTextRightMarginForPrtWest = iSpellIcfTextLeftMarginForPrtWest;
 	
 	iSpellIcfFontForPrtWest = const_cast<CFont*>(
 	        AknLayoutUtils::FontFromId(iSpellText1ForPrtWest.iFont, NULL));
 	
-	TAknLayoutText cSpelltxt1;
+	TAknLayoutText cSpelltxt1, cSpelltxt2;
 	cSpelltxt1.LayoutText( queryICFPaneRect.Rect(), iSpellText1ForPrtWest );
+	cSpelltxt2.LayoutText( queryICFPaneRect.Rect(), iSpellText2ForPrtWest );
+	
+	iSpellIcfTextTopMarginForPrtWest = 
+			cSpelltxt1.TextRect().iTl.iY - queryICFPaneRect.Rect().iTl.iY;
+	
+	iSpellIcfTextLineSpaceMarginForPrtWest = 
+			cSpelltxt2.TextRect().iTl.iY - cSpelltxt1.TextRect().iBr.iY;
+	
 	iSpellIcfTextHeightForPrtWest = cSpelltxt1.TextRect().Height();
 	
+	TInt maxSpellRow = ( iSpellICFRectForPrtWest.Height() - iSpellIcfTextTopMarginForPrtWest ) 
+	        / ( iSpellIcfTextHeightForPrtWest + iSpellIcfTextLineSpaceMarginForPrtWest );
+	
+	iSpellIcfTextBottomMarginForPrtWest = 
+			iSpellICFRectForPrtWest.Height() - 
+			( iSpellIcfTextHeightForPrtWest + iSpellIcfTextLineSpaceMarginForPrtWest ) 
+	        * maxSpellRow - iSpellIcfTextTopMarginForPrtWest;
 	
 	icfSpellIndiPane = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
 	icfSpellIndiPaneRect.LayoutRect(queryICFPaneRect.Rect(), icfSpellIndiPane);
 	iSpellIndiPaneWithoutTextForPrtWest = icfSpellIndiPaneRect.Rect();
 	iSpellIndiIconWithoutTextForPrtWest = TRect( 0, 0, 50, 17 );
 	}
+
 void CGenericItutDataMgr::ReadLafInfo()
     {
     // Screen
@@ -1127,6 +1172,11 @@ void CGenericItutDataMgr::SetLanguageL(TInt aLanguage)
                 {
                 iLayoutContext->UiManager()->CreateChineseSpecificCtrlsIfNeededL();
                 }
+            
+            if( IsKorean())
+            	{
+                iLayoutContext->UiManager()->CreateKoreanSpecificCtrlsIfNeededL();
+            	}
 
             NotifyChangeControlLayout(MItutPropertySubscriber::EItutPropertyKeypadResourceId, 
                                       KeypadResourceId());  

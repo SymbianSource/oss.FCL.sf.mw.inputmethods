@@ -38,6 +38,7 @@
 #include <PtiDefs.h>
 #include <e32property.h>
 #include <AvkonInternalCRKeys.h>
+#include <AknFepInternalPSKeys.h>
 #include <AknFepGlobalEnums.h>
 #include "AknFepPredictiveSettingDialog.h"
 #include <aknnotewrappers.h>
@@ -81,9 +82,6 @@ CAknFepPredictiveSettingDialog ::CAknFepPredictiveSettingDialog(TInt aConfirmati
 	iTitlePaneResId(aTitlePaneResId),
 	iSettingItemInEditingState(EFalse)
 	{
-#ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
-	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, iOriginalKeyboardLayout);
-#endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
 	}
 	
 CAknFepPredictiveSettingDialog::~CAknFepPredictiveSettingDialog()
@@ -106,6 +104,11 @@ SEikControlInfo CAknFepPredictiveSettingDialog::CreateCustomControlL(TInt /*aCon
 	
 	// construct the data object the settings list will use
 	iSettingsData = CAknFepPredictiveSettingData::NewL();
+	
+#ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
+	iOriginalKeyboardLayout = iSettingsData->OwnerKeyboardType();
+#endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
+	
 	iAknFepRepository = CRepository::NewL(KCRUidAknFep);	
 	ReadSettingsDataL();
 		
@@ -221,9 +224,7 @@ void CAknFepPredictiveSettingDialog::ReadSettingsDataL()
 		}
 
     // Parse keyboard dependent settings for current keyboard from bitmask
-	TInt keyboardLayout = 0;
-	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
-	TPtiKeyboardType layout = (TPtiKeyboardType)keyboardLayout;
+	TPtiKeyboardType layout = iSettingsData->OwnerKeyboardType();	
 	TInt autoTmp = autoWordCompl;
 	
 	// This part of code for error fixing:	    
@@ -272,9 +273,7 @@ void CAknFepPredictiveSettingDialog::SaveSettingsDataL() const
 	   	iAknFepRepository->Get(KAknFepPredTxtFlagExtension, predFlag);
 
 	   	// Parse keyboard dependent settings for current keyboard from bitmask
-	   	TInt keyboardLayout = 0;
-	   	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
-	   	TPtiKeyboardType layout = (TPtiKeyboardType)keyboardLayout;
+	   	TPtiKeyboardType layout = iSettingsData->OwnerKeyboardType();	   	
 	   	switch(layout)
 	   	    {
 	   	    case EPtiKeyboardNone:
@@ -343,9 +342,7 @@ void CAknFepPredictiveSettingDialog::SaveCurrentSettingsDataL() const
 	   		iAknFepRepository->Get(KAknFepPredTxtFlagExtension, predFlag);
 
 	   		// Parse keyboard dependent settings for current keyboard from bitmask
-	   		TInt keyboardLayout = 0;
-		   	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
-		   	TPtiKeyboardType layout = (TPtiKeyboardType)keyboardLayout;
+	   		TPtiKeyboardType layout = iSettingsData->OwnerKeyboardType();
 	   		switch(layout)
 	   	    	{
 		   	    case EPtiKeyboardNone:
@@ -439,9 +436,7 @@ void CAknFepPredictiveSettingDialog::LaunchPredictiveSettingOffQueryIfNecessaryL
    			{
    			iAknFepRepository->Get(KAknFepPredTxtFlagExtension,iPredictiveTextFlag);
    			}
-   		TInt keyboardLayout = 0;
-       	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
-       	TPtiKeyboardType layout = (TPtiKeyboardType)keyboardLayout;   		
+   		TPtiKeyboardType layout = iSettingsData->OwnerKeyboardType();
        	TBool QueryNeeded = EFalse;
 		if(iSettingsList->DeviceHasMultipleKeyboards())
 			{
@@ -644,11 +639,11 @@ void CAknFepPredictiveSettingDialog::HandleResourceChange(TInt aType)
         	}
    
    		// Adjust predictive flag after layout switch
-        TInt keyboardLayout = EPtiKeyboardNone;
-        RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+         TPtiKeyboardType keyboardLayout = iSettingsData->ActiveKeyboardType();
 	//settings page not to be retained on change of keyboard layout for Touch Input.
 #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
-        if (iOriginalKeyboardLayout != keyboardLayout)
+         
+        if ( iOriginalKeyboardLayout != keyboardLayout )
             {
             if(iSettingItemInEditingState)
             	{

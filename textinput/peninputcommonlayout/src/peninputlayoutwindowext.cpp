@@ -268,6 +268,9 @@ EXPORT_C void CPeninputLayoutWindowExt::HandleControlEvent( TInt aEventType,
         case EPeninputLayoutEventShift: 
             {
             HandleShiftAndCapslockBtnClicked();
+       		TInt shiftStatus = CPeninputDataConverter::AnyToInt
+		        ( iLayoutContext->RequestData( EPeninputDataTypeShiftDown ) );
+		    ChangeMergedButtonStatus( shiftStatus, 0 );
             }
             break;
         case EPeninputLayoutEventCapslock:

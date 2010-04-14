@@ -725,4 +725,5 @@ EXPORTS
 	_ZN21CTransparentHwrWndExt18EndStrokeAndClearLEv @ 724 NONAME
 	_ZN21CTransparentHwrWndExt8DrawLineERK6TPointS2_i @ 725 NONAME
 	_ZN21CTransparentHwrWndExt9DrawPointERK6TPointi @ 726 NONAME
+	_ZN16CVirtualKeyboard11SetStarIconEP18CPenInputColorIcon @ 727 NONAME
 

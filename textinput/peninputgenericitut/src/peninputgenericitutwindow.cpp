@@ -160,9 +160,12 @@ void CGenericItutWindow::CreateItutKeypadL()
     
     // read key shift icon res
     CPenInputColorIcon* shiftIcon = CPenInputColorIcon::NewL( R_ITUT_KEYPAD_SHIFT_ICON );
-    if ( IsPortraitWest())
+    if ( iDataMgr->IsPortraitWest())
         {
+    	CPenInputColorIcon* starIcon = CPenInputColorIcon::NewL( R_ITUT_KEYPAD_STAR_ICON );
         shiftIcon->ResizeL( iDataMgr->iShiftIconRectForPrtWest.Size());
+        starIcon->ResizeL( iDataMgr->iStarIconRectForPrtWest.Size());
+        iStandardItutKp->SetStarIcon( starIcon );
         }
     else
         {
@@ -371,19 +374,6 @@ void CGenericItutWindow::CreateBackGroundControlL()
 	iBackgroundCtrl->SetRect(TItutDataConverter::AnyToRect(
 					iLayoutOwner->DataMgr()->RequestData(ELayoutRect)));
 					    
-	TCommonBgCtrlSubItem bgSubItem;								
-	TRect spellPaneRect;
-	
-	spellPaneRect = TItutDataConverter::AnyToRect(
-						iDataMgr->RequestData(ESpellQueryPaneRect) );								
-
-	bgSubItem.iRect = spellPaneRect;
-	bgSubItem.iFrameID = KAknsIIDQsnFrPopupSub;
-	bgSubItem.iCenterID = KAknsIIDDefault;
-	bgSubItem.iIsShow = EFalse;
-	
-	iBackgroundCtrl->AddSubBgItemL( bgSubItem );
-								
 	AddControlL(iBackgroundCtrl);
 	}
 
@@ -847,31 +837,41 @@ void CGenericItutWindow::CreateChineseSpecificCtrlsIfNeededL()
         {
         return;
         }
-    // create switch
-    CreateButtonL(ECommonButton, ECtrlIdSwitch, ESwitchRect, 
-                  ESwitchInnerRect, R_FINGER_LAYOUT_SWITCH);
+
+    if( !Control( ECtrlIdSwitch ))
+        {
+        // create switch
+        CreateButtonL(ECommonButton, ECtrlIdSwitch, ESwitchRect, 
+                      ESwitchInnerRect, R_FINGER_LAYOUT_SWITCH);
+        }
+
+    if( !Control( ECtrlIdIndicator ) ) 
+        {
+        // create indicator button
+        CFepUiBaseCtrl* indicatorBtn = CreateButtonL(ECommonButton, 
+                ECtrlIdIndicator, KUnavailableID, 
+                KUnavailableID,KUnavailableID);
+
+        // create input case type menu
+        AddEditorMenuL();
+        }
     
-    // create indicator button
-    CFepUiBaseCtrl* indicatorBtn = CreateButtonL(ECommonButton, 
-            ECtrlIdIndicator, KUnavailableID, 
-            KUnavailableID,KUnavailableID);
-    
+    if( ! iInputModeSwitch )
+    	{
+		// create switch input mode menu
+		iInputModeSwitch = CPeninputLayoutInputmodelChoice::NewL(
+										 iLayoutOwner,
+										 ECtrlIdInputSwitch,
+										 EPluginInputModeItut );
+		iInputModeSwitch->SetListSkinID( KAknsIIDQsnFrList, KAknsIIDQsnFrPopupSub );
+		AddControlL( iInputModeSwitch );
+    	}
     // create spell indicator
     CAknFepCtrlLabel* spellIndicator = CAknFepCtrlLabel::NewL(iLayoutOwner, ECtrlIdSpellIndicator);
     AddControlL(spellIndicator);
     spellIndicator->Hide(ETrue);
     
-    // create input case type menu
-    AddEditorMenuL();
     
-    // create switch input mode menu
-    iInputModeSwitch = CPeninputLayoutInputmodelChoice::NewL(
-                                     iLayoutOwner,
-                                     ECtrlIdInputSwitch,
-                                     EPluginInputModeItut );
-    iInputModeSwitch->SetListSkinID( KAknsIIDQsnFrList, KAknsIIDQsnFrPopupSub );
-    AddControlL( iInputModeSwitch );
-
     CreateDropdownListL();
     // create spell control for stroke/zhuyin
     TRect rect = TItutDataConverter::AnyToRect(iDataMgr->RequestData(ESpellRect));
@@ -1336,33 +1336,32 @@ void CGenericItutWindow::UpdateIndicatorL(TUint8* aData)
         else
             {
             temp = Control(ECtrlIdIndicator); 
-            if ( !temp )
-                {
-                return;
-                }
             
             CFepUiBaseCtrl* indi = Control(ECtrlIdSpellIndicator);
-            if ( !indi )
-                {
-                return;
-                }
-            indi->Hide(ETrue);
-	    SetIndicatorImageL(temp, 
-	                           indicatorData.iIndicatorImgID,
-	                           indicatorData.iIndicatorMaskID,
-	                           indicatorData.iIndicatorTextImgID,
-	                           indicatorData.iIndicatorTextMaskID);
-	    if( temp->Hiden() )               
-	        {
-	        temp->Hide( EFalse );    
-	        }
-	    else
-	        {
-                temp->ClearRect( temp->Rect() );
-	        temp->Draw();
-	        temp->UpdateArea( temp->Rect() );
-            iLayoutOwner->RootControl()->ReDrawRect( temp->Rect() );
-	        }                   
+            if( indi )
+            	{
+				indi->Hide(ETrue);
+            	}
+            
+            if( temp )
+            	{
+				SetIndicatorImageL(temp, 
+								   indicatorData.iIndicatorImgID,
+								   indicatorData.iIndicatorMaskID,
+								   indicatorData.iIndicatorTextImgID,
+								   indicatorData.iIndicatorTextMaskID);
+				if( temp->Hiden() )               
+					{
+					temp->Hide( EFalse );    
+					}
+				else
+					{
+						temp->ClearRect( temp->Rect() );
+					temp->Draw();
+					temp->UpdateArea( temp->Rect() );
+					iLayoutOwner->RootControl()->ReDrawRect( temp->Rect() );
+					} 
+            	}
             }
         }
     }
@@ -1622,8 +1621,6 @@ TInt CGenericItutWindow::SizeChanged(TBool aIcfOverlap)
 
 	iBackgroundCtrl->SizeChanged( 
                          TItutDataConverter::AnyToRect(iDataMgr->RequestData( ELayoutRect ) ) );
-	iBackgroundCtrl->GetSubBgItem(0).iRect = TItutDataConverter::AnyToRect(
-											   iDataMgr->RequestData(ESpellQueryPaneRect) );								
 	
     TRAP_IGNORE(ApplyVariantLafDataL(ETrue); 
                 iLayoutOwner->HandleCommand(EItutExtCmdSizeChanged, NULL));
@@ -1735,7 +1732,7 @@ void CGenericItutWindow::ApplyVariantLafDataL(TBool aResolutionChange)
 
     iICF->Hide(EFalse);    
     
-    if ( IsPortraitWest() && (!iDataMgr->IsChineseSpellMode()))
+    if ( iDataMgr->IsPortraitWest() && (!iDataMgr->IsChineseSpellMode()))
         {
         iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
         iIndiWithText = EFalse;
@@ -1750,7 +1747,7 @@ void CGenericItutWindow::ApplyVariantLafDataL(TBool aResolutionChange)
     TBool bSizeChanged = EFalse;       
     ControlSizeChanged(ECtrlIdArrowLeft, EArrowLeftRect, ELeftInnerRect, ETrue);
     ControlSizeChanged(ECtrlIdArrowRight, EArrowRightRect, ERightInnerRect, ETrue);
-    if( iDataMgr->IsChinese())
+    if( iDataMgr->IsChinese() || iDataMgr->IsKorean() )
         {
         ControlSizeChanged(ECtrlIdSwitch, ESwitchRect, ESwitchInnerRect, ETrue);
         }
@@ -1859,9 +1856,11 @@ void CGenericItutWindow::OnSkinChange()
     
     // reconstruct shift icon when skin changed
     TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ReConstructL());
-    if ( IsPortraitWest())
+    TRAP_IGNORE(iStandardItutKp->StarIcon()->ReConstructL());
+    if ( iDataMgr->IsPortraitWest())
         {
         TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ResizeL(iDataMgr->iShiftIconRectForPrtWest.Size()));
+        TRAP_IGNORE(iStandardItutKp->StarIcon()->ResizeL(iDataMgr->iStarIconRectForPrtWest.Size()));
         }
     else
         {
@@ -2141,10 +2140,6 @@ void CGenericItutWindow::SetUnicodesForHardKey1L(CVirtualKey* aKey, const TDesC&
     unicodesInt.Close();
 
     }
-TBool CGenericItutWindow::IsPortraitWest()
-    {
-    return !iDataMgr->IsChinese() && !iDataMgr->IsLandScape();
-    }
 
 void CGenericItutWindow::IndiBubbleWithText()
     {
@@ -2202,5 +2197,34 @@ void CGenericItutWindow::MsgBubbleForChinese()
 void CGenericItutWindow::SetIndiWithTextFlag( TBool aFlag )
     {
     iIndiWithText = aFlag;
+    }
+void CGenericItutWindow::CreateKoreanSpecificCtrlsIfNeededL()
+    {
+	if( !Control(ECtrlIdIndicator) )
+		{
+	    CreateButtonL(ECommonButton, ECtrlIdIndicator, KUnavailableID, 
+					  KUnavailableID,KUnavailableID);
+        // create input case type menu
+	    AddEditorMenuL();
+		}
+	
+	if( !Control(ECtrlIdSwitch))
+		{
+		CreateButtonL(ECommonButton, ECtrlIdSwitch, ESwitchRect, 
+                    ESwitchInnerRect, R_FINGER_LAYOUT_SWITCH);
+	
+		}
+	
+	
+	if( !iInputModeSwitch )
+		{
+		// create switch input mode menu
+		iInputModeSwitch = CPeninputLayoutInputmodelChoice::NewL(
+										 iLayoutOwner,
+										 ECtrlIdInputSwitch,
+										 EPluginInputModeItut );
+		iInputModeSwitch->SetListSkinID( KAknsIIDQsnFrList, KAknsIIDQsnFrPopupSub );
+		AddControlL( iInputModeSwitch );
+		}
     }
 // End Of File

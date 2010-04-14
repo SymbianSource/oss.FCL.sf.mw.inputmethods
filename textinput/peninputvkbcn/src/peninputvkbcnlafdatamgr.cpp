@@ -1341,9 +1341,9 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
     TAknWindowLineLayout keypad, cellpane;
     
     // Modify begin
-    TAknWindowLineLayout cellPaneBK;
-    TAknLayoutRect cellPaneBKRect;
-    TRect keyBKRect;
+    //TAknWindowLineLayout cellPaneBK;
+    //TAknLayoutRect cellPaneBKRect;
+    //TRect keyBKRect;
     // Modify end
     
     TAknLayoutRect keypadRect, cellpaneRect;
@@ -1362,6 +1362,9 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
 	dataInfo->iQwtRect = wndRect.Rect();
 	// keypad
 	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(0).LayoutLine();
+	
+	keyText.iB -= 3;
+	
 	dataInfo->iKeypad.iTextLayout = keyText;
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
   	//dataInfo->iKeypad.iTxtRect = keyText.TextRect();
@@ -1371,7 +1374,7 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   	dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
   	
   	// Modify begin
-  	cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(0, 0, 0).LayoutLine();
+  	//cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(0, 0, 0).LayoutLine();
   	// Modify end
   	
   	//iKeypadRect10x3 = keypadRect.Rect();
@@ -1385,10 +1388,11 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   			keyRect.Move( -keypadRect.Rect().iTl.iX, -keypadRect.Rect().iTl.iY );
   			
   			// Modify begin
-            cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
-            keyBKRect = cellPaneBKRect.Rect();
-            dataInfo->iKeypad.iRects.AppendL( keyBKRect );
+            //cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
+            //keyBKRect = cellPaneBKRect.Rect();
+            //dataInfo->iKeypad.iRects.AppendL( keyBKRect );
             // Modify end
+            dataInfo->iKeypad.iRects.AppendL( keyRect );
   			
   			keyTextLayout.LayoutText(keyRect, keyText);
   			dataInfo->iKeypad.iCharRects.AppendL(keyTextLayout.TextRect());
@@ -1434,7 +1438,7 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
   	
   	// Modify begin
-  	cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(1, 0, 0).LayoutLine();
+  	//cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(1, 0, 0).LayoutLine();
   	// Modify end
   	
   	for( TInt i = 0; i < KKeypadLayoutCn[1][1]; i++)
@@ -1447,10 +1451,12 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   			keyRect.Move( -keypadRect.Rect().iTl.iX, -keypadRect.Rect().iTl.iY );
   			
   			// Modify begin
-  			cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
-  			keyBKRect = cellPaneBKRect.Rect();
-  			dataInfo->iKeypad.iRects.AppendL( keyBKRect );
+  			//cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
+  			//keyBKRect = cellPaneBKRect.Rect();
+  			//dataInfo->iKeypad.iRects.AppendL( keyBKRect );
   			// Modify end
+  			dataInfo->iKeypad.iRects.AppendL( keyRect );
+  			
   			keyTextLayout.LayoutText(keyRect, keyText);
   			dataInfo->iKeypad.iCharRects.AppendL(keyTextLayout.TextRect());
 			}
@@ -1479,14 +1485,14 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
 	dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
 
  	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(2).LayoutLine();
- 	// why, you asked? well, the reason is it's turned out this is the better one.
- 	keyText.iB += 3;
+
+ 	//keyText.iB += 3;
  	
   	dataInfo->iKeypad.iTextLayout = keyText; 	
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);  	
   	
   	// Modify begin
-  	cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(2, 0, 0).LayoutLine();
+  	//cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(2, 0, 0).LayoutLine();
   	// Modify end
   	
   	for( TInt i = 0; i < KKeypadLayoutCn[2][1]; i++)
@@ -1499,10 +1505,11 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   			keyRect.Move( -keypadRect.Rect().iTl.iX, -keypadRect.Rect().iTl.iY );
   			
   			// Modify begin
-  			cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
-  			keyBKRect = cellPaneBKRect.Rect();
-  			dataInfo->iKeypad.iRects.AppendL( keyBKRect );
-  			// Modify end            
+  			//cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
+  			//keyBKRect = cellPaneBKRect.Rect();
+  			//dataInfo->iKeypad.iRects.AppendL( keyBKRect );
+  			// Modify end
+  			dataInfo->iKeypad.iRects.AppendL( keyRect );
   			
   			keyTextLayout.LayoutText(keyRect, keyText);
   			dataInfo->iKeypad.iCharRects.AppendL(keyTextLayout.TextRect());
@@ -1527,6 +1534,9 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
 	dataInfo->iQwtRect = wndRect.Rect();
 	
 	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(0).LayoutLine();
+	
+	keyText.iB -= 3;
+	
 	dataInfo->iKeypad.iTextLayout = keyText;
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
 
@@ -1535,7 +1545,7 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
 	dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
   	
     // Modify begin
-    cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(0, 0, 0).LayoutLine();
+    //cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(0, 0, 0).LayoutLine();
     // Modify end
    
   	TInt keyHeight = keypadRect.Rect().Height()/3;  	
@@ -1550,10 +1560,11 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   			keyRect.Move( -keypadRect.Rect().iTl.iX, -keypadRect.Rect().iTl.iY + keyHeight*i);  			
   			
             // Modify begin
-            cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
-            keyBKRect = cellPaneBKRect.Rect();
-            dataInfo->iKeypad.iRects.AppendL( keyBKRect );
+            //cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
+            //keyBKRect = cellPaneBKRect.Rect();
+            //dataInfo->iKeypad.iRects.AppendL( keyBKRect );
             // Modify end
+            dataInfo->iKeypad.iRects.AppendL( keyRect );
   			
   			keyTextLayout.LayoutText(keyRect, keyText);
   			dataInfo->iKeypad.iCharRects.AppendL(keyTextLayout.TextRect());
@@ -1584,6 +1595,9 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
 	
 	// keypad
 	keyText = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_t1(0).LayoutLine();
+	
+	keyText.iB -= 3;
+	
 	dataInfo->iKeypad.iTextLayout = keyText;
   	dataInfo->iKeypad.iFont = AknLayoutUtils::FontFromId(keyText.iFont, NULL);
 
@@ -1592,7 +1606,7 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   	dataInfo->iKeypad.iKaypadRect = keypadRect.Rect();
 
     // Modify begin
-    cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(0, 0, 0).LayoutLine();
+    //cellPaneBK = AknLayoutScalable_Avkon::vkb2_cell_keypad_pane_g1(0, 0, 0).LayoutLine();
     // Modify end  	
   	
   	keyHeight = keypadRect.Rect().Height()/3;
@@ -1607,10 +1621,12 @@ void CPeninputCnLafDataFSQ::ReadLafInfoL()
   			keyRect.Move( -keypadRect.Rect().iTl.iX, -keypadRect.Rect().iTl.iY + keyHeight*i);  			
   			
             // Modify begin
-            cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
-            keyBKRect = cellPaneBKRect.Rect();
-            dataInfo->iKeypad.iRects.AppendL( keyBKRect );
+            //cellPaneBKRect.LayoutRect( keyRect, cellPaneBK );
+            //keyBKRect = cellPaneBKRect.Rect();
+            //dataInfo->iKeypad.iRects.AppendL( keyBKRect );
             // Modify end
+            dataInfo->iKeypad.iRects.AppendL( keyRect );
+            
   			keyTextLayout.LayoutText(keyRect, keyText);
   			dataInfo->iKeypad.iCharRects.AppendL(keyTextLayout.TextRect());
   			}

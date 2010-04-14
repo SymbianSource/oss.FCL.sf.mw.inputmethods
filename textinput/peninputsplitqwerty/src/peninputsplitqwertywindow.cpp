@@ -1794,7 +1794,6 @@ void CPeninputSplitQwertyWindow::HandleRangeListSelectedL( CFepUiBaseCtrl* /*aCt
     UpdateRangeCtrlsL();
     }
 
-//todo new rangelist
 // ---------------------------------------------------------------------------
 // Get resource ids of range button icon
 // ---------------------------------------------------------------------------
@@ -1848,7 +1847,6 @@ void CPeninputSplitQwertyWindow::GetRangeIconResource( TInt aLangId,
         }
     }
 
-//todo new rangelist
 // ---------------------------------------------------------------------------
 // Prepare range list items
 // ---------------------------------------------------------------------------

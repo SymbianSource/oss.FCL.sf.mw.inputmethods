@@ -84,7 +84,16 @@ CAknFepSharedDataInterface::~CAknFepSharedDataInterface()
         iKeyboardLayoutStatusSubscriber->StopSubscribe();
         }
     iKeyboardLayoutStatusProperty.Close();
-    delete iKeyboardLayoutStatusSubscriber;    
+    delete iKeyboardLayoutStatusSubscriber;
+    
+#ifdef RD_SCALABLE_UI_V2 
+    if ( iVirtualKeyboardLayoutStatusSubscriber )
+        {
+        iVirtualKeyboardLayoutStatusSubscriber->StopSubscribe();
+        }
+    delete iVirtualKeyboardLayoutStatusSubscriber;
+    iVirtualKeyboardLayoutStatusProperty.Close();
+#endif
 #endif
     iQwertyModeStatusProperty.Close();
     delete iQwertyModeStatusSubscriber;
@@ -418,9 +427,7 @@ TInt CAknFepSharedDataInterface::QwertyInputMode() //const
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 TInt CAknFepSharedDataInterface::KeyboardLayout() //const
     {
-    TInt value = 0;
-    iKeyboardLayoutStatusProperty.Get(value);
-    return value;
+	return ActiveKeyboardType();
     }
 
 #ifdef FF_DUAL_LANGUAGE_SUPPORT
@@ -492,6 +499,15 @@ void CAknFepSharedDataInterface::ConstructL()
                                          TCallBack(HandleKeyboardLayoutChangeNotification, this), 
                                          iKeyboardLayoutStatusProperty);    
     iKeyboardLayoutStatusSubscriber->SubscribeL();
+
+#ifdef RD_SCALABLE_UI_V2 
+    User::LeaveIfError( iVirtualKeyboardLayoutStatusProperty.Attach
+    		                                                ( KPSUidAknFep, KAknFepVirtualKeyboardType ) );    
+    iVirtualKeyboardLayoutStatusSubscriber = new (ELeave) CSubscriber(
+                                         TCallBack( HandleVirtualKeyboardLayoutChangeNotification, this ), 
+                                         iVirtualKeyboardLayoutStatusProperty );    
+    iVirtualKeyboardLayoutStatusSubscriber->SubscribeL();
+#endif // RD_SCALABLE_UI_V2    
 #endif
     iQwertyModeStatusSubscriber = new (ELeave) CSubscriber(
     								TCallBack(QwertyModeChangeNotification, this), 
@@ -728,7 +744,43 @@ TInt CAknFepSharedDataInterface::HandleGenericRepositoryChange(TAny* aPtr)
 
     return error;
     }
+
+TPtiKeyboardType CAknFepSharedDataInterface::ActiveKeyboardType() const
+    {    
+	TInt keyboardType = EPtiKeyboardNone;		   
+#ifdef RD_SCALABLE_UI_V2
+	// Get physical keyboard type
+	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );
+
+	// When active keyboard is virtual keyboard, 
+	// need to get the active virtual keyboard type 
+	// and set keyboardType again.
+	
+	// When the default physical keyboard is 0, 
+	// it means that there is no physical keyboard,
+	// also need to get the active virtual keyboard type.
+	TInt isVirtualInputActive = 0;
+	RProperty::Get( KPSUidAknFep, KAknFepTouchInputActive, 
+					isVirtualInputActive );    
+	if ( isVirtualInputActive > 0 || keyboardType == 0 )
+		{
+		// Active keyboard is virtual keyboard          
+		RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, 
+						keyboardType );      
+		}
+#else if
+	// Get physical keyboard type
+	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );	    
 #endif
+
+	if ( keyboardType <= 0 || keyboardType >= EPtiKeyboardMaxLayout )
+		{
+	    keyboardType = EPtiKeyboardNone;
+		}        
+	return (TPtiKeyboardType)keyboardType;
+    }
+#endif // RD_INTELLIGENT_TEXT_INPUT
+
 TInt CAknFepSharedDataInterface::HandleRepositoryCallBack(TAny* aPtr)
     {
     CAknFepSharedDataInterface *self = STATIC_CAST(CAknFepSharedDataInterface*, aPtr);
@@ -1153,6 +1205,22 @@ TInt CAknFepSharedDataInterface::HandleKeyboardLayoutChangeNotification(TAny* aO
         return KErrArgument;
         }
     }
+
+#ifdef RD_SCALABLE_UI_V2
+TInt CAknFepSharedDataInterface::HandleVirtualKeyboardLayoutChangeNotification(TAny* aObj)
+	{
+    if (aObj)
+        {
+        static_cast<CAknFepSharedDataInterface*>(aObj)->HandleVirtualKeyboardLayoutChange();
+        return KErrNone;
+        }
+    else
+        {
+        return KErrArgument;
+        }	
+	}
+#endif // RD_SCALABLE_UI_V2
+
 #endif
     
     
@@ -1278,6 +1346,24 @@ void CAknFepSharedDataInterface::HandleKeyboardLayoutChange()
     iFepManager->StopDisplayingMenuBar();
 #endif //__ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
     }
+
+#ifdef RD_SCALABLE_UI_V2
+// ---------------------------------------------------------------------------
+// Handles the change to virtual keyboard layout.
+// 
+// ---------------------------------------------------------------------------
+//
+void CAknFepSharedDataInterface::HandleVirtualKeyboardLayoutChange()
+	{
+	TInt value = 0;
+    TPtiKeyboardType keyboardType;
+    iVirtualKeyboardLayoutStatusProperty.Get(value);
+    keyboardType = (TPtiKeyboardType)value;
+    iFepManager->SetKeyboardLayout(keyboardType);
+    iFepManager->SetFnKeyMappingState();
+	}
+#endif // RD_SCALABLE_UI_V2
+
 TInt CAknFepSharedDataInterface::PredictiveTextAutoCompleteOn()
     {
     TInt value = 0;

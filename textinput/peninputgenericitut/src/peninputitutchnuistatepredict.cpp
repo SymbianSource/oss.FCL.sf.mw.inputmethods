@@ -120,15 +120,6 @@ void CChnItutUiStatePredict::OnEntryL()
         MItutPropertySubscriber::EItutPropertyCandidateListResourceId,
         R_AKN_FEP_NORMAL_CAND_DROP_DOWN_LIST);
         
-        
-    //hide navi button
-    iOwner->LayoutContext()->ShowArrowBtn(0);
-    
-    //hide indicator 
-    iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(ETrue);     
-    // Show ICF, Backspace after position changed to avoid flick
-    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
-    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( EFalse );
     }
 
 void CChnItutUiStatePredict::OnExit()
@@ -317,42 +308,49 @@ TBool CChnItutUiStatePredict::HandleCtrlEventL(TInt aEventType,
         	break;
         case EEventRawKeyDownEvent:
         	{
-        	TInt immode = iOwner->DataMgr()->InputMode();
- 			const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            if ( ( immode == EPinyin && 
-                 ( key->iScanCode == EPtiKey0 || key->iScanCode == EPtiKey1 || key->iScanCode == EPtiKeyStar ) ) ||
-                 ( immode == EStroke && 
-                 ( key->iScanCode == EPtiKeyStar || key->iScanCode == EPtiKey0 || (key->iScanCode >= EPtiKey7 && key->iScanCode <= EPtiKey9 ))) ||
-                 ( immode == EZhuyin && key->iScanCode == EPtiKeyStar) ||
-                 ( key->iScanCode == EStdKeyBackspace))
-                {                
-				// For those special keys, simulate down key immedidately.
-                // to ensure to simulate down key event before up key event
-                iOwner->UiManager()->SimulateImmeRawEvent( key->iScanCode, TRawEvent::EKeyDown );
-                iOwner->UiManager()->SetLastRawKeyDown( key->iScanCode, ETrue, aCtrl );               			
-				return ETrue;                               
-                }        	
+
+        	if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+        		{
+				TInt immode = iOwner->DataMgr()->InputMode();
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				if ( ( immode == EPinyin && 
+					 ( key->iScanCode == EPtiKey0 || key->iScanCode == EPtiKey1 || key->iScanCode == EPtiKeyStar ) ) ||
+					 ( immode == EStroke && 
+					 ( key->iScanCode == EPtiKeyStar || key->iScanCode == EPtiKey0 || (key->iScanCode >= EPtiKey7 && key->iScanCode <= EPtiKey9 ))) ||
+					 ( immode == EZhuyin && key->iScanCode == EPtiKeyStar) ||
+					 ( key->iScanCode == EStdKeyBackspace))
+					{                
+					// For those special keys, simulate down key immedidately.
+					// to ensure to simulate down key event before up key event
+					iOwner->UiManager()->SimulateImmeRawEvent( key->iScanCode, TRawEvent::EKeyDown );
+					iOwner->UiManager()->SetLastRawKeyDown( key->iScanCode, ETrue, aCtrl );               			
+					return ETrue;                               
+					}   
+        		}
         	}
         	break;
         case EEventRawKeyUpEvent:
         	{
-        	TInt immode = iOwner->DataMgr()->InputMode();
- 			const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
-            if ( ( immode == EPinyin && 
-                 ( key->iScanCode == EPtiKey0 || key->iScanCode == EPtiKey1 || key->iScanCode == EPtiKeyStar ) ) ||
-                 ( immode == EStroke && 
-                 ( key->iScanCode == EPtiKeyStar || key->iScanCode == EPtiKey0 || (key->iScanCode >= EPtiKey7 && key->iScanCode <= EPtiKey9 ))) ||
-                 ( immode == EZhuyin && key->iScanCode == EPtiKeyStar) ||
-                 ( key->iScanCode == EStdKeyBackspace))
-                {
-				// For those special keys, simulate up key events immediately before changing state.
-                // The action can avoid up key event being delayed by running changing state,
-				// otherwise, short press will be thought as long press by window server.
-				iOwner->UiManager()->SimulateImmeRawEvent( key->iScanCode, TRawEvent::EKeyUp );
-				iOwner->UiManager()->SetLastRawKeyDown( key->iScanCode, EFalse, aCtrl );                
-				iOwner->SetCurrentStateL( CGenericItutUiMgrBase::EStateStandby );
-				return ETrue;                          
-                }
+        	if ( iOwner->UiManager()->IsAllowHandleRawKeyEvent())
+        		{
+				TInt immode = iOwner->DataMgr()->InputMode();
+				const TKeyEvent *key = reinterpret_cast<const TKeyEvent*>(aEventData.Ptr());
+				if ( ( immode == EPinyin && 
+					 ( key->iScanCode == EPtiKey0 || key->iScanCode == EPtiKey1 || key->iScanCode == EPtiKeyStar ) ) ||
+					 ( immode == EStroke && 
+					 ( key->iScanCode == EPtiKeyStar || key->iScanCode == EPtiKey0 || (key->iScanCode >= EPtiKey7 && key->iScanCode <= EPtiKey9 ))) ||
+					 ( immode == EZhuyin && key->iScanCode == EPtiKeyStar) ||
+					 ( key->iScanCode == EStdKeyBackspace))
+					{
+					// For those special keys, simulate up key events immediately before changing state.
+					// The action can avoid up key event being delayed by running changing state,
+					// otherwise, short press will be thought as long press by window server.
+					iOwner->UiManager()->SimulateImmeRawEvent( key->iScanCode, TRawEvent::EKeyUp );
+					iOwner->UiManager()->SetLastRawKeyDown( key->iScanCode, EFalse, aCtrl );                
+					iOwner->SetCurrentStateL( CGenericItutUiMgrBase::EStateStandby );
+					return ETrue;                          
+					}
+        		}
         	}
         	break;
         default:

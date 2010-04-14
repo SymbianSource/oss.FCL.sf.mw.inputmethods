@@ -105,13 +105,6 @@ void CWesternItutUiStateSpelling::OnEntryL()
         }
     //hide bubble in the first place.
     iICF->HideBubble();
-    // Show background of the spell popup window
-    CAknFepCtrlCommonBgCtrl* bgCtrl = static_cast<CAknFepCtrlCommonBgCtrl*>
-                                      (iOwner->LayoutContext()->Control(ECtrlIdBackground) );
-    if(bgCtrl)
-		{
-		bgCtrl->ShowSubBgItem( 0, ETrue );	
-		}
 
     // update resource id of keypad
     iOwner->DataMgr()->NotifyChangeControlLayout(
@@ -197,13 +190,7 @@ void CWesternItutUiStateSpelling::OnExit()
     iCancel->Hide(ETrue);
     iOwner->DataMgr()->SetSpellMode(EFalse);
     iICF->SetLineSeparatorAfterPrompt(EFalse);
-    // Hide background of the spell popup window
-    CAknFepCtrlCommonBgCtrl* bgCtrl = static_cast<CAknFepCtrlCommonBgCtrl*>
-                                      (iOwner->LayoutContext()->Control(ECtrlIdBackground) );
-    if(bgCtrl)
-		{
-		bgCtrl->ShowSubBgItem( 0, EFalse );	
-		}    
+
     iOwner->DataMgr()->SetChineseSpellFlag( EFalse );
     }
 
@@ -288,13 +275,16 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
         }
     TRect rect = TItutDataConverter::AnyToRect(iOwner->DataMgr()->RequestData(ESpellICFRect) );
     
-    //rect.iTl.iY -= 50;
-    iICF->SetTextMargin ( 2,
-    					  2,
-    					  2,
-    					  2);
+
+    iICF->SetTextMargin ( 
+    		iOwner->DataMgr()->iSpellIcfTextLeftMarginForPrtWest,
+    		iOwner->DataMgr()->iSpellIcfTextRightMarginForPrtWest,
+    		iOwner->DataMgr()->iSpellIcfTextTopMarginForPrtWest,
+    		iOwner->DataMgr()->iSpellIcfTextBottomMarginForPrtWest );
  
-    iICF->SetLineSpace( 1 );
+    iICF->SetLineSpace( iOwner->DataMgr()->iSpellIcfTextLineSpaceMarginForPrtWest );
+
+    
     if ( iOwner->DataMgr()->IsPortraitWest() && 
             (!iOwner->DataMgr()->IsChineseSpellMode()))
         {

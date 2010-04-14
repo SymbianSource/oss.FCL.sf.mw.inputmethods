@@ -149,11 +149,9 @@ void CSplitItutDataMgr::ConstructL()
 void CSplitItutDataMgr::ReadLafInfo()
     {
     // Screen
-    TRect rect, rectcn;
-    AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EScreen, rect);
+    TRect rect;
+	rect = AknLayoutScalable_Avkon::application_window(0).LayoutLine().Rect();
     iScreenSize = rect.Size();
-
-    AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EApplicationWindow, rect);
 
     // finger Layout
     TAknWindowLineLayout splitwnd, splitpane;
@@ -212,17 +210,30 @@ void CSplitItutDataMgr::ReadLafInfo()
                 TAknLayoutRect shiftIconRect;
                 shiftIconRect.LayoutRect( keyrect, shiftIcon );                
                 iShiftIconRect = shiftIconRect.Rect();          
-                }    
+                }
+            
+            // read star icon rect
+            if( i == 3 &&  j == 2 )
+                {
+                TAknWindowLineLayout starIcon =  AknLayoutScalable_Avkon::
+                                cell_ituss_key_pane_g2( 0 ).LayoutLine();
+                TAknLayoutRect starIconRect;
+                starIconRect.LayoutRect( keyrect, starIcon );                
+                iStarIconRect = starIconRect.Rect();          
+                }            
+            
             }
         } 
      
 
-    iVkNumText = AknLayoutScalable_Avkon::cell_ituss_key_t1(0).LayoutLine(); 
+    iVkBigNumTextForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t1(4).LayoutLine(); 
+    
+    iVkNumText = AknLayoutScalable_Avkon::cell_ituss_key_t1(1).LayoutLine(); 
     // Key text row 1                               
-    iVkAlphaText1 = AknLayoutScalable_Avkon::cell_ituss_key_t2(0).LayoutLine();
-    iVkAlphaText3 = AknLayoutScalable_Avkon::cell_ituss_key_t4(0).LayoutLine();                                                              
+    iVkAlphaText1 = AknLayoutScalable_Avkon::cell_ituss_key_t2(1).LayoutLine();
+    iVkAlphaText3 = AknLayoutScalable_Avkon::cell_ituss_key_t4(1).LayoutLine();                                                              
     // Key text row 2                               
-    iVkAlphaText2 = AknLayoutScalable_Avkon::cell_ituss_key_t3(0).LayoutLine();
+    iVkAlphaText2 = AknLayoutScalable_Avkon::cell_ituss_key_t3(1).LayoutLine();
     
     // close button
     TAknWindowLineLayout funcbtn, funcbtnbg, funcbtninner;
@@ -294,32 +305,17 @@ void CSplitItutDataMgr::ReadLafInfo()
     iBubbleFont = const_cast<CFont*>(previewWndText.Font());
     
     // for spell window
-    // OK and Cancel button
-    TAknWindowLineLayout spellwnd, softkeypane, okkeypane, cancelkeypane  ;
-    TAknLayoutRect spellwndtrect, softkeypanerect, okkeyRect, cancelkeyRect  ;
+    TAknWindowLineLayout spellwnd;
+    TAknLayoutRect spellwndtrect;
 
     spellwnd = AknLayoutScalable_Avkon::popup_fep_ituss_window(1).LayoutLine();
     spellwndtrect.LayoutRect(rect, spellwnd);    
     
-    softkeypane = AknLayoutScalable_Avkon::ituss_sks_pane().LayoutLine();
-    softkeypanerect.LayoutRect(spellwndtrect.Rect(), softkeypane);
-    
-    okkeypane = AknLayoutScalable_Avkon::ituss_sks_pane_g1().LayoutLine();
-    okkeyRect.LayoutRect(softkeypanerect.Rect(), okkeypane);
-    iOkRect = okkeyRect.Rect();
-    
-    iSpellBtnTextFormat = AknLayoutScalable_Avkon::ituss_sks_pane_t1().LayoutLine();
-    iSpellBtnTextFormat.ir = 7;
-    
-    cancelkeypane = AknLayoutScalable_Avkon::ituss_sks_pane_g2().LayoutLine();
-    cancelkeyRect.LayoutRect(softkeypanerect.Rect(), cancelkeypane);
-    iCancelRect = cancelkeyRect.Rect();
-    
     // icf in spell mode
-    TAknWindowLineLayout icfpane, querypane, focuspane, backkeyInnerpane, backkeypane,
-                         middleInnerBtn;
-    TAknLayoutRect icfpaneRect, querypaneRect, focuspaneRect, backInnerRect, backkeyRect,
-                   middleButton, middleInnerRect;
+    TAknWindowLineLayout icfpane, querypane, focuspane, 
+		bottomInnerBtn, middleInnerBtn, middleBtn;
+    TAknLayoutRect icfpaneRect, querypaneRect, focuspaneRect, 
+		bottomButton, bottomInnerRect, middleBtnRect, okBtnRect, cancelBtnRect;
     
     icfpane = AknLayoutScalable_Avkon::popup_fep_vtchi_icf_pane(1).LayoutLine();
     icfpaneRect.LayoutRect(rect, icfpane);
@@ -331,54 +327,73 @@ void CSplitItutDataMgr::ReadLafInfo()
     focuspaneRect.LayoutRect(querypaneRect.Rect(), focuspane);
     iSpellICFRect = focuspaneRect.Rect();
     
+    // Middle pane
 	TRect middleButtonPaneRect = spellwndtrect.Rect();
-	middleButtonPaneRect.Move( 5, 3 );
+	middleButtonPaneRect.Move( 5, 2 );
 	
+	middleBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane(3).LayoutLine();
+	middleBtnRect.LayoutRect( splitpanerect.Rect(), middleBtn );
+	middleInnerBtn = AknLayoutScalable_Avkon::bg_cell_ituss_key_g1(5).LayoutLine();
+	
+	TRect cellMiddleRect;
+	cellMiddleRect.iTl = middleButtonPaneRect.iTl;
+	cellMiddleRect.SetHeight( middleBtnRect.Rect().Height());
+	cellMiddleRect.SetWidth( middleBtnRect.Rect().Width());
+	
+	// OK button
+	okBtnRect.LayoutRect( cellMiddleRect, middleInnerBtn );
+    iOkRect = okBtnRect.Rect();
+    
+    // Cancel button
+	cellMiddleRect.Move( middleBtnRect.Rect().Width(), 0 );
+	
+	cancelBtnRect.LayoutRect( cellMiddleRect, middleInnerBtn );
+	iCancelRect = cancelBtnRect.Rect();
+	
+    iSpellBtnTextFormat = AknLayoutScalable_Avkon::ituss_sks_pane_t1().LayoutLine();
+    iSpellBtnTextFormat.ir = 7;
+    
+    // Bottom pane
 	TRect cellSpellRect;
-	cellSpellRect.iTl = middleButtonPaneRect.iTl;
+	cellSpellRect.iTl.iX = middleButtonPaneRect.iTl.iX;
+	cellSpellRect.iTl.iY = middleButtonPaneRect.iTl.iY + 
+			itucellrect.Rect().Height() * 5 + 10;
 	cellSpellRect.SetHeight( itucellrect.Rect().Height());
 	cellSpellRect.SetWidth( itucellrect.Rect().Width());
 
 	// Left
-	middleButton.LayoutRect( cellSpellRect, ituinnercell );
-	iSpellArrowLeftRect = middleButton.Rect();
+	bottomButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowLeftRect = bottomButton.Rect();
 	
-	middleInnerBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane_g1(2).LayoutLine();
-	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
-	iSpellArrowLeftRectInner = middleInnerRect.Rect();
+	bottomInnerBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane_g1(2).LayoutLine();
+	bottomInnerRect.LayoutRect( bottomButton.Rect(), bottomInnerBtn );
+	iSpellArrowLeftRectInner = bottomInnerRect.Rect();
 	
 	// Right
 	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
-	middleButton.LayoutRect( cellSpellRect, ituinnercell );
-	iSpellArrowRightRect = middleButton.Rect();
+	bottomButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellArrowRightRect = bottomButton.Rect();
 	
-	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
-	iSpellArrowRightRectInner = middleInnerRect.Rect();
+	bottomInnerRect.LayoutRect( bottomButton.Rect(), bottomInnerBtn );
+	iSpellArrowRightRectInner = bottomInnerRect.Rect();
 
-    
-    // backspace in spell mode
-	
+    // backspace in spell mode	
 	cellSpellRect.Move( itucellrect.Rect().Width(), 0 );
-	middleButton.LayoutRect( cellSpellRect, ituinnercell );
-	iSpellBackSpcace = middleButton.Rect();
+	bottomButton.LayoutRect( cellSpellRect, ituinnercell );
+	iSpellBackSpcace = bottomButton.Rect();
 	
-	middleInnerRect.LayoutRect( middleButton.Rect(), middleInnerBtn );
-	iSpellBackSpcaceInner = middleInnerRect.Rect();
-
-
+	bottomInnerRect.LayoutRect( bottomButton.Rect(), bottomInnerBtn );
+	iSpellBackSpcaceInner = bottomInnerRect.Rect();
     
 	// icf indicator
 	TAknWindowLineLayout icfIndiPaneWithoutText, indiIcon, indiText;
 	TAknLayoutRect icfIndiPaneRectWithoutText, indiIconRect, indiTextRect;
 	TAknTextLineLayout indiTextLayout;
 	
-
-	
 	icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
 	icfIndiPaneRectWithoutText.LayoutRect(icfpaneRect.Rect(), icfIndiPaneWithoutText);
 	iIndiPaneRectWithoutTextForPrtWest = icfIndiPaneRectWithoutText.Rect();
 	
-
 	iIndiIconRectWithoutTextForPrtWest = TRect( 0, 0, 60, 20 );
 	
 	indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
@@ -581,7 +596,14 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
             return &iKeypadCellRects;
        // 	return IsChinese() ? &iKeypadCellRectsCn : &iKeypadCellRects;	
         case EKeypadLeftTextLine:
-            return &iVkNumText;
+        	if ( iInputMode == ENumber || iInputMode == ENativeNumber )
+				{
+				return &iVkBigNumTextForPrtWest;
+				}
+        	else
+        		{
+				return &iVkNumText;
+        		}
         case EKeypadRightTextLine1:
             return &iVkAlphaText1;
         case EKeypadRightTextLine2:

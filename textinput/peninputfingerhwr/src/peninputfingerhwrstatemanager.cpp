@@ -1154,23 +1154,8 @@ void CPeninputFingerHwrChineseStatePredictSelecting::OnSelectedPredictivesL(
 // 
 void CPeninputFingerHwrChineseStatePredictSelecting::OnClickBackSpaceL()
     {
-    iDataStore.TriggerStr()->DeleteLast();
-    if (iDataStore.TriggerStr()->IsEmpty())
-        {
-        iDataStore.SetChineseSymbolL();
-        iDataStore.SetFixChinesePredictiveL();
-        iStateManager.SetState( CPeninputFingerHwrStateManagerCn::
-                EPeninputFingerHwrStatePredictSelectingCn );
-        }
-    else
-        {
-        iDataStore.DoPredictiveL();
-        if( iDataStore.PredictiveCount() <= 0 )
-                {
-                iDataStore.TriggerStr()->DeleteAll();
-                iDataStore.SetFixChinesePredictiveL();     
-                }
-        }
+    iDataStore.TriggerStr()->DeleteAll();
+    iStateManager.SetState(CPeninputFingerHwrStateManagerCn::EPeninputFingerHwrStateStandbyCn);
     }
 
    

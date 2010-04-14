@@ -22,7 +22,6 @@
 ECOM_PLUGIN(PeninputPluginKr.dll,E95A395D.rsc)
 data=DATAZ_\FEP_RESOURCES_DIR\PeninputPluginKrRes.r01 FEP_RESOURCES_DIR\PeninputPluginKrRes.r01
 data=DATAZ_\FEP_RESOURCES_DIR\PeninputPluginKrRes.r65 FEP_RESOURCES_DIR\PeninputPluginKrRes.r65
-data=ZSYSTEM\install\PeninputPluginKr_stub.sis    System\Install\PeninputPluginKr_stub.sis
 
 #endif // defined(__VIRTUAL_KEYBOARD_INPUT) || defined(FF_VIRTUAL_FULLSCR_QWERTY_INPUT)
 #endif // __PENINPUTPLUGINKR_IBY__

@@ -23,11 +23,11 @@
 #include "penuiwndctrl.h"
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS
 #include <gfxtranseffect/gfxtranseffect.h>
-#include <AknTransitionUtils.h>
+#include <akntransitionutils.h>
 #include <akntranseffect.h>
 
 #include <e32property.h>
-#include <AvkonDomainPSKeys.h>
+#include <avkondomainpskeys.h>
 #endif
 
 

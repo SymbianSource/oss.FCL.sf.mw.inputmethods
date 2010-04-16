@@ -365,11 +365,6 @@ MAknFepManagerInterface* CAknFepLanguageManager::GetPluginInputFepUiL(
         iCurUiPlugIn = NULL;
         }
     CleanupStack::PopAndDestroy(&implList);    
-    
-    if ( iCurUiPlugIn )
-    	{
-    	aPenServer->SetInputLanguage( language );
-    	}
     return iCurUiPlugIn;
     }
 

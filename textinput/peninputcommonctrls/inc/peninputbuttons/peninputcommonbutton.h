@@ -179,7 +179,7 @@ public:
      * @since S60 v3.2
      * @return None
      */
-    EXPORT_C void CancelPointerDownL();
+    IMPORT_C void CancelPointerDownL();
     
 	/**
      * Set text line layout

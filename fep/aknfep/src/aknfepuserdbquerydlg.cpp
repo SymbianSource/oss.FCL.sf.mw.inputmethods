@@ -80,7 +80,11 @@ TBool CAknFepUserDBQueryDlg::OkToExitL( TInt aButtonId )
 
         iItemText = editor->GetTextInHBufL();
         TBuf<KTextMaxLength> textbuf;
-        textbuf.Copy( iItemText->Des() );
+        
+        if( iItemText != NULL )
+            {
+            textbuf.Copy( iItemText->Des() );
+            }
         
         if( !iDBEngine->InputPhraseCheck( textbuf ) )
             {

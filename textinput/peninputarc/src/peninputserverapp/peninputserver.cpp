@@ -1100,18 +1100,6 @@ TInt CPeninputServer::HandleMessageL(const RMessage2& aMessage)
             aMessage.WriteL(0,msg);
     	    }
     	    break;            
-            
-    	case EPeninputRequestSetInputLanguage:
-    		{
-			TPckg<TInt> msg(iInputLanguage);
-			aMessage.ReadL(0,msg); 
-			if(iUiLayout)
-				{
-				iUiLayout->HandleCommand(ECmdPenInputLanguage,
-						                 (unsigned char*)&iInputLanguage);  
-				}
-    	    }
-    	    break;            
         default: //Let user pluging handling the user command
             break;
         }
@@ -2112,7 +2100,16 @@ TInt CPeninputServer::SetDisabledLayouts( TInt aDisabledLayouts )
     {
     // No spcified logic now, so just store the disabled layout in the CFepUiLayoutBase class.
     TInt allowedPlugin = EPluginInputModeNone;// EPluginInputModeHwr | EPluginInputModeVkb | EPluginInputModeItut | EPluginInputModeFSc;
-    TInt curLanguage = iInputLanguage;
+    
+    CRepository* repository = NULL;
+    TRAPD(ret, repository = CRepository::NewL(KCRUidAknFep));
+    if (ret != KErrNone)
+        {
+        return EPluginInputModeAll;
+        }
+    TInt curLanguage ;
+    repository->Get(KAknFepInputTxtLang, curLanguage);
+    delete repository;
     
     if (curLanguage == 401) curLanguage = 102;
     if (curLanguage == 402) curLanguage = 103;
@@ -2686,7 +2683,16 @@ TInt CPeninputServer::DisabledByOrientation()
 
 TInt CPeninputServer::GetSupportModeL()
     {
-    TInt curLanguage = iInputLanguage;
+    CRepository* repository = NULL;
+    TRAPD(ret, repository = CRepository::NewL(KCRUidAknFep));
+    if (ret != KErrNone)
+        {
+        return ret;
+        }
+    TInt curLanguage ;
+    repository->Get(KAknFepInputTxtLang, curLanguage);
+    delete repository;
+    repository = NULL;
     
     if (curLanguage == 401) curLanguage = 102;
     if (curLanguage == 402) curLanguage = 103;    	    

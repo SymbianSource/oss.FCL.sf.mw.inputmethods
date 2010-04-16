@@ -156,7 +156,7 @@ protected:
      * @param aFontSpec The specification of font
      * @return None
      */ 
-    CPeninputVkbCtrlExt( const TRect& aRect, 
+    IMPORT_C CPeninputVkbCtrlExt( const TRect& aRect, 
                                   CFepUiLayout* aUiLayout,
                                   TInt aControlId,
                                   const TFontSpec& aFontSpec,

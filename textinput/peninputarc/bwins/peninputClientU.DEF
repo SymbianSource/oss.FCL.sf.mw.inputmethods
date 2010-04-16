@@ -60,6 +60,4 @@ EXPORTS
 	?SetInternalPopUp@RPeninputServer@@QAEXH@Z @ 59 NONAME ; void RPeninputServer::SetInternalPopUp(int)
 	?SetResourceChange@RPeninputServer@@QAEXH@Z @ 60 NONAME ; void RPeninputServer::SetResourceChange(int)
 	?SupportInputMode@RPeninputServer@@QAEHXZ @ 61 NONAME ; int RPeninputServer::SupportInputMode(void)
-	?SetInputLanguage@RPeninputServer@@QAEHH@Z @ 62 NONAME ; int RPeninputServer::SetInputLanguage(int)
-	?ConnectAsyc@RPeninputServer@@QAEHAAVTRequestStatus@@@Z @ 63 NONAME ; int RPeninputServer::ConnectAsyc(class TRequestStatus &)
 

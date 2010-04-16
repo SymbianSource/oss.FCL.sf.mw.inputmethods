@@ -510,7 +510,11 @@ void CGSPenInputContainer::MakeInputModeL()
         }    
 
     // Finally, set the dynamic text
-    iListboxItemArray->SetDynamicTextL(EGSDefaultChineseOnscreenKeyboard, ptrBuffer);
+    
+    if( iListboxItemArray != NULL )
+        {
+        iListboxItemArray->SetDynamicTextL(EGSDefaultChineseOnscreenKeyboard, ptrBuffer);
+        }
     CleanupStack::PopAndDestroy(dynamicText);
 
     // And add to listbox
@@ -750,8 +754,11 @@ void CGSPenInputContainer::MakeChineseFindMethodItemL()
         HBufC* dynamicText = HBufC::NewLC(KGSBufSize);
         TPtr ptrBuffer(dynamicText->Des());
         const TInt chineseFindMethod = iModel->ChineseFindMethod();
-
-        ptrBuffer = (*iChineseFindMethodItems)[chineseFindMethod];
+        
+        if( iChineseFindMethodItems != NULL )
+            {
+            ptrBuffer = (*iChineseFindMethodItems)[chineseFindMethod];
+            }
 
         if (!ptrBuffer.Length() && iChineseFindMethodItems->Count() > 0)
             {

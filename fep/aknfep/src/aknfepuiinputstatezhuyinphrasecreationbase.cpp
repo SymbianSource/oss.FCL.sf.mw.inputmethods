@@ -145,11 +145,7 @@ TBool TAknFepInputStateZhuyinPhraseCreationBase::AddKeystrokeL( TInt aKey )
             }
         }
     
-    if ( ( 0 == currentIndex ) && 
-        ( KMaxInputLength <= showbufLen ) )
-        {
-        return EFalse;
-        }
+
     else if ( ( 0 != currentIndex ) &&
         ( KMaxInputLength <= showbufLen ) )
         {

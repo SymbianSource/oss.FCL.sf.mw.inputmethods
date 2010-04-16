@@ -964,8 +964,6 @@ private:    // Data
     CPenInputCrpServiceClient* iCrpService;
     //TBool iUiLayoutChange;
     CRepository* iSensorRepository;
-    
-    TInt iInputLanguage;
     };
 
 /**

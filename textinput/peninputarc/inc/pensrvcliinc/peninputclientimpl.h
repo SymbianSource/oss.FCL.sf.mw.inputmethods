@@ -64,8 +64,6 @@ NONSHARABLE_CLASS(TUiNotificationHandler)
         TInt iType;
     };
     
-
-class CWaitingServerAo;
 /**
  * Client side interface to PeninputSingletonServer.
  *
@@ -77,7 +75,7 @@ NONSHARABLE_CLASS(RPeninputServerImpl) : public RSessionBase
     {
 public:
 
-    static RPeninputServerImpl* NewL(TRequestStatus* aStatus = NULL);
+    static RPeninputServerImpl* NewL();
     // Constructors and destructor
 
   
@@ -159,15 +157,6 @@ public:
      */
     TInt SupportInputMode();
 
-    /**
-     * Set input language Id
-     *
-     * @since S60 v4.0
-     * @param aLanguage The input language Id
-     * @return The operation result code.KErrNone if successfully.
-     */    
-    TInt SetInputLanguage( TInt aLanguage );
-    
     /**
      * Set UI layout id. It will create the UI by the Id
      *
@@ -472,6 +461,24 @@ public:
     void ClearTouchUI();
     void SetResourceChange(TBool aFlag);
     
+private:
+        /**
+     * Constructor
+     * 
+     * @since S60 v4.0
+     */
+    RPeninputServerImpl();
+    
+    void ConstructL(const TUid& aUid);
+    
+    TInt DoConnectL();
+
+    void GetUiLayoutPosAndSize();
+    
+    void DimUiLayoutL(TBool aFlag);
+    
+private:    // New functions
+
     /**
      * Starts the server thread
      *
@@ -481,32 +488,6 @@ public:
      * otherwise one of the system wide error codes
      */
     TInt StartThreadL();
-    
-    //TInt ConnectAsync(TRequestStatus& status);
-    TInt StartThreadAsyncL();
-    void AddObserver();
-    TBool ServerReady();
-    void OnServerStarted(TInt);
-    
-private:
-        /**
-     * Constructor
-     * 
-     * @since S60 v4.0
-     */
-    RPeninputServerImpl();
-    
-    void ConstructL(const TUid& aUid,TRequestStatus* aStatus);
-    
-    TInt DoConnectL();
-    TInt DoConnectL(TRequestStatus* aStatus);
-
-    void GetUiLayoutPosAndSize();
-    
-    void DimUiLayoutL(TBool aFlag);
-    
-private:    // New functions
-
 
     void ReadIntArrayFromBufL(const TDesC8& aBuf, RArray<TInt>& aResult);
 
@@ -556,47 +537,7 @@ private:    // Data
     TBool iInternalPopup;
     TInt iPriority; 
     TBool iResourceChange;
-    TBool iStartServerOver; 
-    CWaitingServerAo* iWaiterAo;
-    TRequestStatus* iPendingRequest;
-    TBool iServerReady;
 };
-
-
-class CWaitingServerAo : public CActive
-    {
-public:
-	
-    CWaitingServerAo(RPeninputServerImpl* aClient);
-    
-    /**
-     * From CActive
-     * will be called when stroke timer ends
-     *
-     * @since S60 v4.0
-     */
-    void RunL();
-
-    /**
-     * From CActive
-     * will be called if RunL leaves
-     *
-     * @since S60 v4.0
-     */
-    TInt RunError(TInt aError);
-
-    /**
-     * From CActive
-     * will be called when stroke timer has been cancelled
-     *
-     * @since S60 v4.0
-     */
-    void DoCancel();
-    
-    TRequestStatus& RequestStatus(); 
-    
-    RPeninputServerImpl* iClient;
-    };
 
 
 NONSHARABLE_CLASS(CPenInputSingletonClient) : public CCoeStatic

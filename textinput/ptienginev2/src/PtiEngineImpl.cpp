@@ -1722,7 +1722,12 @@ TInt CPtiEngineImpl::SetExternalKeyMapL(TPtiEngineInputMode aMode,
 	{
 	if (iCurrentLanguage || iInputMode == EPtiEngineNumeric)
 		{			
-		MPtiCore *core = CoreForInputMode( aMode );		
+	    
+		MPtiCore *core = NULL;
+		if( iCurrentLanguage != NULL )
+		    {
+		    core = CoreForInputMode( aMode );
+		    }
 		if (!core)
 			{
 			return KErrNoSuitableCore;
@@ -1924,16 +1929,17 @@ TPtiKey CPtiEngineImpl::CharacterToKey(TUint16 aChar)
 //
 TInt CPtiEngineImpl::AddUserDictionaryEntry(MPtiUserDictionaryEntry& aEntry)
 	{
+    
+    if ( !iCurrentLanguage )
+        {
+        return KErrNoActiveLanguage;
+        }
+    
 	CPtiUserDictionary* dict = DefaultUserDictForCore(Core());
 
 	if (dict)
 		{
 		return Core()->AddUserDictionaryEntry(aEntry, dict);
-		}
-
-	if (!iCurrentLanguage)
-		{
-		return KErrNoActiveLanguage;
 		}
 
 	return KErrNotSupported;
@@ -1971,16 +1977,17 @@ TInt CPtiEngineImpl::AddUserDictionaryEntry(MPtiUserDictionaryEntry& aEntry, TIn
 //
 TInt CPtiEngineImpl::RemoveEntryFromUserDictionary(MPtiUserDictionaryEntry& aEntry)
 	{
+    
+    if ( !iCurrentLanguage )
+        {
+        return KErrNoActiveLanguage;
+        }
+    
 	CPtiUserDictionary* dict = DefaultUserDictForCore(Core());
 
 	if (dict)
 		{
 		return Core()->RemoveUserDictionaryEntry(aEntry, dict);
-		}
-
-	if (!iCurrentLanguage)
-		{
-		return KErrNoActiveLanguage;
 		}
 
 	return KErrNotSupported;
@@ -2018,18 +2025,17 @@ TInt CPtiEngineImpl::RemoveEntryFromUserDictionary(MPtiUserDictionaryEntry& aEnt
 //
 TInt CPtiEngineImpl::NumberOfEntriesInUserDictionary()
 	{
+    
+    if ( !iCurrentLanguage )
+        {
+        return KErrNoActiveLanguage;
+        }
 	CPtiUserDictionary* dict = DefaultUserDictForCore(Core());
 	
 	if (dict)
 		{
 		return Core()->NumberOfEntriesInUserDictionary(dict);
 		}
-
-	if (!iCurrentLanguage)
-		{
-		return KErrNoActiveLanguage;
-		}
-
 	return KErrNotSupported;
 	}
 
@@ -2323,16 +2329,17 @@ MPtiUserDictionary* CPtiEngineImpl::DefaultUserDictionary(TPtiEngineInputMode aM
 //
 TInt CPtiEngineImpl::GetUserDictionaryEntry(TInt aIndex, MPtiUserDictionaryEntry& aResult)
 	{
+    
+    if ( !iCurrentLanguage )
+        {
+        return KErrNoActiveLanguage;
+        }
+    
 	CPtiUserDictionary* dict = DefaultUserDictForCore(Core());
 
 	if (dict)
 		{
 		return Core()->GetUserDictionaryEntry(aIndex, aResult, dict);
-		}
-	
-	if (!iCurrentLanguage)
-		{
-		return KErrNoActiveLanguage;
 		}
 
 	return KErrNotSupported;
@@ -3112,7 +3119,11 @@ void CPtiEngineImpl::MappingDataForKey(TPtiKey aKey, TDes& aResult, TPtiTextCase
 			case EPtiEnginePredictive:	
 				 {
 				 CPtiKeyMappings* maps = static_cast<CPtiKeyMappings*>(iCurrentLanguage->GetKeymappings());
-				 maps->GetDataForKey(aKey, aResult, aCase);
+				 
+				 if( maps != NULL )
+				     {
+				     maps->GetDataForKey(aKey, aResult, aCase);
+				     }
 				 }
 				 break;
 		    // Predictive QWERTY (XT9) changes ---->
@@ -3128,7 +3139,10 @@ void CPtiEngineImpl::MappingDataForKey(TPtiKey aKey, TDes& aResult, TPtiTextCase
 			case EPtiEngineQwerty:
      			 {
 		     	 CPtiQwertyKeyMappings* maps = static_cast<CPtiQwertyKeyMappings*>(iCurrentLanguage->GetQwertyKeymappings());
-				 maps->GetDataForKey(aKey, aResult, aCase);
+				 if( maps != NULL )
+				     {
+		     	     maps->GetDataForKey(aKey, aResult, aCase);
+				     }
 				 }     			
 			     break;							
      		case EPtiEnginePinyinPhraseHalfQwerty:
@@ -3138,7 +3152,10 @@ void CPtiEngineImpl::MappingDataForKey(TPtiKey aKey, TDes& aResult, TPtiTextCase
 			case EPtiEngineHalfQwertyPredictive:
      			 {
 		     	 CPtiHalfQwertyKeyMappings* maps = static_cast<CPtiHalfQwertyKeyMappings*>(iCurrentLanguage->GetHalfQwertyKeymappings());
-				 maps->GetDataForKey(aKey, aResult, aCase);
+				 if( maps != NULL )
+				     {
+		     	     maps->GetDataForKey(aKey, aResult, aCase);
+				     }
 				 }     			
 			     break;							
 			default:
@@ -3826,7 +3843,12 @@ void CPtiEngineImpl::KeyboardTypesSupportedByLanguageL(TInt aLanguage,
         CPtiQwertyKeyMappings* qmaps = static_cast<CPtiQwertyKeyMappings*>(lang->GetQwertyKeymappings());
         if (qmaps)
             {
-            CPtiKeyMapData* mapData = maps->KeyMapData();
+        
+            CPtiKeyMapData* mapData = NULL;
+            if( maps != NULL )
+                {
+                mapData = maps->KeyMapData();
+                }
             if (mapData)
                 {
                 if (mapData->KeyData(EPtiKeyboardQwerty4x12, tmpSize))

@@ -586,7 +586,7 @@ CFepUiBaseCtrl* CVirtualKeyCtrl::HandlePointerUpEventL(const TPoint& aPoint)
 	#ifdef RD_TACTILE_FEEDBACK
     if (UiLayout()->SupportTactileFeedback())
     	{
-   		UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
+   		UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
         }
 	#endif // RD_TACTILE_FEEDBACK 
     return this;
@@ -646,7 +646,7 @@ void CVirtualKeyCtrl::HandlePointerLeave(const TPoint& aPoint)
 			{
 			if (!Hiden())
 				{				
-				UiLayout()->DoTactileFeedback(ETouchFeedbackCharacterInputButton, ETrue, EFalse);				
+				UiLayout()->DoTactileFeedback(ETouchFeedbackBasicKeypad, ETrue, EFalse);				
 				}
 			}
 		}
@@ -898,7 +898,7 @@ void CVirtualRawKeyCtrl::HandlePointerLeave(const TPoint& aPoint)
 		{		
 		if (!VirtualKey()->Dimmed() && !Hiden())
 			{
-			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
+			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
 			}
         }
 #endif //RD_TACTILE_FEEDBACK     

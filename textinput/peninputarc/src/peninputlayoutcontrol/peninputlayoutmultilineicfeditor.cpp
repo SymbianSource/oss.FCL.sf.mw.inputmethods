@@ -108,8 +108,8 @@ CFepLayoutMultiLineIcfEditor::CFepLayoutMultiLineIcfEditor(TRect aRect,
     if(aUiLayout)
     	{
     	//Advanced Tactile feedback REQ417-47932
-    	SetTactileFeedbackType(ETouchFeedbackSensitiveInput);    	
-    	aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveInput);
+    	SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);    	
+    	aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveKeypad);
     	}
 #endif //RD_TACTILE_FEEDBACK     
     }
@@ -2066,7 +2066,7 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerMoveEventL(const TPoi
         {
         if ( iLastCursorPos != iCursorSel.iCursorPos ) 
             {
-            UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
+            UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad);
             iLastCursorPos = iCursorSel.iCursorPos;
             }
         }

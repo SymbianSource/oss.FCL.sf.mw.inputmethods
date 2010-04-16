@@ -793,13 +793,16 @@ void CGSPenInputModel::SetInputModeBySettingPage(const TInt aIndex)
 
     if (iInputLanguage == ELangPrcChinese)
         {
-        if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+        if( ptiLang != NULL )
             {
-            curInputMode = EPinyin;
-            }
-        else
-            {
-            curInputMode = EStroke;    
+            if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+                {
+                curInputMode = EPinyin;
+                }
+            else
+                {
+                curInputMode = EStroke;    
+                }
             }
 
         if (curInputMode != -1)
@@ -810,13 +813,16 @@ void CGSPenInputModel::SetInputModeBySettingPage(const TInt aIndex)
         }
     else if (iInputLanguage == ELangHongKongChinese) 
         {
-        if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+        if( ptiLang != NULL )
             {
-            curInputMode = EStroke;
-            }
-         else
-            {
-            curInputMode = ECangJie;   
+            if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+                {
+                curInputMode = EStroke;
+                }
+            else
+                {
+                curInputMode = ECangJie;   
+                }
             }
             
         if (curInputMode != -1)
@@ -827,29 +833,32 @@ void CGSPenInputModel::SetInputModeBySettingPage(const TInt aIndex)
         }
     else if (iInputLanguage == ELangTaiwanChinese)
         { 
-        if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineZhuyinByPhrase))
+        if( ptiLang != NULL )
             {
-            curInputMode = EZhuyin;
-            }
-        else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
-            {
-            curInputMode = EStroke;
-            }
-        else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
-            {
-            curInputMode = EPinyin;
-            }
-        else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
-            {
-            curInputMode = EStroke;
-            }
-        else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
-            {
-            curInputMode = EPinyin;
-            }
-        else if (aIndex == 2)
-            {
-            curInputMode = EPinyin;            
+            if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineZhuyinByPhrase))
+                {
+                curInputMode = EZhuyin;
+                }
+            else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+                {
+                curInputMode = EStroke;
+                }
+            else if (aIndex == 0 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+                {
+                curInputMode = EPinyin;
+                }
+            else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEngineStrokeByPhrase))
+                {
+                curInputMode = EStroke;
+                }
+            else if (aIndex == 1 && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
+                {
+                curInputMode = EPinyin;
+                }
+            else if (aIndex == 2)
+                {
+                curInputMode = EPinyin;            
+                }
             }
 
         if (curInputMode != -1)
@@ -869,7 +878,11 @@ TInt CGSPenInputModel::InputModeInSettingPage()
     TInt index = 0;
     TInt skipCount = 0;
     MPtiLanguage* ptiLang = iPtiEngine->GetLanguage(iInputLanguage & KGSLanguageMask);    
-
+    
+    if( ptiLang == NULL )
+        {
+        return index;
+        }
     if (iInputLanguage == ELangPrcChinese)
         {
         if (iInputMode == EPinyin && ptiLang->HasInputMode(EPtiEnginePinyinByPhrase))
@@ -972,8 +985,12 @@ void CGSPenInputModel::ResetInputModeArray(CDesCArrayFlat* aInputModeItems)
         {
         return;
         }
-        
-    MPtiLanguage* ptiLang = iPtiEngine->GetLanguage(iInputLanguage & KGSLanguageMask);                
+    
+    MPtiLanguage* ptiLang = iPtiEngine->GetLanguage(iInputLanguage & KGSLanguageMask);    
+    if( ptiLang == NULL )
+        {
+        return;
+        }
     switch(iInputLanguage)
         {
         case ELangPrcChinese:

@@ -294,7 +294,7 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerDownEventL(const TPo
 		#ifdef RD_TACTILE_FEEDBACK
         if (UiLayout()->SupportTactileFeedback())
         	{
-        	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
+        	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
         	}
 		#endif //RD_TACTILE_FEEDBACK     
         }
@@ -310,7 +310,7 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerDownEventL(const TPo
 			#ifdef RD_TACTILE_FEEDBACK
             if (UiLayout()->SupportTactileFeedback())
             	{
-            	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
+            	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad);
             	}
 			#endif //RD_TACTILE_FEEDBACK
             }
@@ -353,7 +353,7 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerMoveEventL(const TPo
             {
             if ( iLastSelIndex != iCurFocusItem) 
                 {
-                UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
+                UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad);
                 iLastSelIndex = iCurFocusItem;
                 }
             }
@@ -391,7 +391,7 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerUpEventL(const TPoin
 		#ifdef RD_TACTILE_FEEDBACK
 		if (UiLayout()->SupportTactileFeedback())
 			{
-			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
+			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
 			}
 		#endif //RD_TACTILE_FEEDBACK	
         }

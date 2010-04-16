@@ -2453,7 +2453,11 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandleKeyFromCandidateL(
         RArray <TPtiNumericKeyBinding> keybinding;
         TBool validnumkey = EFalse;
         CPtiEngine* ptiengine = iOwner->PtiEngine();
-        lang = ptiengine->CurrentLanguage();
+        
+        if( ptiengine != NULL )
+            {
+            lang = ptiengine->CurrentLanguage();
+            }
         if (ptiengine && lang)
             {
             TRAP_IGNORE(ptiengine->GetNumericModeKeysForQwertyL(lang->LanguageCode(), keybinding, keyboardtype));

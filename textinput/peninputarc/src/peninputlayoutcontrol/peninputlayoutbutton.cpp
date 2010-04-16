@@ -15,7 +15,7 @@
 *
 */
 
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include "peninputlayoutbutton.h"
 #include "peninputlayouttimer.h"
 #include "peninputlayout.h"
@@ -85,8 +85,8 @@ EXPORT_C CButtonBase::CButtonBase(const TRect& aRect,CFepUiLayout* aUiLayout,
     		}
     	else
     		{
-    		SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-    		aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveInput);
+    		SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+    		aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveKeypad);
     		}
     	}       
 #endif //RD_TACTILE_FEEDBACK     

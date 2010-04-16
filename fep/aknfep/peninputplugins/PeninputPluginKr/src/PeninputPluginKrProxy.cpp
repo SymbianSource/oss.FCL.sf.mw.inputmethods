@@ -16,7 +16,7 @@
 */
 
 #include <e32std.h>
-#include <ImplementationProxy.h>
+#include <implementationproxy.h>
 
 // User includes
 #include "PeninputPluginKr.hrh"

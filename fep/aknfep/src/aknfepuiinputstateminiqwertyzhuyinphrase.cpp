@@ -1148,7 +1148,11 @@ TBool TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::SelectCandidate(
     TBool validnumkey = EFalse;
     CPtiEngine* ptiengine = iOwner->PtiEngine();
     TPtiKeyboardType keyboardtype = iOwner->FepMan()->KeyboardLayout();
-    lang = ptiengine->CurrentLanguage();
+    
+    if( ptiengine != NULL )
+        {
+        lang = ptiengine->CurrentLanguage();
+        }
     if ( ptiengine && lang  )
         {
         TRAP_IGNORE(ptiengine->GetNumericModeKeysForQwertyL(lang->LanguageCode(), keybinding, keyboardtype));

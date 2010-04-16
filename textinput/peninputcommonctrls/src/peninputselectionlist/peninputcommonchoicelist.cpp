@@ -59,8 +59,8 @@ EXPORT_C CPeninputCommonChoiceList::
     		}
     	else
     		{
-    		SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-    		aUiLayout->ChangeFeedbackType(reinterpret_cast<TInt>(this),ETouchFeedbackSensitiveInput);
+    		SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+    		aUiLayout->ChangeFeedbackType(reinterpret_cast<TInt>(this),ETouchFeedbackSensitiveKeypad);
     		}
     	}       
 #endif //RD_TACTILE_FEEDBACK 

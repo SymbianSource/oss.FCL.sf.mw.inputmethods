@@ -732,8 +732,10 @@ TInt CAknFepSharedDataInterface::HandleGenericRepositoryChange(TAny* aPtr)
 TInt CAknFepSharedDataInterface::HandleRepositoryCallBack(TAny* aPtr)
     {
     CAknFepSharedDataInterface *self = STATIC_CAST(CAknFepSharedDataInterface*, aPtr);
-#ifdef RD_INTELLIGENT_TEXT_INPUT    
-    if(self->iAknFepRepositoryWatcher->IsGenericCenrepChange())
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+    
+    if( self->iAknFepRepositoryWatcher && 
+        self->iAknFepRepositoryWatcher->IsGenericCenrepChange())
         {
         return HandleGenericRepositoryChange(aPtr);
         }

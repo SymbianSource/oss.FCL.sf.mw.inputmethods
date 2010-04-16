@@ -389,8 +389,8 @@ CTooltipBubbleCtrl::CTooltipBubbleCtrl( const TRect& aRect,
 #ifdef RD_TACTILE_FEEDBACK
     if(IsKindOfControl(ECtrlTactileFeedback) && !Hiden() && UiLayout())
         {
-		SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveInput);
+		SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveKeypad);
         }  
 #endif // RD_TACTILE_FEEDBACK 
     }

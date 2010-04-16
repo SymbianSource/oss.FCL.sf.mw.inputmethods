@@ -199,8 +199,8 @@ EXPORT_C void CVirtualKeyboard::AddKeyL(CVirtualKey* aKey)
         CVirtualKeyCtrl* ctrl = CreateKeyCtrlL(aKey,EFalse);//CVirtualKeyCtrl::NewL(this,aKey);
 #ifdef RD_TACTILE_FEEDBACK 
         //Advanced Tactile feedback REQ417-47932
-        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveInput);
+        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveKeypad);
 #endif	  
         CleanupStack::PushL(ctrl);
         AddKeyControlL(ctrl);
@@ -228,8 +228,8 @@ EXPORT_C void CVirtualKeyboard::AddRawKeyL(CVirtualKey* aKey)
         CVirtualRawKeyCtrl* ctrl = static_cast<CVirtualRawKeyCtrl*>(CreateKeyCtrlL(aKey,ETrue));
 #ifdef RD_TACTILE_FEEDBACK 
         //Advanced Tactile feedback REQ417-47932
-        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveInput);            
+        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveKeypad);            
         
 #endif	        
         CleanupStack::PushL(ctrl);

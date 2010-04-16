@@ -41,7 +41,7 @@
 #include <UikonInternalPSKeys.h> // KUikGlobalNotesAllowed
 #include <AvkonInternalCRKeys.h>    // KAknQwertyInputModeActive
 #include <hlplch.h>
-#include <peninputgsinterface.h>
+//#include <peninputgsinterface.h>
 #include <AknFep.rsg>
 #include <avkon.rsg>
 #include <AknIndicatorContainer.h>  //CAknIndicatorContainer
@@ -74,7 +74,7 @@
 #include <apgwgnam.h>
 
 #include <PtiKeyMappings.h>
-#include <aknpriv.hrh>
+#include <AknPriv.hrh>
 
 // Constants
 const TInt KCursorBlinkPerioid = 10000;//300000; // five tenth of a second * 2
@@ -183,12 +183,6 @@ CAknFepPluginManager* CAknFepPluginManager::NewL( CAknFepManager& aFepMan,
 //     
 CAknFepPluginManager::~CAknFepPluginManager()
     {  
-    if ( iConnectAo )
-    	{
-    	iConnectAo->Cancel();
-    	delete iConnectAo;
-    	}
-    
     delete iAdjustDataQueryTimer;
 
     iCurrentPluginInputFepUI = NULL; // why not delete????
@@ -228,7 +222,7 @@ CAknFepPluginManager::~CAknFepPluginManager()
     iEventData.Close();    
     iPreCaption.Close();
     
-    ClosePeninputSetting();
+	  ClosePeninputSetting();
     }
     
 // ---------------------------------------------------------------------------
@@ -273,8 +267,6 @@ void CAknFepPluginManager::ConstructL()
     iHasSWEventCap = client.HasCapability(ECapabilitySwEvent);
     client.Close();
     iAvkonRepository = CRepository::NewL( KCRUidAvkon ); 
-    
-    iConnectAo = new (ELeave)CConnectAo(this);
     }
 
 // -----------------------------------------------------------------------------
@@ -289,6 +281,7 @@ void CAknFepPluginManager::ActivatePenInputL()
         {
         if( iFepMan.FepAwareTextEditor() )
             {
+			iPreferredUiMode = ETrue;
             TryChangePluginInputModeByModeL((TPluginInputMode)(iSharedData.PluginInputMode()),
                                             EPenInputOpenManually,
                                             ERangeInvalid);
@@ -297,7 +290,6 @@ void CAknFepPluginManager::ActivatePenInputL()
     iFepMan.PtiEngine()->CancelTimerActivity();    
     }
 
-	
 // ---------------------------------------------------------------------------
 // CAknFepPluginManager::DeactivatePenInputL
 // (other items were commented in a header)
@@ -973,7 +965,6 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         return EFalse;
         }
     
-    
     if ((iPenInputServer.PreferredUiMode() != EPluginInputModeNone) && iPreferredUiMode )
         {
         aSuggestMode = iPenInputServer.PreferredUiMode();
@@ -1100,14 +1091,6 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
 
         iPluginInputMode = (TPluginInputMode)iLangMan.CurrentImePlugin()->CurrentMode();
 
-
-        // Addition for ITI features on FSQ
-        // Before open touch window, need to set iPluginPrimaryRange = 0
-        // which means use the default range.
-        iPluginPrimaryRange = 0;
-        
-        InitializePluginInputL(aOpenMode, aSuggestRange, cleanContent);
-
         //following codes is used to tell MFNE editor the Touch Input 
         //has been opened. Because MFNE editor has no editorstate, so 
         //use this way to implement this.
@@ -1118,6 +1101,13 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
             iMfne = mfne;
             InformMfneUiStatusL( ETrue );  
             }
+
+        // Addition for ITI features on FSQ
+        // Before open touch window, need to set iPluginPrimaryRange = 0
+        // which means use the default range.
+        iPluginPrimaryRange = 0;
+        
+        InitializePluginInputL(aOpenMode, aSuggestRange, cleanContent);
         
         //save plugin input mode to repository
         if( iPenInputServer.PreferredUiMode() == EPluginInputModeNone )
@@ -1128,6 +1118,7 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
             
         if (CurrentFepInputUI())
            	{
+           	CurrentFepInputUI()->SetInputLanguageL((TLanguage)inputLang);
            	CurrentFepInputUI()->SetMode(iFepMan.InputMode(), ETrue, EFalse);		
            	}
 			
@@ -1231,8 +1222,6 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
     {
     // For addition of ITI features on FSQ, 
     // need to restore some values stored before opening FSQ    
-    
-    iConnectAo->Cancel();
     ResetItiStateL();
 
     if( iPenInputSvrConnected )
@@ -2687,25 +2676,25 @@ void CAknFepPluginManager::LaunchPenInputMenuL(TInt aResourceId, TBool aRemeber)
 // (other items were commented in a header)
 // ---------------------------------------------------------------------------
 //     
-void CAknFepPluginManager::LaunchPenInputLanguageSelectionL( TBool aLaunchedByTouchWin )
+void CAknFepPluginManager::LaunchPenInputLanguageSelectionL( TBool /*aLaunchedByTouchWin*/ )
     {
     //record langauge
-    TInt oldLang = iSharedData.InputTextLanguage();
-    CPenInputGSInterface*  setting = CPenInputGSInterface::NewL();
-    CleanupStack::PushL(setting);
-    iFepMan.SetCancelPopupInQwerty( aLaunchedByTouchWin );
-    setting->ShowInputLanguagePageL();
-    iFepMan.SetCancelPopupInQwerty( EFalse );
-    CleanupStack::PopAndDestroy(setting); 
-    TInt inputLanguage = iSharedData.InputTextLanguage();
-    if( oldLang != inputLanguage)
-        {
-        iSharedData.SetInputTextLanguage(inputLanguage);
-        iFepMan.ChangeInputLanguageL(inputLanguage);
-        iFepMan.SetFlag( CAknFepManager::EFlagNewSharedDataInputLanguage 
-            | CAknFepManager::EFlagNewSharedDataInputMode );
-
-        }
+//    TInt oldLang = iSharedData.InputTextLanguage();
+//    CPenInputGSInterface*  setting = CPenInputGSInterface::NewL();
+//    CleanupStack::PushL(setting);
+//    iFepMan.SetCancelPopupInQwerty( aLaunchedByTouchWin );
+//    setting->ShowInputLanguagePageL();
+//    iFepMan.SetCancelPopupInQwerty( EFalse );
+//    CleanupStack::PopAndDestroy(setting); 
+//    TInt inputLanguage = iSharedData.InputTextLanguage();
+//    if( oldLang != inputLanguage)
+//        {
+//        iSharedData.SetInputTextLanguage(inputLanguage);
+//        iFepMan.ChangeInputLanguageL(inputLanguage);
+//        iFepMan.SetFlag( CAknFepManager::EFlagNewSharedDataInputLanguage 
+//            | CAknFepManager::EFlagNewSharedDataInputMode );
+//
+//        }
     }        
 
 // ---------------------------------------------------------------------------
@@ -2716,11 +2705,11 @@ void CAknFepPluginManager::LaunchPenInputLanguageSelectionL( TBool aLaunchedByTo
 void CAknFepPluginManager::LaunchPenInputRecognitionWithDictionarySelectionL()
     {
     //record langauge
-    CPenInputGSInterface*  setting = CPenInputGSInterface::NewL();
-    CleanupStack::PushL(setting);
-    setting->ShowRecognitionWithDictionaryL();
-    CleanupStack::PopAndDestroy(setting); 
-    TInt inputLanguage = iSharedData.InputTextLanguage();
+//    CPenInputGSInterface*  setting = CPenInputGSInterface::NewL();
+//    CleanupStack::PushL(setting);
+//    setting->ShowRecognitionWithDictionaryL();
+//    CleanupStack::PopAndDestroy(setting); 
+//    TInt inputLanguage = iSharedData.InputTextLanguage();
     }  
 
 // ---------------------------------------------------------------------------
@@ -2731,17 +2720,17 @@ void CAknFepPluginManager::LaunchPenInputRecognitionWithDictionarySelectionL()
 void CAknFepPluginManager::LaunchPenInputSettingL()
     {
     //record langauge
-    TInt oldLang = iSharedData.InputTextLanguage();
-    if ( !iGsInterface )
-        {
-        iGsInterface = CPenInputGSInterface::NewL();
-        }    
-    iGsInterface->ShowMainViewL();
-    TInt inputLanguage = iSharedData.InputTextLanguage();
-    if( oldLang != inputLanguage)
-        {
-        iFepMan.ChangeInputLanguageL(inputLanguage);
-        }
+//    TInt oldLang = iSharedData.InputTextLanguage();
+//    if ( !iGsInterface )
+//        {
+//        iGsInterface = CPenInputGSInterface::NewL();
+//        }    
+//    iGsInterface->ShowMainViewL();
+//    TInt inputLanguage = iSharedData.InputTextLanguage();
+//    if( oldLang != inputLanguage)
+//        {
+//        iFepMan.ChangeInputLanguageL(inputLanguage);
+//        }
 
     }     
 
@@ -3411,13 +3400,17 @@ TBool CAknFepPluginManager::ConnectServer()
     {
     if(!iPenInputSvrConnected)
         {
-        if(!iConnectAo->IsActive())
+        TInt err = iPenInputServer.Connect();
+        //iPenInputServer.AddPeninputServerObserverL(this); //always add the handler
+        if( KErrNone != err )
             {
-            iConnectAo->RequestConnect();
-            iPenInputServer.ConnectAsyc(iConnectAo->RequestStatus());
+            iFepMan.UiInterface()->TouchPaneSetInputMethodIconActivated(EFalse);
+                
+            return EFalse;               
             }
-        // vv 
-        return EFalse;
+        TRAP_IGNORE(iPenInputServer.AddPeninputServerObserverL(this)); //always add the handler            
+        
+        iPenInputSvrConnected = ETrue;                      
         }
 
     iPenInputServer.SetForeground(iOpenPenUiFlag);
@@ -3732,18 +3725,15 @@ void CAknFepPluginManager::NotifyLayoutKeymappingL()
             TLocale locale;
             TChar decimalSep = locale.DecimalSeparator(); 
             TChar minusSign ='-'; 
-
+            
             keymapRes->Des().Append(decimalSep);
             keymapRes->Des().Append(minusSign);
 
-            if( keymapRes )
-                {
-                CleanupStack::PushL(keymapRes);
-                iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputEditorCustomNumericKeyMap,
+            CleanupStack::PushL(keymapRes);
+            iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputEditorCustomNumericKeyMap,
                                                     reinterpret_cast<TInt>(keymapRes) );
-                CleanupStack::PopAndDestroy(keymapRes);
-                return;
-                }
+            CleanupStack::PopAndDestroy(keymapRes);
+            return;
             }
 
         iCurrentPluginInputFepUI->SetNumberModeKeyMappingL(EAknEditorPlainNumberModeKeymap);
@@ -4906,11 +4896,11 @@ TAknEditingState CAknFepPluginManager::VKBIndicatorState
 
 void CAknFepPluginManager::ClosePeninputSetting()
     {
-    if ( iGsInterface )
-        {
-        delete iGsInterface;
-        iGsInterface = NULL;
-        }
+//    if ( iGsInterface )
+//        {
+//        delete iGsInterface;
+//        iGsInterface = NULL;
+//        }
     }
 
 // ---------------------------------------------------------------------------
@@ -5438,53 +5428,6 @@ TBool CAknFepPluginManager::IsEditorSupportSplitIme()
         }
     
     return EFalse;
-    }
-
-void CAknFepPluginManager::OnServerReady(TInt aErr)
-    {
-    if( KErrNone != aErr )
-        {
-        iFepMan.UiInterface()->TouchPaneSetInputMethodIconActivated(EFalse);
-            
-        return;               
-        }
-    TRAP_IGNORE(iPenInputServer.AddPeninputServerObserverL(this)); //always add the handler            
-    
-    iPenInputSvrConnected = ETrue;                     
-    ActivatePenInputL();
-    }
-
-CConnectAo::CConnectAo(CAknFepPluginManager* aClient) 
-                : CActive(CActive::EPriorityStandard),
-                  iClient(aClient)
-    {
-    CActiveScheduler::Add(this);
-    //SetActive();
-    }
-
-
-void CConnectAo::RunL()
-    {
-    iClient->OnServerReady(iStatus.Int());
-    }
-
-void CConnectAo::DoCancel()
-    {
-    
-    }
-TInt CConnectAo::RunError(TInt aError)
-    {
-    return KErrNone;
-    }
-
-void CConnectAo::RequestConnect()
-    {
-    iStatus = KRequestPending;
-    SetActive();
-    }
-TRequestStatus& CConnectAo::RequestStatus()
-    {
-    return iStatus;
     }
 
 //End of File

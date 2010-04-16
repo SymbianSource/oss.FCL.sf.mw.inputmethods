@@ -54,12 +54,12 @@ if ( ! open(INFFILE,">${langdir}bld.inf") )
     } 
 
 print(INFFILE "/*\n");
-print(INFFILE "* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).\n");
+print(INFFILE "* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).\n");
 print(INFFILE "* All rights reserved.\n");
 print(INFFILE "* This component and the accompanying materials are made available\n");
 print(INFFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 print(INFFILE "* which accompanies this distribution, and is available\n");
-print(INFFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
+print(INFFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
 print(INFFILE "*\n");
 print(INFFILE "* Initial Contributors:\n");
 print(INFFILE "* Nokia Corporation - initial contribution.\n");
@@ -194,12 +194,12 @@ foreach $line (@master_raw_data)
 				}
 
 				print(RESFILE "/*\n");
-				print(RESFILE "* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).\n");
+				print(RESFILE "* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).\n");
 				print(RESFILE "* All rights reserved.\n");
 				print(RESFILE "* This component and the accompanying materials are made available\n");
 				print(RESFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(RESFILE "* which accompanies this distribution, and is available\n");
-				print(RESFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
+				print(RESFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
 				print(RESFILE "*\n");
 				print(RESFILE "* Initial Contributors:\n");
 				print(RESFILE "* Nokia Corporation - initial contribution.\n");
@@ -254,12 +254,12 @@ foreach $line (@master_raw_data)
 				}
 
 				print(MMPFILE "/*\n");
-				print(MMPFILE "* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).\n");
+				print(MMPFILE "* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).\n");
 				print(MMPFILE "* All rights reserved.\n");
 				print(MMPFILE "* This component and the accompanying materials are made available\n");
 				print(MMPFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(MMPFILE "* which accompanies this distribution, and is available\n");
-				print(MMPFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
+				print(MMPFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
 				print(MMPFILE "*\n");
 				print(MMPFILE "* Initial Contributors:\n");
 				print(MMPFILE "* Nokia Corporation - initial contribution.\n");
@@ -335,12 +335,12 @@ foreach $line (@master_raw_data)
 				}
 
 				print(IBYFILE "/*\n");
-				print(IBYFILE "* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).\n");
+				print(IBYFILE "* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).\n");
 				print(IBYFILE "* All rights reserved.\n");
 				print(IBYFILE "* This component and the accompanying materials are made available\n");
 				print(IBYFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(IBYFILE "* which accompanies this distribution, and is available\n");
-				print(IBYFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
+				print(IBYFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
 				print(IBYFILE "*\n");
 				print(IBYFILE "* Initial Contributors:\n");
 				print(IBYFILE "* Nokia Corporation - initial contribution.\n");
@@ -389,12 +389,12 @@ foreach $line (@master_raw_data)
 				}
 
 				print(CPPFILE "/*\n");
-				print(CPPFILE "* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).\n");
+				print(CPPFILE "* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).\n");
 				print(CPPFILE "* All rights reserved.\n");
 				print(CPPFILE "* This component and the accompanying materials are made available\n");
 				print(CPPFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(CPPFILE "* which accompanies this distribution, and is available\n");
-				print(CPPFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
+				print(CPPFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
 				print(CPPFILE "*\n");
 				print(CPPFILE "* Initial Contributors:\n");
 				print(CPPFILE "* Nokia Corporation - initial contribution.\n");
@@ -425,12 +425,12 @@ foreach $line (@master_raw_data)
 				}
 
 				print(CHHFILE "/*\n");
-				print(CHHFILE "* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).\n");
+				print(CHHFILE "* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).\n");
 				print(CHHFILE "* All rights reserved.\n");
 				print(CHHFILE "* This component and the accompanying materials are made available\n");
 				print(CHHFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(CHHFILE "* which accompanies this distribution, and is available\n");
-				print(CHHFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
+				print(CHHFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
 				print(CHHFILE "*\n");
 				print(CHHFILE "* Initial Contributors:\n");
 				print(CHHFILE "* Nokia Corporation - initial contribution.\n");
@@ -462,12 +462,12 @@ foreach $line (@master_raw_data)
 				}
 
 				print(CFFFILE "/*\n");
-				print(CFFFILE "* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).\n");
+				print(CFFFILE "* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).\n");
 				print(CFFFILE "* All rights reserved.\n");
 				print(CFFFILE "* This component and the accompanying materials are made available\n");
 				print(CFFFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(CFFFILE "* which accompanies this distribution, and is available\n");
-				print(CFFFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
+				print(CFFFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
 				print(CFFFILE "*\n");
 				print(CFFFILE "* Initial Contributors:\n");
 				print(CFFFILE "* Nokia Corporation - initial contribution.\n");

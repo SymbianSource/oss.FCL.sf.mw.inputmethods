@@ -2075,16 +2075,19 @@ EXPORT_C void CPeninputLayoutWindow::SetEnableSwitchToHwr(TBool aEnable)
     {
     CAknFepCtrlEventButton* switchToHwrBtn = static_cast<CAknFepCtrlEventButton*>
         ( iCtrlPool->Control( EPeninutWindowCtrlIdSwitchToHwrBtn ) );
-
-    if ( aEnable )    
+    
+    if( switchToHwrBtn != NULL )
         {
-        switchToHwrBtn->SetDimmed(EFalse);
+        if ( aEnable )    
+            {
+            switchToHwrBtn->SetDimmed(EFalse);
+            }
+        else
+            {
+            switchToHwrBtn->SetDimmed(ETrue);
+            switchToHwrBtn->SetActive(EFalse);
+            }
         }
-    else
-        {
-        switchToHwrBtn->SetDimmed(ETrue);
-        switchToHwrBtn->SetActive(EFalse);
-        } 
     }
 
 // ---------------------------------------------------------------------------
@@ -2097,18 +2100,22 @@ EXPORT_C void CPeninputLayoutWindow::SetEnableSettingBtn(TBool aEnable)
     CAknFepCtrlEventButton* langSetBtn = static_cast<CAknFepCtrlEventButton*>
         ( iCtrlPool->Control( EPeninutWindowCtrlIdInputLangSwitcherBtn ) );
         
-    if ( aEnable )    
+    
+    if( langSetBtn != NULL )
         {
-        langSetBtn->SetDimmed(EFalse);
-        iTouchInputOptionButton->SetDimmed(EFalse);
+        if ( aEnable )    
+            {
+            langSetBtn->SetDimmed(EFalse);
+            iTouchInputOptionButton->SetDimmed(EFalse);
+            }
+        else
+            {
+            langSetBtn->SetDimmed(ETrue);
+            langSetBtn->SetActive(EFalse);
+            iTouchInputOptionButton->SetDimmed(ETrue);
+            iTouchInputOptionButton->SetActive(EFalse);
+            }
         }
-    else
-        {
-        langSetBtn->SetDimmed(ETrue);
-        langSetBtn->SetActive(EFalse);
-        iTouchInputOptionButton->SetDimmed(ETrue);
-        iTouchInputOptionButton->SetActive(EFalse);
-        } 
     }
         
 // ---------------------------------------------------------------------------

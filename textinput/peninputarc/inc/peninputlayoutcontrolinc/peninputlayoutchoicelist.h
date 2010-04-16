@@ -247,7 +247,7 @@ public:
      * @param aIndex Item index
      * @return choice list item pointer of specified index
      */                                 
-    const CFepLayoutChoiceList::SItem* ItemByIndex(TInt aIndex);
+    IMPORT_C const CFepLayoutChoiceList::SItem* ItemByIndex(TInt aIndex);
 
     /**
      * Retrieve a choice list item by item's command

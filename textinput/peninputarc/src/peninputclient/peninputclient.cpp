@@ -28,17 +28,6 @@ EXPORT_C RPeninputServer::RPeninputServer()
     {
     }
 
-EXPORT_C TInt RPeninputServer::ConnectAsyc(TRequestStatus& aStatus)
-    { 
-    TInt err;
-    TRAP(err, iSingletonServer = RPeninputServerImpl::NewL(&aStatus));    
-    if( !iSingletonServer )   
-        {
-        return KErrGeneral;
-        }
-    //return iSingletonServer->ConnectAsync(status);
-    return err;
-    }
 // ---------------------------------------------------------------------------
 // RPeninputServer::Connect
 // ---------------------------------------------------------------------------
@@ -250,11 +239,6 @@ EXPORT_C TInt RPeninputServer::SupportInputMode()
     {
     return iSingletonServer->SupportInputMode();
     }
-
-EXPORT_C TInt RPeninputServer::SetInputLanguage( TInt aLanguage )
-	{
-	return iSingletonServer->SetInputLanguage( aLanguage );
-	}
 
 // ---------------------------------------------------------------------------
 // RPeninputServer::AddPeninputServerObserverL
@@ -500,6 +484,5 @@ EXPORT_C void RPeninputServer::SetResourceChange(TBool aFlag)
     {
     iSingletonServer->SetResourceChange(aFlag);   
     }    
-
 //end of class RPeninputServer
 // End of File

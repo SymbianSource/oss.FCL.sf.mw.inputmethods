@@ -139,15 +139,6 @@ public:
      */	
 	IMPORT_C TInt SupportInputMode();
 
-	 /**
-	 * Set Input Language Id
-	 *
-	 * @since S60 v4.0
-	 * @param aLanguage The input lanuage Id
-	 * @return The operation result code.KErrNone if successfully.
-	 */
-	IMPORT_C TInt SetInputLanguage( TInt aLanguage );
-
     /**
      * Set UI layout id. It will create the UI by the Id
      *
@@ -425,8 +416,6 @@ public:
     IMPORT_C void SetEditorPriority(TInt aFlag); 
     IMPORT_C void ClearTouchUI();
     IMPORT_C void SetResourceChange(TBool aFlag); 
-    IMPORT_C TInt ConnectAsyc(TRequestStatus& aStatus);
-
 private:    // Data
     /**
      * The singleton client to the input server

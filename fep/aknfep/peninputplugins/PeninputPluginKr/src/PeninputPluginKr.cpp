@@ -15,20 +15,20 @@
 *
 */
 
-#include <FeatMgr.h>
-#include <ImplementationInformation.h>
-#include <AknFepPeninputEnums.h>
-#include <AknFepUiInterface.h>
-#include <AknFepUiMenus.h>
-#include <AknListQueryDialog.h>
+#include <featmgr.h>
+#include <implementationinformation.h>
+#include <aknfeppeninputenums.h>
+#include <aknfepuiinterface.h>
+#include <aknfepuimenus.h>
+#include <aknlistquerydialog.h>
 
-#include <COEMAIN.H>
-#include <BAUTILS.H>
+#include <coemain.h>
+#include <bautils.h>
 #include <StringLoader.h>
 
-#include <PeninputCmd.h>
+#include <peninputcmd.h>
 #include <PeninputPluginKrRes.rsg>
-#include <PeninputClient.h>
+#include <peninputclient.h>
 
 #include <PtiKoreanQwertyCoreCRDefs.h>
 
@@ -249,6 +249,8 @@ TInt CPeninputPluginKr::LayoutUiImplId()
         	{
         	id = KItutUiId;
         	}
+        	
+        	break;
         default:
             {
             id = KInvalidImplId;

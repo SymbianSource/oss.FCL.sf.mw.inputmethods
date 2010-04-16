@@ -53,7 +53,7 @@ PRJ_EXPORTS
 ../UiPlugins/AknFepUiInterface/inc/AknFepUiStylusPopupMenu.h	|../../../inc/AknFepUIStylusPopupMenu.h
 ../UiPlugins/AknFepUiInterface/inc/aknfepuictrleditpane.h     |../../../inc/aknfepuictrleditpane.h
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-../UiPlugins/AknFepUiInterface/inc/AknFepCandidatePopup.h 		|../../../inc/aknfepcandidatepopup.h
+../UiPlugins/AknFepUiInterface/inc/AknFepCandidatePopup.h 		|../../../inc/AknFepCandidatePopup.h
 ../UiPlugins/AknFepUiInterface/inc/AknFepCandidatePopupCallback.h   |../../../inc/AknFepCandidatePopupCallback.h
 ../UiPlugins/AknFepUiInterface/inc/AknFepUiWordPopupContent.h	|../../../inc/AknFepUiWordPopupContent.h
 #endif //RD_INTELLIGENT_TEXT_INPUT
@@ -65,8 +65,8 @@ PRJ_EXPORTS
 ../rom/peninputimeplugincn_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugincn_Variant.iby)
 ../rom/peninputimeplugingeneric.iby         CORE_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugingeneric.iby)
 ../rom/peninputimepluginitut_Variant.iby    CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginitut_Variant.iby)
-../rom/PeninputPluginKr.iby                 CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(PeninputPluginKr.iby)
-../rom/peninputimepluginjp_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginjp_Variant.iby)
+//../rom/PeninputPluginKr.iby                 CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(PeninputPluginKr.iby)
+//../rom/peninputimepluginjp_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginjp_Variant.iby)
 
 // Generic configuration interface for component cenrep settings
 ../conf/aknfep.confml                  APP_LAYER_CONFML(aknfep.confml)
@@ -89,9 +89,9 @@ PRJ_MMPFILES
 #ifdef RD_SCALABLE_UI_V2
 ../peninputplugins/peninputimepluginitut/group/peninputimepluginitut.mmp
 ../peninputplugins/peninputimeplugincn/group/peninputimeplugincn.mmp
-../peninputplugins/peninputimepluginjp/group/peninputimepluginjp.mmp
+//../peninputplugins/peninputimepluginjp/group/peninputimepluginjp.mmp
 ../peninputplugins/peninputimeplugingeneric/group/peninputimeplugingeneric.mmp
-../peninputplugins/PeninputPluginKr/group/PeninputPluginKr.mmp
+//../peninputplugins/PeninputPluginKr/group/PeninputPluginKr.mmp
 #endif //RD_SCALABLE_UI_V2
 
 

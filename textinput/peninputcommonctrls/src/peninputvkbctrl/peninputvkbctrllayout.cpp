@@ -326,7 +326,11 @@ EXPORT_C void CAknFepCtrlVkbLayout::ConstructFromResourceL()
     else
         {
         // vkb keyboard must reset first, because iKeyInfoList will reset and destroy later
-        iVkbCtrl->Reset();
+        
+        if( iVkbCtrl != NULL )
+            {
+            iVkbCtrl->Reset();
+            }
         
         for ( TInt i = 0; i < count; i++ )
             {

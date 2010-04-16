@@ -114,7 +114,7 @@ void CPeninputServerWaiter::Stop(TInt aFlag)
 // RPeninputServerImpl::NewL
 // ---------------------------------------------------------------------------
 //
-RPeninputServerImpl* RPeninputServerImpl::NewL(TRequestStatus* aStatus)                                  
+RPeninputServerImpl* RPeninputServerImpl::NewL()                                  
     {
     //check for singleton existence    
     CCoeStatic * obj = CCoeEnv::Static()->FindStatic(KSingletonClientId);
@@ -123,14 +123,16 @@ RPeninputServerImpl* RPeninputServerImpl::NewL(TRequestStatus* aStatus)
     if(client && client->IsValid())
         {
         RPeninputServerImpl* server = client->GetSingletonServer();
-        TInt err = server->ServerReady() ? KErrNone : KErrLaunchingServer;  
-        User::RequestComplete(aStatus,err);
         return server;
+/*        if(iSingletonServer == 0 ) // second or later connecting from same client
+            {
+            error = KErrLaunchingServer;
+            }*/
         }
         
     RPeninputServerImpl* self = new(ELeave) RPeninputServerImpl();
     CleanupStack::PushL(self);
-    self->ConstructL(KSingletonClientId,aStatus);
+    self->ConstructL(KSingletonClientId);
     CleanupStack::Pop(self);
     return self;
     }
@@ -145,18 +147,16 @@ RPeninputServerImpl::RPeninputServerImpl() : iPosition(0,0),iSize(0,0)
     iIsForegroundSession = EFalse;
     iServerExit = EFalse;
     iLaunchServer = EFalse;
+    iWaitScheduler = 0;
     iCurPenUiType = -1; 
-    iWaitScheduler = NULL; 
+    iWaitScheduler = 0; 
     iAppPrefferedUiMode = EPluginInputModeNone;
     iAutoOpenFlag = ETrue;
     iBackgroundCtrl = 0;
     iResourceChange = EFalse;  
-    iWaiterAo = NULL;
-    iPendingRequest = NULL;
-    iServerReady = EFalse;
     }
 
-void RPeninputServerImpl::ConstructL(const TUid& aUid, TRequestStatus* aStatus)
+void RPeninputServerImpl::ConstructL(const TUid& aUid)
     {
     CCoeStatic * obj = CCoeEnv::Static()->FindStatic(aUid);
     CPenInputSingletonClient* client;
@@ -170,7 +170,7 @@ void RPeninputServerImpl::ConstructL(const TUid& aUid, TRequestStatus* aStatus)
         client = new (ELeave)CPenInputSingletonClient(aUid,this);       
     //Note: The client is destroyed by the control environment automatically    
     //User::LeaveIfError(DoConnectL());
-    TRAPD(err, DoConnectL(aStatus));
+    TRAPD(err, DoConnectL());
     if(KErrNone != err)
         {
         client->SetInvalid();
@@ -217,9 +217,8 @@ void RPeninputServerImpl::Close()
 // RPeninputServerImpl::DoConnectL
 // ---------------------------------------------------------------------------
 //
-TInt RPeninputServerImpl::DoConnectL(TRequestStatus* aStatus)
+TInt RPeninputServerImpl::DoConnectL()
     { 
-    iPendingRequest = aStatus;
     TInt error = KErrNone;
     /*************** Note ************************************************/
     // Multi-thread case is not considered here!
@@ -234,45 +233,36 @@ TInt RPeninputServerImpl::DoConnectL(TRequestStatus* aStatus)
         {
         // server does not yet exist or it has terminated
         // try to create the server
-        
-        if(!aStatus) //sync call
-            {
-            error = StartThreadL();
-            if(KErrNone == error)
-                {
-                error = CreateSession( KPeninputServerName,
-                                           Version(),
-                                           KDefaultMessageSlots,EIpcSession_Sharable);
-                AddObserver();
-                }
+        error = StartThreadL();
 
+        if ( error == KErrNone || error == KErrAlreadyExists )
+            {
+            // creation of server successfull, or some other client thread 
+            // created it first -> try to connect again
+            error = CreateSession( KPeninputServerName,
+                           Version(),
+                           KDefaultMessageSlots );
             }
         else
             {
-            StartThreadAsyncL();  
-            return KErrNone;
+            return error;
             }
         }
-    else //server alreay there
-        {
-        if(aStatus)
-            OnServerStarted(KErrNone);
-        else
-            AddObserver();
-        }
-    return error;
-    }
 
-void RPeninputServerImpl::AddObserver()
-    {
     TThreadId srvThreadId;
-	TIpcArgs arg;        
-
-	TPckg<TThreadId> msg(srvThreadId);
-	arg.Set(KMsgSlot0,&msg);    
-	SendReceive(EPeninputRequestServerThreadId,arg);
-
+    if(KErrNone == error)
+        {
+        TIpcArgs arg;        
+    
+        TPckg<TThreadId> msg(srvThreadId);
+        arg.Set(KMsgSlot0,&msg);    
+        SendReceive(EPeninputRequestServerThreadId,arg);
+        }
+    
     iServerExit = EFalse;
+	//create default observer
+    /*CPeninputServerObserver* observer = CPeninputServerObserver::NewL(this,
+                                                       srvThreadId,iObserver);*/
     if(iObserver)
         {
         iObserver->ReConstructL(srvThreadId);
@@ -281,12 +271,22 @@ void RPeninputServerImpl::AddObserver()
         {
         iObserver = CPeninputServerObserver::NewL(this,srvThreadId);
         }
+
+    
+    TFindThread findPeninputServer( _L("*peninputserver*") );
+    TFullName name;
+    if (findPeninputServer.Next( name ) == KErrNone)
+        {
+        // if server is already running return immediately
+        //return KErrAlreadyExists;
+        RThread p;
+        TInt r = p.Open(name);
+        p.Close();
+        } 
+    
+    return error;
     }
 
-TBool RPeninputServerImpl::ServerReady() 
-	{ 
-	return iServerReady;
-	}
 
 // ---------------------------------------------------------------------------
 // RPeninputServerImpl::Version
@@ -645,14 +645,6 @@ TInt RPeninputServerImpl::SupportInputMode()
     return supportMode;
     }    
     
-TInt RPeninputServerImpl::SetInputLanguage( TInt aLanguage )
-	{
-	TIpcArgs arg; 
-	TPckgC<TInt> msg(aLanguage);
-	arg.Set(KMsgSlot0,&msg); 
-	return SendReceive(EPeninputRequestSetInputLanguage, arg);
-	}
-
 void RPeninputServerImpl::BackgroudDefaultOri( TInt aOri )   
     {
     TIpcArgs arg;    
@@ -680,27 +672,6 @@ void RPeninputServerImpl::BackgroudDefaultOri( TInt aOri )
     
     }
   */  
-
-TInt RPeninputServerImpl::StartThreadAsyncL()
-	{
-	//ASSERT_DUBUG(!iWaiterAo)
-	iWaiterAo = new CWaitingServerAo(this);
-	
-	
-	TInt ret = KErrNone;
-	
-	RProcess server;
-	User::LeaveIfError(server.Create(KPeninputServerExe,KNullDesC()));
-	
-	
-	server.Rendezvous(iWaiterAo->RequestStatus());
-	server.Resume();
-	server.Close();
-										   
-	return ret;
-	}
-
-
 // ---------------------------------------------------------------------------
 // RPeninputServerImpl::StartThread
 // Creates the server thread on WINS and server process on MARM.
@@ -713,24 +684,38 @@ TInt RPeninputServerImpl::StartThreadAsyncL()
 //
 TInt RPeninputServerImpl::StartThreadL()
     {
+    if(iWaitScheduler)
+        return KErrLaunchingServer;
     TInt ret = KErrNone;
+
+    // check if server already exists
+    TFindServer findPeninputServer( KPeninputServerName );
+    TFullName name;
+    if (findPeninputServer.Next( name ) == KErrNone)
+        {
+        // if server is already running return immediately
+        return KErrAlreadyExists;
+        } 
+    // request status which gets signaled when server has been initialized
 
     RProcess server;
     User::LeaveIfError(server.Create(KPeninputServerExe,KNullDesC()));
+    TRequestStatus status;            
+    //User::WaitForRequest(status);
     
-    TRequestStatus status;
-    server.Rendezvous(status);
+    
+    iObserver = CPeninputServerObserver::NewL(this,
+                                               0);
+    server.Rendezvous(iObserver->RequestStatus());
     server.Resume();
     server.Close();
+                                               
+    iWaitScheduler = CPeninputServerWaiter::NewL(); 
+    iWaitScheduler->Start();
+    ret = iWaitScheduler->Error();
     
-    User::WaitForRequest(status);
-    if(ESignalServerReady != status.Int())
-        ret = KErrGeneral;
-    else
-        iServerReady = ETrue;     
     return ret;
     }
-
 
 // ---------------------------------------------------------------------------
 // RPeninputServerImpl::AddPeninputServerObserverL
@@ -1081,13 +1066,6 @@ void RPeninputServerImpl::FinalClose()
     iPenUiNotificationHandler.Close();
     delete iObserver;
     iObserver = NULL;
-    
-    if ( iWaiterAo )
-    	{
-		iWaiterAo->Cancel();
-		delete iWaiterAo;
-		iWaiterAo = NULL;
-    	}
     
     RSessionBase::Close();    
     }
@@ -1521,54 +1499,5 @@ void CPenUiBackgroundWnd::Hide()
     MakeVisible( EFalse );
     }
 
-
-void RPeninputServerImpl::OnServerStarted(TInt aErr)
-    {
-    if(KErrNone == aErr)
-        {
-        iServerReady = ETrue;
-        }
-    
-    //create session
-     
-     TInt error = CreateSession( KPeninputServerName,
-                           Version(),
-                           KDefaultMessageSlots,EIpcSession_Sharable);
-
-    if(KErrNone == error)
-        AddObserver();
-   
-    User::RequestComplete(iPendingRequest, aErr);
-    }
-
-CWaitingServerAo::CWaitingServerAo(RPeninputServerImpl* aClient) 
-                : CActive(CActive::EPriorityStandard),
-                  iClient(aClient)
-    {
-    CActiveScheduler::Add(this);
-    SetActive();
-    iStatus = KRequestPending;
-    }
-
-
-void CWaitingServerAo::RunL()
-    {
-    TInt err = ESignalServerReady == iStatus.Int() ? KErrNone : KErrGeneral;
-
-    iClient->OnServerStarted(err);
-    }
-
-void CWaitingServerAo::DoCancel()
-    {
-    }
-TInt CWaitingServerAo::RunError(TInt /*aError*/)
-    {
-    return KErrNone;
-    }
-
-TRequestStatus& CWaitingServerAo::RequestStatus()
-    {
-    return iStatus;
-    }
 // End of File
 

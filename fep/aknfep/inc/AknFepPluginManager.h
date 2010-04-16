@@ -50,7 +50,6 @@
 class MAknFepManagerInterface;
 class CAknFepUiSpellContainer;
 class CPenInputGSInterface;
-class CConnectAo;
 
 // CLASS DECLARATION
 
@@ -432,8 +431,6 @@ public:
 
     void HandleiDimGainForeground(TBool aGain);
 
-    void OnServerReady(TInt aErr);
-    
 public: // inline    
     
     /**
@@ -1024,44 +1021,8 @@ private:    // Data
 	// Modify for bug ELZG-7WZC35 begin
 	TInt iAlignment;
 	// Modify for bug ELZG-7WZC35 end
-
-    CConnectAo* iConnectAo;
     };
 
-class CConnectAo : public CActive
-    {
-public:
-	
-    CConnectAo(CAknFepPluginManager* aClient);
-    
-    /**
-     * From CActive
-     * will be called when stroke timer ends
-     *
-     * @since S60 v4.0
-     */
-    void RunL();
-
-    /**
-     * From CActive
-     * will be called if RunL leaves
-     *
-     * @since S60 v4.0
-     */
-    TInt RunError(TInt aError);
-
-    /**
-     * From CActive
-     * will be called when stroke timer has been cancelled
-     *
-     * @since S60 v4.0
-     */
-    void DoCancel();
-    void RequestConnect();
-    TRequestStatus& RequestStatus(); 
-    
-    CAknFepPluginManager* iClient;
-    };
 
 
 // ---------------------------------------------------------------------------

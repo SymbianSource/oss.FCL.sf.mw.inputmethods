@@ -112,10 +112,11 @@ void CAknFepFnKeyManager::SetFnKeyState(CAknFepFnKeyManager::TFnKeyState aState)
     if(keyboardType == EPtiKeyboardHalfQwerty && EFnKeyNext == iFnKeyState &&
         aState == EFnKeyNone)
         {    
-        if(aState == EFnKeyNext && keyboardType == EPtiKeyboardHalfQwerty)
-        	{
-        	iFepMan.PtiEngine()->CancelTimerActivity();
-        	}
+        
+        //if(aState == EFnKeyNext && keyboardType == EPtiKeyboardHalfQwerty)
+        //	{
+        //	iFepMan.PtiEngine()->CancelTimerActivity();
+        //	}
         iFnKeyState = aState;
         iFepMan.SetCase( (TCase)iPreviousCase );
         iFepMan.UpdateIndicators();

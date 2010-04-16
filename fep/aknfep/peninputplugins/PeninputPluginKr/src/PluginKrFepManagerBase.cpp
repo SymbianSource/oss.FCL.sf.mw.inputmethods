@@ -15,13 +15,13 @@
 *
 */
 
-#include <S32MEM.H>
+#include <s32mem.h>
 #include <centralrepository.h>
 #include <AknFepGlobalEnums.h>
-#include <AknFepPeninputEnums.h>
-#include <AknEdsts.h>
+#include <aknfeppeninputenums.h>
+#include <aknedsts.h>
 
-#include <PeninputCommonLayoutGlobalEnum.h>
+#include <peninputcommonlayoutglobalenum.h>
 
 #include "PeninputPluginKrDbg.h"
 #include "PeninputPluginKr.hrh"

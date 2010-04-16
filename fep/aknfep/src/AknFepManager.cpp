@@ -89,7 +89,6 @@
 #include <peninputcmd.h>
 
 #include <AknSettingCache.h>
-#include <peninputgsinterface.h>
 #include <aknextendedinputcapabilities.h>
 #include <AvkonInternalCRKeys.h>
 #include <hlplch.h>
@@ -180,7 +179,7 @@ const TInt KTouchInputPreviewOff = 0;
 const TKeyEvent KAknCcpuCopyEvent = {EKeyF18, EEikCmdEditCopy, EModifierCtrl, 1};  // Copy event for AknCcpuSupport
 const TKeyEvent KAknCcpuCutEvent  = {EKeyF18, EEikCmdEditCut, EModifierCtrl, 1};   // Cut event for AknCcpuSupport
 
-const TInt KMaxMenuSize = 25;
+const TInt KMaxMenuSize = 23;
 const TInt KEditorMenuPermitedSend[KMaxMenuSize] = 
     {         
     EJapanFepCmdModeHiragana,
@@ -205,9 +204,7 @@ const TInt KEditorMenuPermitedSend[KMaxMenuSize] =
     EChinFepCmdModeNumber,
     EAknCmdEditModeArabicIndicNumber,
     EAknCmdEditModeEasternArabicIndicNumber,
-    EAknCmdEditModeIndicNumber,
-    EAknCmdEditModeKorean,
-    EAknCmdEditModeEnglish
+    EAknCmdEditModeIndicNumber
     };   
      
 #endif // RD_SCALABLE_UI_V2 
@@ -758,8 +755,9 @@ TBool CAknFepManager::TryCloseUiL()
 //#endif // __ITI_LONGPRESS_NUM_SHIFT_COPYPASTE__
                 
 #ifdef RD_SCALABLE_UI_V2 
-               
-            if (iFepPluginManager->BeforeSpell())
+            
+            if ( iFepPluginManager != NULL && 
+                 iFepPluginManager->BeforeSpell() )
                 {
                 iFepPluginManager->SetBeforeSpell(EFalse);
                 }
@@ -2422,7 +2420,11 @@ TKeyResponse CAknFepManager::HandleShiftKeyEventL(TEventCode aEventCode)
 #ifdef __HALF_QWERTY_KEYPAD               
 #ifdef __SHIFT_KEY_LOOP
 				// Cancel multitap timer
-				iPtiEngine->CancelTimerActivity();
+                
+                if( iPtiEngine != NULL )
+                    {
+				    iPtiEngine->CancelTimerActivity();
+                    }
 #endif //__SHIFT_KEY_LOOP       
 #endif //__HALF_QWERTY_KEYPAD      
 #endif //RD_INTELLIGENT_TEXT_INPUT
@@ -5126,7 +5128,11 @@ void CAknFepManager::DynInitMenuPaneL(TInt aResourceId, CAknFepUiInterfaceMenuPa
     if (R_AVKON_TOUCH_TOUCHINPUT_MENU == aResourceId )
         {
         oldPermitModes = iPermittedInputModes;
-        iPermittedInputModes = iFepPluginManager->PreviousPermitMode();   
+        
+        if( iFepPluginManager != NULL )
+            {
+            iPermittedInputModes = iFepPluginManager->PreviousPermitMode();
+            }
         }
 
     iFepPluginManager->InitMenuPaneL( iRememberEditorState, aMenuPane, aResourceId );
@@ -7847,7 +7853,11 @@ void CAknFepManager::LaunchSelectModeMenuL()
                 if ( charResourceId != ENoCharacters && IsAbleToLaunchSCT()&& 
                         EditorType() != CAknExtendedInputCapabilities::EEikSecretEditorBased)
                     {
-                    menuPane->ConstructMenuSctRowL( iEditCharsPtr, charResourceId );
+                    
+                    if( menuPane != NULL )
+                        {
+                        menuPane->ConstructMenuSctRowL( iEditCharsPtr, charResourceId );
+                        }
                     }
                 else
                     {

@@ -2430,7 +2430,7 @@ EXPORT_C void CAknFepCtrlRepeatButton::HandleTimerOut(const CAknFepTimer* aTimer
 #ifdef RD_TACTILE_FEEDBACK
 			    if (UiLayout()->SupportTactileFeedback())
 			        {
-			        UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
+			        UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad);
 			        }
 #endif //RD_TACTILE_FEEDBACK                
                 }
@@ -3365,7 +3365,7 @@ EXPORT_C CFepUiBaseCtrl* CAknFepCtrlCommonButton::HandlePointerUpEventL(const TP
     
 #ifdef RD_TACTILE_FEEDBACK   
     {
-    UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
+    UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
     }
 #endif // RD_TACTILE_FEEDBACK    
     

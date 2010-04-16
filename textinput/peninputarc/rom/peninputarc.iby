@@ -37,11 +37,11 @@ file=ABI_DIR\BUILD_DIR\peninputpluginutils.dll            SHARED_LIB_DIR\peninpu
 S60_APP_AIF_RSC(peninputserver)
 data = \EPOC32\DATA\Z\resource\apps\peninputserver.RSC 	"resource\apps\peninputserver.rsc" 
 
-ECOM_PLUGIN(gspeninputplugin.dll, gspeninputplugin.rsc)
+//ECOM_PLUGIN(gspeninputplugin.dll, gspeninputplugin.rsc)
 ECOM_PLUGIN(2000B5E7.dll, 2000B5E7.rss)
-S60_APP_AIF_ICONS(gspeninputplugin)
-S60_APP_EXE(peninputsetting)
-S60_APP_AIF_RSC(peninputsetting)
+//S60_APP_AIF_ICONS(gspeninputplugin)
+//S60_APP_EXE(peninputsetting)
+//S60_APP_AIF_RSC(peninputsetting)
 
 #endif //__PEN_SUPPORT
 

@@ -399,7 +399,8 @@ TKeyResponse CTruiShortcutsContainer::OfferKeyEventL
 			case EKeyEnter:
 			case EKeyOK:
 			    {
-                if ( CurrentItemIndex() == 0 )
+			    
+                if ( iListBox != NULL && CurrentItemIndex() == 0 )
                     {
                     // Select "Create new shortcut" item
                     AddShortcutL();

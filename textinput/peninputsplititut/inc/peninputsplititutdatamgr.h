@@ -495,6 +495,7 @@ private: // data member
     TAknTextLineLayout iVkAlphaText2;
     TAknTextLineLayout iVkAlphaText3;
     TAknTextLineLayout iVkNumText;
+    TAknTextLineLayout iVkTextPlusForNumbericOnly;
 
     // resource id for generic itut resource file
     TInt iCommonResId;

@@ -162,7 +162,7 @@ EXPORT_C void CAknFepCtrlButton::ConstructFromResourceL(TResourceReader& aReader
 
         	if (bmpMskId != KInvalidBmp)
         		{
-        		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         		                       id,
         		                       bmp,
         		                       maskbmp,
@@ -176,7 +176,7 @@ EXPORT_C void CAknFepCtrlButton::ConstructFromResourceL(TResourceReader& aReader
                 }
             else
                 {
-        	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         	                           id,
         	                           bmp,
         	                           bmpFileName,
@@ -243,7 +243,7 @@ EXPORT_C void CAknFepCtrlButton::ConstructFromResourceL()
 
         	if (bmpMskId != KInvalidBmp)
         		{
-        		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         		                       id,
         		                       bmp,
         		                       maskbmp,
@@ -257,7 +257,7 @@ EXPORT_C void CAknFepCtrlButton::ConstructFromResourceL()
                 }
             else
                 {
-        	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         	                           id,
         	                           bmp,
         	                           bmpFileName,
@@ -548,7 +548,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL(TResourceReader& aRe
 
         	if (bmpMskId != KInvalidBmp)
         		{
-        		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         		                       id,
         		                       bmp,
         		                       maskbmp,
@@ -561,7 +561,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL(TResourceReader& aRe
                 }
             else
                 {
-        	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         	                           id,
         	                           bmp,
         	                           bmpFileName,
@@ -604,7 +604,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL(TResourceReader& aRe
     		{
     		if( colorGroup == KInvalidColorGroup )
     			{
-	    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                        id,
                        iForgroundBmp,
                        iForgroundBmpMask,
@@ -614,7 +614,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL(TResourceReader& aRe
     			}
 			else
 				{
-			    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+			    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                              id,
                              KAknsIIDQsnIconColors,
                              colorGroup,
@@ -637,7 +637,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL(TResourceReader& aRe
     		}
     		else
 	        {
-		    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+		    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 		                           id,
 		                           iForgroundBmp,
 		                           bmpFileName,
@@ -699,7 +699,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL()
 
         	if (bmpMskId != KInvalidBmp)
         		{
-        		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         		                       id,
         		                       bmp,
         		                       maskbmp,
@@ -712,7 +712,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL()
                 }
             else
                 {
-        	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         	                           id,
         	                           bmp,
         	                           bmpFileName,
@@ -766,7 +766,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL()
     		{
     		if( colorGroup == KInvalidColorGroup )
     			{
-	    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                        id,
                        iForgroundBmp,
                        iForgroundBmpMask,
@@ -776,7 +776,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL()
     			}
 			else
 				{
-			    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+			    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                              id,
                              KAknsIIDQsnIconColors,
                              colorGroup,
@@ -798,7 +798,7 @@ EXPORT_C void CAknFepCtrlDragButton::ConstructFromResourceL()
     		}
     		else
 	        {
-		    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+		    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 		                           id,
 		                           iForgroundBmp,
 		                           bmpFileName,
@@ -983,7 +983,7 @@ EXPORT_C void CAknFepCtrlDragButton::Draw()
 	// Draw background    
  	if( IsDimmed() ) // Dimmed state
     	{
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 		                         *gc, 
 		                         rect, 
 		                         innerRect,
@@ -1004,7 +1004,7 @@ EXPORT_C void CAknFepCtrlDragButton::Draw()
     	{
 		// Normal state or pressed state
 		TAknsItemID ImgID = (IsDragging() | PointerDown()) ? iPressedImgID : iNormalImgID;
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 	                     *gc, 
 	                     rect, 
 	                     innerRect,
@@ -1234,7 +1234,7 @@ EXPORT_C void CAknFepCtrlMultiModeButton::ConstructFromResourceL(TResourceReader
     TAknsItemID id;
     
     id.Set(TInt(colorMajorSkinId), skinitemid);
-    TInt error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    TInt error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                            iFontColor,
                                            id,
                                            textcoloridx);
@@ -1246,7 +1246,7 @@ EXPORT_C void CAknFepCtrlMultiModeButton::ConstructFromResourceL(TResourceReader
     
     SetFontColor(iFontColor);    
     
-    error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                       iShadowFontColor,
                                       id,
                                       shadowtextcoloridx);
@@ -1337,7 +1337,7 @@ EXPORT_C void CAknFepCtrlMultiModeButton::ConstructFromResourceL()
     TAknsItemID id;
     
     id.Set(TInt(colorMajorSkinId), skinitemid);
-    TInt error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    TInt error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                            iFontColor,
                                            id,
                                            textcoloridx);
@@ -1349,7 +1349,7 @@ EXPORT_C void CAknFepCtrlMultiModeButton::ConstructFromResourceL()
     
     SetFontColor(iFontColor);    
     
-    error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                       iShadowFontColor,
                                       id,
                                       shadowtextcoloridx);
@@ -1452,7 +1452,7 @@ EXPORT_C void CAknFepCtrlMultiModeButton::AddModeL(TResourceReader& aReader)
         	        {
         	        if( colorGroup == KInvalidColorGroup )
 	        	    	{
-	        		    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	        		    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 	        		                           id,
 	        		                           bmp,
 	        		                           maskbmp,
@@ -1462,7 +1462,7 @@ EXPORT_C void CAknFepCtrlMultiModeButton::AddModeL(TResourceReader& aReader)
 	        	    	}
         	    	else
 	        	    	{
-	        	    	AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+	        	    	AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
 				                             id,
 				                             KAknsIIDQsnIconColors,
 				                             colorGroup,
@@ -1483,7 +1483,7 @@ EXPORT_C void CAknFepCtrlMultiModeButton::AddModeL(TResourceReader& aReader)
         	        }
         	    else
         	        {
-        	        AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        	        AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         	                               id,
         	                               bmp,
         	                               bmpFileName,
@@ -1934,6 +1934,7 @@ EXPORT_C TInt CAknFepCtrlMultiModeButton::GetRealCaseByMode(TInt aModeIndex) con
 //
 void CAknFepCtrlMultiModeButton::GetRangeListL(RArray<TInt>& aList)
     {
+	CleanupClosePushL( aList );
     for (TInt i = 0; i < NumberOfModes(); i++)
         {
         if (aList.Find(iModesList[i]->iRangeId) == KErrNotFound)
@@ -1941,6 +1942,7 @@ void CAknFepCtrlMultiModeButton::GetRangeListL(RArray<TInt>& aList)
             aList.AppendL(iModesList[i]->iRangeId);
             }
         }
+    CleanupStack::Pop();
     }
 
 // -----------------------------------------------------------------------------
@@ -2844,7 +2846,7 @@ EXPORT_C void CAknFepCtrlCommonButton::ConstructFromResourceL(TResourceReader& a
     		{
     		if( colorGroup == KInvalidColorGroup )
     			{
-	    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                        id,
                        iForgroundBmp,
                        iForgroundBmpMask,
@@ -2854,7 +2856,7 @@ EXPORT_C void CAknFepCtrlCommonButton::ConstructFromResourceL(TResourceReader& a
     			}
 			else
 				{
-			    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+			    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                              id,
                              KAknsIIDQsnIconColors,
                              colorGroup,
@@ -2876,7 +2878,7 @@ EXPORT_C void CAknFepCtrlCommonButton::ConstructFromResourceL(TResourceReader& a
     		}
     	else
 	        {
-		    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+		    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 		                           id,
 		                           iForgroundBmp,
 		                           bmpFileName,
@@ -2936,7 +2938,7 @@ EXPORT_C void CAknFepCtrlCommonButton::ConstructFromResourceL()
 		{
 		if( colorGroup == KInvalidColorGroup )
 			{
-    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                    id,
                    iForgroundBmp,
                    iForgroundBmpMask,
@@ -2946,7 +2948,7 @@ EXPORT_C void CAknFepCtrlCommonButton::ConstructFromResourceL()
 			}
 		else
 			{
-		    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+		    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                          id,
                          KAknsIIDQsnIconColors,
                          colorGroup,
@@ -2968,7 +2970,7 @@ EXPORT_C void CAknFepCtrlCommonButton::ConstructFromResourceL()
 		}
     else
         {
-	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 	                           id,
 	                           iForgroundBmp,
 	                           bmpFileName,
@@ -3017,7 +3019,7 @@ EXPORT_C void CAknFepCtrlCommonButton::Draw()
     // Draw background    
     if( IsDimmed() ) // Dimmed state
     	{
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 		                         *gc, 
 		                         rect, 
 		                         innerRect,
@@ -3048,7 +3050,7 @@ EXPORT_C void CAknFepCtrlCommonButton::Draw()
 			ImgID = /*iPressed*/PointerDown()? iPressedImgID : iNormalImgID;
 			}
 		
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 	                     *gc, 
 	                     rect, 
 	                     innerRect,
@@ -3101,7 +3103,7 @@ EXPORT_C void CAknFepCtrlCommonButton::Draw()
 			TRgb color( KRgbBlack );  // sane default for nonskinned case
 			if ( AknsUtils::AvkonSkinEnabled() )
 				{
-				AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+				AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
 				               color, KAknsIIDQsnTextColors, iTextColorIndex );
 				}	
 			if( IsDimmed() )
@@ -3531,7 +3533,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL(TResourceReade
     		{
     		if( colorGroup == KInvalidColorGroup )
     			{
-	    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                        id,
                        iForground1Bmp,
                        iForground1BmpMask,
@@ -3541,7 +3543,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL(TResourceReade
     			}
 			else
 				{
-			    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+			    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                              id,
                              KAknsIIDQsnIconColors,
                              colorGroup,
@@ -3563,7 +3565,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL(TResourceReade
     		}
     	else
 	        {
-		    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+		    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 		                           id,
 		                           iForground1Bmp,
 		                           bmpFileName,
@@ -3590,7 +3592,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL(TResourceReade
     		{
     		if( colorGroup == KInvalidColorGroup )
     			{
-	    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                        id2,
                        iForground2Bmp,
                        iForground2BmpMask,
@@ -3600,7 +3602,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL(TResourceReade
     			}
 			else
 				{
-			    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+			    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                              id2,
                              KAknsIIDQsnIconColors,
                              colorGroup,
@@ -3622,7 +3624,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL(TResourceReade
     		}
     	else
 	        {
-		    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+		    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 		                           id2,
 		                           iForground2Bmp,
 		                           bmpFileName,
@@ -3679,7 +3681,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL()
 		{
 		if( colorGroup == KInvalidColorGroup )
 			{
-    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                    id,
                    iForground1Bmp,
                    iForground1BmpMask,
@@ -3689,7 +3691,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL()
 			}
 		else
 			{
-		    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+		    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                          id,
                          KAknsIIDQsnIconColors,
                          colorGroup,
@@ -3710,7 +3712,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL()
 		}
     else
         {
-	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 	                           id,
 	                           iForground1Bmp,
 	                           bmpFileName,
@@ -3746,7 +3748,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL()
 		{
 		if( colorGroup == KInvalidColorGroup )
 			{
-    		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+    		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
                    id2,
                    iForground2Bmp,
                    iForground2BmpMask,
@@ -3756,7 +3758,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL()
 			}
 		else
 			{
-		    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+		    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
                          id,
                          KAknsIIDQsnIconColors,
                          colorGroup,
@@ -3777,7 +3779,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::ConstructFromResourceL()
 		}
     else
         {
-	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
 	                           id,
 	                           iForground2Bmp,
 	                           bmpFileName,
@@ -3832,7 +3834,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::Draw()
 		// Draw background    
 		if( IsDimmed() ) // Dimmed state
     	{
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 		                         *gc, 
 		                         rect, 
 		                         innerRect,
@@ -3873,7 +3875,7 @@ EXPORT_C void CAknFepCtrlMultiImageButton::Draw()
 			ImgID = /*iPressed*/PointerDown()? iPressedImgID : iNormalImgID;
 			}
 		
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 	                     *gc, 
 	                     rect, 
 	                     innerRect,

@@ -235,6 +235,10 @@ void CSplitItutDataMgr::ReadLafInfo()
     // Key text row 2                               
     iVkAlphaText2 = AknLayoutScalable_Avkon::cell_ituss_key_t3(1).LayoutLine();
     
+	// Plus for Numberic Only keypad
+	iVkTextPlusForNumbericOnly = 
+			AknLayoutScalable_Avkon::cell_ituss_key_t5(0).LayoutLine();
+	
     // close button
     TAknWindowLineLayout funcbtn, funcbtnbg, funcbtninner;
     TAknLayoutRect funcrect, funcbgrect, funcinnerrect, arrowleftinnerrect, arrowrightinnerrect;
@@ -605,7 +609,14 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
 				return &iVkNumText;
         		}
         case EKeypadRightTextLine1:
-            return &iVkAlphaText1;
+			if ( iInputMode == ENumber || iInputMode == ENativeNumber )
+				{
+				return &iVkTextPlusForNumbericOnly;
+				}
+			else
+				{
+				return &iVkAlphaText1;
+				}
         case EKeypadRightTextLine2:
             return &iVkAlphaText2;
         case EKeypadRightTextLine3:

@@ -139,10 +139,11 @@ void CChnItutUiStatePredict::OnExit()
     
     //show indicator 
     iOwner->LayoutContext()->Control(ECtrlIdIndicator)->Hide(EFalse);
+    
     // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
-    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
-    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
-    iOwner->LayoutContext()->ShowArrowBtn(0);
+    //iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    //iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
+    //iOwner->LayoutContext()->ShowArrowBtn(0);
     
     }
 

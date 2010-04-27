@@ -175,7 +175,7 @@ void CAknFepCtrlCommonBgCtrl::DrawFrame( CFbsBitGc* aGc,
 										 TAknsItemID aFrameID,
 										 TAknsItemID aCenterID )
 	{
-	MAknsSkinInstance* skin = AknsUtils::SkinInstance();
+	MAknsSkinInstance* skin = UiLayout()->SkinInstance();
     TRect innerRect = aRect;
     innerRect.Shrink( 4, 4 );
 	

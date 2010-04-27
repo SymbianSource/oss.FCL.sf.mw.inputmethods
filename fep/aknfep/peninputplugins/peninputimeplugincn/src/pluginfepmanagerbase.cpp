@@ -285,6 +285,7 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
 						}
 					HBufC8* buf8 = HBufC8::NewLC( sizeof(TInt) // For active index
 												 + sizeof(TInt) // For the count of item array
+												 + sizeof(TInt) // langcode
 												 + sizeof(TInt)*( itemArray->Count() ) // For the size of each item
 												 + sumSize// For all of char data 
 												 );
@@ -293,7 +294,9 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
 					CleanupClosePushL(writeStream);                
 					writeStream.Open( buf8Ptr );                
 					writeStream.WriteInt32L( candidatelist->iActiveIndex );
-					writeStream.WriteInt32L( itemArray->Count() );                
+					writeStream.WriteInt32L( itemArray->Count() );
+					writeStream.WriteInt32L( candidatelist->iLangCode );
+					
 					for ( TInt i = 0; i < itemArray->Count(); i++  )
 						{
 						writeStream.WriteInt32L( (*itemArray)[i].Size() );

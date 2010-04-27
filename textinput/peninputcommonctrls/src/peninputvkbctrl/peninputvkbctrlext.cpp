@@ -211,7 +211,8 @@ EXPORT_C void CPeninputVkbCtrlExt::ReorganizeVkbKeys(
         }  
     SetFontColor( textColor );
     
-    Draw();
+    // Remove that draw operation to improve performance
+    //Draw();
     }
 
 // --------------------------------------------------------------------------

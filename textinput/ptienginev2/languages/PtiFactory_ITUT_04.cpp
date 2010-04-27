@@ -74,7 +74,9 @@ MPtiKeyMapData* CPtiVariantITUT_04DataFactory::KeyMapDataForLanguageL(TInt aLang
 
 void CPtiVariantITUT_04DataFactory::ListLanguagesL(RArray<TInt>& aResult)
     {
+    CleanupClosePushL(aResult);
     aResult.AppendL(ELangSpanish);
+    CleanupStack::Pop();
     }
 
 // End of file

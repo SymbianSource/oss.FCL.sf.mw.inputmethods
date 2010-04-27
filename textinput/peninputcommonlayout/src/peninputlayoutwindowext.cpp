@@ -1475,7 +1475,7 @@ EXPORT_C void CPeninputLayoutWindowExt::SetSwitchBtnFont(CAknFepCtrlEventButton&
 EXPORT_C void CPeninputLayoutWindowExt::SetSwitchBtnTextColor(CAknFepCtrlEventButton& aSwitchBtn)
     {
     TRgb textColor;
-    TInt error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    TInt error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                            textColor,
                                            KAknsIIDQsnTextColors,
                                            EAknsCIQsnTextColorsCG59);
@@ -1488,7 +1488,7 @@ EXPORT_C void CPeninputLayoutWindowExt::SetSwitchBtnTextColor(CAknFepCtrlEventBu
     aSwitchBtn.SetFontColor( textColor );   
     
     TRgb shadowTextColor;    
-    error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                       shadowTextColor,
                                       KAknsIIDQsnTextColors,
                                       EAknsCIQsnTextColorsCG62);

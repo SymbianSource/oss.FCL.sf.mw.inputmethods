@@ -325,6 +325,10 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	// Key text row 2                               
 	iVkAlphaText2ForPrtWest = AknLayoutScalable_Avkon::cell_ituss_key_t3(1).LayoutLine();
 	
+	// Plus for Numberic Only keypad
+	iVkTextPlusForNumbericOnlyForPrtWest = 
+			AknLayoutScalable_Avkon::cell_ituss_key_t5(0).LayoutLine();
+	
 	// close button
 	TAknWindowLineLayout funcbtn, funcbtnbg, funcbtninner;
 	TAknLayoutRect funcrect, funcbgrect, funcinnerrect, arrowleftinnerrect, arrowrightinnerrect;
@@ -628,12 +632,12 @@ void CGenericItutDataMgr::ReadLafInfo()
     rect.Move(-iLayoutOffset.iX, -iLayoutOffset.iY);
     iIcfChnRect = rect;
     //iIcfChnRect.iTl.iY += 10;
-#ifdef LAF_MODIFY
+//#ifdef LAF_MODIFY
     //if(IsChinese())
-        {
-        iIcfChnRect.Move(0,-iIcfChnRect.iTl.iY + 14);
-        }
-#endif
+//        {
+//        iIcfChnRect.Move(0,-iIcfChnRect.iTl.iY + 14);
+//        }
+//#endif
 
     // Keypad
     TInt keypadvariety = iLandScape ? 1 : 0;
@@ -1352,7 +1356,14 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWestUIAndChineseSpellUI(TInt aD
                 }
             else
                 {
-                return &iVkAlphaText1ForPrtWest;
+				if ( iInputMode == ENumber || iInputMode == ENativeNumber )
+					{
+					return &iVkTextPlusForNumbericOnlyForPrtWest;
+					}
+				else
+					{
+					return &iVkAlphaText1ForPrtWest;
+					}
                 }
             }
         case EKeypadRightTextLine2:

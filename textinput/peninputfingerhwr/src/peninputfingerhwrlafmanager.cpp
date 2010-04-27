@@ -699,8 +699,10 @@ TAknTextLineLayout CPeninputFingerHwrLAFManager::SctpadKeyTxtLayout()
 //
 TAknTextLineLayout CPeninputFingerHwrLAFManager::FixSctpadKeyTxtLayout()
     {
+    //TAknTextLineLayout layout = AknLayoutScalable_Avkon::
+    //    cell_fshwr2_syb_bg_pane_t1(0).LayoutLine();
     TAknTextLineLayout layout = AknLayoutScalable_Avkon::
-        cell_fshwr2_syb_bg_pane_t1(0).LayoutLine();
+    	fshwr2_func_candi_cell_pane_t1(0).LayoutLine();
     return layout;
     }
 

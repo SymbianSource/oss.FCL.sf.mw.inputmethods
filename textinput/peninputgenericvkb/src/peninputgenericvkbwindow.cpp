@@ -1409,7 +1409,7 @@ void CPeninputGenericVkbWindow::GetPopupWndInfoFromResL( TResourceReader aRes,
 
     TAknsItemID id;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     TInt popWinBmpId = aRes.ReadInt16();
     TInt popWinBmpMaskId = aRes.ReadInt16();
@@ -1693,6 +1693,17 @@ void CPeninputGenericVkbWindow::DimArrowKeys( TBool aDimArrow )
         iArrowLeftButton->SetDimmed( aDimArrow );
         iArrowRightButton->SetDimmed( aDimArrow );
         }	    	
+    }
+
+void CPeninputGenericVkbWindow::DimEnterKey( TBool aDimmed )
+    {
+	CAknFepCtrlEventButton* enterBtn = static_cast<CAknFepCtrlEventButton*>
+	                              ( Control(EPeninutWindowCtrlIdEnterBtn) );	
+    if(iLayoutContext->LayoutType() == EPluginInputModeFSQ 
+       && enterBtn )
+        {
+        enterBtn->SetDimmed( aDimmed );        
+        }
     }
 
 // ---------------------------------------------------------------------------
@@ -2365,7 +2376,15 @@ void CPeninputGenericVkbWindow::ConstructFSQAccentListL( TInt aLangId )
         item.iText.Copy( KVietAccentList2 );
         iAccentCmdList.Append( item );
         }
-    
+    else if( aLangId == ELangRussian || aLangId == ELangUkrainian || aLangId == ELangBulgarian )
+    	{
+        _LIT( KCyrillicAccent, "\x00E0 - \x017E" );
+        CFepLayoutChoiceList::SItem item;
+
+        item.iCommand = EPeninputVkbLayoutAccented1;
+        item.iText.Copy( KCyrillicAccent );      
+        iAccentCmdList.Append( item );        
+    	}
     // 10X3
     else if ( is10x3 )
         {
@@ -2514,7 +2533,7 @@ void CPeninputGenericVkbWindow::HideCandidateList()
 // Show candidate list
 // --------------------------------------------------------------------------
 //
-void CPeninputGenericVkbWindow::ShowCandidateListL( const CDesCArray* aItemArray,
+void CPeninputGenericVkbWindow::ShowCandidateListL( TInt aAlign, const CDesCArray* aItemArray,
                                                    TInt aActiveIndex )
     {
     if ( !iCandidateList )
@@ -2522,21 +2541,25 @@ void CPeninputGenericVkbWindow::ShowCandidateListL( const CDesCArray* aItemArray
         return;
         }                
     iCandidateList->ClearItemsL();
+	iCandidateList->SetTextAlignment((CGraphicsContext::TTextAlign) aAlign);
+
     if ( aItemArray )
-        {        
-        for ( TInt i = 0; i < aItemArray->Count(); i++ )
+        {
+		CFepLayoutChoiceList::SItem item;
+		item.iCommand = 0;
+		
+        for (TInt i = 0; i < aItemArray->Count(); ++i)
             {
-            CFepLayoutChoiceList::SItem item;
-            item.iCommand = 0;
-            if ( (*aItemArray)[i].Length() <= item.iText.MaxLength() )
+            if ((*aItemArray)[i].Length() <= item.iText.MaxLength())
                 {
-                item.iText.Copy( (*aItemArray)[i] );
+                item.iText.Copy((*aItemArray)[i]);
                 }
             else
                 {
                 // Given longer than maxlength, display the part of less than max
-                item.iText.Copy( (*aItemArray)[i].Left( item.iText.MaxLength() ) );
+                item.iText.Copy((*aItemArray)[i].Left(item.iText.MaxLength()));
                 }
+			
             iCandidateList->AddItemL( item );
             }
         }
@@ -2612,7 +2635,7 @@ void CPeninputGenericVkbWindow::CreateCandidateListL()
 //
 TRgb CPeninputGenericVkbWindow::CandidateListTextColor()
     {
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     TRgb matchlistcolor = KRgbBlack;
     AknsUtils::GetCachedColor( skininstance, 
                                 matchlistcolor, 
@@ -2627,7 +2650,7 @@ TRgb CPeninputGenericVkbWindow::CandidateListTextColor()
 //
 TRgb CPeninputGenericVkbWindow::AutoCompletionPartColor()
     {
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     TRgb matchlistcolor = KRgbBlack;
     AknsUtils::GetCachedColor( skininstance, 
                                 matchlistcolor, 
@@ -2641,7 +2664,7 @@ void CPeninputGenericVkbWindow::SetIndiBubbleImageL( const TInt aImgID1,
                                               const TInt aImgID2,
                                               const TInt aMaskID2 )
     {
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     CFbsBitmap* bmp1 = NULL;
     CFbsBitmap* mask1 = NULL;

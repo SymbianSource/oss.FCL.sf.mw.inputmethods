@@ -121,7 +121,6 @@ protected:
     
     IMPORT_C virtual void DrawPageInfo();
 
-
     void ScrollPageUp();
     
     void ScrollPageDown();

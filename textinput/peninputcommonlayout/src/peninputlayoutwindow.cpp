@@ -1635,7 +1635,7 @@ EXPORT_C void CPeninputLayoutWindow::SetSwitchBtnFont(CAknFepCtrlEventButton& aS
 EXPORT_C void CPeninputLayoutWindow::SetSwitchBtnTextColor(CAknFepCtrlEventButton& aSwitchBtn)
     {
     TRgb textColor;
-    TInt error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    TInt error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                            textColor,
                                            KAknsIIDQsnTextColors,
                                            EAknsCIQsnTextColorsCG59);
@@ -1648,7 +1648,7 @@ EXPORT_C void CPeninputLayoutWindow::SetSwitchBtnTextColor(CAknFepCtrlEventButto
     aSwitchBtn.SetFontColor( textColor );   
     
     TRgb shadowTextColor;    
-    error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                       shadowTextColor,
                                       KAknsIIDQsnTextColors,
                                       EAknsCIQsnTextColorsCG62);
@@ -1844,7 +1844,7 @@ void CPeninputLayoutWindow::ReadShadowInfoL( TResourceReader aResReader )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     for ( TInt i = 0; i < KShadowBmpBr + 1; i++ )
     	{
@@ -1915,7 +1915,7 @@ void CPeninputLayoutWindow::ReadBackgroundInfoL( TInt aResId )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     const TInt16 bmpId = resReader.ReadInt16();
     const TInt16 bmpMskId = resReader.ReadInt16();
     skinitemid = resReader.ReadInt16();   
@@ -1963,7 +1963,7 @@ EXPORT_C void CPeninputLayoutWindow::ReadIcfInfo( TResourceReader aResReader )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     const TInt16 icfbgId = aResReader.ReadInt16();
     const TInt16 icfbgmaskId = aResReader.ReadInt16();
@@ -2174,7 +2174,7 @@ void CPeninputLayoutWindow::ReadMultiLineIcfInforL(TInt aResID)
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     const TInt16 icfbgId = resReader.ReadInt16();
     const TInt16 icfbgmaskId = resReader.ReadInt16();

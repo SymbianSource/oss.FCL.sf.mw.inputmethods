@@ -793,7 +793,6 @@ void CAknFepVkbWindow::DoIdleConstructL()
     CleanupStack::PopAndDestroy(); // reader
 
     //add item
-    
     CFepLayoutChoiceList::SItem item;
 
     item.iCommand = EAknFepVkbVkbAccented1;
@@ -863,7 +862,18 @@ void CAknFepVkbWindow::DimArrowKeys( TBool aDimArrow )
         iClientArea->DimArrowKeys( aDimArrow );
         }	    	
     }
-    
+
+void CAknFepVkbWindow::DimEnterKey( TBool aDimmed )
+    {
+	CAknFepCtrlEventButton* enterBtn = static_cast<CAknFepCtrlEventButton*>
+	                              ( Control(EAknFepVkbCtrlIdEnterBtn) );	
+    if( UiLayout()->PenInputType() == EPluginInputModeFSQ 
+       && enterBtn )
+        {
+        enterBtn->SetDimmed( aDimmed );        
+        }
+    }
+
 // --------------------------------------------------------------------------
 // CAknFepVkbWindow::GetPopupWndInfoFromRes
 // (other items were commented in a header)
@@ -876,7 +886,7 @@ void CAknFepVkbWindow::GetPopupWndInfoFromRes(TResourceReader aReader)
 
     TAknsItemID id;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     TInt popWinBmpId = aReader.ReadInt16();
     TInt popWinBmpMaskId = aReader.ReadInt16();
@@ -1274,45 +1284,47 @@ void CAknFepVkbWindow::HideCandidateListOnFSQ()
 // Show candidate list
 // --------------------------------------------------------------------------
 //
-void CAknFepVkbWindow::ShowCandidateListOnFSQL( const CDesCArray* aItemArray,
-                                                   TInt aActiveIndex )
+void CAknFepVkbWindow::ShowCandidateListOnFSQL(TInt aAlign, const CDesCArray* aItemArray,
+                                                   TInt aActiveIndex)
     {
-    if ( UiLayout()->PenInputType() != EPluginInputModeFSQ )
-        {
+    if (UiLayout()->PenInputType() != EPluginInputModeFSQ)
         return;
-        }                
+             
     iCandidateList->ClearItemsL();
-    if ( aItemArray )
-        {        
-        for ( TInt i = 0; i < aItemArray->Count(); i++ )
+    iCandidateList->SetTextAlignment((CGraphicsContext::TTextAlign) aAlign);
+
+    if (aItemArray)
+        {
+		CFepLayoutChoiceList::SItem item;
+		item.iCommand = 0;
+		
+        for (TInt i = 0; i < aItemArray->Count(); ++i)
             {
-            CFepLayoutChoiceList::SItem item;
-            item.iCommand = 0;
-            if ( (*aItemArray)[i].Length() <= item.iText.MaxLength() )
+            if ((*aItemArray)[i].Length() <= item.iText.MaxLength())
                 {
-                item.iText.Copy( (*aItemArray)[i] );
+                item.iText.Copy((*aItemArray)[i]);
                 }
             else
                 {
                 // Given longer than maxlength, display the part of less than max
-                item.iText.Copy( (*aItemArray)[i].Left( item.iText.MaxLength() ) );
+                item.iText.Copy((*aItemArray)[i].Left(item.iText.MaxLength()));
                 }
-            iCandidateList->AddItemL( item );
+            iCandidateList->AddItemL(item);
             }
-        
-			iCandidateList->SetCurrentFocusedIndex( aActiveIndex );
+
+        iCandidateList->SetCurrentFocusedIndex(aActiveIndex);
         }
     
     CFepLayoutMultiLineIcf* icf = static_cast<CFepLayoutMultiLineIcf*>
          (Control(EPeninputWindowCtrlIdMultiLineICF)); 
 
-    TPoint posBelow( 0, 0 );
-    TPoint posRight( 0, 0 );
+    TPoint posBelow(0, 0);
+    TPoint posRight(0, 0);
     posBelow = posRight = icf->Rect().iTl;
-    icf->InlineTextPos( posBelow, posRight );
+    icf->InlineTextPos(posBelow, posRight);
     TPoint tlPos = posRight;
-    iCandidateList->Display( TRect( tlPos, tlPos ), 
-                             CFepLayoutPopupWnd::EDispBottomRight );
+    iCandidateList->Display(TRect(tlPos, tlPos), 
+                            CFepLayoutPopupWnd::EDispBottomRight);
     }
 
 // --------------------------------------------------------------------------
@@ -1320,7 +1332,7 @@ void CAknFepVkbWindow::ShowCandidateListOnFSQL( const CDesCArray* aItemArray,
 // --------------------------------------------------------------------------
 //
 void CAknFepVkbWindow::HandleCandidateListSelectedOnFSQL
-                         ( CFepUiBaseCtrl* aCtrl, const TDesC& aEventData )
+                         ( CFepUiBaseCtrl* /*aCtrl*/, const TDesC& aEventData )
     {
     if ( UiLayout()->PenInputType() != EPluginInputModeFSQ )
         {
@@ -1381,7 +1393,7 @@ const TRgb CAknFepVkbWindow::CandidateListTextColorOnFSQ()
     TRgb matchlistcolor = KRgbBlack;
     if ( UiLayout()->PenInputType() == EPluginInputModeFSQ )
         {
-        MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+        MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
         AknsUtils::GetCachedColor( skininstance, 
                                     matchlistcolor, 
                                     KAknsIIDQsnTextColors,
@@ -1400,7 +1412,7 @@ const TRgb CAknFepVkbWindow::AutoCompletionPartColorOnFSQ()
     TRgb matchlistcolor = KRgbBlack;
     if ( UiLayout()->PenInputType() == EPluginInputModeFSQ )
         {
-        MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+        MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
         AknsUtils::GetCachedColor( skininstance, 
                                     matchlistcolor, 
                                     KAknsIIDQsnTextColors,

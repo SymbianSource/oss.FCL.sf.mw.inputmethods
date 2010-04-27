@@ -256,7 +256,8 @@ public:
      * @return None
      */
     void DimArrowKeys( TBool aDimArrow );
-
+    
+    void DimEnterKey( TBool aDimmed );
 
     /**
      * Pop up switcher windows
@@ -364,7 +365,7 @@ public:
      * @param aActiveIndex, the default index     
      * @return None
      */	
-    void ShowCandidateListL( const CDesCArray* aItemArray,
+    void ShowCandidateListL( TInt aAlign, const CDesCArray* aItemArray,
                             TInt aActiveIndex );    
     
     /**

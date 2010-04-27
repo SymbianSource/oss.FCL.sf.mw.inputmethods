@@ -215,6 +215,8 @@ public:
     
     void DimArrowKeys( TBool aDimArrow );
     
+    void DimEnterKey( TBool aDimmed );
+    
     void ShowBubble(TInt aShow);
     
     void PreProcessRange(const TInt& aRange);

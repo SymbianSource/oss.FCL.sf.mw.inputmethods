@@ -238,6 +238,7 @@ EXPORT_C CFepLayoutChoiceList::CFepLayoutChoiceList(CFepUiLayout* aUiLayout,
     SetControlType(ECtrlPopupChoiceList);
 	iSubItemSkinID 		= KAknsIIDNone;
 	iBackgroundSkinID   = KAknsIIDNone;
+	iAlign              = CGraphicsContext::ELeft;
     }
 
 // CFepLayoutChoiceList::HitTest
@@ -445,7 +446,7 @@ void CFepLayoutChoiceList::DrawItem(const TRect& aRect, const CFepLayoutChoiceLi
        	    iSubItemSkinID.iMinor != EAknsMinorNone)
        		{
        		gc->Activate( BitmapDevice() ); 
-			AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+			AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
                          *gc, 
                          rtFocusRect, 
                          rtInnerRect,
@@ -481,7 +482,7 @@ void CFepLayoutChoiceList::DrawItem(const TRect& aRect, const CFepLayoutChoiceLi
         gc->SetPenColor(iFontColor);
         gc->SetPenStyle(CGraphicsContext::ESolidPen);
 
-        gc->DrawText(aItem.iText, aRect, iBaseline, CGraphicsContext::ELeft, iMargin);
+        gc->DrawText(aItem.iText, aRect, iBaseline, iAlign, iMargin);
 
         gc->DiscardFont();
         }
@@ -504,7 +505,7 @@ void CFepLayoutChoiceList::DrawChoiceListBackground(const TRect& aRect)//, TBool
 	    CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
 	    
 	    gc->Activate( BitmapDevice() ); 
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 	                     *gc, 
 	                     aRect, 
 	                     rtInnerRect,
@@ -652,4 +653,9 @@ EXPORT_C void CFepLayoutChoiceList::AfterDisplayed()
     {
     TRAP_IGNORE(AfterDisplayedL());
     }
+
+EXPORT_C void CFepLayoutChoiceList::SetTextAlignment(const CGraphicsContext::TTextAlign aAlign)
+	{
+	iAlign = aAlign;
+	}
 //End Of File

@@ -103,9 +103,9 @@ void CWesternItutUiStateMatchSelection::OnEntryL()
 void CWesternItutUiStateMatchSelection::OnExit()
     {
     // Hide ICF, Backspace, Arrow contrls when exit to avoid flick
-    iOwner->LayoutContext()->ShowArrowBtn(0);
-    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
-    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( ETrue );
+    //iOwner->LayoutContext()->ShowArrowBtn(0);
+    //iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    //iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( ETrue );
     iSelList->CloseWindow();
     iIcf->SetOverLapState(EFalse);
     }
@@ -186,22 +186,30 @@ TInt CWesternItutUiStateMatchSelection::HandleCommandL(TInt aCmd, TUint8* aData)
         case ECmdPenInputFingerMatchList:
             {
             RDesReadStream readStream;
-            TPtr8 countPtr(aData, 2*sizeof(TInt), 2*sizeof(TInt));
+            TPtr8 countPtr(aData, 3 * sizeof(TInt), 3 * sizeof(TInt));
             readStream.Open(countPtr);
             CleanupClosePushL(readStream);
 
             TInt candcount = readStream.ReadInt32L();
             TInt totalsize = readStream.ReadInt32L();
+			TInt langcode = readStream.ReadInt32L();
+			TInt align = TBidiText::ScriptDirectionality((TLanguage)langcode);
+			if(align != TBidiText::ELeftToRight)
+				align = CGraphicsContext::ERight;
+			else
+				align = CGraphicsContext::ELeft;
+			
             CleanupStack::PopAndDestroy(&readStream);
 
-            TPtr8 ptr(aData + 2*sizeof(TInt), totalsize - 2*sizeof(TInt), 
-                      totalsize - 2*sizeof(TInt));
+            TPtr8 ptr(aData + 3 * sizeof(TInt), totalsize - 3 * sizeof(TInt), 
+                      totalsize - 3 * sizeof(TInt));
             readStream.Open(ptr);
             CleanupClosePushL(readStream);
 
             iCandlist.ResetAndDestroy();
 
             iSelList->ClearItemsL();
+            iSelList->SetTextAlignment((CGraphicsContext::TTextAlign) align);
             CFepLayoutChoiceList::SItem item;
 
             for (TInt i = 0; i < candcount; i++)

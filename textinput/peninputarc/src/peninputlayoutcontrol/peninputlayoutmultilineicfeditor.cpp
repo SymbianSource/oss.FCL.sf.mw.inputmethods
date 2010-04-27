@@ -997,6 +997,11 @@ TInt CFepLayoutMultiLineIcfEditor::UpdateSecretTextL(TAny* aEditArea)
             }
         }
     
+    if ( editArea->iCursorVisible )
+    	{
+        editArea->SetSelectionL( editArea->iCursorSel );
+        editArea->Draw();
+    	}
     editArea->UpdateArea(editArea->Rect(),EFalse);
     return KErrNone;
     }
@@ -1131,7 +1136,7 @@ void CFepLayoutMultiLineIcfEditor::Draw()
         TRect innerrect = Rect();
   	    //innerrect.Shrink(4, 4);
 
-        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
    		                         *gc, 
    		                         Rect(), 
    		                         innerrect,
@@ -1198,7 +1203,7 @@ void CFepLayoutMultiLineIcfEditor::DrawMfneText()
 
     if (iSkinIdSet)
         {
-   		AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+   		AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
     	                         *gc, 
     	                         Rect(), 
     	                         Rect(),

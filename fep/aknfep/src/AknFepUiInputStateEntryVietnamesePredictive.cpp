@@ -32,6 +32,7 @@
 #include "AknFepUIManagerStateInterface.h"      //MAknFepUIManagerStateInterface
 #include "AknFepCaseManager.h"
 #include "AknFepVietnameseToneManager.h"
+#include "AknFepPluginManager.h"
 
 #include <uikon.hrh>
 #include <PtiEngine.h>                          //CPtiEngine
@@ -191,6 +192,17 @@ TBool TAknFepInputStateEntryVietnamesePredictive::HandleStarKeyL(TKeyPressLength
         {
         if (fepMan->IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction))
             {
+#ifdef RD_SCALABLE_UI_V2
+            if ( (iIsLastWord || ptiengine->NumberOfCandidates() == 1) 
+                 && ( fepMan->PluginUIManager()->PluginInputMode() == EPluginInputModeItut ) )
+                {
+                fepMan->PluginUIManager()->SetFingerMatchSelectionState(ETrue);
+                fepMan->PluginUIManager()->ShowAllCandidates();
+                iMatchState = EWordMatchNone;
+                iIsLastWord = EFalse;
+                return ETrue;
+                }
+#endif //RD_SCALABLE_UI_V2
             if (fepMan->IsFlagSet(CAknFepManager::EFlagNoMatches))
                 {
                 //no more matches

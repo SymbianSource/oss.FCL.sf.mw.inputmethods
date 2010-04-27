@@ -133,8 +133,13 @@ struct TFepITITooltipText
  */
 struct TFepITICandidateList
     {
-    CDesCArray* iItemArray;
+	union
+		{
+		CDesCArray* iItemArray;
+		const RArray<TPtrC>* iItemArray2;
+		};
     TInt iActiveIndex;
+    TInt iLangCode;
     };
 
 class CPtiEngine;

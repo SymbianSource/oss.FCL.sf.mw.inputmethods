@@ -28,6 +28,8 @@
 #include <AknDef.h>
 #include <AknsConstants.h>
 #include <coemain.h>
+#include <aknsutils.h> 
+#include <aknsskininstance.h> 
 
 #ifdef RD_TACTILE_FEEDBACK
 #include <touchfeedback.h>
@@ -50,9 +52,6 @@ EXPORT_C CFepUiLayout::CFepUiLayout(MLayoutOwner* aLayoutOwner)
                             GetDefaultScreenSizeAndRotation(ptSize);
     //set the screen size in case any one need use it.                            
     iScreenSize = ptSize.iPixelSize;  
-#ifdef RD_TACTILE_FEEDBACK
-    iTactileSupported = EFalse;
-#endif // RD_TACTILE_FEEDBACK
     }
 
 // ---------------------------------------------------------------------------
@@ -66,7 +65,8 @@ EXPORT_C CFepUiLayout::~CFepUiLayout()
     //remove all registered area
     SignalOwner(ESignalDeRegisterAllFeedbackArea);
 #endif // RD_TACTILE_FEEDBACK 
-    delete iRootCtrl;        
+    delete iRootCtrl;   
+    delete iExtension;
     } 
 
 // ---------------------------------------------------------------------------
@@ -77,7 +77,13 @@ EXPORT_C CFepUiLayout::~CFepUiLayout()
 EXPORT_C void CFepUiLayout::BaseConstructL()
     {
     iRootCtrl = CFepUiLayoutRootCtrl::NewL(this);
-    __ASSERT_DEBUG(iLayoutOwner,User::Leave(EUiLayoutNotReady));     
+    __ASSERT_DEBUG(iLayoutOwner,User::Leave(EUiLayoutNotReady));  
+    iExtension = new(ELeave) CFepUiLayoutExt;
+#ifdef RD_TACTILE_FEEDBACK
+    iExtension->iTactileSupported = EFalse;
+#endif // RD_TACTILE_FEEDBACK
+    iExtension->iSkinInstance = AknsUtils::SkinInstance();
+    iExtension->iTouchFeedbackInstance = MTouchFeedback::Instance();
     }
 
 // ---------------------------------------------------------------------------
@@ -448,7 +454,7 @@ EXPORT_C void CFepUiLayout::OnActivate()
     iLayoutReady = ETrue;
     iRootCtrl->OnActivate();
 #ifdef RD_TACTILE_FEEDBACK  
-    iTactileSupported = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
+    iExtension->iTactileSupported = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
 #endif // RD_TACTILE_FEEDBACK      
     }
     
@@ -791,7 +797,7 @@ EXPORT_C TBool CFepUiLayout::SupportTactileFeedback()
     {
     TBool tactileSupported;
 #ifdef RD_TACTILE_FEEDBACK
-    tactileSupported = iTactileSupported;
+    tactileSupported = iExtension->iTactileSupported;
 #endif // RD_TACTILE_FEEDBACK
 	return tactileSupported;
     }
@@ -804,7 +810,7 @@ EXPORT_C TBool CFepUiLayout::SupportTactileFeedback()
 EXPORT_C void CFepUiLayout::DoTactileFeedback(TInt aType)
     {
 #ifdef RD_TACTILE_FEEDBACK
-    MTouchFeedback::Instance()->InstantFeedback((TTouchLogicalFeedback)aType);
+	iExtension->iTouchFeedbackInstance->InstantFeedback((TTouchLogicalFeedback)aType);
 #endif // RD_TACTILE_FEEDBACK    
     }
 
@@ -818,16 +824,16 @@ EXPORT_C void CFepUiLayout::DoTactileFeedback(TInt aType, TBool aVibraEnable, TB
 #ifdef RD_TACTILE_FEEDBACK
 	if (aAudioEnable && aVibraEnable)
 		{
-		MTouchFeedback::Instance()->InstantFeedback((TTouchLogicalFeedback)aType);
+	    iExtension->iTouchFeedbackInstance->InstantFeedback((TTouchLogicalFeedback)aType);
 		}
 	else
 		{
-		TBool vibraEnabled = MTouchFeedback::Instance()->FeedbackEnabledForThisApp( ETouchFeedbackVibra );
-		TBool audioEnabled = MTouchFeedback::Instance()->FeedbackEnabledForThisApp( ETouchFeedbackAudio );
+		TBool vibraEnabled = iExtension->iTouchFeedbackInstance->FeedbackEnabledForThisApp( ETouchFeedbackVibra );
+		TBool audioEnabled = iExtension->iTouchFeedbackInstance->FeedbackEnabledForThisApp( ETouchFeedbackAudio );
 		
-		MTouchFeedback::Instance()->SetFeedbackEnabledForThisApp(aVibraEnable, aAudioEnable);
-		MTouchFeedback::Instance()->InstantFeedback((TTouchLogicalFeedback)aType);
-		MTouchFeedback::Instance()->SetFeedbackEnabledForThisApp(vibraEnabled, audioEnabled);
+		iExtension->iTouchFeedbackInstance->SetFeedbackEnabledForThisApp(aVibraEnable, aAudioEnable);
+		iExtension->iTouchFeedbackInstance->InstantFeedback((TTouchLogicalFeedback)aType);
+		iExtension->iTouchFeedbackInstance->SetFeedbackEnabledForThisApp(vibraEnabled, audioEnabled);
 		}
 #endif // RD_TACTILE_FEEDBACK  
 	}

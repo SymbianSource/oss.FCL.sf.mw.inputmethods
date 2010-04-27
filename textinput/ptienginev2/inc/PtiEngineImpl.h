@@ -231,6 +231,7 @@ NONSHARABLE_CLASS(CPtiEngineImpl) : public CBase
 #ifdef FF_DUAL_LANGUAGE_SUPPORT
         void  SearchKeySequenceInSecLang(TPtrC aIn, TDes8& aOut);
 #endif // FF_DUAL_LANGUAGE_SUPPORT        
+        TBool IsCurrentCoreSupportCaseInfo();
 	private:	
 	    /*
 	    * Pointer to PtiEngine front end.

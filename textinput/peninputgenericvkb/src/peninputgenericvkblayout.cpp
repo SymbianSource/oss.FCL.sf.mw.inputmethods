@@ -253,6 +253,12 @@ TInt CPeninputGenericVkbLayout::HandleCommand( TInt aCmd, TUint8* aData )
             vkbWindow->DimArrowKeys( IsDimArrowKeys );
             }
             break;
+        case ECmdPenInputDimEnterKey:
+            {
+            TBool isDimEnterKey = *((TUint16*)( aData ));            
+            vkbWindow->DimEnterKey( isDimEnterKey );            
+            }
+            break;
         case ECmdPenInputSetPromptText:
             {
             if ( iLayoutType == EPluginInputModeFSQ )
@@ -400,45 +406,20 @@ void CPeninputGenericVkbLayout::HandleAppInfoChange(const TDesC& aInfo,
             { 
             if ( aInfo.Length() > 0 && !iInEditWordQueryDlg)
                 {
-				icf->HideBubble();
+				//icf->HideBubble();
                 CPeninputGenericVkbWindow* vkbWindow = 
                     static_cast<CPeninputGenericVkbWindow*>(iLayoutWindow);
                 vkbWindow->SetIndiWithTextFlag( ETrue );
                 vkbWindow->IndiBubbleWithText();
-                
-                if ( vkbWindow->IndicatorData().iIndicatorImgID != 0 && 
-                     vkbWindow->IndicatorData().iIndicatorMaskID != 0 && 
-                     vkbWindow->IndicatorData().iIndicatorTextImgID != 0 &&
-                     vkbWindow->IndicatorData().iIndicatorTextMaskID != 0 )
-                    {
-					TRAP_IGNORE( vkbWindow->SetIndiBubbleImageL( 
-                            vkbWindow->IndicatorData().iIndicatorImgID,
-                            vkbWindow->IndicatorData().iIndicatorMaskID,
-                            vkbWindow->IndicatorData().iIndicatorTextImgID,
-                            vkbWindow->IndicatorData().iIndicatorTextMaskID ));
-                    }
                 icf->ShowBubble(aInfo,icf->MsgBubbleCtrl()->Rect());
                 }
             else
                 {
-                icf->HideBubble();
+                //icf->HideBubble();
                 CPeninputGenericVkbWindow* vkbWindow = 
                     static_cast<CPeninputGenericVkbWindow*>(iLayoutWindow);
                 vkbWindow->SetIndiWithTextFlag( EFalse );
                 vkbWindow->IndiBubbleWithoutText();
-                
-                if ( vkbWindow->IndicatorData().iIndicatorImgID != 0 && 
-                     vkbWindow->IndicatorData().iIndicatorMaskID != 0 && 
-                     vkbWindow->IndicatorData().iIndicatorTextImgID != 0 &&
-                     vkbWindow->IndicatorData().iIndicatorTextMaskID != 0 )
-                    {
-					TRAP_IGNORE( vkbWindow->SetIndiBubbleImageL( 
-                            vkbWindow->IndicatorData().iIndicatorImgID,
-                            vkbWindow->IndicatorData().iIndicatorMaskID,
-                            vkbWindow->IndicatorData().iIndicatorTextImgID,
-                            vkbWindow->IndicatorData().iIndicatorTextMaskID));
-                    }
-                
                 icf->ShowBubble(KEmptyString, icf->MsgBubbleCtrl()->Rect());
                 }
             }            
@@ -532,27 +513,26 @@ void CPeninputGenericVkbLayout::HandleShowTooltipCmdL( TUint8* aData )
     {
     CPeninputGenericVkbWindow* vkbWindow = 
     				static_cast<CPeninputGenericVkbWindow*>(iLayoutWindow);
-    if ( !vkbWindow )
+    if (!vkbWindow)
         {
         return;
         }
     
-    TPtr8 buf8( aData, sizeof(TInt32), sizeof(TInt32) );
+    TPtr8 buf8(aData, sizeof(TInt32), sizeof(TInt32));
     RDesReadStream readStream;
-    readStream.Open( buf8 );
-    CleanupClosePushL( readStream );
+    readStream.Open(buf8);
+    CleanupClosePushL(readStream);
     TInt dataSize = readStream.ReadInt32L();
-    CleanupStack::PopAndDestroy( &readStream );
-    if ( dataSize > 0 )
+    CleanupStack::PopAndDestroy(&readStream);
+    if (dataSize > 0)
         {
-        TUint16* dataAddress = (TUint16*)( aData + sizeof(TInt32) );
-        HBufC* tooltipText = ReadTextInfoHBufCL( dataAddress, 
-                                                 ( dataSize + 1 )/ 2 );
-        if ( tooltipText )
+        TUint16* dataAddress = (TUint16*)( aData + sizeof(TInt32));
+        HBufC* tooltipText = ReadTextInfoHBufCL(dataAddress, (dataSize + 1) / 2);
+        if (tooltipText)
             {
-            CleanupStack::PushL( tooltipText );
-            vkbWindow->ShowTooltipL( *tooltipText );
-            CleanupStack::PopAndDestroy( tooltipText );
+            CleanupStack::PushL(tooltipText);
+            vkbWindow->ShowTooltipL(*tooltipText);
+            CleanupStack::PopAndDestroy(tooltipText);
             }        
         }     
     }
@@ -573,7 +553,7 @@ void CPeninputGenericVkbLayout::HandleShowCandidateListCmdL( TUint8* aData )
     // Read candidate data from a block of memory staring from aData
     // The format is activeIndex | count of candiates | 
     // length 1 | text 1 | length 2 | text 2 |...
-    TPtr8 buf8( aData, sizeof( TInt32 )*2, sizeof( TInt32 )*2 );
+    TPtr8 buf8( aData, sizeof( TInt32 )* 3, sizeof( TInt32 )* 3 );
     RDesReadStream readStream;
     readStream.Open( buf8 );
     CleanupClosePushL( readStream );
@@ -581,12 +561,18 @@ void CPeninputGenericVkbLayout::HandleShowCandidateListCmdL( TUint8* aData )
     TInt activeIndex = readStream.ReadInt32L();
     // Get coutn of candidates
     TInt count = readStream.ReadInt32L();    
+	TInt langCode = readStream.ReadInt32L();
+	TInt align = TBidiText::ScriptDirectionality((TLanguage)langCode);
+	if(align != TBidiText::ELeftToRight)
+		align = CGraphicsContext::ERight;
+	else
+		align = CGraphicsContext::ELeft;
     CleanupStack::PopAndDestroy( &readStream );
     
     CDesCArray* itemArray = NULL;
     if ( count > 0 )
         {        
-        TUint8* curPointer = aData + sizeof(TInt) * 2;
+        TUint8* curPointer = aData + sizeof(TInt) * 3;
         itemArray = new (ELeave) CDesCArrayFlat( count );
         CleanupStack::PushL( itemArray );
         for ( TInt i = 0; i < count; i++ )
@@ -614,13 +600,13 @@ void CPeninputGenericVkbLayout::HandleShowCandidateListCmdL( TUint8* aData )
                 curPointer += textSize;
                 }
             }
-        vkbWindow->ShowCandidateListL( itemArray, activeIndex );
+        vkbWindow->ShowCandidateListL( align, itemArray, activeIndex );
         CleanupStack::PopAndDestroy( itemArray );
         }
     else
         {
         // Open empty candidate list.
-        vkbWindow->ShowCandidateListL( NULL, activeIndex );        
+        vkbWindow->ShowCandidateListL( align, NULL, activeIndex );        
         }    
     }
 

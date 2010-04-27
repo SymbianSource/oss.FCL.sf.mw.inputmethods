@@ -387,6 +387,7 @@ private: // data member
     TAknTextLineLayout iVkAlphaText3ForPrtWest;
     TAknTextLineLayout iVkNumTextForPrtWest;
     TAknTextLineLayout iVkBigNumTextForPrtWest;
+    TAknTextLineLayout iVkTextPlusForNumbericOnlyForPrtWest;
     TRect iCloseRectForPrtWest;
     TRect iCloseInnerRectForPrtWest;
     TRect iArrowLeftRectForPrtWest;

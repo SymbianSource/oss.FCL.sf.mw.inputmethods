@@ -309,6 +309,8 @@ public:
      */       
     IMPORT_C void SetCurrentFocusedIndex(const TInt aIndex);
     
+    
+    IMPORT_C void SetTextAlignment(const CGraphicsContext::TTextAlign aAlign);
 protected:
 
     /**
@@ -503,6 +505,11 @@ protected:
      */
      TAknsItemID iSubItemSkinID;
      TAknsItemID iBackgroundSkinID;
+     
+     /*
+      * iText alignment
+      */        
+     CGraphicsContext::TTextAlign iAlign;
     };
 
 #include "peninputlayoutchoicelist.inl"

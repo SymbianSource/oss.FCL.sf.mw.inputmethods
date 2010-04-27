@@ -382,6 +382,7 @@ TBool IsFileInDir( CDir* aDir, const TDesC& aFileName )
 TInt CPenInputImePluginItut::SupportModesL(CPtiEngine* /*aPtiEngine*/,
                                              RArray<TImePlguinImplDetail>& aSupportList) const 
     {
+	CleanupClosePushL( aSupportList );
     RImplInfoPtrArray infoArray;
     TUid id;
     id.iUid = KHwrLayoutInterfaceId;
@@ -467,7 +468,7 @@ TInt CPenInputImePluginItut::SupportModesL(CPtiEngine* /*aPtiEngine*/,
         }    
 
     CleanupStack::PopAndDestroy(&infoArray); // infoArray    
-    
+    CleanupStack::Pop( &aSupportList );
     return 0;
     }
 

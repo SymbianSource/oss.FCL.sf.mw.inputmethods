@@ -204,6 +204,9 @@ public:
      * @return None
      */          
     void DimArrowKeys( TBool aDimArrow );
+    
+    void DimEnterKey( TBool aDimmed );
+    
     /**
      * Get current control who has focus
      *
@@ -319,7 +322,7 @@ public:
      * @param aActiveIndex, the default index     
      * @return None
      */	
-    void ShowCandidateListOnFSQL( const CDesCArray* aItemArray,
+    void ShowCandidateListOnFSQL( TInt aAlign, const CDesCArray* aItemArray,
                             TInt aActiveIndex );    
     
     /**

@@ -134,6 +134,7 @@ const TInt16 KZhuyinIndicator = 0x2462;
 
 // Local method declarations.
 LOCAL_C TInt RemapVietnameseAccentedCharacter(TUint16 aChr);
+const TUid KXt9ImplementationUid = {0x102830B9};
 	
 //
 // CPtiEngineImpl implementation
@@ -2052,7 +2053,7 @@ void CPtiEngineImpl::Capitalize(TDes& aTextBuffer)
 	// Predictive QWERTY (XT9) changes ---->
 	// PtiXt9Core handles the capitalization it self, and it should not be overriden 
 	// byt the PtiEngine.
-	if ( iInputMode==EPtiEngineQwertyPredictive )
+	if ( IsCurrentCoreSupportCaseInfo() )
 	    {
 	    return;
 	    }
@@ -2657,6 +2658,7 @@ CPtiCoreLanguage* CPtiEngineImpl::CreateNumericLanguageL(CPtiCore* aCore)
 //
 void CPtiEngineImpl::GetModeNameIndexL(TPtiChineseVariant aVariant, RArray<TInt>& aResult)
 	{
+	CleanupClosePushL( aResult );
 	TResourceReader reader;	
 	TFileName fileName;
 
@@ -2703,6 +2705,7 @@ void CPtiEngineImpl::GetModeNameIndexL(TPtiChineseVariant aVariant, RArray<TInt>
 		}
 
 	CleanupStack::PopAndDestroy(3);   // fsSession, rsFile, rBuffer
+    CleanupStack::Pop();
 	}
 
 
@@ -2885,6 +2888,7 @@ TBool CPtiEngineImpl::SetToneMark(TInt aToneMark)
 //	
 void CPtiEngineImpl::GetAvailableLanguagesL(RArray<TInt>& aResult)
 	{
+	CleanupClosePushL( aResult ); 
 	aResult.Reset();
 	
 	const TInt count = iLanguages->Count();
@@ -2895,6 +2899,7 @@ void CPtiEngineImpl::GetAvailableLanguagesL(RArray<TInt>& aResult)
 			aResult.AppendL(iLanguages->At(i)->LanguageCode());
 			}
 		}	
+    CleanupStack::Pop();
 	}
 
 
@@ -3253,6 +3258,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
                                                TBool aUseExtendedSet,
                                                TPtiKeyboardType aKeyboardType)
 	{
+	CleanupClosePushL( aResult );
 	aResult.Reset();		
 	TPtiNumericKeyBinding bind;		
 	
@@ -3271,6 +3277,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
 	if (keyboardType == EPtiKeyboard12Key ||
 	    keyboardType == EPtiKeyboardNone)
 	    {
+		CleanupStack::Pop();
 	    // No qwerty data available, can't go on.
 	    return;
 	    }
@@ -3289,6 +3296,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
 			bind = NumericModeKeysForNonLatinNumberLanguages[i];
 			User::LeaveIfError(aResult.Append(bind));		
 			}	
+		CleanupStack::Pop();
 		
 		return;			
 		}
@@ -3372,6 +3380,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
                 }				
 			}			      
 		}		
+	CleanupStack::Pop();
 	}	
 	
 	
@@ -3815,6 +3824,7 @@ TInt CPtiEngineImpl::SetKeyboardType(TPtiKeyboardType aType)
 void CPtiEngineImpl::KeyboardTypesSupportedByLanguageL(TInt aLanguage,
                                                        RArray<TPtiKeyboardType>& aResult)
     {
+	CleanupClosePushL( aResult );
     CPtiCoreLanguage* lang = NULL;
     
     if (iCurrentLanguage && iCurrentLanguage->LanguageCode() == aLanguage)
@@ -3876,6 +3886,7 @@ void CPtiEngineImpl::KeyboardTypesSupportedByLanguageL(TInt aLanguage,
             User::LeaveIfError(aResult.Append(EPtiKeyboardHalfQwerty));
             }            
         }                
+    CleanupStack::Pop();
     }
 
 
@@ -3907,7 +3918,7 @@ TPtiKeyboardType CPtiEngineImpl::ActiveKeyboardType() const
 		RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, 
 						keyboardType );      
 		}
-#else if
+#else
 	// Get physical keyboard type
 	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );	    
 #endif
@@ -4229,5 +4240,16 @@ TInt CPtiEngineImpl::SetSecondaryInputL(TInt aEpocLanguageID)
     
     }
 #endif //FF_DUAL_LANGUAGE_SUPPORT
+TBool CPtiEngineImpl::IsCurrentCoreSupportCaseInfo()
+    {
+    if ( Core() )
+        {
+        if ( Core()->GetCoreInfo()->Uid() == KXt9ImplementationUid.iUid )
+            {
+            return ETrue;
+            }
+        }
+    return EFalse;
+    }
 // End of file
 

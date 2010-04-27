@@ -499,7 +499,7 @@ enum TPtiSpelling
     EPtiPinyin   = 0x02,
     EPtiBopomofo = 0x04,
     EPtiZhuyin   = 0x08,
-    EPtiCangJie  = 0x16,
+    EPtiCangJie  = 0x10,
     EPtiEasyCangjie = 0x20,
     EPtiAdvCangjie = 0x40
     };

@@ -234,7 +234,8 @@ EXPORT_C void CBubbleCtrl::Draw()
 	// Draw background
 	if ( iBgSkinId.iMajor )
 	    {
-    	AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+	
+    	AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), //UiLayout()->SkinInstace()
                          *gc,
                          rect,
                          innerRect,
@@ -243,7 +244,7 @@ EXPORT_C void CBubbleCtrl::Draw()
 	    }
 	else if( iFirstBmpId.iMajor && iMiddleBmpId.iMajor && iLastBmpId.iMajor )
 		{
-		AknPenInputDrawUtils::Draw3PiecesFrame( AknsUtils::SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame( UiLayout()->SkinInstance(),
 						 *gc,
 						 rect,
 						 innerRect,
@@ -301,7 +302,7 @@ EXPORT_C void CBubbleCtrl::Draw()
         TRgb color( KRgbBlack );  // sane default for nonskinned case
 	    if ( AknsUtils::AvkonSkinEnabled() )
 	        {
-	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
 	                               color, KAknsIIDQsnTextColors, iTextColorIndex );
 	        }
 	     textLayout.DrawText(*gc, *iText, ETrue, color);

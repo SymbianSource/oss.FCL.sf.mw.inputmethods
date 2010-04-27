@@ -865,7 +865,7 @@ TRect CFepUiLayoutRootCtrl::DrawFrame(const TRect& aFrameRect, TBool aDrawFlag)
 
     if ( AknsUtils::AvkonSkinEnabled() )
         {
-        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
                                penCor, KAknsIIDQsnTextColors, clrIndex );
         }
 

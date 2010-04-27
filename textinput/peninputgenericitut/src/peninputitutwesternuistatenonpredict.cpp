@@ -101,9 +101,9 @@ void CWesternItutUiStateNonPredict::OnEntryL()
 void CWesternItutUiStateNonPredict::OnExit()
     {
     // Hide ICF, Backspace, Arrow controls when exit to avoid flick
-    iOwner->LayoutContext()->ShowArrowBtn(0);
-    iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
-    iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
+    //iOwner->LayoutContext()->ShowArrowBtn(0);
+    //iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
+    //iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide(ETrue);
     }
 
 CGenericItutUiMgrBase::TUiState CWesternItutUiStateNonPredict::StateType()

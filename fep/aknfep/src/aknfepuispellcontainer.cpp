@@ -90,17 +90,19 @@ void CAknFepUiSpellContainer::SetInputWinObserver( MEikEdwinObserver* aObserver 
 // 
 void CAknFepUiSpellContainer::SetInputWinFocus( TBool aFocus )
 	{
-	if( iInputPane->IsFocused() != aFocus )
+	if ( IsFocused() == aFocus )
 		{
-	    iInputPane->SetFocus( aFocus );
+		return;
 		}
+	
 	// When release focus, remove from stack.
 	if( aFocus )
-		{
+		{		
 	    iEikonEnv->EikAppUi()->AddToStackL( this, ECoeStackPriorityDialog );
 		}
 	else
 		{
+	    SetFocus( EFalse );
 	    iEikonEnv->EikAppUi()->RemoveFromStack( this );
 		}
 	}

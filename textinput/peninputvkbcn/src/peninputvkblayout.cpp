@@ -281,6 +281,12 @@ TInt CAknFepVkbLayout::HandleCommand(TInt aCmd, TUint8* aData)
             iVkbWindow->DimArrowKeys( IsDimArrowKeys );
             }
             break;
+        case ECmdPenInputDimEnterKey:
+            {
+            TBool isDimEnterKey = *((TUint16*)( aData ));
+            iVkbWindow->DimEnterKey( isDimEnterKey );           
+            }
+            break;
         case ECmdPenInputSetPromptText:
             {
             if( iLayoutType == EPluginInputModeFSQ )
@@ -1124,28 +1130,28 @@ void CAknFepVkbLayout::HandleAppInfoChange(const TDesC& aInfo,
 //
 void CAknFepVkbLayout::HandleShowTooltipOnFSQCmdL( TUint8* aData )
     {
-    if ( !iITIEnabled || iLayoutType != EPluginInputModeFSQ )
+    if (!iITIEnabled || iLayoutType != EPluginInputModeFSQ)
 		{
 		return;
 		}
     
-    TPtr8 buf8( aData, sizeof(TInt32), sizeof(TInt32) );
+    TPtr8 buf8(aData, sizeof(TInt32), sizeof(TInt32));
     RDesReadStream readStream;
-    readStream.Open( buf8 );
-    CleanupClosePushL( readStream );
+    readStream.Open(buf8);
+    CleanupClosePushL(readStream);
     TInt dataSize = readStream.ReadInt32L();
-    CleanupStack::PopAndDestroy( &readStream );
-    if ( dataSize > 0 )
+    CleanupStack::PopAndDestroy(&readStream);
+    
+    if (dataSize > 0)
         {
-        TUint16* dataAddress = (TUint16*)( aData + sizeof(TInt32) );
-        HBufC* tooltipText = ReadTextInfoHBufCL( dataAddress, 
-                                                 ( dataSize + 1 )/ 2 );
-        if ( tooltipText )
+        TUint16* dataAddress = (TUint16*)(aData + sizeof(TInt32));
+        HBufC* tooltipText = ReadTextInfoHBufCL(dataAddress, (dataSize + 1) / 2);
+        if (tooltipText)
             {
-            CleanupStack::PushL( tooltipText );
-            iVkbWindow->ShowTooltipOnFSQL( *tooltipText );
-            CleanupStack::PopAndDestroy( tooltipText );
-            }        
+            CleanupStack::PushL(tooltipText);
+            iVkbWindow->ShowTooltipOnFSQL(*tooltipText);
+            CleanupStack::PopAndDestroy(tooltipText);
+            }
         }     
     }
 
@@ -1163,20 +1169,26 @@ void CAknFepVkbLayout::HandleShowCandidateListOnFSQCmdL( TUint8* aData )
     // Read candidate data from a block of memory staring from aData
     // The format is activeIndex | count of candiates | 
     // length 1 | text 1 | length 2 | text 2 |...
-    TPtr8 buf8( aData, sizeof( TInt32 )*2, sizeof( TInt32 )*2 );
+    TPtr8 buf8( aData, sizeof( TInt32 )* 3, sizeof( TInt32 )* 3 );
     RDesReadStream readStream;
     readStream.Open( buf8 );
     CleanupClosePushL( readStream );
     // Get activeIndex
     TInt activeIndex = readStream.ReadInt32L();
     // Get count of candidates
-    TInt count = readStream.ReadInt32L();    
+    TInt count = readStream.ReadInt32L();   
+	TInt langCode = readStream.ReadInt32L();
+	TInt align = TBidiText::ScriptDirectionality((TLanguage)langCode); 
+	if(align != TBidiText::ELeftToRight)
+		align = CGraphicsContext::ERight;
+	else
+		align = CGraphicsContext::ELeft;
     CleanupStack::PopAndDestroy( &readStream );
     
     CDesCArray* itemArray = NULL;
     if ( count > 0 )
         {        
-        TUint8* curPointer = aData + sizeof(TInt) * 2;
+        TUint8* curPointer = aData + sizeof(TInt) * 3;
         itemArray = new (ELeave) CDesCArrayFlat( count );
         CleanupStack::PushL( itemArray );
         for ( TInt i = 0; i < count; i++ )
@@ -1205,7 +1217,7 @@ void CAknFepVkbLayout::HandleShowCandidateListOnFSQCmdL( TUint8* aData )
                 }
             }
         
-        iVkbWindow->ShowCandidateListOnFSQL( itemArray, activeIndex );
+        iVkbWindow->ShowCandidateListOnFSQL( align, itemArray, activeIndex );
         CleanupStack::PopAndDestroy( itemArray );
         }  
     }

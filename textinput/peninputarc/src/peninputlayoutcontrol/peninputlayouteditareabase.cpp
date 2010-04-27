@@ -553,7 +553,7 @@ EXPORT_C void CFepLayoutEditAreaBase::DrawContent(CBitmapContext* aGc, const TRe
 
     	    if ( AknsUtils::AvkonSkinEnabled() )
     	        {
-    	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+    	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
     	                 color, KAknsIIDQsnTextColors, EAknsCIQsnTextColorsCG60 );
     	        }
             }

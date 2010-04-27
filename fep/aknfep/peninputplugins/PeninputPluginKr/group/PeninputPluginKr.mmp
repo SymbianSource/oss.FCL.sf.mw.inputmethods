@@ -41,6 +41,7 @@ SOURCE        PluginKrFepManagerBase.cpp
 SOURCE        PluginKrFepManagerHwr.cpp
 SOURCE        PluginKrFepManagerVkb.cpp
 SOURCE	      PluginKrFepManagerItut.cpp
+SOURCE        peninputpluginkrcombinelistquerydialog.cpp
 
 LANG          sc 01 65
 
@@ -72,5 +73,7 @@ LIBRARY       estor.lib
 LIBRARY       avkon.lib
 LIBRARY       eikcoctl.lib
 LIBRARY       centralrepository.lib
+LIBRARY       eikdlg.lib
+LIBRARY       eikcore.lib 
 
 DEBUGLIBRARY  flogger.lib

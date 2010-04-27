@@ -428,7 +428,7 @@ void CAknFepCtrlBaseWindowExt::ReadShadowInfoL( TInt aResId )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     for ( TInt i = 0; i < KShadowBmpBr + 1; i++ )
     	{
@@ -500,7 +500,7 @@ void CAknFepCtrlBaseWindowExt::ReadBackgroundInfoL( TInt aResId )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     const TInt16 bmpId = resReader.ReadInt16();
     const TInt16 bmpMskId = resReader.ReadInt16();
     skinitemid = resReader.ReadInt16();   
@@ -549,7 +549,7 @@ void CAknFepCtrlBaseWindowExt::ReadIcfInfoL(TResourceReader aResReader,
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     const TInt16 icfbgId = aResReader.ReadInt16();
     const TInt16 icfbgmaskId = aResReader.ReadInt16();
@@ -622,7 +622,7 @@ void CAknFepCtrlBaseWindowExt::ReadMultiLineIcfInforL( TResourceReader aResReade
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     const TInt16 icfbgId = aResReader.ReadInt16();
     const TInt16 icfbgmaskId = aResReader.ReadInt16();

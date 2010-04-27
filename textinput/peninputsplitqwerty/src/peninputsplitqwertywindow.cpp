@@ -337,9 +337,10 @@ void CPeninputSplitQwertyWindow::ReorganizeControls( TInt aClientLayoutId,
     iLastUsedTotalColumns = keyColumns;
     iLastUsedTotalRows = keyRows;
     
-    TRect winRect( Rect().iTl, iLafMgr->EntirePaneRect().Size() );
-        
-    SetWindowRect( winRect );  
+    TRect winRect( Rect().iTl, iLafMgr->EntirePaneRect().Size() );        
+    SetWindowRect( winRect );    
+    UiLayout()->LayoutOwner()->SetPosition( iLafMgr->EntirePaneRect().iTl );
+    
     ReorgnizeTitleBar();
     
     const TInt count = controlList.Count();
@@ -924,7 +925,16 @@ void CPeninputSplitQwertyWindow::ConstructAccentListL( TInt aLangId )
         item.iText.Copy( KVietAccentList2 );
         iAccentCmdList.Append( item );
         }
-    
+    else if( aLangId == ELangRussian || aLangId == ELangUkrainian || aLangId == ELangBulgarian )
+    	{
+	    _LIT( KCyrillicAccent, "\x00E0 - \x017E" );
+	    
+        CFepLayoutChoiceList::SItem item;
+
+        item.iCommand = EPeninputVkbLayoutAccented1;
+        item.iText.Copy( KCyrillicAccent );      
+        iAccentCmdList.Append( item );
+    	}    
     // 10X3
     else if ( is10x3 )
         {
@@ -1511,7 +1521,7 @@ void CPeninputSplitQwertyWindow::GetPopupWndInfoFromResL( TResourceReader aRes,
 
     TAknsItemID id;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     TInt popWinBmpId = aRes.ReadInt16();
     TInt popWinBmpMaskId = aRes.ReadInt16();

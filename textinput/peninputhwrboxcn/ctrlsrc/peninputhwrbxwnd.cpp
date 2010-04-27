@@ -159,7 +159,7 @@ void CAknFepHwrBxWnd::ConstructFromResourceL(TResourceReader& aReader)
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     for (TInt i = 0; i < KShadowBmpBr + 1; i++)
     	{
@@ -331,7 +331,7 @@ void CAknFepHwrBxWnd::ConstructFromResourceL()
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     for (TInt i = 0; i < KShadowBmpBr + 1; i++)
     	{
@@ -1081,7 +1081,7 @@ void CAknFepHwrBxWnd::ReadBackgroundInfoL( TInt aResId )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     const TInt16 bmpId = resReader.ReadInt16();
     const TInt16 bmpMskId = resReader.ReadInt16();
     skinitemid = resReader.ReadInt16();   

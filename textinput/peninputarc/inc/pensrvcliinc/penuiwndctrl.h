@@ -163,6 +163,12 @@ public: // Functions from base classes.
      */
     void Draw( const TRect &aRect ) const;
     
+public:
+    /**
+     * Auto refresh timer callback, refresh pen ui. (for NGA)
+     */
+    void RefreshUI();
+    
 private:
 
     /**
@@ -197,6 +203,16 @@ private:
      */
     TUid WindowGroupNameAppUidL( RWsSession& aWS,TInt aWGId  );
     
+    /**
+     * Restart auto refresh timer. (for NGA)
+     */
+    void RestartRefreshTimer();
+    
+    /**
+     * stop auto refresh timer. (for NGA)
+     */
+    void StopRefreshTimer();
+    
 
 private: // Data
     RWindowGroup& iWndGroup;
@@ -222,6 +238,13 @@ private: // Data
     //TBool iUiLayoutChange;
     TBool iInGlobalEditorState;
     TRect iLayoutClipRect;
+    
+    /**
+     * Auto refresh timer
+     * own
+     */
+    CPeriodic* iAutoRefreshTimer;
+    
     };
 class CInternalBkCtrl : public CCoeControl
     {

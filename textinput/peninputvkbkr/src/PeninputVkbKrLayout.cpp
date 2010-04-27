@@ -205,6 +205,12 @@ TInt CPeninputVkbKrLayout::HandleCommand(TInt aCmd, TUint8* aData)
             LOG("Vkb.Layout.HandleCommand ECmdPenInputDimArrowKeys");
             vkbWindow->DimArrowKeys( *aData );
             break;
+        case ECmdPenInputDimEnterKey:
+            {
+            TBool isDimEnterKey = *((TUint16*)( aData ));            
+            vkbWindow->DimEnterKey( isDimEnterKey );            
+            }
+            break;
         case ECmdPenInputSendEditorTextAndCurPos:
             LOG("Vkb.Layout.HandleCommand ECmdPenInputSendEditorTextAndCurPos");
             break;

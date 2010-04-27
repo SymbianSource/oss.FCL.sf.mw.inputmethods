@@ -22,10 +22,12 @@
 #include <e32std.h>	 // TBuf
 #include <aknfeppeninputimeplugin.h>
 #include <centralrepository.h>
+#include <aknlistquerydialog.h>
 
 class RPeninputServer;
 class CPtiEngine;
 class CPluginKrFepManagerBase;
+class CPeninputPluginKrCombineListQueryDialog;
 
 class CPeninputPluginKr : public CAknFepPenInputImePlugin
     {
@@ -201,7 +203,7 @@ private:
      */
     CPluginKrFepManagerBase* GetFSQUiL(TInt aLang);
     
-    void ShowListQueryL( const TInt aResourceId );
+    void ShowListQueryL( const TInt aResourceId, CRepository* aRepository );
     
 private:
     
@@ -218,7 +220,8 @@ private:
     
     CPluginKrFepManagerBase* iPluginKrFepManager;
     
-    CRepository* iRepository;
+    CPeninputPluginKrCombineListQueryDialog* iCombineQueryDialg;
+    
     
     TInt iResId;
     

@@ -768,7 +768,7 @@ void CPeninputGenericHwrWindow::SetHwBoxFrameBackColor()
     
     id.Set(KWriteBoxFrameBackColorMajor, KWriteBoxFrameBackColorGrp);
 
-    TInt error = AknsUtils::GetCachedColor(AknsUtils::SkinInstance(),
+    TInt error = AknsUtils::GetCachedColor(UiLayout()->SkinInstance(),
                                            frameColor,
                                            id,
                                            KWriteBoxFrameBackColorIdx);

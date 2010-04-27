@@ -212,15 +212,17 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
             break;
         case ECmdPenInputFingerMatchList:
             {
-            TFepInputAllCandidates* pCanData = reinterpret_cast<TFepInputAllCandidates*>(aParam);
-            TInt count = (*pCanData).iCandidates.Count();
+            TFepITICandidateList* pCanData = reinterpret_cast<TFepITICandidateList*>(aParam);
+            const RArray<TPtrC>* listArray = pCanData->iItemArray2;
+            TInt count = listArray->Count();
 
-            TInt transferSize = 2 * sizeof(TInt);
+            TInt transferSize = 3 * sizeof(TInt);
             RArray<TInt> sizeArray;
             for (TInt i = 0; i < count; i++)
                 {
-                sizeArray.Append((*pCanData).iCandidates[i].Size());
-                transferSize += sizeArray[i] + sizeof(TInt);
+				TInt size = (*listArray)[i].Size();
+                sizeArray.Append(size);
+                transferSize += size + sizeof(TInt);
                 }
 
             HBufC8* buf = HBufC8::NewLC(transferSize);
@@ -232,12 +234,13 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
 
             writeStream.WriteInt32L(count);
             writeStream.WriteInt32L(transferSize);
+            writeStream.WriteInt32L(pCanData->iLangCode);
 
             for (TInt i = 0; i < count; i++)
                 {
                 writeStream.WriteInt32L(sizeArray[i]);
-                const TUint16* piData = (*pCanData).iCandidates[i].Ptr();
-                writeStream.WriteL(piData, sizeArray[i]/2);
+                const TUint16* piData = (*listArray)[i].Ptr();
+                writeStream.WriteL(piData, sizeArray[i] / 2);
                 }
 			
             writeStream.CommitL();

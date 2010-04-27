@@ -692,9 +692,7 @@ TBool CFepUiBaseCtrl::CompareOrder(CFepUiBaseCtrl* aCtrl)
     }
 
 TBool CFepUiBaseCtrl::IsOnTopOf(CFepUiBaseCtrl* aCtrl)
-    {
-    __ASSERT_DEBUG(aCtrl,EUiNullParam);
-    
+    {           
     return OrderPos() < aCtrl->OrderPos();
     }
     
@@ -1319,11 +1317,7 @@ EXPORT_C void CFepUiBaseCtrl::SimulateRawEvent(const TRawEvent& aEvent)
 
 EXPORT_C void CFepUiBaseCtrl::SetParent(CFepUiBaseCtrl* aParent)
     {
-    //parent control must be type of control group.
-    if(aParent)
-        {
-        __ASSERT_DEBUG(aParent->IsKindOfControl(ECtrlControlGroup),EUiLayoutBadParentType);
-        }
+    //parent control must be type of control group.    
     iParentCtrl = aParent;
     }
 

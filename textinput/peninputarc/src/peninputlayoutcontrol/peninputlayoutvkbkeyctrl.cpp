@@ -129,7 +129,7 @@ void CVirtualKeyCtrl::DrawKeyText()
 				TRgb color( KRgbBlack );  // sane default for nonskinned case			    
 			    if ( AknsUtils::AvkonSkinEnabled() )
 			        {
-			        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+			        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
 				                               color, 
 				                               KAknsIIDQsnTextColors, 
 				                               iKeyboard->KeyTextColorGroup() );
@@ -178,7 +178,7 @@ void CVirtualKeyCtrl::DrawKeyText()
 	    if ( AknsUtils::AvkonSkinEnabled() || 
 	    	 iKeyboard->KeyTextColorGroup() != INVALID_COLOR_GROUP )
 	        {
-	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
 		                               color, 
 		                               KAknsIIDQsnTextColors, 
 		                               iKeyboard->KeyTextColorGroup() );
@@ -228,7 +228,7 @@ void CVirtualKeyCtrl::DrawDimKey()
         TRect innerRect = Rect();
 		innerRect.Shrink( 4, 0 );
 		    
-		AknPenInputDrawUtils::Draw3PiecesFrame(AknsUtils::SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame(UiLayout()->SkinInstance(),
 								   *gc,
 								   Rect(),
 								   innerRect,
@@ -245,7 +245,7 @@ void CVirtualKeyCtrl::DrawDimKey()
         TRect innerrect = rect;
         innerrect.Shrink( KDefaultKeyMargin, KDefaultKeyMargin );
         
-        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(),
+        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(),
                                  *gc,
                                  rect,
                                  innerrect,
@@ -337,7 +337,7 @@ void CVirtualKeyCtrl::DrawNormalStateKey()
         TRect innerRect = Rect();
 		innerRect.Shrink( 4, 0 );
 		    
-		AknPenInputDrawUtils::Draw3PiecesFrame(AknsUtils::SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame(UiLayout()->SkinInstance(),
 								   *gc,
 								   Rect(),
 								   innerRect,
@@ -354,7 +354,7 @@ void CVirtualKeyCtrl::DrawNormalStateKey()
         TRect innerrect = rect;
         innerrect.Shrink( KDefaultKeyMargin, KDefaultKeyMargin );
 
-        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
                                  *gc, 
                                  rect, 
                                  innerrect,
@@ -419,7 +419,7 @@ void CVirtualKeyCtrl::DrawHighlightKey()
         TRect innerRect = Rect();
 		innerRect.Shrink( 4, 0 );
 		    
-		AknPenInputDrawUtils::Draw3PiecesFrame(AknsUtils::SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame(UiLayout()->SkinInstance(),
 								   *gc,
 								   Rect(),
 								   innerRect,
@@ -439,7 +439,7 @@ void CVirtualKeyCtrl::DrawHighlightKey()
         TRect innerrect = rect;
         innerrect.Shrink( KDefaultKeyMargin, KDefaultKeyMargin );
 
-        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
                                  *gc, 
                                  rect, 
                                  innerrect,

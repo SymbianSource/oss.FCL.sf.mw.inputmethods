@@ -930,6 +930,7 @@ void RPeninputServerImpl::PenSupportLanguagesL(RArray<TInt>& aLanguageLists)
 //
 void RPeninputServerImpl::ReadIntArrayFromBufL(const TDesC8& aBuf, RArray<TInt>& aResult)
     {
+	CleanupClosePushL( aResult );
 	RDesReadStream readStream;
 	readStream.Open(aBuf);
 	CleanupClosePushL(readStream);
@@ -941,6 +942,7 @@ void RPeninputServerImpl::ReadIntArrayFromBufL(const TDesC8& aBuf, RArray<TInt>&
 		}
 		
     CleanupStack::PopAndDestroy(&readStream);
+    CleanupStack::Pop( &aResult );
     }
 
 // ---------------------------------------------------------------------------

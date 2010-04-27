@@ -1208,7 +1208,7 @@ void CPeninputVkbKrWindow::ReorgnizeTableUpDown()
     /* for CButtonBase
     TRgb color( KRgbBlack );  // sane default for nonskinned case
     AknsUtils::GetCachedColor( 
-        AknsUtils::SkinInstance(),
+        UiLayout()->SkinInstance(),
         color,
         KAknsIIDQsnTextColors,
         EAknsCIQsnTextColorsCG59);
@@ -1384,7 +1384,7 @@ void CPeninputVkbKrWindow::GetPopupWndInfoFromResL(
 
     TAknsItemID id;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     TInt popWinBmpId = aRes.ReadInt16();
     TInt popWinBmpMaskId = aRes.ReadInt16();
@@ -1537,6 +1537,17 @@ void CPeninputVkbKrWindow::DimArrowKeys( TBool aDimArrow )
         iArrowLeftButton->SetDimmed( aDimArrow );
         iArrowRightButton->SetDimmed( aDimArrow );
         }           
+    }
+
+void CPeninputVkbKrWindow::DimEnterKey( TBool aDimmed )
+    {
+	CAknFepCtrlEventButton* enterBtn = static_cast<CAknFepCtrlEventButton*>
+	                              ( Control(EPeninutWindowCtrlIdEnterBtn) );	
+    if( iLayoutContext->LayoutType() == EPluginInputModeFSQ 
+       && enterBtn )
+        {
+        enterBtn->SetDimmed( aDimmed );        
+        }
     }
 
 void CPeninputVkbKrWindow::ShowBubble(TInt aShow)

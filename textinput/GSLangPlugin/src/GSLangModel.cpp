@@ -1346,7 +1346,16 @@ TBool CGSLangModel::DeviceHasMultipleKeyboardsL()
     {
     TInt physicalKeyboards = 0;
     User::LeaveIfError( iAknFepRepository->Get(  KAknFepPhysicalKeyboards, physicalKeyboards ));
-
+    // Check virtual keyboards
+    if ( FeatureManager::FeatureSupported(KFeatureIdVirtualItutInput) )
+        {
+        physicalKeyboards = physicalKeyboards | 0x01;
+        }
+    if ( FeatureManager::FeatureSupported(KFeatureIdVirtualFullscrQwertyInput) )
+        {
+        physicalKeyboards = physicalKeyboards | 0x02;
+        }
+    // Check virtual keyboards end
     TBool firstFound = EFalse;
     for(TUint i = 0x01; i <= 0xF0; i = i << 1)
         {
@@ -1381,6 +1390,16 @@ TInt CGSLangModel::PhysicalKeyboardsL()
     {
     TInt physicalKeyboards = 0;
     User::LeaveIfError( iAknFepRepository->Get(  KAknFepPhysicalKeyboards, physicalKeyboards ));
+    // Check virtual keyboards
+    if ( FeatureManager::FeatureSupported(KFeatureIdVirtualItutInput) )
+        {
+        physicalKeyboards = physicalKeyboards | 0x01;
+        }
+    if ( FeatureManager::FeatureSupported(KFeatureIdVirtualFullscrQwertyInput) )
+        {
+        physicalKeyboards = physicalKeyboards | 0x02;
+        }
+    // Check virtual keyboards end
     return physicalKeyboards;
     }
 

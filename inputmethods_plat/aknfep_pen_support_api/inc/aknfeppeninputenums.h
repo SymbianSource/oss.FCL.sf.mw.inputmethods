@@ -178,6 +178,7 @@ enum TAknFepPenInputCmd
     ECmdPeninputITIStatus,
     ECmdPeninputSpellLanguageMode,
 	ECmdPeninputSpellICFDisplayContent,
+	ECmdPenInputDimEnterKey,
     ECmdPenInputImeCmdBase = 2000
     };
 

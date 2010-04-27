@@ -100,7 +100,7 @@ TPtiKeyboardType CAknFepPredictiveSettingData::ActiveKeyboardType() const
 		RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, 
 						keyboardType );      
 		}
-#else if
+#else
 	// Get physical keyboard type
 	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );	    
 #endif
@@ -132,7 +132,7 @@ TPtiKeyboardType CAknFepPredictiveSettingData::OwnerKeyboardType() const
 	    // Get physical keyboard type
 	    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );	    
 		}
-#else if
+#else
     // Get physical keyboard type
     RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );		
 #endif // RD_SCALABLE_UI_V2

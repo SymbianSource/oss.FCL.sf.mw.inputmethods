@@ -267,7 +267,7 @@ void CPeninputLayoutInputmodelChoice::CreateChoiceItemL( TResourceReader &aReade
 TBool CPeninputLayoutInputmodelChoice::CreateItemIconL(TResourceReader &aReader, 
     CFbsBitmap** aImg, TPtrC& aBmpFileName, TInt32 aMajorSkinId)
     {
-    MAknsSkinInstance* skinInstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skinInstance = UiLayout()->SkinInstance();
     
     const TInt bmpId = aReader.ReadInt16();
     const TInt bmpMaskId = aReader.ReadInt16();

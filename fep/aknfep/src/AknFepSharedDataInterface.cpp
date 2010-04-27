@@ -586,14 +586,18 @@ TInt CAknFepSharedDataInterface::InputTextLangGSNotification(TAny* aObj)
 
 void CAknFepSharedDataInterface::HandleInputTextLanguageGSChange()
     {
-    iFepManager->SetFlag(CAknFepManager::EFlagNewSharedDataInputLanguage);
-    ESubVariantFlag subVariant = AknLayoutUtils::SubVariant();
-    if((AknLayoutUtils::Variant() == EApacVariant)
-        && ((subVariant == EPrcSubVariant)
-        || (subVariant == EHongKongSubVariant)
-        || (subVariant == ETaiwanSubVariant)))
+    if( iFepManager->ActiveInputLanguage() != PenInputLanguage() )
         {
-        iFepManager->SetFlag(CAknFepManager::EFlagNewSharedDataInputMode);
+        iFepManager->SetFlag(CAknFepManager::EFlagNewSharedDataInputLanguage);
+        ESubVariantFlag subVariant = AknLayoutUtils::SubVariant();
+        if((AknLayoutUtils::Variant() == EApacVariant)
+            && ((subVariant == EPrcSubVariant)
+            || (subVariant == EHongKongSubVariant)
+            || (subVariant == ETaiwanSubVariant)))
+            {
+            iFepManager->SetFlag(CAknFepManager::EFlagNewSharedDataInputMode);
+            }
+        iFepManager->SetActiveInputLanguage( PenInputLanguage() );
         }
     }
 
@@ -768,7 +772,7 @@ TPtiKeyboardType CAknFepSharedDataInterface::ActiveKeyboardType() const
 		RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, 
 						keyboardType );      
 		}
-#else if
+#else
 	// Get physical keyboard type
 	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );	    
 #endif

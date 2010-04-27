@@ -258,6 +258,7 @@ CAknFepPluginManager::CAknFepPluginManager( CAknFepManager& aFepMan,
     iClosePluginInputMode = EFalse;
     iDimGainForeground = ETrue;
     iAlignment = 0;
+	iNeedFetchDimState = ETrue;
     }
 
 // ---------------------------------------------------------------------------
@@ -628,6 +629,26 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                     }    
                 }
                 break;
+            case ESignalShowCandidate:
+                {
+                // Get candidate list
+                TInt activeIdx = 0;
+                CDesCArray* candidates = new (ELeave) CDesCArrayFlat
+                                                 ( KDefaultCandidateArraySize );
+        		CleanupStack::PushL( candidates );
+        		iFepMan.GetCandidatesL(*candidates, activeIdx);
+
+        		TFepITICandidateList candidateListData;
+        		candidateListData.iItemArray = candidates;
+        		candidateListData.iActiveIndex 
+        		            = ( candidates->Count() >= 2 ) ? 1 : activeIdx;  
+        		candidateListData.iLangCode = iFepMan.CurrentInputLangCode();
+        		
+        		ShowCandidateListL( candidateListData );        		
+        		CleanupStack::PopAndDestroy( candidates );                
+                }
+                break;
+                
             case ESignalSelectMatchSelectionText:
                 {
                 TInt* ptrData = (TInt*)(pBuf.Ptr());
@@ -707,22 +728,6 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                     {
                     iCharStartPostion = KInvalidValue;
                     }
-                }
-                break;
-            case ESignalShowCandidate:
-                {
-                // Get candidate list
-                TInt activeIdx = 0;
-                CDesCArray* candidates = new (ELeave) CDesCArrayFlat
-                                                 ( KDefaultCandidateArraySize );
-        		CleanupStack::PushL( candidates );
-        		iFepMan.GetCandidatesL( *candidates, activeIdx );
-        		TFepITICandidateList candidateListData;
-        		candidateListData.iItemArray = candidates;
-        		candidateListData.iActiveIndex 
-        		            = ( candidates->Count() >= 2 ) ? 1 : activeIdx;        		
-        		ShowCandidateListL( candidateListData );        		
-        		CleanupStack::PopAndDestroy( candidates );                
                 }
                 break;
             case ESignalSelectCandidate:
@@ -994,6 +999,11 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
                 iCurrentPluginInputFepUI->HandleCommandL( ECmdPeninputITIStatus,
                                               iFepMan.WesternPredictive() );        	
         		}
+        	}
+        	break;
+        case EPluginEnableFetchDimState:
+        	{
+        	iNeedFetchDimState = ETrue;
         	}
         	break;
         default:
@@ -1925,11 +1935,11 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
     	    aMenuPane->SetItemDimmed(EPenInputCmdVITUT, EFalse);
     	    }
     	
-    	if ( iFepMan.IsArabicInputLanguage() && ( curInputMode != EPluginInputModeFingerHwr )
-    			&& !( disabledInputMode & EPluginInputModeFingerHwr ))
-    	    {
-    	    aMenuPane->SetItemDimmed( EPeninputCmdHwr, EFalse );
-    	    }
+    	//if ( iFepMan.IsArabicInputLanguage() && ( curInputMode != EPluginInputModeFingerHwr )
+    	//		&& !( disabledInputMode & EPluginInputModeFingerHwr ))
+    	//    {
+    	//    aMenuPane->SetItemDimmed( EPeninputCmdHwr, EFalse );
+    	//    }
         //For arabic finger hwr input orientation.
         TInt index = 0;        
         if(iPluginInputMode == EPluginInputModeFingerHwr
@@ -2011,7 +2021,7 @@ void CAknFepPluginManager::OnFocusChangedL( TBool aGainForeground )
         return;    
         }
     
-    if ( iFepMan.StopProcessFocus()  )
+    if ( !iForegroundChange && iFepMan.StopProcessFocus()  )
         {
         if (iFepMan.CloseUiOnFocusChange())
             {
@@ -2077,6 +2087,13 @@ void CAknFepPluginManager::OnFocusChangedL( TBool aGainForeground )
             bOpen = EFalse;						
         }*/
 
+    // The state means: when current app with dim state lose foreground by non-capserver or notify server
+    // Need to cancel dim state
+    if ( iForegroundChange && !aGainForeground && !IsGlobalNotesApp( focusAppId ) && iInMenu )
+    	{
+		ResetMenuState();
+    	}  
+    
     if ( aGainForeground && iFepMan.FepAwareTextEditor() && IsCurrentWindInOpenList() )
         {
         if(!iPenInputSvrConnected) 
@@ -2397,7 +2414,7 @@ TBool CAknFepPluginManager::SetSyncIcfDataL( TFepInputContextFieldData& aIcfData
         aLastEditorContent.Compare( aCurrentEditorContent ) == 0 )
     	{
         if ( aIcfData.iCurSel.HigherPos() > edit->DocumentLengthForFep() || 
-         aIcfData.iCurSel.LowerPos() < 0 )
+         aIcfData.iCurSel.LowerPos() < 0 || IsDimed() )
             {
             return EFalse;
             }
@@ -2877,6 +2894,10 @@ void CAknFepPluginManager::InitializePluginInputL(TInt aOpenMode, TInt aSuggestR
 //
 void CAknFepPluginManager::LaunchPenInputMenuL(TInt aResourceId, TBool aRemeber)
     {
+	// when launch option menu, dim state changes, 
+	// so need fetch the state next time.
+	iNeedFetchDimState = ETrue;
+	
     TInt previousModes = iCurPermitModes;
     TBool previousSCT  = isLanuchSCT;
     TInt inputmode = PluginInputMode();
@@ -3260,10 +3281,17 @@ void CAknFepPluginManager::SubmitUiPluginTextL(const TDesC& aData,
                         // check if need to change current text case
                         TPtiTextCase textCase = 
                         CaseForMappedCharacter( TChar( keyEvent.iCode ) );                                                        
-						if ( !IsDeadKeyCode( keyEvent.iCode ) && IsNeedToChangeTextCase( textCase ) )
+						if ( IsNeedToChangeTextCase( textCase ) )
                             {
                             iFepMan.PtiEngine()->SetCase( textCase );
-                            }                        
+                            }
+                                                                       
+						env->SimulateKeyEventL(keyEvent, EEventKeyDown);
+						env->SimulateKeyEventL(keyEvent, EEventKey);
+						env->SimulateKeyEventL(keyEvent, EEventKeyUp);
+                        }
+                    else if ( keyEvent.iScanCode == EStdKeySpace )
+                        {
                         TRawEvent eventDown; 
                         eventDown.Set( TRawEvent::EKeyDown, keyEvent.iScanCode ); 
                         iAvkonAppUi->DisableNextKeySound( keyEvent.iScanCode ); 
@@ -3323,9 +3351,11 @@ void CAknFepPluginManager::SubmitUiPluginTextL(const TDesC& aData,
 // -----------------------------------------------------------------------------
 //
 void CAknFepPluginManager::OnPenInputServerKeyEventL(const TDesC& aData)
-    {
-    
-    iFepMan.PtiEngine()->CancelTimerActivity();
+    {	
+    if ( !EnableITIOnFSQ() )
+    	{
+        iFepMan.PtiEngine()->CancelTimerActivity();
+    	}    
     
     if( aData.Length() <= 0 )
         {
@@ -3897,7 +3927,12 @@ void CAknFepPluginManager::NotifyLayoutL(TInt aOpenMode, TInt aSuggestRange,
                                               
     iCurrentPluginInputFepUI->HandleCommandL( ECmdPenInputDimArrowKeys, 
                                               enableArrowBtn);    
-                                                                                        
+    if ( PluginInputMode() == EPluginInputModeFSQ )
+    	{
+        iCurrentPluginInputFepUI->HandleCommandL( ECmdPenInputDimEnterKey, 
+        		                                  iFepMan.IsFindPaneEditor() );
+    	}
+
     SetIcfAlignment();
     
     iModeChanged = ETrue;
@@ -4265,10 +4300,20 @@ void CAknFepPluginManager::ShowAllCandidates()
 
     for (TInt i = 0; i < iCandidateList.Count(); i++)
         iSendAllList.iCandidates.Append(iCandidateList[i]->Des());
+    
+    SendMatchListCmd(iSendAllList.iCandidates);
+    }
+
+void CAknFepPluginManager::SendMatchListCmd(const RArray<TPtrC>& aList)
+	{
+    TFepITICandidateList list;
+    list.iActiveIndex = 0;
+    list.iItemArray2 = &aList;
+    list.iLangCode = iFepMan.CurrentInputLangCode();
 
     TRAP_IGNORE(iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputFingerMatchList, 
-                                                         reinterpret_cast<TInt>(&iSendAllList)));
-    }
+                                                         reinterpret_cast<TInt>(&list)));
+	}
 
 TBool CAknFepPluginManager::GetIndicatorImgID(const TInt IndicatorUID,TInt &aImage, TInt &aMask)
     {
@@ -5017,7 +5062,12 @@ TBool CAknFepPluginManager::IsDimed()
         {
         return EFalse;
         }    
-    return iPenInputServer.IsDimmed();    
+    if( iNeedFetchDimState )
+        {
+        iCurrentDimState = iPenInputServer.IsDimmed();  
+        iNeedFetchDimState = EFalse;
+        }
+    return iCurrentDimState;
     }
 void CAknFepPluginManager::HandleiDimGainForeground(TBool aGain)
     {
@@ -5455,14 +5505,11 @@ TBool CAknFepPluginManager::IsITISupportedKey( const TKeyEvent& aKeyEvent )
 // 1. Not in keymapping: some function keys, space, enter, backspace
 // 2. In keymappings: keys on AB/Native range.
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-    if ( aKeyEvent.iScanCode == EStdKeySpace
-    	 || aKeyEvent.iScanCode == EStdKeyEnter
-    	 || aKeyEvent.iScanCode == EStdKeyBackspace
-    	 || ( aKeyEvent.iScanCode != EPtiKeyNone 
-    	      && ( iPluginPrimaryRange == ERangeNative 
-    	           || iPluginPrimaryRange == ERangeEnglish
-    	           || ( iPluginPrimaryRange == 0 && iFepMan.InputMode() != ENumber 
-    	                   && iFepMan.InputMode() != ENativeNumber ) ) ) )
+    if ( aKeyEvent.iScanCode != EPtiKeyNone 
+    	  && ( iPluginPrimaryRange == ERangeNative 
+    	       || iPluginPrimaryRange == ERangeEnglish
+    	       || ( iPluginPrimaryRange == 0 && iFepMan.InputMode() != ENumber 
+    	               && iFepMan.InputMode() != ENativeNumber ) ) )
         {
         return ETrue;
         }
@@ -5519,6 +5566,12 @@ TPtiTextCase CAknFepPluginManager::CaseForMappedCharacter(TChar aCharacter)
 TBool CAknFepPluginManager::IsNeedToChangeTextCase( const TPtiTextCase& aTextCase )
     {
 #ifdef RD_INTELLIGENT_TEXT_INPUT
+	// Not need change case if it is supported in language
+	if ( iCaseMan.IsAbleChangeCase() )
+		{
+	    return EFalse;
+		}
+	
     TPtiTextCase textCase = aTextCase;
     if( EPtiKeyboardHalfQwerty != iFepMan.PtiEngine()->KeyboardType() )
 		{

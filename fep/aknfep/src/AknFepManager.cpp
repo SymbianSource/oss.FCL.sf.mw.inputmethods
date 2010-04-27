@@ -3538,7 +3538,10 @@ void CAknFepManager::HandleDestructionOfFocusedItem()
             	}
         #endif
             // Close UI
-            FepUI()->CloseUI();
+            if ( FepUI())
+                {
+                FepUI()->CloseUI();
+                }
             }
         else
             {            
@@ -7009,6 +7012,8 @@ void CAknFepManager::HandleChangeInFocusL()
     return;
     }
 #endif
+    // dim state changed, need fetch it again.
+    SendEventsToPluginManL(EPluginEnableFetchDimState);
 
     //The CCPU flag ECcpuStateShiftkeyWasPressedBeforeLosingFocus suggests that the candidate list was closed
     //with a long key press of shift key. If so then, FEP needs to set the EFlagShiftKeyDepressed for the CCPU mode to work 
@@ -13959,6 +13964,8 @@ void CAknFepManager::UpdateInlineEditL(const TDesC& aNewInlineText,
             
 			aPositionOfInsertionPointInInlineText = decoratedInlineEdit->Length();
 
+			iUncommittedText.iCursorPos = iUncommittedText.iAnchorPos + aPositionOfInsertionPointInInlineText;
+			
             iInputCapabilities.FepAwareTextEditor()->UpdateFepInlineTextL(
                 bufferPtr, aPositionOfInsertionPointInInlineText);
             	
@@ -15800,6 +15807,7 @@ void CAknFepManager::LaunchLanguagesPopupListL(TBool aLaunchedByTouchWin)
         //Hindi Change Bug Fix
         iSharedDataInterface->SetInputTextLanguage(languages->At(index));
         CAknEnv::Static()->SettingCache().Update(KEikInputLanguageChange);
+        SetActiveInputLanguage( languages->At(index) );
         ChangeInputLanguageL(languages->At(index));           
         SetFlag( EFlagNewSharedDataInputLanguage | EFlagNewSharedDataInputMode );
 	  	// This pice of code TSW Fute error fixing.
@@ -17357,20 +17365,20 @@ void CAknFepManager::CalculateEditorDigitType(TDigitType& aDestination)
         }
         
     if (iLanguageCapabilities.iArabicIndicDigitsAllowed &&
-        AknTextUtils::DigitModeQuery(editorType) && 
+            (AknTextUtils::DigitModeQuery(editorType) || iMode == ENativeNumber) && 
         !ASCIIDigits)
         {
         aDestination = EDigitTypeArabicIndic;
         }
     else if (iLanguageCapabilities.iEasternArabicIndicDigitsAllowed &&
-        AknTextUtils::DigitModeQuery(editorType)&& 
+            (AknTextUtils::DigitModeQuery(editorType) || iMode == ENativeNumber) && 
         !ASCIIDigits)
         {
         aDestination = EDigitTypeEasternArabicIndic;
         }    
     /*Hindi*/    
     else if ( iLanguageCapabilities.iIndicDigitsAllowed &&
-                    AknTextUtils::DigitModeQuery(editorType) && 
+            (AknTextUtils::DigitModeQuery(editorType) || iMode == ENativeNumber) && 
         !ASCIIDigits)    
         {
         aDestination = EDigitTypeDevanagari;    
@@ -18212,7 +18220,9 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
         {
     	currentEditorSCTResId = charMap;
         }
-    if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == charMap && R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_LATIN_ONLY == currentEditorSCTResId)
+    if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == charMap && 
+       ( R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_LATIN_ONLY == currentEditorSCTResId || 
+         R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG == currentEditorSCTResId ) )
         {
         TBool isEmpty = ETrue;
         TRAP_IGNORE(isEmpty = GetSctLengthL(charMap));
@@ -18367,29 +18377,9 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
             {
             PrepareFepAfterDialogExitL(fepUid);
             SetCcpuFlag(ECcpuStateSupressCursorMoveToEnd);
+			// after closing SCT, need change dim state.
+            SendEventsToPluginManL(EPluginEnableFetchDimState);
 
-#ifdef RD_SCALABLE_UI_V2 
-            
-            if( iFepFullyConstructed && iFepPluginManager)
-                {
-                 if (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
-                     iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
-                     iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
-                    {
-                    SetStopProcessFocus(EFalse);
-                    }            
-                 else
-                    {
-                    HandleChangeInFocus();
-                    }
-                }
-            else
-                {
-                HandleChangeInFocus();
-                }   
-            // Set the flag, not change focus for next.
-            iDisalbleFocusChangeForSCT = ETrue;           
-#endif
 
             //Removes auto-complition part if SCT is launched and any special character is selected 
 #ifdef RD_INTELLIGENT_TEXT_INPUT
@@ -18442,6 +18432,9 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                                                                    iUncommittedText.iAnchorPos);
                                 }
                             }
+                        // Get new InputCapabilities immediatly.
+                        CCoeEnv* coeEnv = CCoeEnv::Static();
+                        iInputCapabilities = static_cast<const CCoeAppUi*>(coeEnv->AppUi())->InputCapabilities();
                         if (EditorState())
                             {
                             if (charAsDesc[0] == CEditableText::EParagraphDelimiter)
@@ -18466,11 +18459,11 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                                     TKeyEvent delKey = {8, EStdKeyBackspace, 1, 0};        
                                     CCoeEnv::Static()->SimulateKeyEventL(delKey, EEventKey);                                                                
                                     }                               
-                                InsertTextFromDialogL(charAsDesc, cursorSelection);
 //There may be several char to be inserted, need disable Focus change to avoid multi-focus change.
 #ifdef RD_SCALABLE_UI_V2 
                                 iDisalbleFocusChangeForSCT = ETrue;
-#endif
+#endif       
+                                InsertTextFromDialogL(charAsDesc, cursorSelection);
                                 }
                             // Clear dead key, vowel sequence and vietnamese tone mark states.                         
                             iPtiEngine->HandleCommandL(EPtiCommandGetAndClearLastVietnameseChar, 
@@ -18483,6 +18476,28 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                         }
                     }
                 }
+#ifdef RD_SCALABLE_UI_V2 
+            
+            if( iFepFullyConstructed && iFepPluginManager)
+                {
+                 if (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
+                     iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
+                     iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
+                    {
+                    SetStopProcessFocus(EFalse);
+                    }            
+                 else
+                    {
+                    HandleChangeInFocus();
+                    }
+                }
+            else
+                {
+                HandleChangeInFocus();
+                }   
+            // Set the flag, not change focus for next.
+            iDisalbleFocusChangeForSCT = ETrue;           
+#endif
             }
         else
             {

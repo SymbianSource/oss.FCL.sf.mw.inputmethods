@@ -2457,7 +2457,17 @@ public:
      * Return the chinese input mode used last time
      */
 	inline TInt LastChineseInputMode() const;
-	
+
+    /**
+     * Return active input language, only used for languages popup list
+     */
+    inline TInt ActiveInputLanguage() const;
+
+    /**
+     * Set active input language, only used for languages popup list
+     */	    
+    inline void SetActiveInputLanguage(TInt aInputLanguage);
+    
 private:
        
     /**
@@ -2801,6 +2811,11 @@ private:
     TBool iShiftAndSpace;
     CAknFepThaiSCTSelector* iAknFepThaiSCTSelector;
     
+    /**
+     * Active input language, only used for languages pop up list,
+     * can not changed in other cases, e.g. in latin-only editor
+     */
+    TInt iActiveInputLanguage;
 public:
 
     //the follow 8 functions for phrase creation 
@@ -3181,6 +3196,23 @@ inline void CAknFepManager::SetGainForeground( TBool aGainForeground )
     {
     iGainForeground = aGainForeground;
     }
+
+/**
+* Return active input language, only used for languages popup list
+*/    
+inline TInt CAknFepManager::ActiveInputLanguage() const
+    {
+    return iActiveInputLanguage;
+    }
+
+/**
+* Set active input language, only used for languages popup list
+*/ 
+inline void CAknFepManager::SetActiveInputLanguage( TInt aInputLanguage )  
+    {
+    iActiveInputLanguage = aInputLanguage;
+    }
+
 #endif
 
 // End of file

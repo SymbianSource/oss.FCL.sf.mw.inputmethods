@@ -192,7 +192,7 @@ void CPeninputCommonChoiceList::DrawBackground()
 	    gc->Activate( BitmapDevice() ); 
 	    gc->SetBrushColor( KRgbWhite );
 	    gc->Clear( Rect() ); 
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 	                     *gc, 
 	                     Rect(), 
 	                     rtInnerRect,
@@ -217,7 +217,7 @@ void CPeninputCommonChoiceList::DrawItem( TInt aIndex, TBool aIsFocus )
        		{
        		CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
        		gc->Activate( BitmapDevice() ); 
-			AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+			AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
                          *gc, 
                          rtFocusRect, 
                          rtInnerRect,
@@ -236,7 +236,7 @@ void CPeninputCommonChoiceList::DrawItem( TInt aIndex, TBool aIsFocus )
 
     if ( AknsUtils::AvkonSkinEnabled() )
         {
-        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
                                color, KAknsIIDQsnTextColors, clrIndex );
         }
 

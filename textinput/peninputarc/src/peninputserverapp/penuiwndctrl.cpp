@@ -30,10 +30,24 @@
 #include <avkondomainpskeys.h>
 #endif
 
+#ifndef FIX_FOR_NGA
+#define FIX_FOR_NGA
+#endif
 
 const TInt KAknCapServerUid = 0x10207218;
 const TInt KAknNotifySrvUid = 0x10281EF2;  
-    
+
+const TInt KAutoRefreshTimer = 10; //ms
+const TInt KAutoRefreshLongTimer = 1000; //ms
+
+TInt AutoRefreshTimerCallback( TAny* aObject )
+    {
+    CPenUiWndCtrl* wnd = static_cast<CPenUiWndCtrl*>( aObject );
+    wnd->RefreshUI();
+
+    return 0;
+    }
+
 CPenUiWndCtrl::CPenUiWndCtrl(RWindowGroup& aWndGroup,CFbsBitmap * aBitmap)
     :iWndGroup(aWndGroup),
      iBitmap(aBitmap),
@@ -54,8 +68,13 @@ CPenUiWndCtrl::~CPenUiWndCtrl()
         // if aknnote gets destroyed without user interaction or timers
         GfxTransEffect::NotifyExternalState( ENotifyGlobalAbort );
         GfxTransEffect::Deregister(this); //Always deregister in destructor.
+        }    
+#endif   
+    if ( iAutoRefreshTimer && iAutoRefreshTimer->IsActive() )
+        {
+        iAutoRefreshTimer->Cancel();
         }
-#endif    	
+    delete iAutoRefreshTimer;    
 }
 
 void CPenUiWndCtrl::ConstructL()
@@ -75,6 +94,8 @@ void CPenUiWndCtrl::ConstructL()
 #endif    
   //  ActivateL();
     iPopupWnd = CPenUiPopWnd::NewL(iWndGroup,iBitmap,this);
+    
+    iAutoRefreshTimer = CPeriodic::NewL( CActive::EPriorityStandard );
 }
 
 
@@ -93,6 +114,23 @@ void CPenUiWndCtrl::Draw(const TRect& aRect) const
         }
     
     gc.BitBlt(aRect.iTl,iBitmap,aRect);
+    }
+
+void CPenUiWndCtrl::RefreshUI()
+    {
+    StopRefreshTimer();
+    
+    if ( iShowPopup )
+        {
+        iPopupWnd->DrawNow();
+        }
+    else
+        {
+        DrawNow();
+        }
+    CCoeEnv::Static()->WsSession().Flush();
+    CCoeEnv::Static()->WsSession().Finish();
+    
     }
 
 TInt CPenUiWndCtrl::WndPriority()
@@ -280,17 +318,15 @@ void CPenUiWndCtrl::Invalidate(const TRect& aRect,TBool /*aFullUpdate*/)
         iPopupWnd->Invalidate(aRect);
         iPopupWnd->MakeVisible(ETrue);//This is a temproary fix due to pop up UI not updated.
         iPopupWnd->Invalidate(aRect);
-        iPopupWnd->DrawNow();
         }
     else
-        //DrawNow(aRect);
         {
         iInvalidateRect = aRect;
         Window().Invalidate(aRect);
-        DrawNow(aRect);
         }
-    CCoeEnv::Static()->WsSession().Flush();
-    CCoeEnv::Static()->WsSession().Finish(); 
+#ifdef FIX_FOR_NGA
+    RestartRefreshTimer();
+#endif
     }
 
 void CPenUiWndCtrl::OnActivate(EditorType aType)
@@ -429,6 +465,24 @@ void CPenUiWndCtrl::SetResourceChange(TBool aResourceChange)
     iResourceChange = aResourceChange;
     }
     
+
+void CPenUiWndCtrl::RestartRefreshTimer()
+    {
+    StopRefreshTimer();
+
+    TTimeIntervalMicroSeconds32 t1 = KAutoRefreshTimer * 1000;
+    TTimeIntervalMicroSeconds32 t2 = KAutoRefreshLongTimer * 1000;
+    iAutoRefreshTimer->Start( t1, t2, TCallBack(AutoRefreshTimerCallback, this) );
+    }
+
+void CPenUiWndCtrl::StopRefreshTimer()
+    {
+    if ( iAutoRefreshTimer->IsActive() )
+        {
+        iAutoRefreshTimer->Cancel();
+        }
+    }
+
 //End Of File
 // class CInternalBkCtrl
 CInternalBkCtrl::CInternalBkCtrl(RWindowGroup& aWndGroup)    

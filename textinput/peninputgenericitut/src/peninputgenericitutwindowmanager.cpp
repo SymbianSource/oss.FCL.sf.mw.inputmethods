@@ -479,27 +479,15 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
         {
         if ( iDataMgr->IsPortraitWest() && (!iDataMgr->IsChineseSpellMode()))
             {
-			iWindow->Icf()->HideBubble();
+                  //iWindow->Icf()->HideBubble();
             iWindow->SetIndiWithTextFlag( ETrue );
             iWindow->IndiBubbleWithText();
-            
-            if ( iDataMgr->IndicatorData().iIndicatorImgID != 0 &&
-                 iDataMgr->IndicatorData().iIndicatorMaskID != 0 && 
-                 iDataMgr->IndicatorData().iIndicatorTextImgID != 0 &&
-                 iDataMgr->IndicatorData().iIndicatorTextMaskID != 0 )
-                {
-                iWindow->SetIndiBubbleImageL( 
-                        iDataMgr->IndicatorData().iIndicatorImgID,
-                        iDataMgr->IndicatorData().iIndicatorMaskID,
-                        iDataMgr->IndicatorData().iIndicatorTextImgID,
-                        iDataMgr->IndicatorData().iIndicatorTextMaskID);
-                }
             }
         else
-        	{
-			iWindow->Icf()->HideBubble();
-			iWindow->MsgBubbleForChinese();
-        	}
+            {
+                  //iWindow->Icf()->HideBubble();
+                  iWindow->MsgBubbleForChinese();
+            }
         iWindow->Icf()->ShowBubble(aInfo,iWindow->Icf()->MsgBubbleCtrl()->Rect());
         }
     else
@@ -510,26 +498,14 @@ void CGenericItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
             }
         else
             {
-			if ( itutLayoutOwner->UiMgr()->CurrentState() &&
-			     itutLayoutOwner->UiMgr()->CurrentState()->StateType() !=
-			            CGenericItutUiMgrBase::EStateSpelling )
-				{
-				iWindow->Icf()->HideBubble();
-				iWindow->SetIndiWithTextFlag( EFalse );
-				iWindow->IndiBubbleWithoutText();
-				}
-				
-				if ( iDataMgr->IndicatorData().iIndicatorImgID != 0 &&
-					 iDataMgr->IndicatorData().iIndicatorMaskID != 0 && 
-					 iDataMgr->IndicatorData().iIndicatorTextImgID != 0 &&
-					 iDataMgr->IndicatorData().iIndicatorTextMaskID != 0 )
-					{
-					iWindow->SetIndiBubbleImageL( 
-							iDataMgr->IndicatorData().iIndicatorImgID,
-							iDataMgr->IndicatorData().iIndicatorMaskID,
-							iDataMgr->IndicatorData().iIndicatorTextImgID,
-							iDataMgr->IndicatorData().iIndicatorTextMaskID);
-					}
+                  if ( itutLayoutOwner->UiMgr()->CurrentState() &&
+                       itutLayoutOwner->UiMgr()->CurrentState()->StateType() !=
+                              CGenericItutUiMgrBase::EStateSpelling )
+                        {
+                        //iWindow->Icf()->HideBubble();
+                        iWindow->SetIndiWithTextFlag( EFalse );
+                        iWindow->IndiBubbleWithoutText();
+                        }
             
             iWindow->Icf()->ShowBubble( KEmptyString, 
                     iWindow->Icf()->MsgBubbleCtrl()->Rect());

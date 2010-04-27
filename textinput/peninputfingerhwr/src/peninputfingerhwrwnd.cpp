@@ -1504,7 +1504,7 @@ void CPeninputFingerHwrWnd::LoadVkbKeyImageL( CVirtualKeyboard* aVkb,
 
             if ( bmpMskId != KInvalidImg )
                 {
-                AknsUtils::CreateIconL( AknsUtils::SkinInstance(),
+                AknsUtils::CreateIconL( UiLayout()->SkinInstance(),
                    id, bmp, maskbmp, bmpFileName, bmpId, bmpMskId );
                 
                 // set maskbmp and size
@@ -1514,7 +1514,7 @@ void CPeninputFingerHwrWnd::LoadVkbKeyImageL( CVirtualKeyboard* aVkb,
                 }
             else
                 {
-                AknsUtils::CreateIconL( AknsUtils::SkinInstance(), id, 
+                AknsUtils::CreateIconL( UiLayout()->SkinInstance(), id, 
                     bmp, bmpFileName, bmpId );
                 }
             // set bmp and size
@@ -2091,7 +2091,7 @@ void CPeninputFingerHwrWnd::ReadShadowInfoL( const TInt aResId )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
 
     for ( TInt i = 0; i < KShadowBmpBr + 1; i++ )
     	{
@@ -2163,7 +2163,7 @@ void CPeninputFingerHwrWnd::ReadBackgroundInfoL( const TInt aResId )
     TAknsItemID id;
     TInt skinitemid;
     
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     const TInt16 bmpId = resReader.ReadInt16();
     const TInt16 bmpMskId = resReader.ReadInt16();
     skinitemid = resReader.ReadInt16();   
@@ -2212,7 +2212,7 @@ void CPeninputFingerHwrWnd::ReadICFInfoL( const TInt aResId )
     colorid.Set( TInt( colorMajorSkinId ), skinitemid );
 
     TRgb icftextcolor;
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     TInt error = AknsUtils::GetCachedColor( skininstance, icftextcolor,
             colorid, coloridx );
 
@@ -2276,7 +2276,7 @@ void CPeninputFingerHwrWnd::ReadWritingBoxInfoL( const TInt aResId )
     colorid.Set( TInt( colorMajorSkinId ), skinitemid );
 
     TRgb boxcolor;
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
+    MAknsSkinInstance* skininstance = UiLayout()->SkinInstance();
     TInt error = AknsUtils::GetCachedColor( skininstance, 
                                            boxcolor, 
                                            colorid, 
@@ -2387,7 +2387,7 @@ void CPeninputFingerHwrWnd::ReloadWritingGuideLinesL()
     CFbsBitmap* bmpImage = NULL;
     CFbsBitmap* bmpMask = NULL;
     
-    //AknsUtils::CreateIconL(AknsUtils::SkinInstance(), id, bmpImage, bmpMask, bmpFileName, imageid,maskid);
+    //AknsUtils::CreateIconL(UiLayout()->SkinInstance(), id, bmpImage, bmpMask, bmpFileName, imageid,maskid);
     
     TRgb colorBkgnd = iWritingBoxBkColor;
     TRgb colorGuideLine = AKN_LAF_COLOR( 0 ); 
@@ -2409,7 +2409,7 @@ void CPeninputFingerHwrWnd::ReloadWritingGuideLinesL()
         colorGuideLine = TRgb(r,g,b);
         }
     
-    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
             id, KAknsIIDQsnIconColors, -1,
             bmpImage, bmpMask, fileName, imageid, maskid,
             colorGuideLine );

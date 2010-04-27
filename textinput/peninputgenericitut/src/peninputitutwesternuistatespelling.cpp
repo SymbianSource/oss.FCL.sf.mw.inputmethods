@@ -140,6 +140,22 @@ void CWesternItutUiStateSpelling::OnEntryL()
     	}
     //
 
+    if ( iOwner->DataMgr()->IsChineseSpellMode())
+    	{
+		CAknFepCtrlRawKeyButton* leftbtn = 
+				static_cast<CAknFepCtrlRawKeyButton *>( iOwner->LayoutContext()->Control( ECtrlIdArrowLeft ));
+		if( leftbtn )
+			{
+			leftbtn->Hide( ETrue );
+			}
+		
+		CAknFepCtrlRawKeyButton* rightbtn = 
+				static_cast<CAknFepCtrlRawKeyButton *>( iOwner->LayoutContext()->Control( ECtrlIdArrowRight ));
+		if( rightbtn )
+			{
+			rightbtn->Hide( ETrue );
+			}
+    	}
 
     TAknTextLineLayout btntextformat = TItutDataConverter::AnyToTextLine(
                                                iOwner->DataMgr()->RequestData(EBtnTextLine));
@@ -164,9 +180,7 @@ void CWesternItutUiStateSpelling::OnEntryL()
     iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( EFalse );
     CAknFepCtrlLabel* indilabel = static_cast<CAknFepCtrlLabel*>
                                   (iOwner->LayoutContext()->Control(ECtrlIdSpellIndicator));
-    // Modify begin
     if ( indilabel && iOwner->DataMgr()->IsChineseSpellMode())
-    // Modify end
         {
         indilabel->Hide( EFalse );
         }

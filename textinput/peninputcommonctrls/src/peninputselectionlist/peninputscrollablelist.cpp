@@ -121,7 +121,7 @@ EXPORT_C void CFepLayoutScrollableList::ConstructFromResourceL()
         {
     	if (bmpMskId != KInvalidBmp)
     		{
-		    AknsUtils::CreateColorIconL( AknsUtils::SkinInstance(),
+		    AknsUtils::CreateColorIconL( UiLayout()->SkinInstance(),
 						         id,
 						         KAknsIIDQsnIconColors,
 						         EAknsCIQsnIconColorsCG30,
@@ -134,7 +134,7 @@ EXPORT_C void CFepLayoutScrollableList::ConstructFromResourceL()
             }
         else
             {
-    	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+    	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
     	                           id,
     	                           iSeperationBmp,
     	                           bmpFileName,
@@ -199,7 +199,7 @@ EXPORT_C void CFepLayoutScrollableList::Draw()
     gc->Activate(BitmapDevice());
     gc->Clear(rect);
 
-	AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+	AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
 	                         *gc, 
 	                         rect, 
 	                         innerRect,
@@ -241,7 +241,7 @@ EXPORT_C void CFepLayoutScrollableList::DrawPageInfo()
 
 	    if ( AknsUtils::AvkonSkinEnabled() )
 	        {
-	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
 	                               color, KAknsIIDQsnTextColors, clrIndex );
 	        }
 
@@ -346,15 +346,28 @@ EXPORT_C void CFepLayoutScrollableList::CalcPageInfo()
 
 EXPORT_C void CFepLayoutScrollableList::CalculateItemWidth()
     {
+	TBuf<KDisplayTextLen> buf;
+	CFont::TMeasureTextInput::TFlags flg = CFont::TMeasureTextInput::EFVisualOrder;
+	if(iAlign == CGraphicsContext::ERight)
+		flg = CFont::TMeasureTextInput::EFVisualOrderRightToLeft;
+	
+	const CFont* font = iFont;
+	if(iTextLineSet)
+		{
+		TAknLayoutText textLayout;
+		textLayout.LayoutText(TRect(0, 0, 1, 1), iTextLine);
+		font = textLayout.Font();
+		}
+	ASSERT(font);
+	
     iItemSize.iWidth = iInitItemWidth;
     const RPointerArray<SItem>& allItems = ItemArray();
-    for( TInt i = 0; i < allItems.Count() ; ++i )
+    for(TInt i = 0; i < allItems.Count(); ++i)
         {
-        TInt itemWidth = iFont->TextWidthInPixels( allItems[i]->iText );
-        if( itemWidth > iItemSize.iWidth )
-            {
+		TInt itemWidth = AknBidiTextUtils::MeasureTextBoundsWidth(
+				*font, allItems[i]->iText, flg);
+        if(itemWidth > iItemSize.iWidth)
             iItemSize.iWidth = itemWidth;
-            }
         }
      
     TPixelsTwipsAndRotation ptScreenSize;             
@@ -431,7 +444,7 @@ EXPORT_C void CFepLayoutScrollableList::DrawItem(TInt aItemIndex, TBool aItemAct
         gc->Activate(BitmapDevice());   
 
 	      // draw frame
-        MAknsSkinInstance* skin = AknsUtils::SkinInstance();
+        MAknsSkinInstance* skin = UiLayout()->SkinInstance();
 	    TRect innerRect = itemRect;
 	    innerRect.Shrink(7, 7);
         AknsDrawUtils::DrawFrame(skin, 
@@ -441,61 +454,45 @@ EXPORT_C void CFepLayoutScrollableList::DrawItem(TInt aItemIndex, TBool aItemAct
                                  aItemActive ? iItemActiveFrId : iItemFrId,
                                  KAknsIIDDefault); 
         }
-
+    
+    CFepLayoutChoiceList::SItem* item = ItemArray()[aItemIndex];
+    const CFont* font = iFont;
+    TRgb color = iFontColor;
+    TInt baseLine = iBaselineOffset;
+    
     // draw text
     if (iTextLineSet)
         {
-        gc->SetBrushStyle(CGraphicsContext::ENullBrush);
-        gc->SetBrushColor(KRgbBlack); 
-	    TRgb color( KRgbBlack );  // sane default for nonskinned case
-               
         TAknLayoutText textLayout;
-        textLayout.LayoutText(itemRect, 
-                              iTextLine);
+        textLayout.LayoutText(itemRect, iTextLine);
+        
 	    TAknsQsnTextColorsIndex clrIndex;
 	    clrIndex = isFocus ? EAknsCIQsnTextColorsCG10 : EAknsCIQsnTextColorsCG20;
 
-	    if ( AknsUtils::AvkonSkinEnabled() )
-	        {
-	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+	    color = KRgbBlack;
+	    if (AknsUtils::AvkonSkinEnabled())
+	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
 	                               color, KAknsIIDQsnTextColors, clrIndex );
-	        }
-
-	    textLayout.DrawText(*gc, ItemArray()[aItemIndex]->iText, ETrue, color);
+	    font = textLayout.Font();
+	    itemRect = textLayout.TextRect();
+	    baseLine = itemRect.Height() / 2 + font->AscentInPixels() / 2;
         }
-    else if (iFont)
-        {
-        gc->UseFont(iFont);
 
-        gc->SetBrushStyle(CGraphicsContext::ENullBrush);
-        gc->SetBrushColor(KRgbBlack);
-        gc->SetPenColor(iFontColor);
-        gc->SetPenStyle(CGraphicsContext::ESolidPen);
-        gc->SetPenSize(PenSize());
+    if(font == NULL)
+    	return;
+    
+	gc->UseFont(font);
+	gc->SetBrushStyle(CGraphicsContext::ENullBrush);
+	gc->SetBrushColor(KRgbBlack);
+	gc->SetPenColor(color);
+	gc->SetPenStyle(CGraphicsContext::ESolidPen);
+	gc->SetPenSize(PenSize());
 
-        if (iFont->TextWidthInPixels(ItemArray()[aItemIndex]->iText) > itemRect.Width())
-            {
-            TBuf<KDisplayTextLen> buf;
-            AknBidiTextUtils::ConvertToVisualAndClip(ItemArray()[aItemIndex]->iText,
-                                                     buf,
-                                                     *iFont,
-                                                     itemRect.Width(),
-                                                     itemRect.Width());
-            gc->DrawText(buf, 
-                         itemRect,
-                         iBaselineOffset,
-                         CGraphicsContext::ELeft);  
-            }
-        else
-            {
-            gc->DrawText(ItemArray()[aItemIndex]->iText,
-                         itemRect,
-                         iBaselineOffset,
-                         CGraphicsContext::ELeft);
-            }
-
-        gc->DiscardFont();
-        }    
+	TBuf<KDisplayTextLen> buf;
+	AknBidiTextUtils::ConvertToVisualAndClip(item->iText, buf, *iFont,
+										 itemRect.Width(), itemRect.Width());
+	gc->DrawText(buf, itemRect, baseLine, iAlign);
+	gc->DiscardFont();
     }
 
 EXPORT_C void CFepLayoutScrollableList::ConstructL()
@@ -606,7 +603,7 @@ EXPORT_C void CFepLayoutScrollableList::HandleControlEvent(TInt aEventType,
             }
         }
     }
-    
+
 EXPORT_C void CFepLayoutScrollableList::UpdatePageInfoL( TInt aCurrentPage, TInt aTotalPage )
 	{
 	if( iPageInfoResID == 0 )

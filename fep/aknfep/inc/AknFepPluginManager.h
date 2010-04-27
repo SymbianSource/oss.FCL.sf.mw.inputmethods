@@ -85,7 +85,8 @@ enum TPluginCmd
     EPluginSwitchToPortrait,
     EPluginSwitchToLandscape,
     EPluginSwitchMode,
-    EPluginUpdatePenInputITIStatus
+    EPluginUpdatePenInputITIStatus,
+	EPluginEnableFetchDimState
     };
 
 /** 
@@ -844,6 +845,8 @@ private:
     TBool IsEditorSupportSplitIme();
     
     void SetICFTextForSpellL();
+    
+    void SendMatchListCmd(const RArray<TPtrC>& aList);
 private:    // Data
     
     /**
@@ -1056,6 +1059,16 @@ private:    // Data
 
     CConnectAo* iConnectAo;
     TBool iInSpellMode;
+	
+    /**
+     * Indicate if need fetch the dim state from peninputserver
+     */ 	
+	TBool iNeedFetchDimState;
+
+    /**
+     * save the current dim state
+     */ 	
+    TBool iCurrentDimState;
     };
 
 class CConnectAo : public CActive

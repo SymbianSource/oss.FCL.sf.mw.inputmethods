@@ -41,6 +41,7 @@
 #include "PluginKrFepManagerHwr.h"
 #include "PluginKrFepManagerVkb.h"
 #include "PluginKrFepManagerItut.h"
+#include "peninputpluginkrcombinelistquerydialog.h"
 
 //_LIT(KFscImeName, "Korean FSC");
 //_LIT(KHwrImeName, "Korean HWR");
@@ -127,13 +128,11 @@ void CPeninputPluginKr::ConstructL()
     BaflUtils::NearestLanguageFile(coeEnv->FsSession(), resourceName);
     iResId = coeEnv->AddResourceFileL(resourceName);
     
-    iRepository=CRepository::NewL(KCRUidAknFep);
-    
     }
 
 CPeninputPluginKr::~CPeninputPluginKr()
     {
-    delete iRepository;
+	
     CCoeEnv::Static()->DeleteResourceFile(iResId);
     DeActivate();
     iUiLayoutImpIdList.Close();
@@ -322,18 +321,21 @@ TBool CPeninputPluginKr::HandleMenuCommandL(TInt aCommandId)
     {
     LOG("FEP.IMEPLG.KR.HandleMenuCommandL");
     TInt ret(EFalse);
+    CRepository* repository = CRepository::NewLC(KCRUidAknFep);
     if (aCommandId==EPeninputPluginKrDoubleConsonentCmd)
         {
         TInt settingValue;
-        iRepository->Get(KAknFepKoreanCombineWordFlag,settingValue);
+        repository ->Get(KAknFepKoreanCombineWordFlag,settingValue);
         settingValue |= EKoreanWordCombineConsonantOnSetting;
-        iRepository->Set(EKoreanWordCombineConsonantOnSetting,settingValue);
-        TRAP_IGNORE(ShowListQueryL(R_AKNEXQUERY_MULTI_SELECTION_LIST_QUERY));
-        iRepository->Get(KAknFepKoreanCombineWordFlag,settingValue);
+        repository ->Set(EKoreanWordCombineConsonantOnSetting,settingValue);
+        TRAP_IGNORE(ShowListQueryL(R_AKNEXQUERY_MULTI_SELECTION_LIST_QUERY,repository ));
+        repository ->Get(KAknFepKoreanCombineWordFlag,settingValue);
         settingValue &= 0xFFFFFEFF;
-        iRepository->Set(EKoreanWordCombineConsonantOnSetting,settingValue);
+        repository ->Set(EKoreanWordCombineConsonantOnSetting,settingValue);
         ret=ETrue;
         }
+    
+    CleanupStack::PopAndDestroy(repository);
     return ret;
     }
 
@@ -575,19 +577,20 @@ CPluginKrFepManagerBase* CPeninputPluginKr::GetFSQUiL(TInt aLang)
 		}
     }
 
-void CPeninputPluginKr::ShowListQueryL(const TInt aResourceId)
+void CPeninputPluginKr::ShowListQueryL(const TInt aResourceId, CRepository* aRepository)
     {
     CArrayFixFlat<TInt>* arraySelected=
         new (ELeave) CArrayFixFlat<TInt>(7);
     CleanupStack::PushL(arraySelected);
-    CAknListQueryDialog* dlg=
-        new (ELeave) CAknListQueryDialog(arraySelected);
+   
+    CPeninputPluginKrCombineListQueryDialog* dlg = 
+    		new(ELeave)CPeninputPluginKrCombineListQueryDialog(arraySelected);
     dlg->PrepareLC(aResourceId);
     
 
     TInt settingValue;
 
-    if( iRepository->Get( KAknFepKoreanCombineWordFlag, settingValue ) == KErrNone )
+    if( aRepository->Get( KAknFepKoreanCombineWordFlag, settingValue ) == KErrNone )
         {
         if( settingValue & EKoreanWordCombineConsonantSsangKiyeok )
             {
@@ -636,7 +639,8 @@ void CPeninputPluginKr::ShowListQueryL(const TInt aResourceId)
         {
 
         settingValue &= 0xFFFFFF01; 
-        iRepository->Set( KAknFepKoreanCombineWordFlag, settingValue );
+        
+        aRepository->Set( KAknFepKoreanCombineWordFlag, settingValue );
         for (TInt i=0;i<arraySelected->Count();i++)
             {
             switch (arraySelected->At(i))
@@ -666,9 +670,11 @@ void CPeninputPluginKr::ShowListQueryL(const TInt aResourceId)
                     break;
                 }
             }
-        }
 
-    iRepository->Set( KAknFepKoreanCombineWordFlag, settingValue );
+
+        aRepository->Set( KAknFepKoreanCombineWordFlag, settingValue );
+        }
+    
     CleanupStack::PopAndDestroy(arraySelected);
     }
 

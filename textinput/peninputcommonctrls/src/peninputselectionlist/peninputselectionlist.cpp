@@ -171,7 +171,7 @@ EXPORT_C void CPenInputSelectionList::ConstructFromResourceL()
             {
             if (maskid != KInvalidBmp)
                 {
-        		AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        		AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         		                       id,
         		                       bmp,
         		                       maskbmp,
@@ -183,7 +183,7 @@ EXPORT_C void CPenInputSelectionList::ConstructFromResourceL()
                 }
             else
                 {
-        	    AknsUtils::CreateIconL(AknsUtils::SkinInstance(),
+        	    AknsUtils::CreateIconL(UiLayout()->SkinInstance(),
         	                           id,
         	                           bmp,
         	                           bmpFileName,
@@ -371,7 +371,7 @@ void CPenInputSelectionList::DrawItem(TInt aItemIndex)
     gc->Activate(BitmapDevice());   
 
 	// draw frame
-	MAknsSkinInstance* skin = AknsUtils::SkinInstance();
+	MAknsSkinInstance* skin = UiLayout()->SkinInstance();
 
     TRect outerRect;
     TRect innerRect;

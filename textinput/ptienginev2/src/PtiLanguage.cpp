@@ -424,6 +424,7 @@ EXPORT_C void CPtiCoreLanguage::GetAvailableInputModesL(CArrayFix<TInt>* aResult
 // 
 EXPORT_C void CPtiCoreLanguage::GetAvailableInputModesL(RArray<TInt>& aResult)
 	{
+	CleanupClosePushL( aResult );
 	if (!iKeyMapData)	
 		{
 		TRAP_IGNORE(LoadKeymappingsL());	
@@ -433,6 +434,7 @@ EXPORT_C void CPtiCoreLanguage::GetAvailableInputModesL(RArray<TInt>& aResult)
 		{
 		aResult.AppendL(iCores[i].iInputMode);
 		}	
+    CleanupStack::Pop();
 	}
 	
 

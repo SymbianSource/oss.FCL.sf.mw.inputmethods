@@ -460,7 +460,7 @@ EXPORTS
 	_ZN24CFepLayoutScrollableListC2EP12CFepUiLayouti5TSizeiiS2_S2_ @ 459 NONAME
 	_ZN25CPeninputCommonChoiceListC1EP12CFepUiLayouti11TAknsItemIDS2_22ECommonChoiceListStyle @ 460 NONAME
 	_ZN25CPeninputCommonChoiceListC2EP12CFepUiLayouti11TAknsItemIDS2_22ECommonChoiceListStyle @ 461 NONAME
-	_ZThn768_N24CFepLayoutScrollableList18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 462 NONAME ; #<thunk>#
+	_ZThn772_N24CFepLayoutScrollableList18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 462 NONAME ; #<thunk>#
 	_ZN23CAknFepCtrlRepeatButton18CancelPointerDownLEv @ 463 NONAME
 	_ZN20CFepCtrlDropdownList4NewLEP12CFepUiLayoutii6TPointPK5CFont5TSizeiiiiiiNS_11THDirectionEi @ 464 NONAME
 	_ZN20CFepCtrlDropdownList16SetSecondaryListER6RArrayIiEi @ 465 NONAME

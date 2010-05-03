@@ -1,4 +1,4 @@
-// Copyright (c) 2006-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -839,23 +839,23 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			{
 			SetTestStepID(_L("TI18N-FEPBASE-CIT-4001"));
 			INFO_PRINTF1(_L("Send cursor down events to move the next dialog"));
-			SendKey(EKeyDownArrow);			
-			INFO_PRINTF1(_L("Install the FEP 1"));
-			iCoeEnv->InstallFepL(KUidTFep1);
+			SendKey(EKeyDownArrow);
+			// FEP 1 is already tested in above test cases.
+			// Now install test FEP 4 to test UTF-16 support.
+			INFO_PRINTF1(_L("Install the FEP 4"));
+			iCoeEnv->InstallFepL(KUidTFep4);
 			User::After(TTimeIntervalMicroSeconds32(2000000));
 			}
 			break;
-
 		case 462:
 			{
 			INFO_PRINTF1(_L("...simulate Key Event 'Shift + M' ---> Changes to hex fep!"));
 			SendKey('M', EModifierRightShift);			
-			TUint codes[] = {'0', '0', '2', '1'};
+			TUint codes[] = {'0', '0', '0', '2', '1'};	// FEP 4 supports UTF-16, and need 5 digits for one Unicode value
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(200000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
@@ -863,12 +863,11 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			break;
 		case 463:  
 			{
-			TUint codes[] = {'0', '4', '1', '1'};
+			TUint codes[] = {'0', '0', '4', '1', '1'};	// FEP 4 supports UTF-16, and need 5 digit for one Unicode value
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(200000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
@@ -876,26 +875,23 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			break;
 		case 464:  
 			{
-			TUint codes[] = {'0', 'E', '0', '2'};
+			TUint codes[] = {'0', '0', 'E', '0', '2'};	// FEP 4 supports UTF-16, and need 5 digit for one Unicode value
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(200000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
 			}
 			break;
-			
 		case 465:
 			{
-			TUint codes[] = {'2', 'E', '8', '1'};
+			TUint codes[] = {'0', '2', 'E', '8', '1'};	// FEP 4 supports UTF-16, and need 5 digit for one Unicode value
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
@@ -903,12 +899,11 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			break;
 		case 466:
 			{
-			TUint codes[] = {'3', '0', '3', 'A'};
+			TUint codes[] = {'0', '3', '0', '3', 'A'};	// FEP 4 supports UTF-16, and need 5 digit for one Unicode value
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
@@ -916,12 +911,11 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			break;
 		case 467:
 			{
-			TUint codes[] = {'4', 'E', '1', '9'};
+			TUint codes[] = {'0', '4', 'E', '1', '9'};	// FEP 4 supports UTF-16, and need 5 digit for one Unicode value
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
@@ -929,81 +923,60 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			break;
 		case 468:
 			{
-			TUint codes[] = {'A', 'D', '0', '0'};
+			TUint codes[] = {'0', 'A', 'D', '0', '0'};	// FEP 4 supports UTF-16, and need 5 digit for one Unicode value
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
 			}
 			break;
-
 		case 469:
-			{
-			INFO_PRINTF1(_L("Uninstall the FEP"));
-			iCoeEnv->InstallFepL(KNullUid);
-			INFO_PRINTF1(_L("Install the FEP 4"));
-			iCoeEnv->InstallFepL(KUidTFep4);
-			User::After(TTimeIntervalMicroSeconds32(2000000));
-			}
-			break;
-
-		case 471:
 			{
 			TUint codes[] = {'2', '0', '0', '0', '0'};
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
 			}
 			break;
-		case 472: 
+		case 470: 
 			{
 			TUint codes[] =  {'2', 'F', '8', '0', '0'};
 			for (int i = 0; i < sizeof(codes)/sizeof(TUint); i++)
 				{
 				INFO_PRINTF2(_L("...simulate Key Event '%d'"), codes[i]);
 				SendKey(codes[i]);
-				User::After(TTimeIntervalMicroSeconds32(1000000));
 				}
 			INFO_PRINTF1(_L("...simulate Key Event Enter"));
 			SendKey(EKeyEnter);			
 			}
 			break;
-			
-		case 473:
+		case 471:
 			{
-            INFO_PRINTF1(_L("...simulate Key Event 'Shift + X' ---> test SimulateKeyEventsL!"));
-            SendKey('X', EModifierRightShift);
-            User::After(TTimeIntervalMicroSeconds32(2000000));
+			INFO_PRINTF1(_L("...simulate Key Event 'Shift + X' ---> test SimulateKeyEventsL!"));
+			SendKey('X', EModifierRightShift);
+			User::After(TTimeIntervalMicroSeconds32(2000000));
 			INFO_PRINTF1(_L("...simulate Key Event 'Shift + M' ---> Changes to Pinyin!"));
-			SendKey('M', EModifierRightShift);
-            User::After(TTimeIntervalMicroSeconds32(2000000));
-			}
-			break;
-		case 474:
-			{
-			INFO_PRINTF1(_L("...simulate Key Event 'Shift + M' ---> Changes back to Plain!"));
 			SendKey('M', EModifierRightShift);
 			User::After(TTimeIntervalMicroSeconds32(2000000));
 			}
 			break;
-		case 475:
+		case 472:
 			{
-			INFO_PRINTF1(_L("Uninstall the FEP"));
+			INFO_PRINTF1(_L("Uninstall the FEP 4"));
 			iCoeEnv->InstallFepL(KNullUid);
-			SendKey(EKeyEnter);  
-			RecordTestResultL();
+			User::After(TTimeIntervalMicroSeconds32(2000000));
+            SendKey(EKeyEnter);  
+            RecordTestResultL();
 			}
 			break;
-						
+
 //----------------------------------------------------------------------------------------------
 
 /**

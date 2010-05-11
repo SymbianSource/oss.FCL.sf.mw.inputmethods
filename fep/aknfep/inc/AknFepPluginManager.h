@@ -446,7 +446,6 @@ public:
      */
     void RemoveLastFocusedWinFromOpenList();
     
-    void SetInSpellModeFlag( TBool aFlag );
 public: // inline    
     
     /**
@@ -539,6 +538,8 @@ public: // inline
      * @return current plugin input mode
      */      
     inline TPluginInputMode CurrentPluginInputMode();
+    
+    inline void SetLaunchSCTInSpell( TBool aLaunchSCTInSpell );
 private: 
 
     /**
@@ -1057,8 +1058,7 @@ private:    // Data
 	
 	TInt iAlignment;
 
-    CConnectAo* iConnectAo;
-    TBool iInSpellMode;
+    CConnectAo* iConnectAo;    
 	
     /**
      * Indicate if need fetch the dim state from peninputserver
@@ -1069,6 +1069,8 @@ private:    // Data
      * save the current dim state
      */ 	
     TBool iCurrentDimState;
+    
+    TBool iLaunchSCTInSpell;
     };
 
 class CConnectAo : public CActive
@@ -1237,6 +1239,11 @@ inline TBool CAknFepPluginManager::IsInMenuOpen()
 inline TPluginInputMode CAknFepPluginManager::CurrentPluginInputMode()
 	{
 	return iPluginInputMode;
+	}
+
+inline void CAknFepPluginManager::SetLaunchSCTInSpell( TBool aLaunchSCTInSpell )
+	{
+	iLaunchSCTInSpell = aLaunchSCTInSpell;
 	}
 
 #endif //RD_SCALABLE_UI_V2    

@@ -727,4 +727,8 @@ EXPORTS
 	_ZN21CTransparentHwrWndExt9DrawPointERK6TPointi @ 726 NONAME
 	_ZN16CVirtualKeyboard11SetStarIconEP18CPenInputColorIcon @ 727 NONAME
 	_ZN20CFepLayoutChoiceList16SetTextAlignmentEN16CGraphicsContext10TTextAlignE @ 728 NONAME
+	_ZN14CFepUiBaseCtrl21ActiveExtResponseAreaEv @ 729 NONAME
+	_ZN14CFepUiBaseCtrl21CancelExtResponseAreaEv @ 730 NONAME
+	_ZN14CFepUiBaseCtrl21EnableExtResponseAreaEiRK5TRect @ 731 NONAME
+	_ZN11CButtonBase14BaseConstructLEv @ 732 NONAME
 

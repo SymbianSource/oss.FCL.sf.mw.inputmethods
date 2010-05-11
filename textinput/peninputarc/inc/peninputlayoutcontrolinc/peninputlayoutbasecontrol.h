@@ -904,6 +904,25 @@ public:
      */                                                       
     TBool CompareOrderInSameGroup(CFepUiBaseCtrl* aCtrl);
     
+    /**
+     * Enable/disable extra response area support
+     * 
+     * @param aEnable ETrue to enable, or EFalse to disable
+     * @param aExtMargin margin of extra response area
+     * @return none
+     */
+    IMPORT_C void EnableExtResponseArea( TBool aEnable, const TRect& aExtMargin );
+    
+    /**
+     * Active extra response area
+     */
+    IMPORT_C void ActiveExtResponseArea();
+    
+    /**
+     * Cancel extra response area
+     */
+    IMPORT_C void CancelExtResponseArea();
+       
 protected:
          
     /**
@@ -1162,6 +1181,14 @@ private:
      * @param aIndex The shadow bitmap position index
      */   
     void DrawShadowBitmap(const TRect& aRect,TInt aIndex);
+
+    /**
+     * Update extra response area
+     * 
+     * @param aRect new response area
+     * @return none
+     */
+    void UpdateExtResponseArea( const TRect& aRect );
     
 protected:
     /**
@@ -1340,43 +1367,51 @@ private:
     RRegion iClipRegionWithoutLockedArea;     
     
     
-    TInt iOrdinalPos; 
+    TInt iOrdinalPos;
+
+private:    
+    NONSHARABLE_CLASS(CFepUiBaseCtrlExtension) : public CBase
+        {
+        public: 
+            
+        CFepUiBaseCtrlExtension();
+        
+        /**
+         * Set Tactile Feedback Type
+         * Advanced Tactile feedback REQ417-47932
+         */
+        void SetTactileFeedbackType(TInt aTactileType);
+        
+        /**
+        * Return tactile feedback type
+        *
+        * Advanced Tactile feedback REQ417-47932
+        * @return the tactile feedback type
+        */  
+        IMPORT_C TInt TactileFeedbackType();
+        public:
+            TBool iExtResponseAreaActive;
+            TRect iExtResponseArea;
+            TBool iExtResponseAreaEnabled;
+            TRect  iExtResponseAreaMargin;
+            
+        private:
+            /**
+             * Tactile Feedback type
+             */
+            TInt iTactileType;
+        };    
+private:
     /**
      * Reservered
      */
-    TInt iReservered1;
+    CFepUiBaseCtrlExtension* iExtension;
 
     /**
      * Reservered
      */
     TInt iReservered2;   
-    
-    NONSHARABLE_CLASS(CFepUiBaseCtrlExtension)
-    	{
-    	public: 
-    		
-		CFepUiBaseCtrlExtension(TInt aTactileType);
-		
-		/**
-		 * Set Tactile Feedback Type
-		 * Advanced Tactile feedback REQ417-47932
-		 */
-		void SetTactileFeedbackType(TInt aTactileType);
-		
-		/**
-		* Return tactile feedback type
-		*
-		* Advanced Tactile feedback REQ417-47932
-		* @return the tactile feedback type
-		*/  
-		IMPORT_C TInt TactileFeedbackType();
-		
-    	private:
-        /**
-         * Tactile Feedback type
-         */
-        TInt iTactileType;
-    	};
+   
     };
 //end of class CFepUiBaseCtrl
 #include "peninputlayoutbasecontrol.inl"

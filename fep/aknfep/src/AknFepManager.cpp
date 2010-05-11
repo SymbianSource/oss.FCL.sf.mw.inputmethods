@@ -3534,7 +3534,7 @@ void CAknFepManager::HandleDestructionOfFocusedItem()
             // but need to restore fep state here            
             if ( iFepPluginManager )
             	{
-            	iFepPluginManager->ResetItiStateL();
+                TRAP_IGNORE(iFepPluginManager->ResetItiStateL());
             	}
         #endif
             // Close UI
@@ -3728,7 +3728,6 @@ void CAknFepManager::HandleAknEdwinStateEventL(CAknEdwinState* aAknEdwinState,
             case EAknClosePenInputRequest:
                 if ( iFepPluginManager )
                     {
-                    // Fix bug ou1cimx1#225126, editor team asks that the parameter is EFalse.
                     iFepPluginManager->ClosePluginInputModeL( EFalse );
                     }
                 break;
@@ -3746,7 +3745,7 @@ void CAknFepManager::HandleAknEdwinStateEventL(CAknEdwinState* aAknEdwinState,
                 // In between, if editor context not in inline edit state.
                 // Try to update the case editor gets the focus, and editor
                 // context come in inline state.                
-				//iCaseMan->UpdateCase(ENullNaviEvent);	
+				iCaseMan->UpdateCase( ENullNaviEvent );
                 break;
 
             default:
@@ -3769,7 +3768,6 @@ void CAknFepManager::HandleAknEdwinStateEventL(CAknEdwinState* aAknEdwinState,
             env->SimulateKeyEventL(keyEvent,EEventKey);            
             iFepPluginManager->ResetMenuState();            
             iFepPluginManager->RemoveLastFocusedWinFromOpenList();
-            // Fix bug ou1cimx1#225126, editor team asks that the parameter is EFalse.
             iFepPluginManager->ClosePluginInputModeL( EFalse );
             }
         }
@@ -4093,8 +4091,7 @@ void CAknFepManager::ExitPluginSpellModeByOkL()
         HBufC* spell = iFepPluginManager->SpellTextInput();
         
         iFepPluginManager->SetITUTSpellingStateL(EFalse); 
-        iFepPluginManager->HideSpellEditor();
-        iFepPluginManager->SetInSpellModeFlag( EFalse );
+        iFepPluginManager->HideSpellEditor();        
         
         if (spell)
             {
@@ -4153,8 +4150,7 @@ void CAknFepManager::ExitPluginSpellModeByCancel()
     if (iFepPluginManager->IsSpellVisible())
         {
         TRAP_IGNORE(iFepPluginManager->SetITUTSpellingStateL(EFalse)); 
-        iFepPluginManager->HideSpellEditor();
-        iFepPluginManager->SetInSpellModeFlag( EFalse );
+        iFepPluginManager->HideSpellEditor();        
 
         TRAP_IGNORE(UpdateCbaL(NULL)); 
         if (iFepPluginManager->CaseUpdatesSupressed())
@@ -7005,13 +7001,6 @@ void CAknFepManager::NumberModeChangeGSNotification()
 void CAknFepManager::HandleChangeInFocusL()
     {
     // Closing SCT has done focus change, so here just reset the flag.
-#ifdef RD_SCALABLE_UI_V2	
-    if(iDisalbleFocusChangeForSCT)
-    {
-    iDisalbleFocusChangeForSCT = EFalse;
-    return;
-    }
-#endif
     // dim state changed, need fetch it again.
     SendEventsToPluginManL(EPluginEnableFetchDimState);
 
@@ -11457,10 +11446,14 @@ TBool CAknFepManager::IsValidInLineCharacter(TChar aCharacter) const
             }
         case ELangVietnamese:
             {
-            validInlineCharacter = (aCharacter.IsAlpha() &&
-                                    !((category & TChar::ELetterOtherGroup))) ||
-                                    ((category == TChar::EMarkGroup) && 
-                                    (bdCategory == TChar::ENonSpacingMark));
+            // For full screen qwerty, validInlineCharacter is true
+            if( !( iFepPluginManager && iFepPluginManager->EnableITIOnFSQ() ) )
+                {
+                validInlineCharacter = (aCharacter.IsAlpha() &&
+                                        !((category & TChar::ELetterOtherGroup))) ||
+                                        ((category == TChar::EMarkGroup) && 
+                                        (bdCategory == TChar::ENonSpacingMark));
+                }
             break;
             }
         case ELangThai:
@@ -12113,17 +12106,18 @@ TBool CAknFepManager::TryChangeModeL(TInt aMode)
 #endif        
         iHashKeyMan->SetMode(iMode, IsPredictive());
         // ensure editor is aware of new fep mode
+        TCursorSelection curSel;
         if ( IsFepAwareTextEditor() )
             {
             EditorState()->SetCurrentInputMode(EditorModeFromFepMode(aMode));
-            iInputCapabilities.FepAwareTextEditor()->GetCursorSelectionForFep(iUncommittedText);
+            iInputCapabilities.FepAwareTextEditor()->GetCursorSelectionForFep(curSel);
             AdjustCursorTypeForCurrentPosition();
             }
 
         // when cursor is in between two words and SCT is launched and
         // cancel key is pressed, dont move the cursor at the end of
         // second word.     
-         if (WesternPredictive(aMode) && !iUncommittedText.Length()
+         if (WesternPredictive(aMode) && !curSel.Length()
             && CursorInsideWord() && !IsCcpuFlagSet(ECcpuStateSupressCursorMoveToEnd)
 #ifdef RD_INTELLIGENT_TEXT_INPUT            
             && (!iSupressCursorMoveToEndChrKeyPressed)
@@ -13078,13 +13072,13 @@ void CAknFepManager::UpdateNumberIndicator( TAknEditingState& aNewState )
         {
         if ( iLanguageCapabilities.iInputLanguageCode == ELangArabic )
             {
-            //iLanguageCapabilities.iLocalDigitType = EDigitTypeArabicIndic;
+            iLanguageCapabilities.iLocalDigitType = EDigitTypeArabicIndic;
             aNewState=EArabicIndicNumeric;
             }
         else if ( iLanguageCapabilities.iInputLanguageCode == ELangFarsi 
                || iLanguageCapabilities.iInputLanguageCode == ELangUrdu )
             {
-            //iLanguageCapabilities.iLocalDigitType = EDigitTypeEasternArabicIndic;
+            iLanguageCapabilities.iLocalDigitType = EDigitTypeEasternArabicIndic;
             aNewState=EArabicIndicNumeric;
             }    
         else if ( iLanguageCapabilities.iInputLanguageCode == ELangHindi )
@@ -14526,7 +14520,7 @@ void CAknFepManager::SetWesternPredictive( const TBool aWesternPredictive )
             }
         if ( iFepPluginManager && iFepPluginManager->IsSupportITIOnFSQ() )
         	{
-            SendEventsToPluginManL( EPluginUpdatePenInputITIStatus );
+            TRAP_IGNORE(SendEventsToPluginManL( EPluginUpdatePenInputITIStatus ));
         	}
         }
     }
@@ -18363,6 +18357,11 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
             }
         ClearExtendedFlag(EExtendedFlagEdwinEditorDestroyed);
         
+        if ( iFepPluginManager && iFepPluginManager->IsSpellVisible() )
+        	{
+            iFepPluginManager->SetLaunchSCTInSpell( ETrue );            
+        	}        	
+        
 		if (iUiInterface->CharMapDialogL(
 			sctChars, 
 			specialChars, 
@@ -18461,7 +18460,6 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                                     }                               
 //There may be several char to be inserted, need disable Focus change to avoid multi-focus change.
 #ifdef RD_SCALABLE_UI_V2 
-                                iDisalbleFocusChangeForSCT = ETrue;
 #endif       
                                 InsertTextFromDialogL(charAsDesc, cursorSelection);
                                 }
@@ -18477,7 +18475,7 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                     }
                 }
 #ifdef RD_SCALABLE_UI_V2 
-            
+            iNotifyPlugin = EFalse;
             if( iFepFullyConstructed && iFepPluginManager)
                 {
                  if (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
@@ -18496,15 +18494,14 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                 HandleChangeInFocus();
                 }   
             // Set the flag, not change focus for next.
-            iDisalbleFocusChangeForSCT = ETrue;           
+            iNotifyPlugin = ETrue;
 #endif
             }
         else
             {
             iClosePeninputUi = EFalse;
             iStopProcessFocus = EFalse;                   
-            }
-            
+            }		   
         PrepareFepAfterDialogExitL(fepUid);
         }
     }

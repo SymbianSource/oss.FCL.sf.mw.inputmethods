@@ -73,6 +73,7 @@ CAknFepSharedDataInterface::~CAknFepSharedDataInterface()
     delete iGsPenSettings;
     delete iLocaleRepository;
     delete iSensorRepository;
+    delete iThemeEffectsRepository;
 
     if (iQwertyModeStatusSubscriber)
         {
@@ -525,6 +526,8 @@ void CAknFepSharedDataInterface::ConstructL()
     TRAP(ret, iGsPenSettings = CRepository::NewL(KCRUidPersonalizationSettings));
     
     TRAP(ret, iSensorRepository = CRepository::NewL( KCRUidSensorSettings ) );
+    
+    TRAP(ret, iThemeEffectsRepository = CRepository::NewL( KCRUidThemes ));
     }
 
 TInt CAknFepSharedDataInterface::HashKeySelectionNotification(TAny* aObj)
@@ -1752,7 +1755,18 @@ TBool CAknFepSharedDataInterface::AutoRotateEnabled()
         }
     
     return EFalse;
-	}       
+	}
+
+TBool CAknFepSharedDataInterface::ThemeEffectsEnabled()
+    {
+        TInt effectsValue = KErrNone;
+        TInt error = iThemeEffectsRepository->Get( KThemesTransitionEffects, effectsValue );
+        if ( error != KErrNone || effectsValue != 0 )//zero means on
+            {
+            effectsValue = KErrNotFound;
+            }
+        return effectsValue == KErrNone ? ETrue:EFalse;
+    }
 
 #ifdef	RD_INTELLIGENT_TEXT_INPUT
 #ifdef __ITI_LONGPRESS_NUM_SHIFT_COPYPASTE__

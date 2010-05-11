@@ -316,24 +316,22 @@ void CSplitItutDataMgr::ReadLafInfo()
     spellwndtrect.LayoutRect(rect, spellwnd);    
     
     // icf in spell mode
-    TAknWindowLineLayout icfpane, querypane, focuspane, 
+    TAknWindowLineLayout icfpane, focuspane, 
 		bottomInnerBtn, middleInnerBtn, middleBtn;
-    TAknLayoutRect icfpaneRect, querypaneRect, focuspaneRect, 
+    TAknLayoutRect icfpaneRect, focuspaneRect, 
 		bottomButton, bottomInnerRect, middleBtnRect, okBtnRect, cancelBtnRect;
     
     icfpane = AknLayoutScalable_Avkon::popup_fep_vtchi_icf_pane(1).LayoutLine();
     icfpaneRect.LayoutRect(rect, icfpane);
     
-    querypane = AknLayoutScalable_Avkon::vtchi_query_pane().LayoutLine();
-    querypaneRect.LayoutRect(icfpaneRect.Rect(), querypane);
-        
     focuspane = AknLayoutScalable_Avkon::vtchi_query_pane(0).LayoutLine();
-    focuspaneRect.LayoutRect(querypaneRect.Rect(), focuspane);
+    focuspaneRect.LayoutRect(icfpaneRect.Rect(), focuspane);
     iSpellICFRect = focuspaneRect.Rect();
     
     // Middle pane
 	TRect middleButtonPaneRect = spellwndtrect.Rect();
-	middleButtonPaneRect.Move( 5, 2 );
+	TInt leftMargin = itucellrect.Rect().iTl.iX;
+	middleButtonPaneRect.Move( leftMargin, 0 );
 	
 	middleBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane(3).LayoutLine();
 	middleBtnRect.LayoutRect( splitpanerect.Rect(), middleBtn );
@@ -361,7 +359,7 @@ void CSplitItutDataMgr::ReadLafInfo()
 	TRect cellSpellRect;
 	cellSpellRect.iTl.iX = middleButtonPaneRect.iTl.iX;
 	cellSpellRect.iTl.iY = middleButtonPaneRect.iTl.iY + 
-			itucellrect.Rect().Height() * 5 + 10;
+			itucellrect.Rect().Height() * 5 + 7;
 	cellSpellRect.SetHeight( itucellrect.Rect().Height());
 	cellSpellRect.SetWidth( itucellrect.Rect().Width());
 
@@ -390,15 +388,19 @@ void CSplitItutDataMgr::ReadLafInfo()
 	iSpellBackSpcaceInner = bottomInnerRect.Rect();
     
 	// icf indicator
-	TAknWindowLineLayout icfIndiPaneWithoutText, indiIcon, indiText;
-	TAknLayoutRect icfIndiPaneRectWithoutText, indiIconRect, indiTextRect;
+	TAknWindowLineLayout icfIndiPaneWithoutText;
+	TAknLayoutRect icfIndiPaneRectWithoutText;
 	TAknTextLineLayout indiTextLayout;
 	
 	icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
-	icfIndiPaneRectWithoutText.LayoutRect(icfpaneRect.Rect(), icfIndiPaneWithoutText);
+	icfIndiPaneRectWithoutText.LayoutRect( focuspaneRect.Rect(), icfIndiPaneWithoutText );
 	iIndiPaneRectWithoutTextForPrtWest = icfIndiPaneRectWithoutText.Rect();
 	
-	iIndiIconRectWithoutTextForPrtWest = TRect( 0, 0, 60, 20 );
+	TAknWindowLineLayout spellIndiIcon;
+	TAknLayoutRect spellIndiIconRect;
+	spellIndiIcon = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(0).LayoutLine();
+	spellIndiIconRect.LayoutRect( icfIndiPaneRectWithoutText.Rect(), spellIndiIcon );
+	iIndiIconRectWithoutTextForPrtWest = spellIndiIconRect.Rect();
 	
 	indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
 	iIndiTextForPrtWest = indiTextLayout;  

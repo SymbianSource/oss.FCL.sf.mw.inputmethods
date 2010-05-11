@@ -50,6 +50,11 @@ public:
     IMPORT_C static CButtonBase* NewL(const TRect& aRect,CFepUiLayout* aUiLayout,TInt aControlId);
 
     /**
+     * Do base contruction
+     */
+    IMPORT_C void BaseConstructL();
+    
+    /**
      * Set button active or deactive.        
      *
      * @since S60 V4.0        

@@ -48,6 +48,7 @@
 #include "peninputlayoutcontext.h"
 #include "peninputvkbctrlext.h"
 #include "peninputnumerickeymappingmgr.h"
+#include "peninputgenericvkb.hrh"
 
 // Constants
 const TInt KIntLengthForByte = 8;
@@ -645,6 +646,8 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeRange( TInt aRange, TInt aVkbLayou
         ( iLayoutContext->RequestData( EPeninputDataTypeCurrentRange ) );
     TInt curVkbLayout = CPeninputDataConverter::AnyToInt
         ( iLayoutContext->RequestData( EPeninputDataTypeVkbLayout ) );
+    TInt curLanguage =  CPeninputDataConverter::AnyToInt
+            ( iLayoutContext->RequestData( EPeninputDataTypeInputLanguage ) );
 
     CFepUiBaseCtrl* bar = 
         Control( EPeninutWindowCtrlIdRangeBar );
@@ -689,7 +692,7 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeRange( TInt aRange, TInt aVkbLayou
             iLayoutContext->LayoutType() == EPluginInputModeFSQ )
             {
             if ( ( aRange == ERangeEnglish ) || ( aRange == ERangeAccent ) 
-                || ( aRange == ERangeNativeNumber )
+                || (( aRange == ERangeNativeNumber ) && (iLayoutContext->LayoutType() != EPluginInputModeFSQ ))
                 || ( ConfigInfo()->CaseSensitive() 
                 && ( aRange == ERangeNative ) ) )
                 {
@@ -721,6 +724,29 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeRange( TInt aRange, TInt aVkbLayou
                     
                 // Change vkb layout
                 ChangeVkbLayout( vkblayoutid );
+                }
+            // Deal these four language in special way
+            else if((( aRange == ERangeNativeNumber ) || ( aRange == ERangeNumber ))
+            		&& ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
+            		&& (( curLanguage == ELangArabic )
+            		|| ( curLanguage == ELangFarsi) 
+            		|| ( curLanguage == ELangUrdu )
+            		|| ( curLanguage == ELangThai )))
+            	{
+                 if ( !aVkbLayoutId )
+                     {
+                     TInt shiftFlag = ( aRange == ERangeNativeNumber )? 0:1;
+                     aVkbLayoutId = ( aRange == ERangeNativeNumber )? 
+                		     EPeninputVkbLayoutNativeNumberShift : EPeninputVkbLayoutLatinNumber;
+                		   
+                     TInt capslockFlag = 0;                   
+                   
+                     iLayoutContext->SetData( EPeninputDataTypeShiftDown, &shiftFlag );
+                     iLayoutContext->SetData( EPeninputDataTypeCapslockDown, &capslockFlag );
+                   
+                     ChangeMergedButtonStatus( shiftFlag, capslockFlag );  
+                     }
+                ChangeVkbLayout( aVkbLayoutId );
                 }
             else
                 {
@@ -1139,6 +1165,10 @@ EXPORT_C void CPeninputLayoutWindowExt::HandleShiftAndCapslockBtnClicked()
         ( iLayoutContext->RequestData( EPeninputDataTypeShiftDown ) );
     TInt capslockStatus = CPeninputDataConverter::AnyToInt
         ( iLayoutContext->RequestData( EPeninputDataTypeCapslockDown ) );
+    TInt languageStatus = CPeninputDataConverter::AnyToInt
+            ( iLayoutContext->RequestData( EPeninputDataTypeInputLanguage ));
+    TInt permittedRange = CPeninputDataConverter::AnyToInt
+                ( iLayoutContext->RequestData( EPeninputDataTypePermittedRange ));
      
     if ( shiftStatus )
         {
@@ -1188,7 +1218,32 @@ EXPORT_C void CPeninputLayoutWindowExt::HandleShiftAndCapslockBtnClicked()
         vkbLayout = vkbLayout + curAccentIndex * 2;
         }
         
-    ChangeVkbLayout( vkbLayout );
+    TBool bSupportNative = ( languageStatus == ELangArabic )
+        		        || ( languageStatus == ELangFarsi) 
+        		        || ( languageStatus == ELangUrdu )
+        		        || ( languageStatus == ELangThai );
+    
+    // Click shift will change number between "native number" and "latin number"
+    if (( iLayoutContext->LayoutType() == EPluginInputModeFSQ ) 
+     && ( bSupportNative )
+     && (( ERangeNativeNumber == curRange ) || ( ERangeNumber == curRange )))
+    	{
+        if (( ERangeNumber == curRange )
+         && ( permittedRange & ERangeNativeNumber ))
+       	    {
+            vkbLayout = EPeninputVkbLayoutNativeNumberShift;
+            }
+    
+        if (( ERangeNativeNumber == curRange )
+         && ( permittedRange & ERangeNumber ))
+       	    {
+            vkbLayout = EPeninputVkbLayoutLatinNumber;
+            }
+    	}
+    else
+    	{
+        ChangeVkbLayout( vkbLayout );
+    	}
     
     // Synchronize case if needed    
     if ( ( curRange == ERangeEnglish )  || ( curRange == ERangeAccent ) 
@@ -1201,6 +1256,41 @@ EXPORT_C void CPeninputLayoutWindowExt::HandleShiftAndCapslockBtnClicked()
         CPeninputDataConverter::IntToDesc( fepcase, buf );
         iLayoutContext->Sendkey( ESignalCaseMode, buf );
         }
+    else if ((( curRange == ERangeNumber ) || ( curRange == ERangeNativeNumber ))
+    	   && ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
+    	   && ( bSupportNative ))
+    	{
+        // If support native number, change range to native number
+        if( curRange == ERangeNumber && ( permittedRange & ERangeNativeNumber ))
+        	{
+            ChangeRange( ERangeNativeNumber, vkbLayout );
+        	}
+        // If not support native number, set shift state back
+        else if (( curRange == ERangeNumber ) && !( permittedRange & ERangeNativeNumber ))
+        	{
+            TInt shiftButton = 1;
+            TInt capslockButton = 0;
+            ChangeMergedButtonStatus( shiftButton, capslockButton );
+            iLayoutContext->SetData( EPeninputDataTypeShiftDown, &shiftButton );
+        	}
+        // If support latin number, change range to latin number
+        else if (( curRange == ERangeNativeNumber ) && ( permittedRange & ERangeNumber ) )
+        	{
+            ChangeRange( ERangeNumber, vkbLayout );
+        	}
+        // If not support latin number, set shift state back
+        else if (( curRange == ERangeNativeNumber ) && !( permittedRange & ERangeNumber ))
+            {
+            TInt shiftButton = 0;
+            TInt capslockButton = 0;
+            ChangeMergedButtonStatus( shiftButton, capslockButton );
+            iLayoutContext->SetData( EPeninputDataTypeShiftDown, &shiftButton );
+            }
+    	}
+    else
+    	{
+        // Do nothing
+    	}
     
     
     }

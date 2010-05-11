@@ -545,21 +545,17 @@ EXPORT_C void CFepLayoutScrollableList::ReCalcLayout()
     CalcPageInfo();
     iContentRect = TRect(TPoint(), TSize(2*iHorizontalMargin + iItemSize.iWidth, 
                        (iOnePageItemCnt + 1)*iVerticalMargin + iOnePageItemCnt*iItemSize.iHeight));
-    TRect ctrlRect = iContentRect;
-
-    iItemRects.Reset();
-    for (TInt i = 0; i < iOnePageItemCnt; i++)
-        {
-        iItemRects.Append(TRect(TPoint(iContentRect.iTl.iX + iHorizontalMargin, 
-                                       iContentRect.iTl.iY + (i+1)* iVerticalMargin + 
-                                       i * iItemSize.iHeight) , 
-                                       iItemSize));
-        }        
 
     if (iNaviBtnShown)
         {
-        iScrollRect = TRect(TPoint(iContentRect.Width(), 0), 
-                            TSize(2*iHorizontalMargin + iNaviSize.iWidth, iContentRect.Height()));
+		TInt nWidthPager = 2 * iHorizontalMargin + iNaviSize.iWidth;
+		TInt nXposPager = iContentRect.Width();
+		if (iAlign == CGraphicsContext::ERight)
+			{
+		    iContentRect.Move(nWidthPager, 0);
+			nXposPager = 0;
+			}
+		iScrollRect = TRect(TPoint(nXposPager, 0), TSize(nWidthPager, iContentRect.Height()));
         iPageUpRect = TRect(TPoint(iScrollRect.iTl.iX + iHorizontalMargin, 
                                    iScrollRect.iTl.iY + iVerticalMargin),
                             iNaviSize);
@@ -579,10 +575,24 @@ EXPORT_C void CFepLayoutScrollableList::ReCalcLayout()
         iPageInfoRect = TRect(TPoint(iScrollRect.iTl.iX, 
                               iScrollRect.iTl.iY + iScrollRect.Height()/2 - iNaviSize.iHeight/2),
                               iNaviSize);
-
-        ctrlRect.BoundingRect(iScrollRect);
         }
-
+    else
+    	{
+		iScrollRect = TRect(0, 0, 0, 0);
+    	}
+    
+    iItemRects.Reset();
+    for (TInt i = 0; i < iOnePageItemCnt; i++)
+        {
+        iItemRects.Append(TRect(TPoint(iContentRect.iTl.iX + iHorizontalMargin, 
+									   iContentRect.iTl.iY + (i + 1)* iVerticalMargin + 
+                                       i * iItemSize.iHeight) , 
+                                       iItemSize));
+        }
+    
+    TRect ctrlRect = iContentRect;
+    if (!iScrollRect.IsEmpty())
+    	ctrlRect.BoundingRect(iScrollRect);
     SetRect(ctrlRect);
     UpdateNaviButtonStates();
     }

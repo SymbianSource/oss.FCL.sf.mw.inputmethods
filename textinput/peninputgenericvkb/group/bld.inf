@@ -22,6 +22,7 @@ DEFAULT
 
 PRJ_EXPORTS
 ../loc/peninputgenericvkbaccentlist.loc MW_LAYER_LOC_EXPORT_PATH(peninputgenericvkbaccentlist.loc)
+../inc/peninputgenericvkb.hrh |../../../inc/peninputgenericvkb.hrh
 
 ../rom/peninputgenericvkb_variant.iby CUSTOMER_MW_LAYER_IBY_EXPORT_PATH( peninputgenericvkb_variant.iby )
 ../rom/peninputgenericvkbresources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH( peninputgenericvkbresources.iby )

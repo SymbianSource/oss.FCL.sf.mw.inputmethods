@@ -30,9 +30,11 @@
 #define _AKNFEP_SHARED_DATA_INT_H__
 
 #include <e32base.h>
-#include <ptidefs.h>
+#include <PtiDefs.h>
 #include <e32property.h>
 #include <cenrepnotifyhandler.h>
+#include <pslninternalcrkeys.h>
+
 class CRepository;
 
 class CAknFepRepositoryWatcher : public CBase, public MCenRepNotifyHandlerCallback
@@ -503,6 +505,8 @@ public:
     void SetFepLastUseVkbModeForLandscape(TInt aValue);
 
     TBool AutoRotateEnabled();
+    
+    TBool ThemeEffectsEnabled();
 #ifdef __ITI_LONGPRESS_NUM_SHIFT_COPYPASTE__
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 	/**
@@ -736,6 +740,7 @@ private:
     CRepository*                iGsPenSettings;   //for global setting 
     CRepository*				iLocaleRepository; // locale related settings
     CRepository*                iSensorRepository;
+    CRepository*                iThemeEffectsRepository;//transition effects
     CAknFepRepositoryWatcher*   iAknFepRepositoryWatcher;
     CAknFepRepositoryWatcher*   iAknFepLocaleRepositoryWatcher;
 

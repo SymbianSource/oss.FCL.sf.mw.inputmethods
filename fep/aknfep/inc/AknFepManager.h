@@ -2759,9 +2759,6 @@ private:
     // Save that which editor use stroke
     CAknEdwinState* iEditorStateStrokeUsed;
 
-    // Indicated focus change has done in closing SCT, the call back from framework
-    // will not lead to another focus change.
-    TBool iDisalbleFocusChangeForSCT;
 #endif //RD_SCALABLE_UI_V2
 
     /**

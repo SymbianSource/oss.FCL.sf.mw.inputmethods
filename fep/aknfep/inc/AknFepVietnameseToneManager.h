@@ -131,6 +131,54 @@ public:
      * Judge if the current state is looping or not
      */
     inline TText GetDeletedVowel() const;
+    
+    /**
+     * Start key looping 
+     * 
+     * @param aKey current looping key
+     * 
+     */    
+    void StartKeyLooping(TInt aKey);
+    
+    /**
+     * stop key looping, counterpart to StartKeyLooping
+     */
+    void StopKeyLooping();
+
+    /**
+     * Get current mark index in key looping
+     * 
+     */      
+    TInt ToneMarkIndex() const;
+    
+    /**
+     * Get tone mark vowel in current key looping
+     * 
+     * @param aText return the tone mark vowel
+     * 
+     */     
+    TBool GetLoopingToneMarkVowel( TText& aText ) const;
+    
+    /**
+     * Judge if the current state is key looping or not
+     * 
+     * @param aKey current looping key
+     * 
+     */    
+    inline TBool IsKeyLooping(TInt aKey) const;
+    
+    /**
+     * Judge if the current state is key looping or not
+     */      
+    inline TBool IsLoopingCombined() const;
+    
+    /**
+     * Set whether tone mark is combined in previous looping
+     * 
+     * @param aCombined tone mark is combined
+     * 
+     */ 
+    inline void SetLoopingCombined(TBool aCombined);
 
 private:    // Data
     MAknFepManagerUIInterface* iFepMan;     // not own
@@ -138,6 +186,11 @@ private:    // Data
     TInt iVowelIndex;                       // Index of vowel list
     TBool iIsLooping;                       // Judge if input is in looping state
     TText iPrevVowel;                       // Prev Vowel, used for undo the backdeletion
+    
+    TBool iIsKeyLooping;                    // Judge if input is in loop state, 
+                                            // iIsLooping is only used for star key
+    TInt iLoopingKey;                       // Current looping key
+    TBool iIsLoopingCombined;               // Judge if tone mark is combined in previous looping 
     };
 
 // Inline function implementation
@@ -167,6 +220,21 @@ inline void CAknFepVietnameseToneManager::SetDeletedVowel(TText aDeletedVowel)
 inline TText CAknFepVietnameseToneManager::GetDeletedVowel() const
     {
     return iPrevVowel;
+    }
+
+inline TBool CAknFepVietnameseToneManager::IsKeyLooping(TInt aKey) const
+    {
+    return iIsKeyLooping && (iLoopingKey == aKey) ;
+    }
+
+inline TBool CAknFepVietnameseToneManager::IsLoopingCombined() const
+    {
+    return iIsLoopingCombined ;
+    }
+
+inline void CAknFepVietnameseToneManager::SetLoopingCombined(TBool aCombined)
+    {
+    iIsLoopingCombined = aCombined ;
     }
 
 #endif // __AKN_FEP_VIETNAMESE_TONE_MANAGER__

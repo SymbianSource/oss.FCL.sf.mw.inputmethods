@@ -199,7 +199,7 @@ void CWesternItutUiStateSpelling::OnExit()
     iOwner->LayoutContext()->ShowArrowBtn(0);
     iOwner->LayoutContext()->Control(ECtrlIdBackspace)->Hide( ETrue );
     iOwner->LayoutContext()->Control(ECtrlIdICF)->Hide( ETrue );
-    iICF->SetPromptTextL( KNullDesC );
+    TRAP_IGNORE(iICF->SetPromptTextL( KNullDesC ));
     iOk->Hide(ETrue);
     iCancel->Hide(ETrue);
     iOwner->DataMgr()->SetSpellMode(EFalse);

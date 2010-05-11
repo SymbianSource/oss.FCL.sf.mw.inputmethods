@@ -77,6 +77,15 @@
 #include <PtiKeyMappings.h>
 #include <AknPriv.hrh>
 
+#ifdef RD_UI_TRANSITION_EFFECTS_POPUPS
+#include <gfxtranseffect/gfxtranseffect.h>
+#include <akntransitionutils.h>
+#include <akntranseffect.h>
+
+#include <e32property.h>
+#include <avkondomainpskeys.h>
+#endif
+
 // Constants
 const TInt KCursorBlinkPerioid = 10000;//300000; // five tenth of a second * 2
 const TInt KMaxServerDataLength = 50;
@@ -247,8 +256,7 @@ CAknFepPluginManager::CAknFepPluginManager( CAknFepManager& aFepMan,
                                           CAknFepCaseManager& aCaseMan )
     : iFepMan( aFepMan ), iLangMan( aLangMan ), iCaseMan( aCaseMan ),
       iSharedData( aSharedData ), iPluginPrimaryRange( ERangeInvalid ), iCandidateIndex(1),
-      iCharStartPostion( KInvalidValue ),
-	  iInSpellMode( EFalse )
+      iCharStartPostion( KInvalidValue )	  
     {
     iIndicatorImgID = 0;
     iIndicatorTextID = 0;
@@ -542,6 +550,10 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 }
                 break;
             case ESignalLayoutClosed:
+                if(iPluginInputMode == EPluginInputModeItut)
+                	{
+					iFepMan.PtiEngine()->CancelTimerActivity();
+                	}
                 ClosePluginInputModeL(ETrue);
                 if(iPenInputSvrConnected ) //lost foreground
                     {
@@ -877,8 +889,9 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
                 }
             else
                 {
-                OnFocusChangedL( aEventData ) ;   
+                OnFocusChangedL( aEventData );   
                 }
+            iForegroundChange = EFalse;
             }
             break;
         case EPluginFocusChanged:
@@ -1020,6 +1033,7 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
 TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
     (TPluginInputMode aSuggestMode, TInt aOpenMode,TInt aSuggestRange)
     {
+    iNeedFetchDimState = ETrue;
     if ( iSharedData.QwertyInputMode() )
         {
         return EFalse;
@@ -1165,26 +1179,16 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         }
     
     TBool isSplit = IsEditorSupportSplitIme();
+    TInt inputLang = iFepMan.InputLanguageCapabilities().iInputLanguageCode;
     // temp code for Chinese split view
-    if ( iSharedData.PenInputLanguage() == ELangPrcChinese || 
-         iSharedData.PenInputLanguage() == ELangTaiwanChinese ||
-         iSharedData.PenInputLanguage() == ELangHongKongChinese )
+    if ( inputLang == ELangPrcChinese || 
+    	 inputLang == ELangTaiwanChinese ||
+    	 inputLang == ELangHongKongChinese )
         {
         isSplit = EFalse;
         }    
     iLangMan.SetSplitView(isSplit);
  
-    TInt inputLang = iFepMan.InputLanguageCapabilities().iInputLanguageCode;
-    if( ( aSuggestMode == EPluginInputModeFSc || 
-            aSuggestMode == EPluginInputModeHwr ||
-            aSuggestMode == EPluginInputModeFingerHwr )
-            && ( iSharedData.PenInputLanguage() == ELangPrcChinese 
-                || iSharedData.PenInputLanguage() == ELangHongKongChinese
-                || iSharedData.PenInputLanguage() == ELangTaiwanChinese) )
-        {
-        // Solution for HWR can not be in used after switched to latin-only editor.
-        inputLang = iSharedData.PenInputLanguage();
-        }
     MAknFepManagerInterface* fepUI = iLangMan.GetPluginInputFepUiL(
                                                     aSuggestMode, 
                                                     inputLang,
@@ -1194,7 +1198,7 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
     
     if ( iCurrentPluginInputFepUI )     
         {
-        iPenInputServer.DimUiLayout(EFalse);
+        // iPenInputServer.DimUiLayout(EFalse);
         
         AddCurrentWinToOpenListL();
         if (iPluginInputMode == EPluginInputModeItut)
@@ -1310,19 +1314,20 @@ void CAknFepPluginManager::ClosePluginInputModeL( TBool aRestore )
 	    RestorePredictStateL();
         
         //  comment out the following code
-        //if ( iFepMan.EditorType() == CAknExtendedInputCapabilities::EPhoneNumberEditor )
-        //    {
-        //    if( AknTextUtils::NumericEditorDigitType() == EDigitTypeEasternArabicIndic || 
-        //        AknTextUtils::NumericEditorDigitType() == EDigitTypeDevanagari ||
-        //        AknTextUtils::NumericEditorDigitType() == EDigitTypeArabicIndic )
-        //        {
-        //        iFepMan.TryChangeModeL( ENativeNumber );
-        //        }
-        //    else
-        //        {
-        //        iFepMan.TryChangeModeL( ENumber );
-        //        }
-        //    }
+        if ( iFepMan.EditorType() == CAknExtendedInputCapabilities::EPhoneNumberEditor
+             && !iOrientationChangedfromUI )
+            {
+            if( AknTextUtils::NumericEditorDigitType() == EDigitTypeEasternArabicIndic || 
+                AknTextUtils::NumericEditorDigitType() == EDigitTypeDevanagari ||
+                AknTextUtils::NumericEditorDigitType() == EDigitTypeArabicIndic )
+                {
+                iFepMan.TryChangeModeL( ENativeNumber );
+                }
+            else
+                {
+                iFepMan.TryChangeModeL( ENumber );
+                }
+            }
         }
     //iFepMan.UpdateCbaL( NULL ); 
                 
@@ -2106,8 +2111,17 @@ void CAknFepPluginManager::OnFocusChangedL( TBool aGainForeground )
             return;
             }
 
-        if( iInMenu && iCurEditor == iFepMan.FepAwareTextEditor() )
-            {
+        if( iInMenu && 
+        	( iCurEditor == iFepMan.FepAwareTextEditor() || iLaunchSCTInSpell ) )
+            {            
+            iLaunchSCTInSpell = EFalse;
+#ifdef RD_UI_TRANSITION_EFFECTS_POPUPS
+            if ( PluginInputMode() == EPluginInputModeFSQ 
+                    && iSharedData.ThemeEffectsEnabled())
+                {
+                User::After(1);//waiting for menu cancel effect
+                } 
+#endif
             ResetMenuState();            
 			// If need to open setting app automatically, 
 			// do not open Touch window again. 
@@ -2852,7 +2866,9 @@ void CAknFepPluginManager::InitializePluginInputL(TInt aOpenMode, TInt aSuggestR
     
 //    iPenInputServer.UpdateAppInfo(KNullDesC, EAppIndicatorMsg);  
     
-    iPluginInputMode =  (TPluginInputMode)iLangMan.CurrentImePlugin()->CurrentMode();   
+    iPluginInputMode =  (TPluginInputMode)iLangMan.CurrentImePlugin()->CurrentMode(); 
+
+    iPenInputServer.SetDataQueryPopped(IsDisplayDataQuery());  
 
     //adjust VKB window if data query dialog is displaying
     if(IsDisplayDataQuery())
@@ -3169,7 +3185,7 @@ void CAknFepPluginManager::SubmitUiPluginTextL(const TDesC& aData,
                 }
             
             
-            else if ( keyEvent.iCode >= EKeyApplication27 
+            else if ( keyEvent.iCode >= EKeyApplication27 && !( (iLangMan.InputLanguage() == ELangFarsi) && EnableITIOnFSQ())
                     || (iFepMan.IsFeatureSupportedJapanese()
                          && iFepMan.InputMode() == EHiraganaKanji
                          && edit
@@ -3310,6 +3326,9 @@ void CAknFepPluginManager::SubmitUiPluginTextL(const TDesC& aData,
                             {                                
                             iFepMan.CommitInlineEditL();
                             iFepMan.PtiEngine()->CommitCurrentWord();
+                            iFepMan.TryCloseUiL();
+                            TKeyEvent keyEventUpdateCase = {EKeyF19, EStdKeyNull, 0, 0};
+                            env->SimulateKeyEventL(keyEventUpdateCase, EEventKey);
                             }                            
                         // set flag to ensure not to be handled by key catcher.
                         iFepMan.SetFlag(CAknFepManager::EFlagPassNextKey);
@@ -3830,12 +3849,7 @@ void CAknFepPluginManager::NotifyLayoutL(TInt aOpenMode, TInt aSuggestRange,
               }
         else
             {
-            if ( !iInSpellMode )
-            	{
-				SetITUTSpellingStateL(ETrue);
-				iInSpellMode = ETrue;
-            	}
-            
+			SetITUTSpellingStateL(ETrue);
             iIndicatorImgID = 0;
             iIndicatorTextID = 0;
             }    
@@ -4595,6 +4609,8 @@ void CAknFepPluginManager::DisplaySpellEditorL(const TInt aEditorFlag,
     	}
     else
     	{
+        iSpell->InputPane()->InputWin()->SetAknEditorCurrentCase(editorCase);
+        iSpell->InputPane()->InputWin()->SetAknEditorCurrentInputMode(EAknEditorTextInputMode);
         iSpell->MakeVisible( ETrue );
         iSpell->SetInputWinFocus( ETrue );
     	}
@@ -4685,11 +4701,6 @@ TInt CAknFepPluginManager::GetSoftKeyResID()
         
     return resId;
     }
-
-void CAknFepPluginManager::SetInSpellModeFlag( TBool aFlag )
-	{
-	iInSpellMode = aFlag;
-	}
 
 void CAknFepPluginManager::SetPromptText( TBool aCleanContent )
     {
@@ -5620,8 +5631,11 @@ void CAknFepPluginManager::SetItiStateL()
         TPtr unCommitedTextPtr = unCommitedText->Des();        
         TInt startPos = iFepMan.UncommittedText().LowerPos();
         MCoeFepAwareTextEditor* edit = iFepMan.FepAwareTextEditor();
-        edit->GetEditorContentForFep( unCommitedTextPtr, 
-                                      startPos, unCommitedLen ); 		
+        if ( edit )
+        	{
+            edit->GetEditorContentForFep( unCommitedTextPtr, 
+                                          startPos, unCommitedLen );       
+        	}
 		iFepMan.PtiEngine()->SetCurrentWord( *unCommitedText );
 		delete unCommitedText;
 		unCommitedText = NULL;
@@ -5779,6 +5793,8 @@ TBool CAknFepPluginManager::IsEditorSupportSplitIme()
     
     //Normal editors
     CAknEdwinState* state = iFepMan.EditorState(); 
+    if (iCurEditor && state == NULL)
+		state = static_cast<CAknEdwinState *> (iCurEditor->Extension1()->State(KNullUid));
     if ( state )
         {
         return EAknEditorFlagEnablePartialScreen == 

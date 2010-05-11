@@ -372,7 +372,7 @@ void RPeninputServerImpl::DimUiLayoutL(TBool aFlag)
             }
         if(iBackgroundCtrl)
             iBackgroundCtrl->Show(extend, iGlobalNotes, 
-                iInternalPopup,priority, iResourceChange);    
+                iInternalPopup,priority, iResourceChange, iDataQueryIsPopped);    
         }
     else //undim the window
         {
@@ -1160,6 +1160,10 @@ void RPeninputServerImpl::SetGlobalNotes(TBool aFlag)
     iGlobalNotes = aFlag;    
     }
 
+void RPeninputServerImpl::SetDataQueryPopped(TBool aFlag)
+	{
+	iDataQueryIsPopped = aFlag;
+	}
 void RPeninputServerImpl::SetInternalPopUp(TBool aFlag)
     {
 	iInternalPopup = aFlag;
@@ -1484,7 +1488,7 @@ void CPenUiBackgroundWnd::ConstructL(TInt aBmpHandle)
     }
 
 void CPenUiBackgroundWnd::Show(const TRect& aExtend, TBool aGlobalNotes, 
-    TBool aInternal, TInt aPriority, TBool aResource)
+    TBool aInternal, TInt aPriority, TBool aResource, TBool aDataQueryPopped)
     {
     //Show the window will cause a focus group change in global notes showing case.
     if (!iBitmap)
@@ -1517,7 +1521,10 @@ void CPenUiBackgroundWnd::Show(const TRect& aExtend, TBool aGlobalNotes,
      
         // The code runs well on 5.0 platform, but on tb92,
         // it will make the backgourd screen black purely.
-        //Window().SetFaded(ETrue,RWindowTreeNode::EFadeWindowOnly);   
+        if( aDataQueryPopped )
+        	{
+            Window().SetFaded(ETrue,RWindowTreeNode::EFadeWindowOnly);  
+        	}
         }
      else
         {

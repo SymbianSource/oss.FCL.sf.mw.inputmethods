@@ -34,7 +34,7 @@
 #define __AKN_FEP_PREDICTIVESETTING_DATA_H
 
 #include <e32base.h>
-#include <ptidefs.h>
+#include <PtiDefs.h>
 
 /**
  * Class: 		CAknFepPredictiveSettingData

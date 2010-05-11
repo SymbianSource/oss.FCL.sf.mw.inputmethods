@@ -119,7 +119,8 @@ CAknFepVkbClientArea* CAknFepVkbClientArea::NewLC(CFepUiLayout* aUiLayout,
 void CAknFepVkbClientArea::SetTextProperty()
 	{
     TAknTextLineLayout compositionText;
-    compositionText = AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
+    //compositionText = AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
+    compositionText = AknLayoutScalable_Avkon::cell_vkb2_top_candi_pane_t1(0).LayoutLine();
 
     iCompositionField->SetNormalColor(AKN_LAF_COLOR_STATIC(compositionText.iC));
     iCompositionField->SetWarningColor(KRgbRed);
@@ -321,8 +322,10 @@ void CAknFepVkbClientArea::SizeChanged()
     // modify drop down list font
     if (iDataProvider->SizeChanging() || (!iDropdownPropertySet))
     	{
+        //TAknTextLineLayout listText = 
+        //      AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
         TAknTextLineLayout listText = 
-                                AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
+        		AknLayoutScalable_Avkon::cell_vkb2_top_candi_pane_t1(0).LayoutLine();
         iDropdownList->SetFont(AknLayoutUtils::FontFromId(listText.iFont, NULL));
         //iDropdownList->SetTextColor(AKN_LAF_COLOR_STATIC(listText.iC), ETrue);
 
@@ -1751,8 +1754,10 @@ void CAknFepVkbClientArea::AddDropdownListL()
     TInt btnHeight = iDataProvider->RequestData(EAknFepDataTypeUnitHeight);
         	
     	
+    //TAknTextLineLayout listText = 
+    //    AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
     TAknTextLineLayout listText = 
-                              AknLayoutScalable_Avkon::cell_vkb_candidate_pane_t1().LayoutLine();
+        AknLayoutScalable_Avkon::cell_vkb2_top_candi_pane_t1(0).LayoutLine();
 
     TDropdownListDrawInfo candiDrawInfo(KAknsIIDQsnFrFunctionButtonInactive, 
     						            KAknsIIDQsnFrFunctionButtonNormal,

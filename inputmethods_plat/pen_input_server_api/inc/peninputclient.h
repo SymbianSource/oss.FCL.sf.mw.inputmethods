@@ -426,6 +426,7 @@ public:
     IMPORT_C void ClearTouchUI();
     IMPORT_C void SetResourceChange(TBool aFlag); 
     IMPORT_C TInt ConnectAsyc(TRequestStatus& aStatus);
+	IMPORT_C void SetDataQueryPopped(TBool aFlag);
 
 private:    // Data
     /**

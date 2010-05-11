@@ -89,6 +89,14 @@ public:
      */
     void Hide();
     
+    /**
+     * Test if transparency is supported by this control
+     * 
+     * @since S60 v5.0
+     * @return ETrue if support
+     */
+    TBool SupportTransparent() const;
+    
 protected:
     /**
      * Symbian constructor
@@ -98,6 +106,8 @@ protected:
      */
     void BaseConstructL();
     
+private:
+    TBool iSupportTransparent;
     };
 
 #endif // C_PENINPUTFLOATINGCTRL_H

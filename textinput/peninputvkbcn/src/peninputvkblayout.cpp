@@ -874,6 +874,13 @@ void CAknFepVkbLayout::ChangeInputLanguage(TInt aLangID)
     //1.Notify engine the language need to change
     //const TDesC& showText = iDataMgr->SetInputLanguage(aLangID);
     TInt switchDisplayLang = iDataMgr->SetInputLanguage(aLangID);
+    
+    CFepLayoutMultiLineIcf* icf = iVkbWindow->InputContextField();
+    if ( icf )
+    	{
+		icf->SetLanguageId( aLangID );
+    	}
+    
     TBuf<10> showText;    
     AknPenInputUtils::GetISOLanguageCode(TLanguage(switchDisplayLang), showText);
     

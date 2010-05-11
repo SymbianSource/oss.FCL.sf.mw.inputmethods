@@ -105,6 +105,10 @@ void CTstTestTargetDialog::PreLayoutDynInitL()
 
 TBool CTstTestTargetDialog::OkToExitL(TInt /*aKeyCode*/)
 	{
+    RDebug::Print(_L("**************************************************************"));
+    RDebug::Print(_L("****                OK or CANCEL key pressed                  "));
+    RDebug::Print(_L("**************************************************************\n"));
+    
 	// Get fields text values...
 	CEikEdwin* edwinNormal = static_cast<CEikEdwin*>(Control(EControlIdNormalEdwin));
 	edwinNormal->GetText(gTextNormalEdwin);
@@ -158,6 +162,10 @@ CFep1TestTargetUi::~CFep1TestTargetUi()
 */
 void CFep1TestTargetUi::ConstructL()
 	{
+    RDebug::Print(_L("**************************************************************"));
+    RDebug::Print(_L("****           CFep1TestTargetUi::ConstructL                  "));
+    RDebug::Print(_L("**************************************************************\n"));
+ 
 	CTestAppUi::ConstructL();
 
 	iCoeEnv->InstallFepL(KNullUid);
@@ -484,7 +492,12 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 		case 158:
 			{
 			INFO_PRINTF1(_L("...simulate Key Event 'Shift + M' ---> Changes back to normal fep!"));
-			SendKey('M', EModifierRightShift);			
+			SendKey('M', EModifierRightShift);
+			
+		    RDebug::Print(_L("**************************************************************"));
+		    RDebug::Print(_L("****           UIF-FEPTEST-0007 Finished                      "));
+		    RDebug::Print(_L("**************************************************************\n"));
+
 			RecordTestResultL();
 			}
 			break;
@@ -646,7 +659,9 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 		case 234:
 			{
 			INFO_PRINTF1(_L("...simulate Key Event Enter ---> Submits '00'"));						// We should have 1230056
-			SendKey(EKeyEnter);			
+			SendKey(EKeyEnter);
+			
+			
 			RecordTestResultL();
 			}
 			break;
@@ -699,6 +714,10 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 			SendKey('T', EModifierRightShift);			
 			if(aStep == 262)
 				{
+                RDebug::Print(_L("**************************************************************"));
+                RDebug::Print(_L("****           UIF-FEPTEST-0009 Finished                      "));
+                RDebug::Print(_L("**************************************************************\n"));
+
 				RecordTestResultL();
 				}
 			}
@@ -804,7 +823,12 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 		case 460:
 			{
 			INFO_PRINTF1(_L("...simulate Key Event Enter ---> Submits 'MNO' (not Fep installed --> No Alphabetical!"));
-			SendKey(EKeyEnter);			
+			SendKey(EKeyEnter);
+			
+		    RDebug::Print(_L("**************************************************************"));
+		    RDebug::Print(_L("****           UIF-FEPTEST-0011 Finished                      "));
+		    RDebug::Print(_L("**************************************************************\n"));
+
 			RecordTestResultL();
 			}
 			break;
@@ -844,6 +868,10 @@ void CFep1TestTargetUi::RunTestStepL(TInt aStep)
 
 		case 503:
 			{
+	         RDebug::Print(_L("**************************************************************"));
+	         RDebug::Print(_L("****           Checking dialog values...                      "));
+	         RDebug::Print(_L("**************************************************************\n"));
+
 			INFO_PRINTF1(_L("Checking dialog values..."));
 			INFO_PRINTF3(_L("gTextNormalEdwin was '%S' (expected '%S')"), &gTextNormalEdwin, &KExpectedTextNormalEdwin);
 			INFO_PRINTF3(_L("gTextNormalNumEdwin was '%S' (expected '%S')"), &gTextNormalNumEdwin, &KExpectedTextNormalNumEdwin);
@@ -891,7 +919,7 @@ void CFep1TestTargetUi::SendKey(TUint aCode, TUint aModifiers, TInt aRepeats, TI
 */
 void CFep1TestTargetUi::SendEventToWindowGroups(TWsEvent&	aEvent)
 	{
-User::After(100000);
+    User::After(100000);
 
 	RWsSession	ws;
 	TInt theRes = ws.Connect();
@@ -907,8 +935,8 @@ User::After(100000);
 	aEvent.SetType(EEventKey);
 	aEvent.SetTimeNow();
 	ws.SendEventToWindowGroup(theId, aEvent);
-
-	aEvent.SetType(EEventKeyUp);
+	
+ 	aEvent.SetType(EEventKeyUp);
 	aEvent.SetTimeNow();
 	ws.SendEventToWindowGroup(theId, aEvent);
 	

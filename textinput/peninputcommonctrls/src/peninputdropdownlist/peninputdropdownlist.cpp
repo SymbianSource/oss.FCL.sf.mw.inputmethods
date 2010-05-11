@@ -2272,18 +2272,20 @@ void CFepCtrlDropdownList::DrawBubble(const TRect aRect, const TDesC& aText)
 		    
         if((TBidiText::TextDirectionality(aText) == TBidiText:: ERightToLeft) && (aText.Length() > 1))
           {
-          HBufC* displayStr = aText.AllocLC();
-         
-          TInt i = 0;
-          TInt charNum = displayStr->Length();
-         
-          while(i < charNum)
-              {
-              displayStr->Des()[i] = aText[(charNum-1)-i];
-              ++i;
-              }
-           TRAP_IGNORE(iBubbleCtrl->SetTextL(*displayStr));     
-           CleanupStack::PopAndDestroy(displayStr);
+       
+              HBufC* displayStr = aText.Alloc();			 
+			  TInt i = 0;
+			  TInt charNum = displayStr->Length();
+			 
+			  while(i < charNum)
+				  {
+				  displayStr->Des()[i] = aText[(charNum-1)-i];
+				  ++i;
+				  }
+			   TRAP_IGNORE(iBubbleCtrl->SetTextL(*displayStr)); 
+			   
+			   delete displayStr;
+        
           }
        else
           {

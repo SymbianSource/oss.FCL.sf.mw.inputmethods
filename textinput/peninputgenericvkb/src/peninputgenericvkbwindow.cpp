@@ -1219,6 +1219,7 @@ void CPeninputGenericVkbWindow::PrepareRangeListItems(
     TInt currentRange = IntContext( EPeninputDataTypeCurrentRange );
     TInt permittedRange = IntContext( EPeninputDataTypePermittedRange );
     TInt currentAccent = IntContext( EPeninputDataTypeCurrentAccent );
+    TInt currentLanguage = IntContext( EPeninputDataTypeInputLanguage );
     
     CPeninputRangeBarInfo* rbinfo= ConfigInfo()->RangeBarInfo();
     CPeninputRangeInfo* rgninfo = NULL;
@@ -1253,7 +1254,9 @@ void CPeninputGenericVkbWindow::PrepareRangeListItems(
             }
         }
     
-    if ( permittedRange & ERangeNativeNumber )
+    if (( permittedRange & ERangeNativeNumber ) && ( currentRange != ERangeNumber ) 
+    && (( ELangArabic == currentLanguage ) || ( ELangFarsi == currentLanguage ) 
+    || ( ELangUrdu == currentLanguage )))
         {
         rgninfo = rbinfo->FindRange( ERangeNativeNumber );
         if ( rgninfo && currentRange != ERangeNativeNumber )
@@ -1263,6 +1266,21 @@ void CPeninputGenericVkbWindow::PrepareRangeListItems(
             aRangeItems.Append( item );
             }
         }
+    else if(( permittedRange & ERangeNumber ) && ( currentRange != ERangeNumber ) 
+    		&& !(( ELangThai == currentLanguage ) && ( currentRange == ERangeNativeNumber )))
+       {
+       rgninfo = rbinfo->FindRange( ERangeNumber );
+       if ( rgninfo && currentRange != ERangeNumber )
+           {
+           item.iCommand = EPeninputVkbLayoutLatinNumber;
+           item.iText.Copy( iRangeLabels.iLabelLatinNumber );
+    	   aRangeItems.Append( item );
+    	   }
+        }
+    else
+      	{        
+            // Do nothing
+       }    
    
     if ( permittedRange & ERangeEnglish )
         {
@@ -1275,16 +1293,6 @@ void CPeninputGenericVkbWindow::PrepareRangeListItems(
             }
         }
     
-    if ( permittedRange & ERangeNumber )
-        {
-        rgninfo = rbinfo->FindRange( ERangeNumber );
-        if ( rgninfo && currentRange != ERangeNumber )
-            {
-            item.iCommand = EPeninputVkbLayoutLatinNumber;
-            item.iText.Copy( iRangeLabels.iLabelLatinNumber );
-            aRangeItems.Append( item );
-            }
-        }  
     }
 
 // ---------------------------------------------------------------------------

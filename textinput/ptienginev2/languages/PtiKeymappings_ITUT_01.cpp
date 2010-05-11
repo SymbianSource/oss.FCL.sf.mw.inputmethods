@@ -1,8 +1,8 @@
 /*
-* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
-* under the terms of "Eclipse Public License v1.0""
+* under the terms of the License "Eclipse Public License v1.0"
 * which accompanies this distribution, and is available
 * at the URL "http://www.eclipse.org/legal/epl-v10.html".
 *
@@ -199,7 +199,7 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_English[] =
         {EPtiKeyQwertyL, EPtiCaseLower, 29, 1},
         {EPtiKeyQwertySemicolon, EPtiCaseLower, 30, 0},
         {EPtiKeyQwertyApostrophe, EPtiCaseLower, 30, 0},
-        {EPtiKeyQwertySpace, EPtiCaseLower, 30, 0},
+        {0x5b, EPtiCaseLower, 30, 0},
         {EPtiKeyQwertyZ, EPtiCaseLower, 30, 0},
         {EPtiKeyQwertyX, EPtiCaseLower, 30, 0},
         {EPtiKeyQwertyC, EPtiCaseLower, 30, 0},
@@ -245,7 +245,7 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_English[] =
         {EPtiKeyQwertyL, EPtiCaseUpper, 59, 1},
         {EPtiKeyQwertySemicolon, EPtiCaseUpper, 60, 0},
         {EPtiKeyQwertyApostrophe, EPtiCaseUpper, 60, 0},
-        {EPtiKeyQwertySpace, EPtiCaseUpper, 60, 0},
+        {0x5b, EPtiCaseUpper, 60, 0},
         {EPtiKeyQwertyZ, EPtiCaseUpper, 60, 0},
         {EPtiKeyQwertyX, EPtiCaseUpper, 60, 0},
         {EPtiKeyQwertyC, EPtiCaseUpper, 60, 0},
@@ -829,7 +829,6 @@ const TUint16 CustomQwertyData_table_English[] =
      0x004A,
      0x004B,
      0x004C,
-     0x0021 ,
      0x0022,
      0x0023,
      0x0024,
@@ -851,7 +850,7 @@ const TUint16 CustomQwertyData_table_English[] =
      0x0077,
     };
 
-const TInt KCustomQwertyDataSize_English = 56;
+const TInt KCustomQwertyDataSize_English = 55;
 
 
 const TPtiKeyBinding CustomQwertyKeyBindings_table_English[] =
@@ -886,24 +885,24 @@ const TPtiKeyBinding CustomQwertyKeyBindings_table_English[] =
         { EPtiKeyQwerty8, EPtiCaseUpper, 31, 1},
         { EPtiKeyQwerty9, EPtiCaseUpper, 32, 1},
         { EPtiKeyQwerty0, EPtiCaseUpper, 33, 1},
-        { EPtiKeyQwertyA, EPtiCaseUpper, 36, 1},
-        { EPtiKeyQwertyB, EPtiCaseUpper, 37, 1},
-        { EPtiKeyQwertyC, EPtiCaseUpper, 38, 1},
-        { EPtiKeyQwertyD, EPtiCaseUpper, 39, 1},
-        { EPtiKeyQwertyE, EPtiCaseUpper, 40, 1},
-        { EPtiKeyQwertyF, EPtiCaseUpper, 41, 1},
-        { EPtiKeyQwertyG, EPtiCaseUpper, 42, 1},
-        { EPtiKeyQwertyH, EPtiCaseUpper, 43, 1},
-        { EPtiKeyQwertyI, EPtiCaseUpper, 44, 1},
-        { EPtiKeyQwertyJ, EPtiCaseUpper, 45, 1},
-        { EPtiKeyQwerty1, EPtiCaseFnLower, 48, 1},
-        { EPtiKeyQwerty2, EPtiCaseFnLower, 49, 1},
-        { EPtiKeyQwerty3, EPtiCaseFnLower, 50, 1},
-        { EPtiKeyQwerty4, EPtiCaseFnLower, 51, 1},
-        { EPtiKeyQwerty5, EPtiCaseFnLower, 52, 1},
-        { EPtiKeyQwerty6, EPtiCaseFnLower, 53, 1},
-        { EPtiKeyQwerty7, EPtiCaseFnLower, 54, 1},
-        { EPtiKeyQwerty8, EPtiCaseFnLower, 55, 1},
+        { EPtiKeyQwertyA, EPtiCaseUpper, 36, 0},
+        { EPtiKeyQwertyB, EPtiCaseUpper, 36, 1},
+        { EPtiKeyQwertyC, EPtiCaseUpper, 37, 1},
+        { EPtiKeyQwertyD, EPtiCaseUpper, 38, 1},
+        { EPtiKeyQwertyE, EPtiCaseUpper, 39, 1},
+        { EPtiKeyQwertyF, EPtiCaseUpper, 40, 1},
+        { EPtiKeyQwertyG, EPtiCaseUpper, 41, 1},
+        { EPtiKeyQwertyH, EPtiCaseUpper, 42, 1},
+        { EPtiKeyQwertyI, EPtiCaseUpper, 43, 1},
+        { EPtiKeyQwertyJ, EPtiCaseUpper, 44, 1},
+        { EPtiKeyQwerty1, EPtiCaseFnLower, 47, 1},
+        { EPtiKeyQwerty2, EPtiCaseFnLower, 48, 1},
+        { EPtiKeyQwerty3, EPtiCaseFnLower, 49, 1},
+        { EPtiKeyQwerty4, EPtiCaseFnLower, 50, 1},
+        { EPtiKeyQwerty5, EPtiCaseFnLower, 51, 1},
+        { EPtiKeyQwerty6, EPtiCaseFnLower, 52, 1},
+        { EPtiKeyQwerty7, EPtiCaseFnLower, 53, 1},
+        { EPtiKeyQwerty8, EPtiCaseFnLower, 54, 1},
     };
 
 const TInt KMaxCustomQwertyIndex_English = 48;

@@ -216,8 +216,9 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	
 	// icf indicator
 	TAknWindowLineLayout icfIndiPaneWithText, icfIndiPaneWithoutText, 
-        indiIcon, indiText;
-	TAknLayoutRect icfIndiPaneRectWithText, icfIndiPaneRectWithoutText, indiIconRect, indiTextRect;
+		indiIconWithText, indiIconWithoutText;
+	TAknLayoutRect icfIndiPaneRectWithText, icfIndiPaneRectWithoutText, 
+		indiIconRectWithText, indiIconRectWithoutText;
 	TAknTextLineLayout indiTextLayout;
 	
 	icfIndiPaneWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane(1).LayoutLine();
@@ -228,8 +229,14 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	icfIndiPaneRectWithoutText.LayoutRect(icfRect.Rect(), icfIndiPaneWithoutText);
 	iIndiPaneRectWithoutTextForPrtWest = icfIndiPaneRectWithoutText.Rect();
 	
-	iIndiIconRectWithTextForPrtWest = TRect( 0, 0, 60, 20 );
-	iIndiIconRectWithoutTextForPrtWest = TRect( 0, 0, 60, 20 );
+	indiIconWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(1).LayoutLine();
+	indiIconRectWithText.LayoutRect( icfIndiPaneRectWithText.Rect(), indiIconWithText );
+	iIndiIconRectWithTextForPrtWest = indiIconRectWithText.Rect();
+	
+	indiIconWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(0).LayoutLine();
+	indiIconRectWithoutText.LayoutRect( 
+			icfIndiPaneRectWithoutText.Rect(), indiIconWithoutText );
+	iIndiIconRectWithoutTextForPrtWest = indiIconRectWithoutText.Rect();
 	
 	indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
 	iIndiTextForPrtWest = indiTextLayout;
@@ -420,7 +427,8 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	
 	// Middle pane
 	TRect middleButtonPaneRect = spellwndtrect.Rect();
-	middleButtonPaneRect.Move( 5, 2 );
+	TInt leftMargin = itucellrect.Rect().iTl.iX;
+	middleButtonPaneRect.Move( leftMargin, 0 );
 	
 	middleBtn = AknLayoutScalable_Avkon::cell_ituss_key_pane(3).LayoutLine();
 	middleBtnRect.LayoutRect( bottompanerect.Rect(), middleBtn );
@@ -453,7 +461,7 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	TRect cellSpellRect;
 	cellSpellRect.iTl.iX = middleButtonPaneRect.iTl.iX;
 	cellSpellRect.iTl.iY = middleButtonPaneRect.iTl.iY + 
-			itucellrect.Rect().Height() * 5 + 10;
+			itucellrect.Rect().Height() * 5 + 7;
 	cellSpellRect.SetHeight( itucellrect.Rect().Height());
 	cellSpellRect.SetWidth( itucellrect.Rect().Width());
 		
@@ -516,7 +524,12 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	icfSpellIndiPane = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
 	icfSpellIndiPaneRect.LayoutRect(queryICFPaneRect.Rect(), icfSpellIndiPane);
 	iSpellIndiPaneWithoutTextForPrtWest = icfSpellIndiPaneRect.Rect();
-	iSpellIndiIconWithoutTextForPrtWest = TRect( 0, 0, 50, 17 );
+	
+	TAknWindowLineLayout spellIndiIcon;
+	TAknLayoutRect spellIndiIconRect;
+	spellIndiIcon = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(0).LayoutLine();
+	spellIndiIconRect.LayoutRect( icfSpellIndiPaneRect.Rect(), spellIndiIcon );
+	iSpellIndiIconWithoutTextForPrtWest = spellIndiIconRect.Rect();
 	}
 
 void CGenericItutDataMgr::ReadLafInfo()
@@ -1064,22 +1077,11 @@ void CGenericItutDataMgr::ReadLafInfo()
     iSpellClrRect = btnClrRect.Rect();
     iSpellClrInnerRect = btnClrInnerRect.Rect();  
     
-    iBtnTextFormat  = iVkAlphaText1;//btnOKText;
-	iBtnTextFormat1 = iVkAlphaText1;//btnCancleText;
-#ifdef LAF_MODIFY	
-// manully ajust.	
-    iBtnTextFormat.iFont = btnOKText.iFont;
-    iBtnTextFormat.il = iBtnTextFormat.il - 30 > 0? iBtnTextFormat.il - 30 : 0;
-    iBtnTextFormat.iB = 10;
-	iBtnTextFormat1.iFont = btnCancleText.iFont;
-    iBtnTextFormat1.il = iBtnTextFormat1.il - 30 > 0? iBtnTextFormat1.il - 30 : 0;
-	iBtnTextFormat1.iB = 10;
+    //iBtnTextFormat  = iVkAlphaText1;//btnOKText;
+	//iBtnTextFormat1 = iVkAlphaText1;//btnCancleText;
+    iBtnTextFormat = AknLayoutScalable_Apps::popup_vitu2_query_button_pane_t1(0).LayoutLine();
+    iBtnTextFormat1 = AknLayoutScalable_Apps::popup_vitu2_query_button_pane_t1(0).LayoutLine();
 	
-//	TInt offsetY = 50;
-//    iSpellICFRect.Move(0,-offsetY);
-//    iSpellClrRect.Move(0,-offsetY);
-//    iSpellClrInnerRect.Move( 0, -offsetY );
-#endif //LAF_MODIFY
 	
     // just test if there is size change of added ctrls
     iSendRect = iArrowLeftRect;

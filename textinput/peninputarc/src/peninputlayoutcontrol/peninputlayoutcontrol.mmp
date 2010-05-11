@@ -99,8 +99,8 @@ LIBRARY                 AknLayout2Scalable.lib
 LIBRARY                 AknLayout2.lib
 LIBRARY                 CdlEngine.lib
 LIBRARY         		peninputpluginutils.lib
+LIBRARY                 featmgr.lib
 #ifdef RD_TACTILE_FEEDBACK
-LIBRARY                 FeatMgr.lib                // feature manager
 LIBRARY                 touchfeedback.lib
 #endif // RD_TACTILE_FEEDBACK
 #if defined(WINSCW)

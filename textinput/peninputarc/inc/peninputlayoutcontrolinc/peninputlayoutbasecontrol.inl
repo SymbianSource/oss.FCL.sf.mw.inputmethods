@@ -412,6 +412,6 @@ inline TInt CFepUiBaseCtrl::OrderPos() const
 //
 inline TInt CFepUiBaseCtrl::TactileFeedbackType() const
     {
-    return reinterpret_cast<CFepUiBaseCtrlExtension*>(iReservered1)->TactileFeedbackType();	
+    return iExtension->TactileFeedbackType();	
     }
 //end of file

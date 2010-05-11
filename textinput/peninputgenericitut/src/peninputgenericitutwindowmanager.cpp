@@ -170,35 +170,38 @@ void CGenericItutWindowManager::HandleCtrlEventL(TInt aEventType,
             break;        
         case EEventButtonUp:
             {
-            //from pen input switch button
-            if (aCtrl->ControlId() == ECtrlIdSwitch)
-                {
-                TRAP_IGNORE( iWindow->Icf()->UpdateSecretTextL() );
-                ShowInputModeSwitchL();
-                }
-            else if (aCtrl->ControlId() == ECtrlIdArrowUp)
-                {
-                TRAP_IGNORE(iWindow->Icf()->HandleArrowBtnEventL(
-                                                          CFepLayoutMultiLineIcf::EArrowUp));
-                }
-            else if (aCtrl->ControlId() == ECtrlIdArrowDown)
-                {
-                TRAP_IGNORE(iWindow->Icf()->HandleArrowBtnEventL(
-                                                          CFepLayoutMultiLineIcf::EArrowDown));
-                }
-            else if (aCtrl->ControlId() == ECtrlIdClose)
-                {
-                iLayoutOwner->SignalOwner(ESignalLayoutClosed);
-                }
-            else if (aCtrl->ControlId() == ECtrlIdOptions)
-                {
-                iLayoutOwner->SignalOwner(ESignalLaunchOptionsMenu);
-//                static_cast<CAknFepCtrlCommonButton*>(aCtrl)->SetDimmed(ETrue);
-                }
-            else if (aCtrl->ControlId() == ECtrlIdIndicator)
-                {
-                iLayoutOwner->SignalOwner(ESignalGetEditMenuData);
-                }                
+            if ( iAllowHandleRawKeyEvent )
+            	{
+				//from pen input switch button
+				if (aCtrl->ControlId() == ECtrlIdSwitch)
+					{
+					TRAP_IGNORE( iWindow->Icf()->UpdateSecretTextL() );
+					ShowInputModeSwitchL();
+					}
+				else if (aCtrl->ControlId() == ECtrlIdArrowUp)
+					{
+					TRAP_IGNORE(iWindow->Icf()->HandleArrowBtnEventL(
+															  CFepLayoutMultiLineIcf::EArrowUp));
+					}
+				else if (aCtrl->ControlId() == ECtrlIdArrowDown)
+					{
+					TRAP_IGNORE(iWindow->Icf()->HandleArrowBtnEventL(
+															  CFepLayoutMultiLineIcf::EArrowDown));
+					}
+				else if (aCtrl->ControlId() == ECtrlIdClose)
+					{
+					iLayoutOwner->SignalOwner(ESignalLayoutClosed);
+					}
+				else if (aCtrl->ControlId() == ECtrlIdOptions)
+					{
+					iLayoutOwner->SignalOwner(ESignalLaunchOptionsMenu);
+	//                static_cast<CAknFepCtrlCommonButton*>(aCtrl)->SetDimmed(ETrue);
+					}
+				else if (aCtrl->ControlId() == ECtrlIdIndicator)
+					{
+					iLayoutOwner->SignalOwner(ESignalGetEditMenuData);
+					}
+            	}
             }
             break;
         case EItutCmdArrowUp:

@@ -593,4 +593,8 @@ EXPORTS
 	?EndStrokeL@CHwrWndBase@@UAEXH@Z @ 592 NONAME ; void CHwrWndBase::EndStrokeL(int)
 	?SetStarIcon@CVirtualKeyboard@@QAEXPAVCPenInputColorIcon@@@Z @ 593 NONAME ; void CVirtualKeyboard::SetStarIcon(class CPenInputColorIcon *)
 	?SetTextAlignment@CFepLayoutChoiceList@@QAEXW4TTextAlign@CGraphicsContext@@@Z @ 594 NONAME ; void CFepLayoutChoiceList::SetTextAlignment(enum CGraphicsContext::TTextAlign)
+	?ActiveExtResponseArea@CFepUiBaseCtrl@@QAEXXZ @ 595 NONAME ; void CFepUiBaseCtrl::ActiveExtResponseArea(void)
+	?CancelExtResponseArea@CFepUiBaseCtrl@@QAEXXZ @ 596 NONAME ; void CFepUiBaseCtrl::CancelExtResponseArea(void)
+	?EnableExtResponseArea@CFepUiBaseCtrl@@QAEXHABVTRect@@@Z @ 597 NONAME ; void CFepUiBaseCtrl::EnableExtResponseArea(int, class TRect const &)
+	?BaseConstructL@CButtonBase@@QAEXXZ @ 598 NONAME ; void CButtonBase::BaseConstructL(void)
 

@@ -495,7 +495,9 @@ TBool CAknFepUIAvkonImpl::UpdateSoftkeyLabelL(TInt aPosition, TInt aCommandId, T
         HBufC* buf = CEikonEnv::Static()->AllocReadResourceLC(aTextResId);
         if( buf->Des().Length() > 1 && EMiddleSoftkeyIndex != aPosition )
             {
-            iCba->SetCommandL(aPosition, aCommandId, buf->Des().Mid(1));                    
+            iCba->SetCommandL(aPosition, aCommandId, buf->Des().Mid(1));  
+            CEikCba *eikcba = static_cast<CEikCba*>( iCba->ButtonGroup() );
+            eikcba->EnableItemSpecificSoftkey( EFalse );                             
             }
         else
             {           

@@ -22,6 +22,7 @@
 #include <eikenv.h>
 #include <AknsConstants.h>
 #include <AknUtils.h>
+#include <featmgr.h>
 
 #include "peninputlayoutvirtualkeyctrl.h"
 #include "peninputlayoutvkb.h"
@@ -102,6 +103,12 @@ CVirtualKeyCtrl::~CVirtualKeyCtrl()
 void CVirtualKeyCtrl::ConstructL()
     {
     BaseConstructL();
+    
+    //tap accuracy enhancement
+    if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
+        {
+        EnableExtResponseArea( ETrue, TRect(TPoint(10,10),TSize(10,10)) );
+        }
     }
 
 // ---------------------------------------------------------------------------

@@ -418,6 +418,7 @@ void CSplitItutUiLayout::SetInputLanguageL(TInt aLanguage)
     {
     TInt previousLang = iDataMgr->InputLanguage();
     iDataMgr->SetLanguageL(aLanguage);
+    iWindowMgr->SetLanguage( aLanguage );
     
     if (previousLang != aLanguage)
         {

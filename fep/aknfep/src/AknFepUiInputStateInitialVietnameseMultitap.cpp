@@ -177,6 +177,61 @@ TBool TAknFepInputStateInitialVietnameseMultitap::HandleKeyL(TInt aKey, TKeyPres
             }
         }
     
+    if( toneMgr->IsKeyLooping( aKey ) )
+        {
+        if( toneMgr->ToneMarkIndex() !=  KErrNotFound )
+            {
+            // Get current tone mark
+            TText toneVowel;
+            if( toneMgr->GetLoopingToneMarkVowel( toneVowel ) )
+                {
+                // remove two previous chars
+                ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
+                ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
+    
+                TBuf<CAknFepManager::ESingleCharacter> aChr;
+                aChr.Append(toneVowel);
+                
+                // Update inline character(s)
+                fepMan->CancelInlineEdit();
+                fepMan->NewCharacterL(aChr);
+                
+                toneMgr->SetLoopingCombined( ETrue );
+                bHandled = ETrue;
+                }
+            
+            // Reset the engine timer so that we can get timer expired message
+            // We send the * key, and clear it in the next loop
+            ptiEng->ClearCurrentWord();
+            ptiEng->AppendKeyPress((TPtiKey)EPtiKeyStar);
+            }
+        else
+            {
+            if( toneMgr->IsLoopingCombined() )
+                {
+                // remove tone mark
+                TBuf<2> newText;
+                // Get the last character from the current editor
+                TText prevChar = fepMan->PreviousChar();
+                
+                // Judge if the last character needs to be converted
+                if ( NeedsVietnameseBkDelSupport(prevChar, newText) )
+                    {
+                    // Delete the prev character and send the new character to editor
+                    ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
+                    fepMan->NewCharacterL(newText);
+                    fepMan->CommitInlineEditL();
+                    }
+            
+                toneMgr->SetLoopingCombined( EFalse );
+                }
+            }
+        }
+    else
+        {
+        toneMgr->StartKeyLooping( aKey );
+        }
+    
     if(!bHandled && toneMgr->IsLooping())
     	{
     	toneMgr->StopToneMarkLooping();
@@ -196,6 +251,7 @@ void TAknFepInputStateInitialVietnameseMultitap::KeyTimerExpired()
     TRAP_IGNORE(fepMan->CommitInlineEditL());
 
     toneMgr->StopToneMarkLooping();
+    toneMgr->StopKeyLooping();
     ptiEng->ClearCurrentWord();
     }
     

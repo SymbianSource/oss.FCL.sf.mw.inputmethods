@@ -247,6 +247,8 @@ public:
      */
     inline CSplitItutWindow* Window();
     
+    void SetLanguage( TInt aLanguage );
+    
 private:
     /**
      * C++ constructor

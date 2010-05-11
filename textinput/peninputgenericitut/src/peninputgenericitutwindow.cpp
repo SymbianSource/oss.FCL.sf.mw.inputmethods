@@ -1859,6 +1859,7 @@ void CGenericItutWindow::OnSkinChange()
     TRAP_IGNORE(iStandardItutKp->StarIcon()->ReConstructL());
     if ( iDataMgr->IsPortraitWest())
         {
+        TRAP_IGNORE(iStandardItutKp->StarIcon()->ReConstructL());
         TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ResizeL(iDataMgr->iShiftIconRectForPrtWest.Size()));
         TRAP_IGNORE(iStandardItutKp->StarIcon()->ResizeL(iDataMgr->iStarIconRectForPrtWest.Size()));
         }
@@ -2191,7 +2192,7 @@ void CGenericItutWindow::MsgBubbleForChinese()
 	    									  KAknsIIDQsnFrInputPreviewMiddle,
 	    									  KAknsIIDQsnFrInputPreviewSideR);  
 	    iICF->SetMsgBubbleCtrlSize(TSize(iBubbleSize.iW,iBubbleSize.iH));
-	    iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
+	    TRAP_IGNORE(iICF->MsgBubbleCtrl()->SetTextL( KEmptyString ));
 		}
 	}
 void CGenericItutWindow::SetIndiWithTextFlag( TBool aFlag )

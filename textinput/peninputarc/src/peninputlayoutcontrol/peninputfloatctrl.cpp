@@ -76,6 +76,15 @@ void CPeninputFloatingCtrl::Hide()
     }
 
 // ---------------------------------------------------------------------------
+// Test if transparency is supported by this control
+// ---------------------------------------------------------------------------
+//
+TBool CPeninputFloatingCtrl::SupportTransparent() const
+    {
+    return iSupportTransparent;
+    }
+
+// ---------------------------------------------------------------------------
 // Symbian constructor
 // ---------------------------------------------------------------------------
 //
@@ -85,6 +94,8 @@ void CPeninputFloatingCtrl::BaseConstructL()
     CreateWindowL( wg );
     SetComponentsToInheritVisibility();
     Window().SetRequiredDisplayMode( EColor16MA );
+    TInt err = Window().SetTransparencyAlphaChannel();
+    iSupportTransparent = ( KErrNone == err );
     MakeVisible( EFalse );
     ActivateL();
     }

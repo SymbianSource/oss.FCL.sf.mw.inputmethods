@@ -670,7 +670,8 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
             
             AdjustSelectionL( icfdata.iCurSel );
             RecalcualteTextPositionL();
-            SetMsgBubbleRect();
+            //SetMsgBubbleRect();
+            SetMsgBubbleRectAccordingToLanguage();
             Draw();
             }
             break;
@@ -826,7 +827,8 @@ void CFepLayoutMultiLineIcfEditor::SetSelectionL(TCursorSelection aCurSel)
         }
     else
         {
-        SetMsgBubbleRect();
+        //SetMsgBubbleRect();
+		SetMsgBubbleRectAccordingToLanguage();
         SetInfoBubbleRect();
         }    
     }
@@ -1193,7 +1195,7 @@ void CFepLayoutMultiLineIcfEditor::DrawMfneText()
     TInt baseLine = iFont->AscentInPixels()/2 + rect.Height()/2;
     
     TRect clipRect = 
-        TRect( TPoint(Rect().iTl.iX, rect.iTl.iY), TPoint( Rect().iBr.iX, rect.iBr.iY));    
+        TRect( TPoint(Rect().iTl.iX + 1, rect.iTl.iY), TPoint( Rect().iBr.iX - 1, rect.iBr.iY));
     
     gc->SetClippingRect( clipRect );
     gc->Clear( clipRect );
@@ -1313,7 +1315,9 @@ void CFepLayoutMultiLineIcfEditor::SetRectL(const TRect& aRect)
         }
 
     TRAP_IGNORE(RecalcualteTextPositionL());        
-    SetMsgBubbleRect();
+    
+    //SetMsgBubbleRect();
+    SetMsgBubbleRectAccordingToLanguage();
     }
 
 void CFepLayoutMultiLineIcfEditor::ResetViewHeightL()
@@ -1364,6 +1368,31 @@ void CFepLayoutMultiLineIcfEditor::ResetViewHeightL()
     	}
     iTextView->SetViewRect(iViewRect);
     }
+
+void CFepLayoutMultiLineIcfEditor::SetMsgBubbleRectAccordingToLanguage()
+	{
+	if ( iPreLanguageID == ELangPrcChinese || 
+		 iPreLanguageID == ELangHongKongChinese ||
+		 iPreLanguageID == ELangTaiwanChinese ||
+		 iPreLanguageID == ELangKorean )
+		{
+		SetMsgBubbleRect();
+		return;
+		}
+	else
+		{
+		if(( !iMsgBubble->IsShowing() && !iHideBubbleTemp ) ||
+				iLineMaxCount < 1 || iCursorSel.iCursorPos < 0 )
+			{
+			return;
+			}
+		
+		iMsgBubble->Popup( iMsgBubble->Rect());		        
+		iHideBubbleTemp = EFalse;
+		
+		return;
+		}
+	}
 
 void CFepLayoutMultiLineIcfEditor::SetMsgBubbleRect()
     {
@@ -1741,7 +1770,8 @@ void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
 		iTextView->HandleGlobalChangeNoRedrawL();
 		iTextView->SetSelectionL( iTextView->Selection() );
 		RecalcualteTextPositionL();
-		SetMsgBubbleRect();
+		//SetMsgBubbleRect();
+		SetMsgBubbleRectAccordingToLanguage();
 		Draw();
     }
 
@@ -2680,7 +2710,8 @@ void CFepLayoutMultiLineIcfEditor::ShowBubble(const TDesC& aText, const TRect& /
     {
     TRAP_IGNORE(iMsgBubble->SetTextL(aText));
     iHideBubbleTemp = ETrue;
-    SetMsgBubbleRect();
+    //SetMsgBubbleRect();
+    SetMsgBubbleRectAccordingToLanguage();
     }
     
 void CFepLayoutMultiLineIcfEditor::ShowByteWarningBubble(const TDesC& aInfo)
@@ -2780,7 +2811,8 @@ void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
             {
             iTextView->SetViewLineAtTopL(( lineIndex + 1 ) - ( iLineMaxCount - 1 ));
             RecalcualteTextPositionL();
-            SetMsgBubbleRect();
+            //SetMsgBubbleRect();
+            SetMsgBubbleRectAccordingToLanguage();
             }
         }
     
@@ -2799,7 +2831,8 @@ void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
                                    lineCount - pageCount + 1 < 1 ? 1 : lineCount - pageCount + 1 );
             
             RecalcualteTextPositionL();
-            SetMsgBubbleRect();
+            //SetMsgBubbleRect();
+            SetMsgBubbleRectAccordingToLanguage();
             }
         }
     }

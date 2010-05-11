@@ -70,7 +70,11 @@ void CPeninputFloatingBubble::Draw( const TRect& aRect ) const
     {
     CWindowGc& gc = SystemGc();
     TRect rect = Rect();
-    gc.Clear( rect ); 
+    
+    if ( !SupportTransparent() )
+        {
+        gc.Clear( rect ); 
+        }
     
     //draw background
     if ( iBkgndSkinId.iMajor )

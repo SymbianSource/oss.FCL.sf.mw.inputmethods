@@ -334,6 +334,13 @@ LIBRARY             touchfeedback.lib
 #ifdef RD_SCALABLE_UI_V2
 LIBRARY    aknnotify.lib
 #endif //RD_SCALABLE_UI_V2
+
+#ifdef RD_UI_TRANSITION_EFFECTS_LIST
+LIBRARY         aknlistloadertfx.lib
+LIBRARY         akntransitionutils.lib
+LIBRARY         gfxtrans.lib
+#endif //RD_UI_TRANSITION_EFFECTS_LIST
+
 START WINS
 BASEADDRESS     0x70500000
 END

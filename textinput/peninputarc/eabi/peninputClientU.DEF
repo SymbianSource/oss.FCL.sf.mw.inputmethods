@@ -71,4 +71,4 @@ EXPORTS
 	_ZN15RPeninputServer16SupportInputModeEi @ 70 NONAME
 	_ZN15RPeninputServer16SetInputLanguageEi @ 71 NONAME
 	_ZN15RPeninputServer11ConnectAsycER14TRequestStatus @ 72 NONAME
-
+	_ZN15RPeninputServer18SetDataQueryPoppedEi @ 73 NONAME

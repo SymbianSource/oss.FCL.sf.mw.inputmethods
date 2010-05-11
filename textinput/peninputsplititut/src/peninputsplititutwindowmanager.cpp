@@ -507,5 +507,14 @@ void CSplitItutWindowManager::SetPromptTextL(TUint8* aData)
     {
     iWindow->SetPromptTextL(aData);
     }
-         
+
+void CSplitItutWindowManager::SetLanguage( TInt aLanguage )
+    {
+	CFepLayoutMultiLineIcf* icf = iWindow->Icf();
+	if ( icf )
+		{
+		icf->SetLanguageId( aLanguage );
+		}
+    }
+
 // End Of File

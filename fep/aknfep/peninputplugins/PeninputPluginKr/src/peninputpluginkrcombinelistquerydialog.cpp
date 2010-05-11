@@ -52,7 +52,7 @@ void CPeninputPluginKrCombineListQueryDialog::HandleResourceChange( TInt aType )
     CAknListQueryDialog::HandleResourceChange(aType);
     if( aType == KEikDynamicLayoutVariantSwitch ) 
         {
-        CAknListQueryDialog::TryExitL(EAknSoftkeyCancel);
+        TRAP_IGNORE(CAknListQueryDialog::TryExitL(EAknSoftkeyCancel));
         }
     }
 

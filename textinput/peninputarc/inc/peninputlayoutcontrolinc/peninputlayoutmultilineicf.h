@@ -614,6 +614,9 @@ private:    // Methods
     void DrawMfneText();
     
     void SetMsgBubbleRect();
+    
+    void SetMsgBubbleRectAccordingToLanguage();
+    
     void SetInfoBubbleRect();
     
     void HideBubbleTemp();

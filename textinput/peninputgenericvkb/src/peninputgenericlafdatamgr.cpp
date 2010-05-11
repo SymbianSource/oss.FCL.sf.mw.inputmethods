@@ -1096,9 +1096,9 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
     
     // icf indicator
     TAknWindowLineLayout icfIndiPaneWithText, icfIndiPaneWithoutText, 
-        indiIconWithText, indiIconWithoutText, indiText;
-    TAknLayoutRect icfIndiPaneRectWithText, icfIndiPaneRectWithoutText, 
-    indiIconRectWithText, indiIconRectWithoutText, indiTextRect;
+		indiIconWithText, indiIconWithoutText;
+    TAknLayoutRect icfIndiPaneRectWithText, icfIndiPaneRectWithoutText,
+		indiIconRectWithText, indiIconRectWithoutText;
     TAknTextLineLayout indiTextLayout;
     
     icfIndiPaneWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane(1).LayoutLine();
@@ -1108,9 +1108,14 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
     icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
     icfIndiPaneRectWithoutText.LayoutRect( rectICF, icfIndiPaneWithoutText );
     aDataInfo.iIndiPaneRectWithoutTextForFSQ = icfIndiPaneRectWithoutText.Rect();
-
-    aDataInfo.iIndiIconRectWithTextForFSQ = TRect( 0, 0, 60, 20 );
-    aDataInfo.iIndiIconRectWithoutTextForFSQ = TRect( 0, 0, 60, 20 );
+    
+    indiIconWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(1).LayoutLine();
+    indiIconRectWithText.LayoutRect( icfIndiPaneRectWithText.Rect(), indiIconWithText );
+    aDataInfo.iIndiIconRectWithTextForFSQ = indiIconRectWithText.Rect();
+    
+    indiIconWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(0).LayoutLine();
+    indiIconRectWithoutText.LayoutRect( icfIndiPaneRectWithoutText.Rect(), indiIconWithoutText );
+    aDataInfo.iIndiIconRectWithoutTextForFSQ = indiIconRectWithoutText.Rect();
     
     indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
     aDataInfo.iIndiTextForFSQ = indiTextLayout;

@@ -134,6 +134,43 @@ const TInt16 KZhuyinIndicator = 0x2462;
 
 // Local method declarations.
 LOCAL_C TInt RemapVietnameseAccentedCharacter(TUint16 aChr);
+LOCAL_C TBool IsRegionalLang(TInt aVariantCode, TInt& aMainCode)
+    {   
+    TBool ret = ETrue;
+    switch(aVariantCode)
+        {
+        case ELangBrazilianPortuguese:
+            aMainCode = ELangPortuguese;
+            break;
+        case ELangCanadianFrench:
+            aMainCode = ELangFrench;
+            break;
+        case ELangLatinAmericanSpanish:
+            aMainCode = ELangSpanish;
+            break;
+        case ELangEnglish_Taiwan:
+            aMainCode = ELangEnglish;
+            break;
+        default:
+            aMainCode = aVariantCode; 
+            ret = EFalse;
+        }
+    return ret;
+    }
+LOCAL_C TBool AlreadyExistLang(CArrayPtrFlat<CPtiCoreLanguage>* aLangArray, TInt aLangCode)
+    {
+    if (aLangArray)
+        {
+        for (TInt i=0; i < aLangArray->Count(); i++)
+            {
+            if (aLangArray->At(i)->LanguageCode() == aLangCode)
+                {
+                return ETrue;
+                }
+            }
+        }
+    return EFalse;
+    }
 const TUid KXt9ImplementationUid = {0x102830B9};
 	
 //
@@ -287,13 +324,21 @@ void CPtiEngineImpl::GetAvailableLanguagesL(CArrayFix<TInt>* aResult)
 #endif
 		for (TInt i = 0; i < count; i++)
 			{
+		    TInt code = 0;		    
 			if ((iLanguages->At(i)->LanguageCode() != ELangNumeric)
 #ifdef RD_HINDI_PHONETIC_INPUT
 				&& (iLanguages->At(i)->LanguageCode() != KLangHindiPhonetic)
 #endif
                 )
 				{
-				aResult->AppendL(iLanguages->At(i)->LanguageCode());
+			    if(IsRegionalLang(iLanguages->At(i)->LanguageCode(),code))
+                    {
+                    if(AlreadyExistLang(iLanguages,code))
+                        {
+                        continue;
+                        }
+                    }
+				aResult->AppendL(code);
 #ifdef RD_HINDI_PHONETIC_INPUT
 				if (iLanguages->At(i)->LanguageCode() == ELangHindi && isIndicPhoneticInputPresent)
 					aResult->AppendL(KLangHindiPhonetic);
@@ -2894,11 +2939,19 @@ void CPtiEngineImpl::GetAvailableLanguagesL(RArray<TInt>& aResult)
 	const TInt count = iLanguages->Count();
 	for (TInt i = 0; i < count; i++)
 		{
+	    TInt code = 0;
 		if (iLanguages->At(i)->LanguageCode() != ELangNumeric)
 			{
-			aResult.AppendL(iLanguages->At(i)->LanguageCode());
-			}
-		}	
+		    if(IsRegionalLang(iLanguages->At(i)->LanguageCode(),code))
+		        {
+		        if(AlreadyExistLang(iLanguages,code))
+		            {
+		            continue;
+			        }
+		        }	
+			aResult.AppendL(code);
+		    }	
+		}
     CleanupStack::Pop();
 	}
 

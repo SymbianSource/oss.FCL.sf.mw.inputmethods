@@ -39,6 +39,10 @@ EXPORT_C TInt RPeninputServer::ConnectAsyc(TRequestStatus& aStatus)
     //return iSingletonServer->ConnectAsync(status);
     return err;
     }
+EXPORT_C void RPeninputServer::SetDataQueryPopped(TBool aFlag)
+	{
+	iSingletonServer->SetDataQueryPopped(aFlag);
+	}
 // ---------------------------------------------------------------------------
 // RPeninputServer::Connect
 // ---------------------------------------------------------------------------

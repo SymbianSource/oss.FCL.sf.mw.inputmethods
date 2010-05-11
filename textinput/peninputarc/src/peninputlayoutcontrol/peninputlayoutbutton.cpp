@@ -15,6 +15,7 @@
 *
 */
 
+#include <featmgr.h>
 #include <AknFepGlobalEnums.h>
 #include "peninputlayoutbutton.h"
 #include "peninputlayouttimer.h"
@@ -47,7 +48,23 @@ EXPORT_C CButtonBase* CButtonBase::NewL(const TRect& aRect,
     CleanupStack::Pop(btn);
     return btn;    
     }
+
+// ---------------------------------------------------------------------------
+// CButtonBase::BaseConstructL
+// Do base contruction
+// ---------------------------------------------------------------------------
+//
+EXPORT_C void CButtonBase::BaseConstructL()
+    {
+    CFepUiBaseCtrl::BaseConstructL();
     
+    //tap accuracy enhancement
+    if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
+        {
+        EnableExtResponseArea( ETrue, TRect(TPoint(10,10),TSize(10,10)) );
+        }
+    }
+
 // ---------------------------------------------------------------------------
 // CButtonBase::CButtonBase
 // C++ default constructor
@@ -73,6 +90,7 @@ EXPORT_C CButtonBase::CButtonBase(const TRect& aRect,CFepUiLayout* aUiLayout,
     
     SetBkColor(KDefaultButtonBackCol);
 
+    //todo code refactoring needed, move to BaseConstructL
 #ifdef RD_TACTILE_FEEDBACK     
     //Advanced Tactile feedback REQ417-47932
     if(aUiLayout)

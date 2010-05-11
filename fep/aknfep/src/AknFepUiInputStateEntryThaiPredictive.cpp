@@ -102,8 +102,17 @@ TBool TAknFepInputStateEntryThaiPredictive::HandleKeyL(TInt aKey, TKeyPressLengt
     case EPtiKey8:
     case EPtiKey9:
     case EPtiKey0:
-    case EPtiKeyStar:
         response = HandleStandardNumericKeysL(aKey, aLength);
+        break;
+    case EPtiKeyStar:
+        if ( aLength == ELongKeyPress )
+            {
+            response = HandleStarKeyL(aLength);
+            }
+        else
+            {
+            response = HandleStandardNumericKeysL(aKey, aLength);
+            }
         break;
     case EKeyDownArrow:
         response = HandleDownKeyL();

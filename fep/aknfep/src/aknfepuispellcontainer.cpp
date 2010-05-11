@@ -92,13 +92,17 @@ void CAknFepUiSpellContainer::SetInputWinFocus( TBool aFocus )
 	{
 	if ( IsFocused() == aFocus )
 		{
+	    if ( !aFocus )
+	    	{
+	        iEikonEnv->EikAppUi()->RemoveFromStack( this );
+	    	}
 		return;
 		}
 	
 	// When release focus, remove from stack.
 	if( aFocus )
 		{		
-	    iEikonEnv->EikAppUi()->AddToStackL( this, ECoeStackPriorityDialog );
+	     TRAP_IGNORE(iEikonEnv->EikAppUi()->AddToStackL( this, ECoeStackPriorityDialog ));
 		}
 	else
 		{

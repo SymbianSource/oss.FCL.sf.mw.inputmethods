@@ -472,6 +472,7 @@ public:
     void ClearTouchUI();
     void SetResourceChange(TBool aFlag);
     
+    void SetDataQueryPopped(TBool aFlag);
     /**
      * Starts the server thread
      *
@@ -560,6 +561,7 @@ private:    // Data
     CWaitingServerAo* iWaiterAo;
     TRequestStatus* iPendingRequest;
     TBool iServerReady;
+    TBool iDataQueryIsPopped;
 };
 
 
@@ -655,7 +657,7 @@ public: // New functions
      * Show pen UI with priority.
      */
     void Show(const TRect& aRect, TBool aGlobalNotes, 
-        TBool aInternal, TInt aPriority, TBool aResource);
+        TBool aInternal, TInt aPriority, TBool aResource, TBool aDataQueryPopped);
     
     /**
      * Called from akncapserver appui to close fastswap.

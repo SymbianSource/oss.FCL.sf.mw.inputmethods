@@ -498,6 +498,11 @@ void CPeninputFingerHwrWnd::SetNumericMapping( const TDesC& aNumMapping )
 //
 void CPeninputFingerHwrWnd::SetInputLanguage( const TInt aLanguageId )
     {
+	if ( iContextField )
+		{
+		iContextField->SetLanguageId( aLanguageId );
+		}
+	
     // special punctuations
     const TInt KSpecialPuncPos[] = { 14, 15 };
     const TInt KSpecialChsPunc[] = { 0x300A, 0x300B };

@@ -54,7 +54,7 @@
 #include <aknextendedinputcapabilities.h>
 #include <avkon.hrh>
 #include <PtiEngine.h>
-#include <peninputcommonlayoutglobalenum.h>
+//#include <peninputcommonlayoutglobalenum.h>
 #include <PtiCompositionDataIF.h> // MPtiEngineCompositionDataInterface
 #include <eikapp.h>
 #include <AknFepGlobalEnums.h>
@@ -3240,11 +3240,6 @@ void CAknFepPluginManager::SyncIndicatorWithPluginRangeL()
     else if( iPluginPrimaryRange == ERangeNumber )
         {
         newMode = ENumber;
-        }
-    else if ( iPluginPrimaryRange == ERangeNativeNumber )
-        {
-        newMode = ENativeNumber;
-        iPluginNativeRange = ETrue;
         }
     //else do NOTHING but keep current for other ranges
     

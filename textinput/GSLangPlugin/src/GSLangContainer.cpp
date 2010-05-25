@@ -23,7 +23,7 @@
 #include    "GSLangModel.h"
 #include    <gslistbox.h> // CGSListBoxItemTextArray
 #include    <gscommon.hrh>
-#include    <GSLangPluginRsc.rsg>
+#include    <gslangpluginrsc.rsg>
 
 #include    <bldvariant.hrh>
 

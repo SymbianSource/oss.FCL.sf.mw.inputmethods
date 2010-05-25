@@ -41,7 +41,7 @@
 #include <PtiCompositionDataIF.h>   //MPtiEngineCompositionDataInterface
 #include <featmgr.h>                //FeatureManager
 #include <e32keys.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 
 static const TInt KKeyMappingsLength = 63;
@@ -458,6 +458,12 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::HandleWordBreakingKeysL(TIn
             	TBool wasInlineEditing = EFalse;	
             	wasInlineEditing = 
                           fepMan->IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction);
+
+                if(aKey == EStdKeySpace && tailLength > 0)
+                    {
+                    fepMan->RemoveSuggestedAdvanceCompletionL();
+                    }
+                	
             	ptiengine->CommitCurrentWord();
                 fepMan->CommitInlineEditL();
                 /* Temporary Fix */

@@ -15,7 +15,7 @@
 *
 */
 
-#include <aknsutils.h>
+#include <AknsUtils.h>
 #include <barsread.h>
 
 #include "peninputfingerhwrarindicator.h"

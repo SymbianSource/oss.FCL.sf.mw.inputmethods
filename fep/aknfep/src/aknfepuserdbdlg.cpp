@@ -46,7 +46,7 @@
 #include <f32file.h> //RFs
 #include <eikedwin.h> //CEikEdwin 
 #include <akntitle.h> //CAknTitlePane 
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include "AknFep.hrh"
 #include "aknfepuserdbdlg.h"
 #include "dbmanagement.h"

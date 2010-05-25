@@ -43,6 +43,8 @@ const TUint32 KOpaqueColor = 0xffffff;
 //base control type
 typedef TInt64 TControlType;
 
+const TInt KPenInputOwnDeviceChange = -1;
+const TUint KFepCtrlExtId = 0x00000000;
 //UI layout leave code
 enum TUiLayoutErrorCode
     {
@@ -199,6 +201,64 @@ class CFepUiBaseCtrl : public CBase, public MPositionObserver,
     {
 friend class CControlGroup;    
 friend class CInsertionPoint;
+public:
+    NONSHARABLE_CLASS(CFepUiBaseCtrlExtension) : public CBase
+        {
+        public: 
+            
+        CFepUiBaseCtrlExtension();
+        
+        /**
+         * Set Tactile Feedback Type
+         * Advanced Tactile feedback REQ417-47932
+         */
+        void SetTactileFeedbackType(TInt aTactileType);
+        
+        /**
+        * Return tactile feedback type
+        *
+        * Advanced Tactile feedback REQ417-47932
+        * @return the tactile feedback type
+        */  
+        IMPORT_C TInt TactileFeedbackType();
+public:
+            TBool iExtResponseAreaActive;
+            TRect iExtResponseArea;
+            TBool iExtResponseAreaEnabled;
+            TRect  iExtResponseAreaMargin;
+                
+        private:
+        /**
+         * Tactile Feedback type
+         */
+        TInt iTactileType;    
+
+        public:
+            ~CFepUiBaseCtrlExtension();
+            CFbsBitmap* Bitmap() { return iBitmap;}
+            CFbsBitmap* MaskBitmap() { return iMaskBitmap;}
+            CFbsBitGc* Gc() { return iGc;}
+            CFbsBitmapDevice* BitmapDevice() { return iBitmapDevice;}
+            CFbsBitmapDevice* MaskBitmapDevice() { return iMaskBitmapDevice;}
+
+            void SetBitmap(CFbsBitmap* aBmp) { iBitmap = aBmp;}
+            void SetGc(CFbsBitGc* aGc) { iGc = aGc;}
+            void SetBmpDevice(CFbsBitmapDevice* aDevice) { iBitmapDevice = aDevice;}
+            void SetMaskBmpDevice(CFbsBitmapDevice* aDevice) { iMaskBitmapDevice = aDevice;}
+            
+        private:
+            CFbsBitmap* iBitmap; // not own, don't delete
+            CFbsBitmap* iMaskBitmap; // not own, don't delete
+            /** 
+             * graphic context
+             * Not own
+             */    
+            CFbsBitGc* iGc;
+            CFbsBitmapDevice* iBitmapDevice;
+            CFbsBitmapDevice* iMaskBitmapDevice;
+friend class CFepUiBaseCtrl;            
+        };
+		
 public:
     enum TZOrder
         {
@@ -765,7 +825,7 @@ public:
      * @param aRect the rect to be flushed in screen
      * @param aUpdateFlag ETrue if full update.
      */
-    IMPORT_C void UpdateArea(const TRect& aRect,TBool aUpdateFlag= EFalse); 
+    IMPORT_C virtual void UpdateArea(const TRect& aRect,TBool aUpdateFlag= EFalse); 
 
     /**
      * Update layout area immediately
@@ -986,28 +1046,28 @@ protected:
      * @since S60 V4.0
      * @return The graphic context
      */
-    inline CBitmapContext* BitGc();
+    IMPORT_C CBitmapContext* BitGc();
 
     /**
      * get Bitmap device for sprite or window
      * @since S60 V4.0
      * @return The bitmap device
      */
-    inline CFbsBitmapDevice* BitmapDevice();
+    IMPORT_C CFbsBitmapDevice* BitmapDevice();
 
     /**
      * get Mask bitmap device for sprite or window
      * @since S60 V4.0
      * @return The mask bitmap device
      */
-    inline CFbsBitmapDevice* MaskBitmapDevice();
+    IMPORT_C CFbsBitmapDevice* MaskBitmapDevice();
     
     /**
      * get control background mask bmp
      * @since S60 V4.0
      * @return The background mask bitmap
      */
-    inline CFbsBitmap* BkMaskBmp();
+    IMPORT_C CFbsBitmap* BkMaskBmp();    
     
     /**
      * get control background  bmp
@@ -1172,6 +1232,9 @@ protected:
     virtual IMPORT_C void GraphicDeviceSizeChanged();
     
     inline void SetHidenFlag(TBool aFlag);
+    void CreateOwnDeviceL(CFbsBitmap* aBmp, CFbsBitmap* aMaskBmp = 0);
+    
+    void ResizeDeviceL();
 private:
     /**
      * Draw shadow bitmap
@@ -1369,39 +1432,8 @@ private:
     
     TInt iOrdinalPos;
 
-private:    
-    NONSHARABLE_CLASS(CFepUiBaseCtrlExtension) : public CBase
-        {
-        public: 
-            
-        CFepUiBaseCtrlExtension();
-        
-        /**
-         * Set Tactile Feedback Type
-         * Advanced Tactile feedback REQ417-47932
-         */
-        void SetTactileFeedbackType(TInt aTactileType);
-        
-        /**
-        * Return tactile feedback type
-        *
-        * Advanced Tactile feedback REQ417-47932
-        * @return the tactile feedback type
-        */  
-        IMPORT_C TInt TactileFeedbackType();
-        public:
-            TBool iExtResponseAreaActive;
-            TRect iExtResponseArea;
-            TBool iExtResponseAreaEnabled;
-            TRect  iExtResponseAreaMargin;
-            
-        private:
-            /**
-             * Tactile Feedback type
-             */
-            TInt iTactileType;
-        };    
-private:
+    //class CFepUiBaseCtrlExtension;
+
     /**
      * Reservered
      */

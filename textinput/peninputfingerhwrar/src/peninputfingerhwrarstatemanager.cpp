@@ -404,9 +404,10 @@ void CPeninputFingerHwrArStateWriting::OnEndWritingL( const TDesC& /*aEventData*
     RPointerArray<HBufC> candidates = iDataStore.Candidate();
     if ( candidates.Count() > 0 )
         {
-        HBufC* defaultCandiate = candidates[0];
-        iStateManager.HwrLayout().SubmitStringToFep( *defaultCandiate );
-            
+		if(iStateManager.HwrLayout().IsAllowedToSubmitDefaultCandiate())
+		    {
+			iStateManager.HwrLayout().SubmitStringToFep( *candidates[0]);
+			}
         iStateManager.SetState( CPeninputFingerHwrArStateManager::
                 EPeninputFingerHwrArStateCandidateSelecting );  
         
@@ -516,14 +517,21 @@ void CPeninputFingerHwrArStateCandidateSelecting::OnSelectedCandidatesL(
     
     TPtrC ptr;
     ptr.Set( ( aEventData.Left( aEventData.Length() - 1 ) ) );
-    RPointerArray<HBufC> candidates = iDataStore.Candidate();
-    //the selected char is not same as default
-    //replace the default candidate
-    HBufC* defaultCandidate = candidates[0];
-    if( *defaultCandidate != ptr )
+	if(!iStateManager.HwrLayout().IsAllowedToSubmitDefaultCandiate())
+		{
+		iStateManager.HwrLayout().SubmitStringToFep( ptr);
+		}
+	else
         {
-        iStateManager.HwrLayout().Replace( *defaultCandidate, ptr );         
-        }
+		RPointerArray<HBufC> candidates = iDataStore.Candidate();
+		//the selected char is not same as default
+		//replace the default candidate
+		HBufC* defaultCandidate = candidates[0];
+		if( *defaultCandidate != ptr )
+			{
+			iStateManager.HwrLayout().Replace( *defaultCandidate, ptr, EFalse);         
+			}
+		}	
     iDataStore.SetArabicSymbolL();
     }
 

@@ -206,6 +206,7 @@ void CAknFepVkbWindow::ConstructFromResourceL()
 //
 void CAknFepVkbWindow::ChangeImLayout(TInt aRange, TBool aChangeVkb)
     {
+	UiLayout()->DisableLayoutDrawing(ETrue);   
     TInt imLayout = iDataProvider->RequestData(EAknFepDataTypeIMLayout);
 
     if ( iArrowLeftButton )
@@ -219,6 +220,7 @@ void CAknFepVkbWindow::ChangeImLayout(TInt aRange, TBool aChangeVkb)
     
     iClientArea->ChangeImLayout(aRange, aChangeVkb);
     SizeChangedForTitle();
+    UiLayout()->DisableLayoutDrawing(EFalse);
     Draw();
     }
 

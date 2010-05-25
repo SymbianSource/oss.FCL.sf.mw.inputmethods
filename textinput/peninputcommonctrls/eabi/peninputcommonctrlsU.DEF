@@ -473,4 +473,22 @@ EXPORTS
 	_ZN20CFepCtrlDropdownList10ReDrawRectERK5TRect @ 472 NONAME
 	_ZN23CAknFepCtrlCommonButton18CancelPointerDownLEv @ 473 NONAME
 	_ZN20CFepCtrlDropdownList4HideEi @ 474 NONAME
+	_ZN19CPeninputVkbCtrlExt20HandleResourceChangeEi @ 475 NONAME
+	_ZN26CAknFepCtrlLongPressButton10ConstructLEv @ 476 NONAME
+	_ZN26CAknFepCtrlLongPressButton11CancelTimerEv @ 477 NONAME
+	_ZN26CAknFepCtrlLongPressButton14HandleTimerOutEPK12CAknFepTimer @ 478 NONAME
+	_ZN26CAknFepCtrlLongPressButton18CancelPointerDownLEv @ 479 NONAME
+	_ZN26CAknFepCtrlLongPressButton18HandlePointerLeaveERK6TPoint @ 480 NONAME
+	_ZN26CAknFepCtrlLongPressButton21HandlePointerUpEventLERK6TPoint @ 481 NONAME
+	_ZN26CAknFepCtrlLongPressButton23HandlePointerDownEventLERK6TPoint @ 482 NONAME
+	_ZN26CAknFepCtrlLongPressButton4NewLEP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 483 NONAME
+	_ZN26CAknFepCtrlLongPressButton5NewLCEP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 484 NONAME
+	_ZN26CAknFepCtrlLongPressButtonC1EP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 485 NONAME
+	_ZN26CAknFepCtrlLongPressButtonC2EP12CFepUiLayoutiii11TAknsItemIDS2_S2_ @ 486 NONAME
+	_ZN26CAknFepCtrlLongPressButtonD0Ev @ 487 NONAME
+	_ZN26CAknFepCtrlLongPressButtonD1Ev @ 488 NONAME
+	_ZN26CAknFepCtrlLongPressButtonD2Ev @ 489 NONAME
+	_ZTI26CAknFepCtrlLongPressButton @ 490 NONAME
+	_ZTV26CAknFepCtrlLongPressButton @ 491 NONAME
+	_ZThn804_N26CAknFepCtrlLongPressButton14HandleTimerOutEPK12CAknFepTimer @ 492 NONAME
 

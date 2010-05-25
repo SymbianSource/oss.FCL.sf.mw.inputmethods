@@ -18,9 +18,9 @@
 //SYSTEM INCLUDES
 #include <bautils.h>
 #include <coemain.h>
-
+#include <CommonEngineDomainCRKeys.h>
 //FEP Includes
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include <aknfeppeninputenums.h>
 #include <peninputlayoutchoicelist.h>
 #include <settingsinternalcrkeys.h>
@@ -48,6 +48,46 @@ const TUint8 KIntLen = sizeof(TInt)/2;
 const TUint8 KIntSize = sizeof(TInt);
 
 const TInt16 KEmotionKeyMark = 0xFFFE;
+
+class CPeninputFingerHwrArCallBack : public CActive
+    {
+    friend class CPeninputFingerHwrArLayout;
+public:
+    void IssueRequestL();
+private:
+    CPeninputFingerHwrArCallBack(CPeninputFingerHwrArLayout* aHwrArLayout);
+	void RunL();
+	void DoCancel();
+private:
+    CPeninputFingerHwrArLayout* iHwrArLayout;
+	};
+
+CPeninputFingerHwrArCallBack::CPeninputFingerHwrArCallBack(CPeninputFingerHwrArLayout* aHwrArLayout)
+    :CActive(EPriorityHigh)
+    {
+	CActiveScheduler::Add(this);
+	iHwrArLayout = aHwrArLayout;
+	}
+void CPeninputFingerHwrArCallBack::IssueRequestL()
+    {
+    if(!IsActive())
+        {
+        iStatus=KRequestPending;
+        SetActive();        
+        TRequestStatus *pS=(&iStatus);
+        
+        User::RequestComplete(pS,0);
+        }
+    }
+void CPeninputFingerHwrArCallBack::RunL()
+    {
+    iHwrArLayout->CallBackL();
+    }
+
+void CPeninputFingerHwrArCallBack::DoCancel()
+    {
+    
+    }
 
 // ============================ MEMBER FUNCTIONS =============================
 
@@ -87,7 +127,6 @@ void CPeninputFingerHwrArLayout::ConstructL( const TAny* aInitData )
 
     //create the repository for gereral settings
     iRepositorySetting = CRepository::NewL( KCRUidPersonalizationSettings );
-
     //create the repository watcher for general settings
     iGSRepositoryWatcher = CAknFepRepositoryWatcher::NewL( 
             KCRUidPersonalizationSettings, 
@@ -103,6 +142,8 @@ void CPeninputFingerHwrArLayout::ConstructL( const TAny* aInitData )
 	//retrieve the settings
     LoadAndPublishDefaultL();
 	
+    //iCallBack = new (ELeave) CPeninputFingerHwrArCallBack(this);
+    
     //set screen layout extent
     SetRect( TRect( TPoint( 0, 0 ), ScreenSize() ) );
     }
@@ -142,6 +183,7 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
         case ECmdPenInputEditorNumericKeyMap:
             {
             iDataStore->SetNumberMode( *(TAknEditorNumericKeymap*)aData );
+            OnNumMappingChangedL();
             }
             break;
         case ECmdPenInputEditorCustomNumericKeyMap:
@@ -161,6 +203,10 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
             {
             TInt language = *( TInt* )aData;
             iDataStore->SetLanguageL( language );
+            if(iHwrWnd)
+                {
+                iHwrWnd->SetIcfLanguage(language);
+                }
             }
             break;
         case ECmdPenInputPermittedCase:
@@ -225,6 +271,12 @@ TInt CPeninputFingerHwrArLayout::HandleCommandL( const TInt aCmd, TUint8* aData 
             iHwrWnd->SetEnableSettingBtn(isEnableSetting);
             }
             break;
+        case ECmdPeninputArabicNumModeChanged:
+            {
+            TBool isArabicNativeNum = *aData;
+            iHwrWnd->SetNativeNumMode(isArabicNativeNum);
+            }
+            break;
         default:
 		    ret = KErrUnknown;
             break;
@@ -276,14 +328,16 @@ TInt CPeninputFingerHwrArLayout::OnAppEditorTextComing(
 		// but ICF does not offer such API
 		if(aData.iFlag & EFepICFDataDirectionMFNE )
 			{
+			iIsEditorMFNE = ETrue;
 			return KErrNone;
 			}
-			
+		
+        iIsEditorMFNE = EFalse;		
 		iDataStore->SetFirstCandidateType(ECandDefaultFirst);
-		if(iDataStore->PrimaryRange() == ERangeEnglish)
-		    {
-		    return KErrNone;
-		    }
+//		if(iDataStore->PrimaryRange() == ERangeEnglish)
+//		    {
+//		    return KErrNone;
+//		    }
 		TUint16 charBeforeCursor = 0;
 		
         if(iHwrWnd->GetCharBeforeCursor(aData.iCurSel.LowerPos()-1, charBeforeCursor))
@@ -461,7 +515,7 @@ CPeninputFingerHwrArDataStore& CPeninputFingerHwrArLayout::DataStore()
 // ---------------------------------------------------------------------------
 //
 void CPeninputFingerHwrArLayout::Replace( const TDesC& aOldCharCode,
-    const TDesC& aNewCharCode, const TBool aIsPart )
+    const TDesC& aNewCharCode, const TBool aIsPart)
     {
 	// user tries to correct the previous selection
     // Delete the previous character and append the new one
@@ -573,7 +627,18 @@ void CPeninputFingerHwrArLayout::LoadAndPublishDefaultL()
 
     iRepositorySetting->Get( KSettingsPenInputLang, newValue );
     iDataStore->SetLanguageL( newValue );
-
+    
+//    TInt displayLang = 0;
+//    iCommonEngineRepository->Get(KGSDisplayTxtLang,displayLang);
+//    if(displayLang == ELangArabic)
+//        {
+//        iHwrWnd->SetNativeNumMode(ETrue);
+//        }
+//    else
+//        {
+//        iHwrWnd->SetNativeNumMode(EFalse);
+//        }
+    iHwrWnd->SetNativeNumMode(iDataStore->IsNativeNumMode());
     }
 
 // ---------------------------------------------------------------------------
@@ -609,6 +674,8 @@ CPeninputFingerHwrArLayout::~CPeninputFingerHwrArLayout()
 	delete iStateMgr;
     delete iGSRepositoryWatcher;
     delete iRepositorySetting;
+//    delete iCommonEngineRepository;
+    //delete iCallBack;
     }
 
 // ---------------------------------------------------------------------------
@@ -706,7 +773,7 @@ void CPeninputFingerHwrArLayout::OnCtrlButtonUpL( TInt /*aEventType*/,
             }
             break;    
 		case EHwrCtrlIdBtnEnter:
-            {
+		    {
 			TBuf<1> bufEnter;
             bufEnter.Append( EKeyEnter );
             SubmitStringToFep( bufEnter );
@@ -749,16 +816,6 @@ void CPeninputFingerHwrArLayout::OnRepButtonClickedL( CFepUiBaseCtrl* aCtrl,
             SignalOwner( ESignalKeyEvent, aData );
             }
             break;
-        case EHwrCtrlIdArrowDown:
-            {
-            iHwrWnd->Icf()->HandleArrowBtnEventL( CFepLayoutMultiLineIcf::EArrowDown );
-            }
-            break;
-        case EHwrCtrlIdArrowUp:
-            {
-            iHwrWnd->Icf()->HandleArrowBtnEventL( CFepLayoutMultiLineIcf::EArrowUp );
-            }
-            break;
         default:
             break;
         }
@@ -773,7 +830,11 @@ void CPeninputFingerHwrArLayout::OnBackspaceClickedL()
 	iHwrWnd->CancelWriting();
     if (iHwrWnd->IsCandidateShowup())
         {
-        // goto standby and clear screen	
+        // goto standby and clear screen
+        if(IsAllowedToSubmitDefaultCandiate())
+            {
+            SignalOwner( ESignalDeleteLastInput, KNullDesC );
+            }
 		ChangeCurStateToStandby();
         }
     else
@@ -818,8 +879,19 @@ void CPeninputFingerHwrArLayout::OnVirtualKeyUpL( CFepUiBaseCtrl* /*aCtrl*/,
     else
         {
         TBuf<1> bufBck;
-        bufBck.Append( keydata->iScanCode );
-        SignalOwner( ESignalKeyEvent, bufBck );
+        TInt convertedCode;
+        TBool converted = EFalse;
+        converted = RevertSymbolDirection(keydata->iScanCode,convertedCode);
+        bufBck.Append(convertedCode);
+//        bufBck.Append(keydata->iScanCode);
+        if(converted)
+            {
+            SignalOwner(ESignalArabicSCTChar,bufBck);
+            }
+        else
+            {
+            SignalOwner( ESignalKeyEvent, bufBck );
+            }
         }
         
     // close the symbol table
@@ -860,6 +932,7 @@ void CPeninputFingerHwrArLayout::OnIcfClicked()
 //                                              
 void CPeninputFingerHwrArLayout::OnHwrStrokeStartedL()
     {
+    //iCallBack->IssueRequestL(); 
 	iHwrWnd->HideIndicator();
 	
 	// The default candidate cell is not highlight
@@ -874,6 +947,25 @@ void CPeninputFingerHwrArLayout::OnHwrStrokeStartedL()
 	// remember the start writing position.
 	iIsStrokeOfDrawingCharacerStarted = ETrue;
 	
+    iStateMgr->HandleEventL( EEventHwrStrokeStarted, KNullDesC );
+    }
+
+void CPeninputFingerHwrArLayout::CallBackL()
+    {
+    iHwrWnd->HideIndicator();
+        
+    // The default candidate cell is not highlight
+    iDataStore->SetHighlight(EFalse); 
+    
+    // close the candidate list if it's currently showing up    
+    if(iHwrWnd->IsCandidateShowup())
+        {
+        iHwrWnd->CloseCandidateList();
+        }
+    
+    // remember the start writing position.
+    iIsStrokeOfDrawingCharacerStarted = ETrue;
+    
     iStateMgr->HandleEventL( EEventHwrStrokeStarted, KNullDesC );
     }
 
@@ -905,6 +997,15 @@ void CPeninputFingerHwrArLayout::OnHwrCharacterFinishedL()
 	iHwrWnd->OpenCandidateList();
 	}
 
+// ---------------------------------------------------------------------------
+// get value from repository.
+// ---------------------------------------------------------------------------
+// 	
+TBool CPeninputFingerHwrArLayout::IsAllowedToSubmitDefaultCandiate()	
+    {
+	return (!iIsEditorMFNE);
+	}
+	
 // ---------------------------------------------------------------------------
 // get value from repository.
 // ---------------------------------------------------------------------------
@@ -1032,6 +1133,74 @@ void CPeninputFingerHwrArLayout::ChangeCurStateToStandby()
     
     // set the state to be standby	
     iStateMgr->SetState( CPeninputFingerHwrArStateManagerBase::EStateStandBy );
+    }
+// ---------------------------------------------------------------------------
+// handler of NumMapping changed event.
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArLayout::OnNumMappingChangedL()
+    {
+    HBufC* mapping = iDataStore->KeyMappingStringL();
+
+    iHwrWnd->SetNumericMapping( *mapping );
+
+    delete mapping;
+    }
+// ---------------------------------------------------------------------------
+// revert special characters direction before sending to editor.
+// ---------------------------------------------------------------------------
+// 
+TBool CPeninputFingerHwrArLayout::RevertSymbolDirection(TInt aInChar, TInt & aOutChar)
+    {
+    TBool converted = ETrue;
+    switch(aInChar)
+        {
+        case 0x0028:
+            {
+            aOutChar = 0x0029;//convert ( to ).
+            }
+            break;
+        case 0x0029:
+            {
+            aOutChar = 0x0028;//convert ) to (.
+            }
+            break;
+        case 0x005B:
+            {
+            aOutChar = 0x005D;//convert [ to ].
+            }
+            break;
+        case 0x005D:
+            {
+            aOutChar = 0x005B;//convert ] to [.
+            }
+            break;
+        case 0x003C:
+            {
+            aOutChar = 0x003E;//convert < to >.
+            }
+            break;
+        case 0x003E:
+            {
+            aOutChar = 0x003C;//convert > to <.
+            }
+            break;
+        case 0x007B:
+            {
+            aOutChar = 0x007D;//convert { to }.
+            }
+            break;
+        case 0x007D:
+            {
+            aOutChar = 0x007B;//convert } to {.
+            }
+            break;
+        default:
+            aOutChar = aInChar;
+            converted = EFalse;
+            break;
+        }
+    return converted;
     }
 
 //End of file

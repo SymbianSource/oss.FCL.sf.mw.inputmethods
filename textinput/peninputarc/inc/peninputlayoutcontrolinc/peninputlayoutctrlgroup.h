@@ -361,6 +361,10 @@ public:
     
     void AdjustBkCtrlPos();
     
+    inline TBool NeedRedrawBg() const;
+    inline void SetNeedRedrawBg(TBool aNeedRedrawBg);    
+
+    
 protected:
     /**
     * Symbian second phrase constructor

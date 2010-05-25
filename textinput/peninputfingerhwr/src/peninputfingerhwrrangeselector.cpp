@@ -111,7 +111,7 @@ void CPeninputFingerHwrRangeSelector::CancelPopup()
     CapturePointer( EFalse );
     iPopupVisible = EFalse;
 
-    RootControl()->Draw();
+    
     UpdateArea( extendRect, EFalse );
     }
 
@@ -183,11 +183,6 @@ void CPeninputFingerHwrRangeSelector::SetBaseRect( const TRect& aRect )
 CFepUiBaseCtrl* CPeninputFingerHwrRangeSelector::HandlePointerDownEventL(
     const TPoint& aPoint )
     {
-    // Cancel all highlighted button, when pressing down
-	iRangeChBtn->SetHighlight( EFalse );
-	iRangeEnBtn->SetHighlight( EFalse );
-	iRangeNumBtn->SetHighlight( EFalse );
-
     CFepUiBaseCtrl* ctrl = CControlGroup::HandlePointerDownEventL( aPoint );
     
     if ( !ctrl )
@@ -208,15 +203,25 @@ CFepUiBaseCtrl* CPeninputFingerHwrRangeSelector::HandlePointerDownEventL(
 CFepUiBaseCtrl* CPeninputFingerHwrRangeSelector::HandlePointerUpEventL(
     const TPoint& aPoint )
     {
+	if(IsPopup())
+	    {
+		if(iCurRangeActive)
+			{
+			if(iCurRange == EFingerHwrNativeRange)
+			    {
+				iRangeChBtn->SetHighlight(EFalse);
+				}
+			else if(iCurRange == EFingerHwrEnglishRange)
+                {
+				iRangeEnBtn->SetHighlight(EFalse);
+				}
+            else
+                {
+				iRangeNumBtn->SetHighlight(EFalse);
+				}			
+			}
+		}
     CFepUiBaseCtrl* ctrl = CControlGroup::HandlePointerUpEventL( aPoint );
-
-    // When upCtrl does not equal to down ctrl, restore the highlight button state.
-    if (ctrl != iCtrlWithPointerDown)
-         {
-         iRangeChBtn->SetHighlight( iCurRange == EFingerHwrNativeRange );
-         iRangeEnBtn->SetHighlight( iCurRange == EFingerHwrEnglishRange );
-         iRangeNumBtn->SetHighlight( iCurRange == EFingerHwrNumberRange );
-         }
 
     iRangeChBtn->CancelPointerDownL();
     iRangeEnBtn->CancelPointerDownL();

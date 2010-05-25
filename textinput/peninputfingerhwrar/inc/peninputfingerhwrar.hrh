@@ -19,7 +19,7 @@
 #ifndef PENINPUTFINGERHWRAR_HRH
 #define PENINPUTFINGERHWRAR_HRH
 
-#include <aknfepglobalenums.h>    
+#include <AknFepGlobalEnums.h>    
 
 /**
  *  special scancode as virtual key mark.

@@ -36,6 +36,7 @@
 #include <peninputdataprovider.h>
 #include <peninputclientlayoutinfo.h>
 #include <peninputlayoutchoicelist.h>
+#include <peninputlongpressbutton.h>
 
 #include <aknlayoutscalable_apps.cdl.h>
 #include <peninputlayoutbubblectrl.h>
@@ -164,6 +165,81 @@ void CPeninputGenericVkbWindow::HandleControlEvent( TInt aEventType,
             if ( aCtrl->ControlId() == EPeninutWindowCtrlIdMultiRangeBtn )
                 {
                 PopupChoiceList();
+                }
+            }
+            break;
+        case EPeninputLayoutEventMultiRangeLongPress:
+            {
+            const TInt range = CPeninputDataConverter::AnyToInt(
+                iLayoutContext->RequestData(EPeninputDataTypeCurrentRange));
+            
+            const TInt langId = IntContext( EPeninputDataTypeInputLanguage );
+
+            if ( aCtrl->ControlId() == EPeninutWindowCtrlIdMultiRangeBtn )
+                {
+            
+                if ( range == ERangeAccent )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
+                        {
+                        ChangeRange(ERangeNative);
+                        }
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
+                        {
+                        ChangeRange(ERangeEnglish);
+                        }
+                    }
+                else if ( range == ERangeNative )
+                    {            
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNativeNumber ) )
+                        {
+                        
+                        if ( langId != ELangArabic && langId != ELangFarsi 
+                                && langId != ELangUrdu && langId != ELangThai )
+                            {
+                                ChangeRange(ERangeNativeNumber);
+                            }
+                        }
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNumber ) )
+                        {
+                        if ( langId != ELangArabic && langId != ELangFarsi 
+                                && langId != ELangUrdu && langId != ELangThai )
+                            {
+                                ChangeRange(ERangeNumber);
+                            }                       
+                        }
+                    }
+                else if ( range == ERangeEnglish )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNumber ) )
+                        {
+                        ChangeRange(ERangeNumber);
+                        }
+                    }
+                else if ( range == ERangeNativeNumber )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
+                        {
+                        ChangeRange(ERangeNative);
+                        }                   
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
+                        {
+                        ChangeRange(ERangeEnglish);
+                        }
+                    }
+                else if ( range == ERangeNumber )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
+                        {
+                        ChangeRange(ERangeNative);
+                        }                   
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
+                        {
+                        ChangeRange(ERangeEnglish);
+                        }                   
+                    }
+
+                TRAP_IGNORE( UpdateRangeCtrlsL() );
                 }
             }
             break;
@@ -1150,8 +1226,12 @@ void CPeninputGenericVkbWindow::UpdateRangeCtrlsL()
         resId = numberRangeResId; 
         }
         
-    rangeBtn->SetResourceId( resId );
-    rangeBtn->ConstructFromResourceL();
+    if( rangeBtn->ResourceId() != resId )
+    	{
+		rangeBtn->SetResourceId( resId );
+		rangeBtn->ConstructFromResourceL(); 
+    	}
+
     rangeBtn->SetDimmed( count < 1 );    
     }
 
@@ -1496,11 +1576,22 @@ CAknFepCtrlEventButton* CPeninputGenericVkbWindow::AddButtonL(
         }
     else
         {
-        button = CAknFepCtrlEventButton::NewL( UiLayout(), aControlId, 
-            aEventId, aUnicode,
-			  KAknsIIDQsnFrFunctionButtonNormal,
-			  KAknsIIDQsnFrFunctionButtonPressed,
-			  KAknsIIDQsnFrFunctionButtonInactive );
+        if ( aControlId == EPeninutWindowCtrlIdMultiRangeBtn )
+            {
+            button = CAknFepCtrlLongPressButton::NewL( UiLayout(), aControlId, 
+                aEventId, aUnicode,
+                KAknsIIDQsnFrFunctionButtonNormal,
+                KAknsIIDQsnFrFunctionButtonPressed,
+                KAknsIIDQsnFrFunctionButtonInactive );                
+            }
+        else
+            {
+            button = CAknFepCtrlEventButton::NewL( UiLayout(), aControlId, 
+                aEventId, aUnicode,
+                KAknsIIDQsnFrFunctionButtonNormal,
+                KAknsIIDQsnFrFunctionButtonPressed,
+                KAknsIIDQsnFrFunctionButtonInactive );        
+            }
         }
         
     CleanupStack::PushL( button );  
@@ -2479,7 +2570,7 @@ void CPeninputGenericVkbWindow::HandleButtonResOnLangDirChangeL( TInt aControlId
 // Show tooltip of ICF
 // --------------------------------------------------------------------------
 //
-void CPeninputGenericVkbWindow::ShowTooltipL( const TDesC& aText )
+void CPeninputGenericVkbWindow::ShowTooltipL( const TDesC& aText, TInt aLangCode )
     {
     CFepLayoutMultiLineIcf* icf = static_cast<CFepLayoutMultiLineIcf*>
                                 (Control(EPeninputWindowCtrlIdMultiLineICF));    
@@ -2506,7 +2597,7 @@ void CPeninputGenericVkbWindow::ShowTooltipL( const TDesC& aText )
     tooltipRect.iBr 
            = innerRect.iBr + TPoint( KTooltipRightMargin, KTooltipBottomMargin );
     // Set tooltip rect in terms of inner rect
-    icf->ShowTooltipL( aText, tooltipRect );
+    icf->ShowTooltipL( aText, tooltipRect, aLangCode );
     }
 	
 // --------------------------------------------------------------------------
@@ -2801,7 +2892,9 @@ void CPeninputGenericVkbWindow::IndiBubbleWithText()
         TAknTextLineLayout textLine = iLafMgr->IndiText();
         TRect bubbleRect = iLafMgr->IndiPaneRectWithText();
         TRect iconRect = iLafMgr->IndiIconRectWithText();
-        TSize offset( 60, 6 );
+        TSize offset;
+        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
         TSize size( iconRect.Width(), iconRect.Height());
         
         icf->MsgBubbleCtrl()->SetRect( bubbleRect );
@@ -2819,7 +2912,9 @@ void CPeninputGenericVkbWindow::IndiBubbleWithoutText()
         {
         TRect bubbleRect = iLafMgr->IndiPaneRectWithoutText();
         TRect iconRect = iLafMgr->IndiIconRectWithoutText();
-        TSize offset( 0, 6 );
+        TSize offset;
+        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
         TSize size( iconRect.Width(), iconRect.Height());
         
         icf->MsgBubbleCtrl()->SetRect( bubbleRect );

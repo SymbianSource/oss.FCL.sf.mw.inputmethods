@@ -11,13 +11,13 @@
 *
 * Contributors:
 *
-* Description:  header of char range selector.
+* Description:  header of number mode symbol table.
 *
 */
 
 
-#ifndef C_PENINPUTARABICFINGERHWRSYMBOLTABLE_H
-#define C_PENINPUTARABICFINGERHWRSYMBOLTABLE_H
+#ifndef C_PENINPUTARABICFINGERHWRNUMSYMBOLTABLE_H
+#define C_PENINPUTARABICFINGERHWRNUMSYMBOLTABLE_H
 
 // INCLUDES
 #include <e32std.h>
@@ -28,19 +28,19 @@
 
 // FORWARD DECLARATIONS
 class CAknFepCtrlEventButton;
-class CMultiPageVirtualKeyboard;
+class CVirtualKeyboard;
 
 // CLASS DECLARATION
 
 /**
- *  class CPeninputArabicFingerHwrSymbolTable.
+ *  class CPeninputArabicFingerHwrNumSymbolTable.
  *
  *  The symbol table control for arabic input 
  *
  *  @lib peninputfingerhwrar.lib
  *  @since Symbian TB9.2
  */
-class CPeninputArabicFingerHwrSymbolTable : public CControlGroup
+class CPeninputArabicFingerHwrNumSymbolTable : public CControlGroup
     {
 public:
     /**
@@ -51,7 +51,7 @@ public:
      * @param aId The control id
      * @return pointer of created object.
      */
-    static CPeninputArabicFingerHwrSymbolTable* NewL( CFepUiLayout* aUiLayout, TInt aId );
+    static CPeninputArabicFingerHwrNumSymbolTable* NewL( CFepUiLayout* aUiLayout, TInt aId );
 
     /**
      * Symbian constructor
@@ -61,14 +61,14 @@ public:
      * @param aId The control id
      * @return pointer of created object.
      */    
-    static CPeninputArabicFingerHwrSymbolTable* NewLC( CFepUiLayout* aUiLayout, TInt aId );
+    static CPeninputArabicFingerHwrNumSymbolTable* NewLC( CFepUiLayout* aUiLayout, TInt aId );
 
     /**
      * standard c++ destructor.
      *
      * @since Symbian TB9.2
      */    
-    ~CPeninputArabicFingerHwrSymbolTable();
+    ~CPeninputArabicFingerHwrNumSymbolTable();
     
 public:
 	/**
@@ -119,13 +119,13 @@ public:
 	 * Return keypad control
 	 *
 	 */
-	inline CMultiPageVirtualKeyboard* KeyPad(){return iMutiPageKeypad;}
+	inline CVirtualKeyboard* KeyPad(){return iNumKeypad;}
     
 	/**
 	 * Navigate page
 	 *
 	 */
-	void NavigatePage(TInt aPageNo, TInt aPos);
+	void UpdateNumSymbolTable(TInt aNumSctType = ENumSCTLatin);
     
 	/**
 	 * Construct from resource
@@ -133,6 +133,22 @@ public:
 	 */
 	void ConstructFromResourceL();	
 	
+    /**
+     * accept editor's number mapping restriction.
+     * 
+     * @since S60 v5.0
+     * @param aNumMapping a string contains numbers and related char. max length is 16.
+     * @return none
+     */
+    void SetNumericMapping( const TDesC& aNumMapping );
+    
+    /*
+     * set arabic number mode.
+     * @since s60 v5.2
+     * @param aIsNativeNumMode a flag to indicate whether it is native number mode.
+     * @return none.
+     */
+    void SetNativeNumMode(const TBool aIsNativeNumMode);
 protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 
     /**
@@ -173,7 +189,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
      * @param aControlId Control id
      * @return none.
      */
-    CPeninputArabicFingerHwrSymbolTable(CFepUiLayout* aFepUiLayout, TInt aControlId);
+    CPeninputArabicFingerHwrNumSymbolTable(CFepUiLayout* aFepUiLayout, TInt aControlId);
     
     /**
      * Symbian second-phase constructor
@@ -184,46 +200,13 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
     void ConstructL();
     
 	/**
-     * create a multipate virtual keypad
+     * create a virtual keypad
      *
      * @since Symbian TB9.2
      * @return None
      */
 	void CreateVirtualKeypadL();
 	
-	/**
-	 * create the button control
-	 *
-	 */
-	void CreateButtonGroupL();
-	
-    /**
-     * EventButton creation helper.
-     * 
-     * @since Symbian TB9.2
-     * @param aCtrlId button control id.
-     * @param aResId resource id.
-     * @param aEvent event id;
-     * @param aUnicode a unicode value to be sent
-     * @return pointer to created CAknFepCtrlEventButton obj.
-     */       
-    CAknFepCtrlEventButton* CreateEventBtnL( TInt aCtrlId, TInt32 aResId,
-            TInt aEvent = 0xFFFF,TInt aUnicode=0 );
-        
-    /**
-     * EventButton layout helper. Move button to specified rect.
-     * 
-     * @since Symbian TB9.2
-     * @param aButton the button to move
-     * @param aRect new rect of button
-     * @param aXPadding horz padding of button icon.
-     * @param aYPadding vert padding of button icon.
-     * @param aReloadImages Specifies whether the images is to be reloaded.
-     * @return None
-     */     
-    void MoveIconButton( CAknFepCtrlEventButton* aButton, const TRect& aRect, 
-            TInt aXPadding=0, TInt aYPadding=0, TBool aReloadImages=ETrue );
-    
 	/** 
 	 * create a new virtual key
 	 *
@@ -237,12 +220,6 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 	void UpdateVkbKeyL( CVirtualKey* aVirtualKey, TResourceReader& aReader, 
 	                    const TRect aKeyRect );
     void OnActivate();
-	
-	/**
-	 * Show the visible page button
-	 *
-	 */
-	void UpdatePageButtonsUi();
 	
 	/**
 	 * Update the virtual key feedback
@@ -260,43 +237,17 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 	 *
 	 */
 	void LoadBackgroundFromResourceL(const TInt aResId);
-
+    
+	/*
+	 * map latin number to arabic number.
+	 */
+	TInt16 MapLatinNumAccordingToNumMode(TInt16 aUnicode);
 private:
     /**
 	 * multipage viritual keyboard
 	 * not own.
 	 */
-	CMultiPageVirtualKeyboard* iMutiPageKeypad;
-    
-    /**
-     * Sct page 0 selction button control.
-     * Not own.
-     */     
-    CAknFepCtrlEventButton* i3Page1Btn;
-    
-    /**
-     * Sct page 1 selction button control.
-     * Not own.
-     */     
-    CAknFepCtrlEventButton* i3Page2Btn;
-    
-    /**
-     * Sct page 2 selction button control.
-     * Not own.
-     */     
-    CAknFepCtrlEventButton* i3Page3Btn;
-	
-	/**
-     * Sct page 0 selction button control.
-     * Not own.
-     */     
-    CAknFepCtrlEventButton* i2Page1Btn;
-    
-    /**
-     * Sct page 1 selction button control.
-     * Not own.
-     */     
-    CAknFepCtrlEventButton* i2Page2Btn;
+	CVirtualKeyboard* iNumKeypad;
     
     /**
      * visibility of popup list.
@@ -307,6 +258,12 @@ private:
 	 * store the layout mode
 	 */
 	TBool iIsLandscape;
+	
+    TInt iCurrentNumSCTType;	
+    /*
+     * Default number mode.
+     */
+    TBool iIsNativeNumMode;
     };
 
-#endif // C_PENINPUTARABICFINGERHWRSYMBOLTABLE_H
+#endif // C_PENINPUTARABICFINGERHWRNUMSYMBOLTABLE_H

@@ -38,7 +38,7 @@
 #include "AknFepUICtrlInputPane.h"
 #include "AknFepUIManagerStateInterface.h"  
 #include "AknFepManager.h" 
-#include <AknFep.rsg>   
+#include <aknfep.rsg>   
 
 #include "aknfepuictrleditpane.h"           //for zhuyin phrase creation
 #include "aknfepinputstateminiqwertyzhuyinkeymap.h"

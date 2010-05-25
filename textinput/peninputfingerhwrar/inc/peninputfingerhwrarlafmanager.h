@@ -182,6 +182,21 @@ public: //symbol table
     TInt VirtualSctpadColCount();
     
     /**
+     * get row count of virtual number sctpad.
+     * 
+     * @since Symbian TB9.2
+     * @return row count of virtual number sctpad.
+     */      
+    TInt VirtualNumSctpadRowCount();
+    
+    /**
+     * get column count of virtual number sctpad.
+     * 
+     * @since Symbian TB9.2
+     * @return column count of virtual number sctpad.
+     */        
+    TInt VirtualNumSctpadColCount();
+    /**
      * get cell size of virtual sctpad.
      * 
      * @since Symbian TB9.2
@@ -199,6 +214,15 @@ public: //symbol table
     void GetVirtualKeyRects( RArray<TRect>& aArrayRects );
     
     /**
+     * get cell rect of virtual sctpad.
+     * 
+     * @since Symbian TB9.2
+     * @param aArrayRects a TRect array to receive cell rect.
+     * @return none.
+     */     
+    void GetNumVirtualKeyRects( RArray<TRect>& aArrayRects );
+    
+    /**
      * get text layout of virtual sctpad.
      * 
      * @since Symbian TB9.2
@@ -206,6 +230,14 @@ public: //symbol table
      */    
     TAknTextLineLayout SctpadKeyTxtLayout();
     
+    /**
+     * get text layout of virtual numpad.
+     * 
+     * @since Symbian TB9.2
+     * @return a TAknTextLineLayout object to layout cell text.
+     */    
+    TAknTextLineLayout NumpadKeyTxtLayout();
+
     /**
      * get preview bubble rect.
      * 
@@ -323,6 +355,10 @@ public: //sct paging buttons
 	 * Get virtual key pad rect
 	 */
 	TRect GetVirtualKeyRect(); 
+    /**
+     * Get virtual number key pad rect
+     */
+    TRect GetVirtualNumKeyRect(); 
 private:
     
     /**
@@ -368,7 +404,12 @@ private:
 	 */
     void RetrieveLafDataForSymbolTable();
 	
-	/**
+    /**
+     * Retrieve the laf data for symbol table
+     */
+    void RetrieveLafDataForNumSymbolTable();
+
+    /**
 	 * Retrieve the landscape laf data for symbol table
 	 */
 	void RetrieveLandscapeLafDataForSymbolTable();
@@ -377,6 +418,16 @@ private:
 	 * Retrieve the portrait laf data for symbol table
 	 */
 	void RetrievePortraitLafDataForSymbolTable();
+
+    /**
+     * Retrieve the landscape laf data for number symbol table
+     */
+    void RetrieveLandscapeLafDataForNumSymbolTable();
+    
+    /**
+     * Retrieve the portrait laf data for number symbol table
+     */
+    void RetrievePortraitLafDataForNumSymbolTable();
 
     /**
 	 * Retrieve the laf data for HWR writing box
@@ -402,8 +453,8 @@ private: //datas
     TRect iRectWritingBox;
     TRect iRectNumpad;
     TRect iRectSctpad;
-    TRect iRectSpase;
-    TRect iRectEnter;
+    TRect iRectBtnSpace;
+    TRect iRectBtnEnter;
     TRect iIndicatorRect;
 	
     /**
@@ -418,6 +469,7 @@ private: //datas
     TRect iRectBtnArrowDown;
     TRect iRectBtnOption;
     TRect iRectBtnSctPage;
+    TRect iRectBtnNumType;
     TSize iArrowPaddingSize;
     TSize iSizeBtnPadding;
 
@@ -457,7 +509,13 @@ private: //datas
 	 * virtual key rects array
 	 */
     RArray<TRect> iSCTrectArray;
-    
+    // Number symbol table laf data
+    TRect iRectOfNumSymbolTable;
+    TInt iNumSctpadRowCount;
+    TInt iNumSctpadColCount;
+    TSize iSizeNumSctpadCell;
+//    RArray<TRect> iNumSymBtnRectArray;    
+    RArray<TRect> iNumSCTrectArray;
     /**
 	 * Preview bubble
 	 */

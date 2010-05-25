@@ -77,40 +77,6 @@ TUid GetCurAppUid()
     }
     
     
-   
-CPeninputServerWaiter* CPeninputServerWaiter::NewL()
-    {
-    CPeninputServerWaiter* self = new(ELeave)CPeninputServerWaiter;
-    CleanupStack::PushL(self);
-    self->ConstructL();
-    CleanupStack::Pop(self);
-    return self;
-    }
-void CPeninputServerWaiter::ConstructL()    
-    {
-    iWaitScheduler = new(ELeave) CActiveSchedulerWait;
-    }
-    
-CPeninputServerWaiter::~CPeninputServerWaiter()
-    {
-    delete iWaitScheduler;
-    }
-    
-void CPeninputServerWaiter::Start()
-    {
-    iWaitScheduler->Start();
-    }
-    
-void CPeninputServerWaiter::Stop(TInt aFlag)
-    {
-    //if(aFlag)
-    iError = aFlag ? KErrNone : aFlag;
-    
-    iWaitScheduler->AsyncStop();
-    }
-    
-    
-    
 // ======== MEMBER FUNCTIONS ========
 
 // ---------------------------------------------------------------------------
@@ -152,7 +118,6 @@ RPeninputServerImpl::RPeninputServerImpl() : iPosition(0,0),iSize(0,0)
     iServerExit = EFalse;
     iLaunchServer = EFalse;
     iCurPenUiType = -1; 
-    iWaitScheduler = NULL; 
     iAppPrefferedUiMode = EPluginInputModeNone;
     iAutoOpenFlag = ETrue;
     iBackgroundCtrl = 0;
@@ -1010,15 +975,15 @@ TBool RPeninputServerImpl::IsForeground()
     iSingletonServer->SendReceive(EPeninputRequestAddUiObserver,arg);        
     
     }
-  */  
+  */
+/*
 void RPeninputServerImpl::OnServerReady( TBool aFlag)    
-    {
+   {
     //iLaunchServer = EFalse;
     
-    iWaitScheduler->Stop(aFlag);//AsyncStop();
     //if(iPenUiNotificationHandler)
       // DoAddPenUiActivationHandler(); 
-    }
+    }*/
 // ---------------------------------------------------------------------------
 // RPeninputServerImpl::AddPenUiActivationHandler
 // Add an UI activate/deactivation handler
@@ -1097,8 +1062,6 @@ void RPeninputServerImpl::FinalClose()
     {
     delete iBackgroundCtrl;  
       
-    delete iWaitScheduler;
-    iWaitScheduler = 0;
     iPenUiNotificationHandler.Close();
     delete iObserver;
     iObserver = NULL;
@@ -1299,7 +1262,7 @@ void CPeninputServerObserver::RunL()
             {
             exitReason = srvThread.ExitReason();        
             srvThread.Close();
-            iPeninputServer->OnServerReady(-1000);
+            //iPeninputServer->OnServerReady(-1000);
             }
         if(err != KErrNone || exitReason != 0) //server has exited
             {
@@ -1312,7 +1275,7 @@ void CPeninputServerObserver::RunL()
 
     if(iStatus.Int() == ESignalServerReady) //server has started
         {
-        iPeninputServer->OnServerReady();
+        //iPeninputServer->OnServerReady();
         return;
         }
     //if there is also iUiActivationHandler, handle it first

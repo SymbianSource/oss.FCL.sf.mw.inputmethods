@@ -1250,7 +1250,9 @@ void CGenericItutWindow::UpdateIndiBubbleL( TUint8* aData )
 					iDataMgr->RequestData( ESpellIndiPaneWithoutTextRect ));
 			TRect iconRect = TItutDataConverter::AnyToRect( 
 					iDataMgr->RequestData( ESpellIndiIconWithoutTextRect ));
-			TSize offset( 0, 6 );
+			TSize offset;
+	        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+	        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
 			TSize size( iconRect.Width(), iconRect.Height());
 			
 			iICF->MsgBubbleCtrl()->SetRect( bubbleRect );
@@ -1856,7 +1858,6 @@ void CGenericItutWindow::OnSkinChange()
     
     // reconstruct shift icon when skin changed
     TRAP_IGNORE(iStandardItutKp->ShiftIcon()->ReConstructL());
-    TRAP_IGNORE(iStandardItutKp->StarIcon()->ReConstructL());
     if ( iDataMgr->IsPortraitWest())
         {
         TRAP_IGNORE(iStandardItutKp->StarIcon()->ReConstructL());
@@ -2152,7 +2153,9 @@ void CGenericItutWindow::IndiBubbleWithText()
                 iDataMgr->RequestData( EIndiPaneWithTextRect ));
         TRect iconRect = TItutDataConverter::AnyToRect( 
                 iDataMgr->RequestData( EIndiIconWithTextRect ));
-        TSize offset( 60, 6 );
+        TSize offset;
+        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
         TSize size( iconRect.Width(), iconRect.Height());
         
         iICF->MsgBubbleCtrl()->SetRect( bubbleRect );
@@ -2170,7 +2173,9 @@ void CGenericItutWindow::IndiBubbleWithoutText()
                 iDataMgr->RequestData( EIndiPaneWithoutTextRect ));
         TRect iconRect = TItutDataConverter::AnyToRect( 
                 iDataMgr->RequestData( EIndiIconWithoutTextRect ));
-        TSize offset( 0, 6 );
+        TSize offset;
+        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
         TSize size( iconRect.Width(), iconRect.Height());
         
         iICF->MsgBubbleCtrl()->SetRect( bubbleRect );

@@ -18,11 +18,12 @@
 //SYSTEM INCLUDE
 #include <centralrepository.h>
 #include <settingsinternalcrkeys.h>
+#include <CommonEngineDomainCRKeys.h>
 
 //FEP INCLUDE
 #include <aknfeppeninputenums.h>
-#include <aknfepglobalenums.h>
-#include <aknfepinternalcrkeys.h>
+#include <AknFepGlobalEnums.h>
+#include <AknFepInternalCRKeys.h>
 
 //USER INCLUDE
 #include "peninputfingerhwrarlayout.h"
@@ -70,6 +71,7 @@ CPeninputFingerHwrArDataStore::~CPeninputFingerHwrArDataStore()
     iKeyMappingStringList.Close();
 
     delete iRepositoryFep;
+    delete iCommonEngineRepository;
 //    delete iTriggerStr;   
     delete iHwrEngine;
     delete iUserDefinedResource;
@@ -449,49 +451,17 @@ TBool CPeninputFingerHwrArDataStore::Highlight()
    return iIsHighlightCell;
    }
  
-// -----------------------------------------------------------------------------
-// CPeninputFingerHwrArDataStore::RemoveDuplicateCand
-// -----------------------------------------------------------------------------
-//
-TInt CPeninputFingerHwrArDataStore::RemoveDuplicateCand(const RPointerArray<HBufC>& aSrc,
-                                                 RPointerArray<HBufC>& aTgt,
-                                                 TInt aSrcStartIdx,
-                                                 TInt aTgtStartIdx)
-    {
-    TInt lastOverlapIdx = KInvalidIndex;
-
-    // on the assumption that if candidate overlap,
-    // it is overlap only once
-    TInt srccandcnt = aSrc.Count();
-
-    for (TInt i = aSrcStartIdx; i < srccandcnt; i++)
-        {
-        for (TInt j = aTgtStartIdx; j < aTgt.Count(); j++)
-            {
-            if (aTgt[j]->Compare(*(aSrc[i])) == 0)
-                {
-                lastOverlapIdx = i;
-                delete aTgt[j];
-                aTgt.Remove(j);
-                j--;
-                break;
-                }
-            }
-        }
-
-    return lastOverlapIdx;
-    }        
-       
  // ----------------------------------------------------------------------------
  // C++ constructor
  // ----------------------------------------------------------------------------
  //
  CPeninputFingerHwrArDataStore::CPeninputFingerHwrArDataStore(CPeninputFingerHwrArLayout* aLayout)
-     :iLayout( aLayout )
+     :iLanguage(ELangNone),
+      iCurrentNumberMode(EAknEditorStandardNumberModeKeymap),
+      iLayout( aLayout ),
+      iIsHighlightCell(ETrue),
+      iIsNativeNumMode(EFalse)
      {
-     iLanguage = ELangNone;
-     iCurrentNumberMode = EAknEditorStandardNumberModeKeymap;
-     iIsHighlightCell = ETrue;
      }
 
  // ----------------------------------------------------------------------------
@@ -511,6 +481,26 @@ TInt CPeninputFingerHwrArDataStore::RemoveDuplicateCand(const RPointerArray<HBuf
      
      //initialize the key mapping list
      InitKeyMappingListL();
+     
+     // read number mode flag.
+     //create the repository for common engine.
+     iCommonEngineRepository = CRepository::NewL(KCRUidCommonEngineKeys);
+     TInt displayLang = 0;
+     iCommonEngineRepository->Get(KGSDisplayTxtLang,displayLang);
+     if( displayLang == ELangTest )
+         {
+         displayLang = User::Language();
+         }     
+     if(displayLang == ELangArabic)
+         {
+         iIsNativeNumMode = ETrue;
+         }
+     else
+         {
+         iIsNativeNumMode = EFalse;
+         }
+     iRepositoryFep->Set(KAknFepDefaultArabicNumberMode,iIsNativeNumMode);
+     
      }
 
  // ----------------------------------------------------------------------------
@@ -701,12 +691,33 @@ TBool CPeninputFingerHwrArDataStore::IsLatinChar(TUint16 aChar)
 //	
 TBool CPeninputFingerHwrArDataStore::IsArabicNumber(TUint16 aChar)
     {
-	if(aChar >= 0x0661 && aChar <= 0x0669)
+	if(aChar >= 0x0660 && aChar <= 0x0669)
 	    {
 		return ETrue;
 		}
 	
     return EFalse;	
 	}
-	
+
+// ----------------------------------------------------------------------------
+// CPeninputFingerHwrArDataStore::IsNumberOnlyMode
+// ----------------------------------------------------------------------------
+//  
+TBool CPeninputFingerHwrArDataStore::IsNumberOnlyMode()
+    {
+    if(PrimaryRange() == ERangeNumber)
+        {
+        return ETrue;
+        }
+    return EFalse;
+    }
+
+// ----------------------------------------------------------------------------
+// CPeninputFingerHwrArDataStore::IsNativeNumMode
+// ----------------------------------------------------------------------------
+//  
+TBool CPeninputFingerHwrArDataStore::IsNativeNumMode()
+    {
+    return iIsNativeNumMode;
+    }
 // End Of File

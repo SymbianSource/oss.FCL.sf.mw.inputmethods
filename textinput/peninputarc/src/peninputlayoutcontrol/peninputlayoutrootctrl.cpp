@@ -815,7 +815,8 @@ void CFepUiLayoutRootCtrl::Draw()
 
 	if(!AbleToDraw())
         return;
-	
+
+	Clear();	
     CControlGroup::Draw();
 
     if(!iShadowRect.IsEmpty())        
@@ -1004,7 +1005,9 @@ void CFepUiLayoutRootCtrl::InsertToPopList(CFepUiBaseCtrl* aCtrl)
         {
         if(aCtrl->OrderPos() <= iPopCtrlList[i]->OrderPos())
             {
+            CFepUiBaseCtrl* temp = iPopCtrlList[i - 1];
             iPopCtrlList[i - 1] = iPopCtrlList[i];
+            iPopCtrlList[i] = temp;
             }
         else
             {
@@ -1142,7 +1145,10 @@ void CFepUiLayoutRootCtrl::BringToBackInGroup(CFepUiBaseCtrl* aCtrl)
             {
             if(aCtrl->OrderPos() >= iPopCtrlList[i]->OrderPos())
                 {
-                iPopCtrlList[i+1] = iPopCtrlList[i];
+                CFepUiBaseCtrl* temp = iPopCtrlList[i + 1];
+                iPopCtrlList[i + 1] = iPopCtrlList[i];
+                iPopCtrlList[i] = temp;   
+
                 }
             else
                 {

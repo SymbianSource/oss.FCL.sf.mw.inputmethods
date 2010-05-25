@@ -40,7 +40,7 @@
 #include <PtiCompositionDataIF.h>   //MPtiEngineCompositionDataInterface
 #include <featmgr.h>                //FeatureManager
 #include <e32keys.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <PtiUserDicEntry.h>
 // TODO: Remove this include
 #include <AvkonInternalCRKeys.h>

@@ -358,6 +358,8 @@ EXPORT_C void CButtonBase::SetActive(TBool aActiveFlag)
 //
 EXPORT_C void CButtonBase::SetDimmed(TBool aDimFlag)
     {
+    if(iDimmed == aDimFlag)
+        return;
     //Remove its active flag if dim an active button.
     if(aDimFlag && IsActive())
         SetActive(EFalse);

@@ -20,7 +20,7 @@
 #include    "GSLangModel.h"
 #include    "GSLangContainer.h"
 #include    "GSLangPlugin.h"
-#include    <GSLangPluginRsc.rsg>
+#include    <gslangpluginrsc.rsg>
 
 #include    <AknFepInternalCRKeys.h>
 #include    <aknnotedialog.h>

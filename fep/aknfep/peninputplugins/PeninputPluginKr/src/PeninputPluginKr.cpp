@@ -27,7 +27,7 @@
 #include <StringLoader.h>
 
 #include <peninputcmd.h>
-#include <PeninputPluginKrRes.rsg>
+#include <peninputpluginkrres.rsg>
 #include <peninputclient.h>
 #include <AknFepInternalCRKeys.h>
 

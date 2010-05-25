@@ -322,7 +322,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawBackground(const TRect aRect, TBool /*aBmpStre
 //    	
 EXPORT_C void CFepUiBaseCtrl::DrawMaskBackground(TBool aBmpStretchFlag)
 	{
-	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), iBkMaskBmp, iMaskBkCol,
+	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), BkMaskBmp(), iMaskBkCol,
 	                       iBorderColor,aBmpStretchFlag);
 	}
 
@@ -335,7 +335,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawMaskBackground(TBool aBmpStretchFlag)
 EXPORT_C void CFepUiBaseCtrl::DrawOpaqueMaskBackground(TBool aBmpStretchFlag)
 	{
 	const TRgb KOpaqueMask = TRgb(KOpaqueColor);
-	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), iBkMaskBmp, KOpaqueMask,
+	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), BkMaskBmp(), KOpaqueMask,
 	                       KOpaqueMask,aBmpStretchFlag);
 	}
 
@@ -348,7 +348,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawOpaqueMaskBackground(TBool aBmpStretchFlag)
 EXPORT_C void CFepUiBaseCtrl::DrawOpaqueMaskBackground(const TRect aRect, TBool aBmpStretchFlag)
 	{
 	const TRgb KOpaqueMask = TRgb(KOpaqueColor);
-	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), iBkMaskBmp,
+	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), BkMaskBmp(),
 	                       KOpaqueMask, KOpaqueMask, aBmpStretchFlag);
 	}
 
@@ -362,7 +362,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawTransparentMaskBackground(const TRect& aRect,
                                                             TBool aBmpStretchFlag)
 	{
 	const TRgb KOpaqueMask = TRgb(KTransparentColor);
-	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), iBkMaskBmp, KTransparentColor,
+	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), BkMaskBmp(), KTransparentColor,
 	                       KTransparentColor, aBmpStretchFlag);
 	}
 	
@@ -698,7 +698,8 @@ TBool CFepUiBaseCtrl::CompareOrder(CFepUiBaseCtrl* aCtrl)
     }
 
 TBool CFepUiBaseCtrl::IsOnTopOf(CFepUiBaseCtrl* aCtrl)
-    {           
+    {     
+    __ASSERT_DEBUG(aCtrl,EUiNullParam);      
     return OrderPos() < aCtrl->OrderPos();
     }
     
@@ -1257,7 +1258,9 @@ EXPORT_C void CFepUiBaseCtrl::SetShadowBmp(CFbsBitmap* aBmp,
 
 EXPORT_C TBool CFepUiBaseCtrl::AbleToDraw()
 	{
-    return UiLayout()->LayoutReady() && Ready() && !WholeHiden() && Rect().Size() != TSize(0,0);
+    return UiLayout()->LayoutReady() && Ready()  
+            && (!UiLayout()->iExtension->iDisableDrawing)
+                    && !WholeHiden() && Rect().Size() != TSize(0,0);
 	}
 
 // ---------------------------------------------------------------------------
@@ -1265,8 +1268,12 @@ EXPORT_C TBool CFepUiBaseCtrl::AbleToDraw()
 // ---------------------------------------------------------------------------
 //    
 EXPORT_C TInt CFepUiBaseCtrl::Extension_(TUint aExtensionId, TAny *&a0, TAny *a1)
-    {
-    //not implemented, use CBase's
+    {    
+    if( KFepCtrlExtId == aExtensionId)
+        {
+        a0 = iExtension;
+        return KErrNone;
+        }
     return CBase::Extension_(aExtensionId, a0, a1);
     }
     
@@ -1348,7 +1355,11 @@ EXPORT_C void CFepUiBaseCtrl::SimulateRawEvent(const TRawEvent& aEvent)
 
 EXPORT_C void CFepUiBaseCtrl::SetParent(CFepUiBaseCtrl* aParent)
     {
-    //parent control must be type of control group.    
+    //parent control must be type of control group.
+    if(aParent)
+        {
+        __ASSERT_DEBUG(aParent->IsKindOfControl(ECtrlControlGroup),EUiLayoutBadParentType);
+        } 
     iParentCtrl = aParent;
     }
 
@@ -1364,6 +1375,100 @@ EXPORT_C TInt CFepUiBaseCtrl::AbsOrderPos()
         order += ParentCtrl()->AbsOrderPos();
     return order;    
     }
+
+void CFepUiBaseCtrl::CreateOwnDeviceL(CFbsBitmap* aBmp, CFbsBitmap* aMaskBmp)
+    {
+    if(iExtension->iBitmap)
+        return;
+    User::LeaveIfError( aBmp->Create( Rect().Size(), iLayoutOwner->BitmapDevice()->DisplayMode() ) );
+    
+    iExtension->iBitmap = aBmp;
+    CFbsBitmapDevice* dev = CFbsBitmapDevice::NewL(aBmp);
+    
+    iExtension->SetBmpDevice(dev); 
+
+    CFbsBitGc* gc = CFbsBitGc::NewL();
+    gc->Reset();
+    iExtension->SetGc(gc);
+    
+    if(iExtension->iMaskBitmap || !aMaskBmp)
+        return;
+    
+    User::LeaveIfError( aMaskBmp->Create( Rect().Size(), iLayoutOwner->MaskBmpDevice()->DisplayMode() ) );
+    
+    iExtension->iMaskBitmap = aMaskBmp;
+    dev = CFbsBitmapDevice::NewL(aMaskBmp);
+    
+    iExtension->SetMaskBmpDevice(dev); 
+        
+    }
+    
+void CFepUiBaseCtrl::ResizeDeviceL()
+    {
+    if(iExtension->BitmapDevice())
+        iExtension->BitmapDevice()->Resize( Rect().Size());
+    //gc must be adjusted
+    if(iExtension->Gc())
+        {
+        iExtension->Gc()->Activate(iExtension->BitmapDevice());
+        iExtension->Gc()->Resized();
+        }
+    }
+    
+// ---------------------------------------------------------------------------
+// get graphics context for sprite or window
+// ---------------------------------------------------------------------------
+//   
+EXPORT_C CBitmapContext* CFepUiBaseCtrl::BitGc()
+    {
+
+
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->Gc())
+        return iExtension->Gc();
+    else
+	    return iLayoutOwner->BitmapContext();
+    }
+
+// ---------------------------------------------------------------------------
+// get Bitmap device for sprite or window
+// ---------------------------------------------------------------------------
+//
+EXPORT_C CFbsBitmapDevice* CFepUiBaseCtrl::BitmapDevice()
+    {
+
+
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->BitmapDevice())
+        return iExtension->BitmapDevice();
+    else   
+        return iLayoutOwner->BitmapDevice();
+    }
+
+// ---------------------------------------------------------------------------
+// get Mask bitmap device for sprite or window
+// ---------------------------------------------------------------------------
+//
+EXPORT_C CFbsBitmapDevice* CFepUiBaseCtrl::MaskBitmapDevice()
+    {
+
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->MaskBitmapDevice())
+        return iExtension->MaskBitmapDevice();
+    else    
+
+        return iLayoutOwner->MaskBmpDevice();
+    }
+
+// ---------------------------------------------------------------------------
+// get control background maks bmp
+// ---------------------------------------------------------------------------
+//
+EXPORT_C  CFbsBitmap* CFepUiBaseCtrl::BkMaskBmp()
+    {
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->MaskBitmap())
+        return iExtension->MaskBitmap();
+    else 
+        return iBkMaskBmp;
+    }
+
 
 // ---------------------------------------------------------------------------
 // CFepUiBaseCtrl::EnableExtResponseArea
@@ -1452,6 +1557,14 @@ CFepUiBaseCtrl::CFepUiBaseCtrlExtension::CFepUiBaseCtrlExtension()
     iExtResponseAreaMargin.SetRect( TPoint(0,0), TSize(0,0) );
 	}
 
+CFepUiBaseCtrl::CFepUiBaseCtrlExtension::~CFepUiBaseCtrlExtension()
+    {
+    //delete iBitmap;
+    delete iGc;
+    delete  iBitmapDevice;
+    delete iMaskBitmapDevice;
+    }
+	
 void CFepUiBaseCtrl::CFepUiBaseCtrlExtension::SetTactileFeedbackType(TInt aTactileType)
 	{
 #ifdef RD_TACTILE_FEEDBACK

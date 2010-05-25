@@ -21,11 +21,11 @@
 
 #include <aknlayoutscalable_apps.cdl.h>
 #include <aknlayoutscalable_avkon.cdl.h>
-#include <aknlayoutdef.h>
-#include <aknutils.h>
-#include <aknsutils.h>
+#include <AknLayoutDef.h>
+#include <AknUtils.h>
+#include <AknsUtils.h>
 #include <akniconutils.h>
-#include <aknfepglobalenums.h>
+#include <AknFepGlobalEnums.h>
 #include <aknfeppeninputenums.h>
 
 #include <peninputfingerhwrarwnd.rsg>
@@ -44,6 +44,7 @@
 #include "peninputfingerhwrarlayout.h"
 #include "peninputfingerhwrardatastore.h"
 #include "peninputfingerhwrarsymboltable.h"
+#include "peninputfingerhwrarnumsymboltable.h"
 #include "peninputfingerhwrarindicator.h"
 #include "peninputfingerhwrarwritingwnd.h"
 
@@ -85,9 +86,12 @@ CPeninputFingerHwrArWnd* CPeninputFingerHwrArWnd::NewLC( CFepUiLayout* aFepUiLay
 //
 CPeninputFingerHwrArWnd::~CPeninputFingerHwrArWnd()
     {
-    #ifdef RD_TACTILE_FEEDBACK    
-	UiLayout()->DeRegisterFeedbackArea(reinterpret_cast<TInt>(iWritingBox),
+    #ifdef RD_TACTILE_FEEDBACK
+    if(UiLayout())
+        {
+		UiLayout()->DeRegisterFeedbackArea(reinterpret_cast<TInt>(iWritingBox),
 	                                 iWritingBox->Rect());
+		}
 	#endif								 
     delete iLafManager;
     }
@@ -141,6 +145,38 @@ void CPeninputFingerHwrArWnd::ConstructFromResourceL()
         }    
 
     CleanupStack::PopAndDestroy(); // reader
+
+    // read keypad image info
+    if ( iNumSymbolTable )
+        {
+        TSize keysize = iLafManager->VirtualSctpadCellSize().Size();
+        iNumSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_NUMPAD_IMAGE, keysize );
+        
+        RArray<TRect> rects;
+        CleanupClosePushL( rects );
+        iLafManager->GetVirtualKeyRects( rects );
+        LoadNumSymbolVirtualKeysL( R_FINGER_HWR_NUMPAD, rects );
+        CleanupStack::PopAndDestroy(); //rects
+        }
+    
+    if ( iSymbolTable )
+        {
+        TSize keysize = iLafManager->VirtualSctpadCellSize().Size();
+        iSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_SCTPAD_IMAGE, keysize );
+        
+        RArray<TRect> rects;
+        CleanupClosePushL( rects );
+        iLafManager->GetVirtualKeyRects( rects );
+        if(iLafManager->IsLandscape())
+            {
+            LoadSymbolVirtualKeysL(R_ARABIC_FINGER_HWR_LANDSCAPE_SYMBOL_TABLE, rects);
+            }
+        else
+            {
+            LoadSymbolVirtualKeysL(R_ARABIC_FINGER_HWR_PORTRAIT_SYMBOL_TABLE, rects);
+            }        
+        CleanupStack::PopAndDestroy(); //rects
+        }
     
     if (!iFirstTimeConstruct)
     	{
@@ -191,12 +227,6 @@ void CPeninputFingerHwrArWnd::SizeChangedL()
             iLafManager->CandidateLTPos(), 
             3/*KCandidateCountPerRow*/,
             2 );
-    iNumCandidateList->SizeChanged( iLafManager->CandidateUnitWidth(),
-            iLafManager->CandidateUnitHeight(), 
-            iLafManager->CandidateUnitWidth(), 
-            iLafManager->CandidateLTPos(), 
-            3/*KCandidateCountPerRow*/,
-            1 );
     iContextField->SetTextMargin ( iLafManager->IcfLeftMargin(),
             iLafManager->IcfRightMargin(),
             iLafManager->IcfTopMargin(),
@@ -434,14 +464,6 @@ CFepCtrlDropdownList* CPeninputFingerHwrArWnd::CandidateList()
     {
     return iCandidateList;
     }
-// ---------------------------------------------------------------------------
-// retrieve the number candicate list control.
-// ---------------------------------------------------------------------------
-//
-CFepCtrlDropdownList* CPeninputFingerHwrArWnd::NumCandidateList()
-    {
-    return iNumCandidateList;
-    }
 
 // ---------------------------------------------------------------------------
 // Open the candidate list
@@ -449,34 +471,24 @@ CFepCtrlDropdownList* CPeninputFingerHwrArWnd::NumCandidateList()
 //	
 void CPeninputFingerHwrArWnd::OpenCandidateList()
     {
-	CPeninputFingerHwrArLayout* hwrLayout = NULL;
-	hwrLayout = static_cast<CPeninputFingerHwrArLayout*>( UiLayout() );
-	CPeninputFingerHwrArDataStore& datastore = hwrLayout->DataStore();
-	
-	const RPointerArray<HBufC>& candidates = datastore.Candidate();
-	
-	if(candidates.Count() > 0)
+    CPeninputFingerHwrArLayout* hwrLayout = NULL;
+    hwrLayout = static_cast<CPeninputFingerHwrArLayout*>( UiLayout() );
+    CPeninputFingerHwrArDataStore& datastore = hwrLayout->DataStore();
+    
+    const RPointerArray<HBufC>& candidates = datastore.Candidate();
+    
+    if(candidates.Count() > 0)
         {
-		CFepCtrlDropdownList::TListType unexpandable = CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble;
-	
-		if ( datastore.PrimaryRange() == ERangeNative )
-			{
-			iCandidateList->Hide( EFalse );
-			TRAP_IGNORE(iCandidateList->SetCandidatesL( candidates, unexpandable ));
-			iCandidateList->SetHighlightCell( 0, datastore.Highlight() ); 		   
-			}
-		else
-			{
-			iNumCandidateList->Hide( EFalse );
-			TRAP_IGNORE(iNumCandidateList->SetCandidatesL( candidates, unexpandable ));
-			iNumCandidateList->SetHighlightCell( 0, datastore.Highlight() );         
-			}
-			
-		iArrowLeftBtn->Hide(ETrue);
-		iArrowRightBtn->Hide(ETrue);
-		iArrowUpBtn->Hide(ETrue);
-		iArrowDownBtn->Hide(ETrue);
-		}	
+        CFepCtrlDropdownList::TListType unexpandable = CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble;
+    
+        iCandidateList->Hide( EFalse );
+        TRAP_IGNORE(iCandidateList->SetCandidatesL( candidates, unexpandable ));
+        iCandidateList->SetHighlightCell( 0, datastore.Highlight() ); 		   
+        iArrowLeftBtn->Hide(ETrue);
+        iArrowRightBtn->Hide(ETrue);
+        iSpaceBtn->Hide(ETrue);
+        iEnterBtn->Hide(ETrue);
+        }	
 	}
 
 // ---------------------------------------------------------------------------
@@ -486,15 +498,12 @@ void CPeninputFingerHwrArWnd::OpenCandidateList()
 void CPeninputFingerHwrArWnd::CloseCandidateList()
     {
 	iCandidateList->ResetAndClear(CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble);
-	iNumCandidateList->ResetAndClear(CFepCtrlDropdownList::EListExpandableMultiRowWithoutIconWithBubble);
 	// hide all the dropdown list in standby state
 	iCandidateList->Hide( ETrue );
-	iNumCandidateList->Hide( ETrue );          
-    
     iArrowLeftBtn->Hide(EFalse);
     iArrowRightBtn->Hide(EFalse);
-    iArrowUpBtn->Hide(EFalse);
-    iArrowDownBtn->Hide(EFalse);
+    iSpaceBtn->Hide(EFalse);
+    iEnterBtn->Hide(EFalse);
 	}
 
 // ---------------------------------------------------------------------------
@@ -505,8 +514,8 @@ void CPeninputFingerHwrArWnd::DimArrowKeys( TBool aDimArrow )
    {
    iArrowLeftBtn->SetDimmed( aDimArrow );   
    iArrowRightBtn->SetDimmed( aDimArrow );   
-   iArrowUpBtn->SetDimmed( aDimArrow );   
-   iArrowDownBtn->SetDimmed( aDimArrow ); 
+   iSpaceBtn->SetDimmed( aDimArrow );   
+   iEnterBtn->SetDimmed( aDimArrow ); 
    }
 
 // ---------------------------------------------------------------------------
@@ -544,11 +553,11 @@ void CPeninputFingerHwrArWnd::ConstructL( TBool /*aLandscapeStyle*/ )
     //create candidate lists
     CreateCandidateListL();
     
-    //create number candidate lists.
-    CreateNumCandidateListL();
-    
     //create virtual sct pad
     CreateSymbolTableL();
+    
+    //create number mode virtual sct pad
+    CreateNumSymbolTableL();
 
     //create control buttons
     CreateButtonsL();   
@@ -675,58 +684,6 @@ void CPeninputFingerHwrArWnd::CreateCandidateListL()
     }
     
 // ---------------------------------------------------------------------------
-// create candidate lists.
-// ---------------------------------------------------------------------------
-//
-void CPeninputFingerHwrArWnd::CreateNumCandidateListL()
-    {
-    TDropdownListDrawInfo candiDrawInfo( 
-            KAknsIIDQsnFrFunctionButtonInactive, 
-            KAknsIIDQsnFrFunctionButtonNormal,
-            KAknsIIDQsnFrFunctionButtonPressed,
-            KAknsIIDQsnFrItutButtonCandiSideL,
-            KAknsIIDQsnFrItutButtonCandiMiddle,
-            KAknsIIDQsnFrItutButtonCandiSideR,
-            KAknsIIDQsnFrItutButtonCandiPressedSideL,
-            KAknsIIDQsnFrItutButtonCandiPressedMiddle,
-            KAknsIIDQsnFrItutButtonCandiPressedSideR,
-            TRgb( 194, 221, 242 ),
-            ETrue );
-
-    TInt unitWidth = iLafManager->CandidateUnitWidth();
-    TInt unitHeight = iLafManager->CandidateUnitHeight();
-    TPoint ltPosition = iLafManager->CandidateLTPos();
-    const CFont *font = iLafManager->CandidateFont();
-    TInt horizontalMargin = iLafManager->CandidateHorizontalMargin();
-    TInt verticalMargin = iLafManager->CandidateVerticalMargin();
-
-    iNumCandidateList = CFepCtrlDropdownList::NewL(UiLayout(),
-            EHwrCtrlIdNumCandidateList,
-            R_FSHWR_CANDIDATE_DROP_DOWN_LIST,                                            
-            ltPosition,                                               
-            font ,
-            TSize(unitWidth,unitHeight),
-            unitWidth,
-            3,1,
-            unitHeight,
-            0,
-            0,
-            CFepCtrlDropdownList::ECandFromRToL,
-            EFalse);            
-    AddControlL( iNumCandidateList );
-    iNumCandidateList->SetCellMargin( horizontalMargin, verticalMargin );
-    iNumCandidateList->SetFont( font );
-    
-    // set the needed events
-    iNumCandidateList->SetEventIdForCandidateSelected( EHwrEventCandidateSelected );
-    iNumCandidateList->AddEventObserver( UiLayout() );
-    
-    // hide the candidate list
-    iNumCandidateList->Hide( ETrue );
-    iNumCandidateList->SetDropdownListImgID( candiDrawInfo );
-
-    }
-// ---------------------------------------------------------------------------
 // create writing box.
 // ---------------------------------------------------------------------------
 //
@@ -762,10 +719,14 @@ void CPeninputFingerHwrArWnd::CreateButtonsL()
         EHwrEventNavKeyClicked, EKeyLeftArrow );
     iArrowRightBtn = CreateRepBtnL( EHwrCtrlIdArrowRight, R_AKN_FEP_HWR_ARROWRIGHT, 
         EHwrEventNavKeyClicked, EKeyRightArrow );
-    iArrowUpBtn = CreateRepBtnL( EHwrCtrlIdArrowUp, R_AKN_FEP_HWR_ARROWUP, 
-        EHwrEventNavKeyClicked, EKeyUpArrow );
-    iArrowDownBtn = CreateRepBtnL( EHwrCtrlIdArrowDown, R_AKN_FEP_HWR_ARROWDOWN, 
-        EHwrEventNavKeyClicked, EKeyDownArrow );
+    iEnterBtn = CreateEventBtnL(EHwrCtrlIdBtnEnter,R_AKN_FEP_HWR_ENTER);
+    iSpaceBtn = CreateEventBtnL(EHwrCtrlIdBtnSpace,R_AKN_FEP_HWR_SPACE);
+    // Create 3-pieces color icon for space button
+    CPenInput3PiecesColorIcons* colorIcons = 
+                CPenInput3PiecesColorIcons::NewL( R_AKN_FEP_VKB_SPACE_ICON1,
+                                                  R_AKN_FEP_VKB_SPACE_ICON2,
+                                                  R_AKN_FEP_VKB_SPACE_ICON3 );
+    iSpaceBtn->Set3PiecesColorIcons( colorIcons );                                                
 	iSymbolTableBtn = CreateEventBtnL( EHwrCtrlIdSymbolButton, R_AKN_FEP_HWR_SYMBOL_TABLE_BUTTON );	
     }
 
@@ -781,6 +742,20 @@ void CPeninputFingerHwrArWnd::CreateSymbolTableL()
 	iSymbolTable->ConstructFromResourceL();
     AddControlL( iSymbolTable );
 	iSymbolTable->AddEventObserver( UiLayout() );
+    }
+
+// ---------------------------------------------------------------------------
+// create virtual number mode sct pad.
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArWnd::CreateNumSymbolTableL()
+    {
+    iNumSymbolTable = CPeninputArabicFingerHwrNumSymbolTable::NewL(UiLayout(),EHwrCtrlIdNumSymbolTableVkbGroup);
+    iNumSymbolTable->Hide(ETrue);
+    iNumSymbolTable->SetResourceId(R_FINGERHWR_ARABIC_SYMBOLTABLE);
+    iNumSymbolTable->ConstructFromResourceL();
+    AddControlL( iNumSymbolTable );
+    iNumSymbolTable->AddEventObserver( UiLayout() );
     }
 
 // ---------------------------------------------------------------------------
@@ -842,6 +817,23 @@ void CPeninputFingerHwrArWnd::LoadSymbolVirtualKeysL( const TInt aResId,
     }
 
 // ---------------------------------------------------------------------------
+// load virtual number mode sct keys.
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArWnd::LoadNumSymbolVirtualKeysL( const TInt aResId, 
+    const RArray<TRect>& aCellRects )
+    {
+    TAknTextLineLayout txtlayout = iLafManager->NumpadKeyTxtLayout();
+    iNumSymbolTable->KeyPad()->SetTextLineLayout( txtlayout );
+    
+    TInt fontid = txtlayout.FontId();
+    const CFont* font = AknLayoutUtils::FontFromId( fontid );
+    iNumSymbolTable->KeyPad()->SetFont( font );
+    
+    iNumSymbolTable->LoadVirtualKeypadKeyL(aResId,aCellRects);
+    }
+
+// ---------------------------------------------------------------------------
 //  relayout full ui, reset all controls position. 
 // ---------------------------------------------------------------------------
 //
@@ -884,18 +876,31 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
 	pdx = iLafManager->GetArrowPaddingSize().iWidth;
 	pdy = iLafManager->GetArrowPaddingSize().iHeight;
 	
-	rect = iLafManager->CtrlRect( iArrowUpBtn->ControlId() );
-    MoveIconButton( iArrowUpBtn, rect, pdx, pdy, ETrue );
-    
     rect = iLafManager->CtrlRect( iArrowLeftBtn->ControlId() );
     MoveIconButton( iArrowLeftBtn, rect, pdx, pdy, ETrue );
     
     rect = iLafManager->CtrlRect( iArrowRightBtn->ControlId() );
     MoveIconButton( iArrowRightBtn, rect, pdx, pdy, ETrue );
 
-    rect = iLafManager->CtrlRect( iArrowDownBtn->ControlId() );
-    MoveIconButton( iArrowDownBtn, rect,  pdx, pdy, ETrue );
-		
+    rect = iLafManager->CtrlRect( iSpaceBtn->ControlId() );
+    MoveIconButton( iSpaceBtn, rect, pdx, pdy, ETrue );
+
+    TRect pieceInnerRect = rect;
+    pieceInnerRect.Shrink(pdx*2,pdy);
+    
+    // that's a not good algrithm in funciton AknPenInputDrawUtils::Draw3PiecesColorIcon for drawing 3Pieces icons 
+    // as when the  outter rect's height was not equal to the inter rect's height, the target rects the left icons and right icons 
+    // would be bitblited onto are set to be Rect(0.0.0.0.0) [[which should not be that behavior]].
+    // Please theck the codes: AknPenInputDrawUtils::Draw3PiecesColorIcon: this function should be Updated.
+    iSpaceBtn->SetDraw3PieceFrameInfo(
+                                      TDraw3PiecesFrame(KAknsIIDQgnIndiInputSpaceL,
+                                      KAknsIIDQgnIndiInputSpaceMiddle,
+                                      KAknsIIDQgnIndiInputSpaceR,
+                                      pieceInnerRect));
+    
+    rect = iLafManager->CtrlRect( iEnterBtn->ControlId() );
+    MoveIconButton( iEnterBtn, rect, pdx, pdy, ETrue );
+
     // load vkb key image
     TSize keysize = iLafManager->VirtualSctpadCellSize().Size();
     iSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_SCTPAD_IMAGE, keysize );
@@ -927,6 +932,31 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
 	iSymbolTable->SizeChanged(iLafManager->GetVirtualKeyRect(),
 	                          iLafManager->GetSymBtnArray(), rows, cols,
 							  iLafManager->IsLandscape());
+	//number mode symbol table
+    // load number mode vkb key image
+    TSize numkeysize = iLafManager->VirtualSctpadCellSize().Size();
+    iNumSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_NUMPAD_IMAGE, numkeysize );
+    
+    // get the key rect
+    RArray<TRect> numrects;
+    CleanupClosePushL( numrects );
+    iLafManager->GetNumVirtualKeyRects( numrects );
+    
+    // load keys
+    LoadNumSymbolVirtualKeysL(R_FINGER_HWR_NUMPAD, numrects);
+        
+    CleanupStack::PopAndDestroy();//rects
+    
+    //move virtual Sctpad
+    TInt numpadrows = iLafManager->VirtualNumSctpadRowCount();
+    TInt numpadcols = iLafManager->VirtualNumSctpadColCount();       
+    
+    rect = iLafManager->CtrlRect(iNumSymbolTable->ControlId());
+    iNumSymbolTable->SetRect(rect);
+    
+    iNumSymbolTable->SizeChanged(iLafManager->GetVirtualNumKeyRect(),
+                              iLafManager->GetSymBtnArray(), numpadrows, numpadcols,
+                              iLafManager->IsLandscape());
     }
 
 
@@ -938,14 +968,14 @@ void CPeninputFingerHwrArWnd::SwitchToStandbyView()
     {
 	// hide following controls
     iCandidateList->Hide( ETrue );
-    iNumCandidateList->Hide( ETrue );
     iSymbolTable->Hide( ETrue);
+    iNumSymbolTable->Hide(ETrue);
     
 	// show following controls
     iArrowLeftBtn->Hide( EFalse );
     iArrowRightBtn->Hide( EFalse );
-    iArrowUpBtn->Hide( EFalse );
-    iArrowDownBtn->Hide( EFalse );
+    iSpaceBtn->Hide( EFalse );
+    iEnterBtn->Hide( EFalse );
     iOptionBtn->Hide( EFalse );
     iSymbolTableBtn->SetHighlight( EFalse);
     iContextField->SetReady(ETrue);
@@ -958,18 +988,30 @@ void CPeninputFingerHwrArWnd::SwitchToStandbyView()
 //
 void CPeninputFingerHwrArWnd::SwitchToSymbolTableView()
     {
+    CPeninputFingerHwrArLayout* hwrLayout = NULL;
+    hwrLayout = static_cast<CPeninputFingerHwrArLayout*>( UiLayout() );    
+    CPeninputFingerHwrArDataStore& datastore = hwrLayout->DataStore();
+    TBool IsNumberOnly = datastore.IsNumberOnlyMode();
 	// show following controls
     iWritingBox->Hide( EFalse );
-    iSymbolTable->Hide( EFalse );
+    if(IsNumberOnly)
+        {
+        iSymbolTable->Hide( ETrue );
+        iNumSymbolTable->Hide(EFalse);
+        }
+    else
+        {
+        iSymbolTable->Hide( EFalse );
+        iNumSymbolTable->Hide(ETrue);
+        }
     iOptionBtn->Hide( EFalse );
 	
 	// hide follwing controls
 	iCandidateList->Hide( ETrue );
-    iNumCandidateList->Hide( ETrue );
     iArrowLeftBtn->Hide( ETrue );
     iArrowRightBtn->Hide( ETrue );
-    iArrowUpBtn->Hide( ETrue );
-    iArrowDownBtn->Hide( ETrue );
+    iSpaceBtn->Hide( ETrue );
+    iEnterBtn->Hide( ETrue );
     
 	// set the symboltable button highlighted
     iSymbolTableBtn->SetHighlight( ETrue );
@@ -978,8 +1020,16 @@ void CPeninputFingerHwrArWnd::SwitchToSymbolTableView()
 	// so set this control to be not ready
     iContextField->SetReady(EFalse);
     
-    iSymbolTable->OpenSymbolTable();
-    iSymbolTable->BringToTop();
+    if(IsNumberOnly)
+        {
+        iNumSymbolTable->OpenSymbolTable();
+        iNumSymbolTable->BringToTop();    
+        }
+    else
+        {
+        iSymbolTable->OpenSymbolTable();
+        iSymbolTable->BringToTop();
+        }
     }
 
 
@@ -1256,39 +1306,26 @@ void CPeninputFingerHwrArWnd::ShowBubble(TInt aShow)
     {
     if (aShow > 0)
         {
-    	TRect outrect,innerrect;                  
+        TRect outrect,innerrect;                  
         iCandidateList->ShowBubble(ETrue);
-
-     	// Set priview popup size
-        iCandidateList->SetBubbleBitmapParam(NULL,NULL,KAknsIIDQsnFrInputCharPreview);
-
-    	outrect = iLafManager->PreviewBubbleRect();  
-    	innerrect = iLafManager->PreviewBubbleInnerRect();
-    	iCandidateList->SetTextFormat(iLafManager->PreviewBubbleTextLayout());
-    	iCandidateList->SetBubbleTextFont(iLafManager->PreviewBubbleFont());
-    	iCandidateList->SetBubbleSize(TSize(outrect.Width(),outrect.Height()));  // Read laf
-    	iCandidateList->SetFrameDiff(innerrect.iTl.iX - outrect.iTl.iX,
-    	               innerrect.iTl.iY - outrect.iTl.iY,
-    	               outrect.iBr.iX - innerrect.iBr.iX,
-    	               outrect.iBr.iY - innerrect.iBr.iY);
-    	
-        iNumCandidateList->ShowBubble(ETrue);
-
+    
         // Set priview popup size
-        iNumCandidateList->SetBubbleBitmapParam(NULL,NULL,KAknsIIDQsnFrInputCharPreview);
-        iNumCandidateList->SetTextFormat(iLafManager->PreviewBubbleTextLayout());
-        iNumCandidateList->SetBubbleTextFont(iLafManager->PreviewBubbleFont());
-        iNumCandidateList->SetBubbleSize(TSize(outrect.Width(),outrect.Height()));  // Read laf
-        iNumCandidateList->SetFrameDiff(innerrect.iTl.iX - outrect.iTl.iX,
+        iCandidateList->SetBubbleBitmapParam(NULL,NULL,KAknsIIDQsnFrInputCharPreview);
+    
+        outrect = iLafManager->PreviewBubbleRect();  
+        innerrect = iLafManager->PreviewBubbleInnerRect();
+        iCandidateList->SetTextFormat(iLafManager->PreviewBubbleTextLayout());
+        iCandidateList->SetBubbleTextFont(iLafManager->PreviewBubbleFont());
+        iCandidateList->SetBubbleSize(TSize(outrect.Width(),outrect.Height()));  // Read laf
+        iCandidateList->SetFrameDiff(innerrect.iTl.iX - outrect.iTl.iX,
                        innerrect.iTl.iY - outrect.iTl.iY,
                        outrect.iBr.iX - innerrect.iBr.iX,
                        outrect.iBr.iY - innerrect.iBr.iY);
- 
+        
         }
     else
         {
         iCandidateList->ShowBubble(EFalse);           
-        iNumCandidateList->ShowBubble(EFalse);           
         }
     }
 
@@ -1349,7 +1386,7 @@ void CPeninputFingerHwrArWnd::DrawGuideLine()
 //	
 void CPeninputFingerHwrArWnd::OpenSymbolTable()
 	{
-    if(!iSymbolTable->IsPopup())
+    if(!iSymbolTable->IsPopup() && !iNumSymbolTable->IsPopup())
     	{
     	SwitchToSymbolTableView();  
         }
@@ -1367,7 +1404,13 @@ void CPeninputFingerHwrArWnd::CloseSymbolTable()
 	    iSymbolTable->CloseSymbolTable();
 	    iSymbolTable->BringToBack();
 	    SwitchToStandbyView();		
-	    }	
+	    }
+	else if(iNumSymbolTable->IsPopup())
+	    {
+        iNumSymbolTable->CloseSymbolTable();
+        iNumSymbolTable->BringToBack();
+        SwitchToStandbyView();      	    
+	    }
     }
 
 // --------------------------------------------------------------------------
@@ -1377,7 +1420,8 @@ void CPeninputFingerHwrArWnd::CloseSymbolTable()
 //	    
 TBool CPeninputFingerHwrArWnd::IsSymbolTableShowingUp()
 	{
-    return iSymbolTable->IsPopup();
+    TBool ret = iSymbolTable->IsPopup() | iNumSymbolTable->IsPopup();  
+    return ret;
     }
 
 // --------------------------------------------------------------------------
@@ -1387,7 +1431,7 @@ TBool CPeninputFingerHwrArWnd::IsSymbolTableShowingUp()
 //	
 TBool CPeninputFingerHwrArWnd::IsCandidateShowup()
     {
-	if(!iCandidateList->Hiden() || !iNumCandidateList->Hiden())
+	if(!iCandidateList->Hiden())
 	    {
 		return ETrue;
 		}
@@ -1423,5 +1467,30 @@ TBool CPeninputFingerHwrArWnd::GetCharBeforeCursor(TInt aCharPos, TUint16& aChar
 	
 	return isFound;
 	}
-	
+
+// ---------------------------------------------------------------------------
+// accept editor's number mapping restriction.
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArWnd::SetNumericMapping( const TDesC& aNumMapping )
+    {
+    iNumSymbolTable->SetNumericMapping(aNumMapping);
+    }
+// ---------------------------------------------------------------------------
+//  set native number mode on or off.
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArWnd::SetNativeNumMode(const TBool aIsNativeNumMode)
+    {
+    iNumSymbolTable->SetNativeNumMode(aIsNativeNumMode);
+    }
+// ---------------------------------------------------------------------------
+//  set icf language.
+// ---------------------------------------------------------------------------
+//
+void CPeninputFingerHwrArWnd::SetIcfLanguage( TInt aLang )
+    {
+    iContextField->SetLanguageId(aLang);
+    }
+
 //  End Of File

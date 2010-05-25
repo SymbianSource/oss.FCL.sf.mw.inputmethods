@@ -40,7 +40,7 @@
 #include <PtiEngine.h>                          //CPtiEngine
 #include <PtiDefs.h>                            //keys
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <aknnotewrappers.h>
 
 const TText KPinyinTone0Valid = 0x02C9;

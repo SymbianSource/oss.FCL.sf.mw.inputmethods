@@ -44,7 +44,7 @@
 //CONSTANT
 const TInt KMsgSlot1 = 1;	//msg slot 2 in IPC
 const TInt KMsgSlot2 = 2; 	//msg slot 2 in IPC
-const TInt KFlushTimerPeriod = 1000;		//1/1000 second
+const TInt KFlushTimerPeriod = 1000 * 10;		//1/100 second
 const TInt KResponseQueueWaitTime = 100000;		//1/10 second
 
 // ======== GLOBAL FUNCTIONS ========

@@ -42,7 +42,7 @@
 #include <AvkonInternalCRKeys.h>    // KAknQwertyInputModeActive
 #include <hlplch.h>
 #include <peninputgsinterface.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <avkon.rsg>
 #include <AknIndicatorContainer.h>  //CAknIndicatorContainer
 #include <StringLoader.h>
@@ -685,6 +685,7 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 break;
             case ESignalEnterSpellMode:
                 {
+                iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputDisableLayoutDrawing,ETrue);
                 iFepMan.LaunchEditWordQueryL();
                 }
                 break;
@@ -693,6 +694,10 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 TInt* ptrData = (TInt*)(pBuf.Ptr());
                 TBool exitbyok = *(ptrData);
 
+				//remove spell mode editor will cause focus change, so as pen UI is closed and opened again.
+				iFocuschangedForSpellEditor = ETrue;
+				iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputDisableLayoutDrawing,ETrue);
+				
                 exitbyok ? iFepMan.ExitPluginSpellModeByOk() : 
                            iFepMan.ExitPluginSpellModeByCancel();
                 }
@@ -768,6 +773,54 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 iFepMan.CommitInlineEditL();
                 // Need to commit into engine, it will clear textbuffer in it.
                 iFepMan.PtiEngine()->CommitCurrentWord();
+                }
+                break;
+            case ESignalDeleteLastInput:
+                {
+
+                iFepMan.SetFlag( CAknFepManager::EFlagSupressAutoUpdate );
+
+                //set selection
+                MCoeFepAwareTextEditor* edit = iFepMan.FepAwareTextEditor();
+                if( iFepMan.IsFepAwareTextEditor() && edit )
+                    {
+                    TCursorSelection curSor;
+                    edit->GetCursorSelectionForFep(curSor);
+                    if ( curSor.iAnchorPos == curSor.iCursorPos )
+                        {
+                        curSor.iAnchorPos = curSor.iCursorPos - iLastSubmitCount;
+                        
+                        if (curSor.iAnchorPos<0 || 
+                            curSor.iAnchorPos>edit->DocumentLengthForFep())
+                            {
+                            break;
+                            }
+                        
+                        if (curSor.iCursorPos > curSor.iAnchorPos)
+                            {
+                            edit->SetCursorSelectionForFepL(curSor);    
+                            }
+                        }
+                    TBuf<1> backSpace;
+                    backSpace.Append(TChar(EKeyBackspace));
+                    SubmitUiPluginTextL(backSpace, EKeyEvent);
+                    }
+                iFepMan.ClearFlag( CAknFepManager::EFlagSupressAutoUpdate );
+                
+                }
+                break;
+            case ESignalArabicSCTChar:
+                {
+                TPtrC ptr( const_cast<TUint16*>(pBuf.Ptr()), pBuf.Length());
+//                if(iFepMan.InputMode() == ELatin && (iPluginInputMode == EPluginInputModeVkb || 
+//                   iPluginInputMode == EPluginInputModeFSQ))
+//                    {
+//                    AdjustDataCase( ptr );
+//                    }
+                iFepMan.StartInlineEditL(ptr);
+                iFepMan.CommitInlineEditL();
+                SendIcfDataL( EPluginSyncAll );                
+//                OnPenInputServerKeyEventL(pBuf);                
                 }
                 break;
             default:
@@ -1019,6 +1072,13 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
         	iNeedFetchDimState = ETrue;
         	}
         	break;
+        case EPluginArabicNumModeChanged:
+            if(iCurrentPluginInputFepUI)
+                {
+                iCurrentPluginInputFepUI->HandleCommandL(
+                        ECmdPeninputArabicNumModeChanged,aEventData);                            
+                }
+            break;
         default:
             break;
         }
@@ -1107,15 +1167,39 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         (  aSuggestMode == EPluginInputModeFSQ &&
            ( iDefaultOrientation == CAknAppUiBase::EAppUiOrientationPortrait ||
 		     ( !landscape && !iAvkonAppUi->OrientationCanBeChanged() ) ) );
+
           
     if ( disableFSQ )
         {
         iPenInputServer.SetDisabledLayout( EPluginInputModeFSQ );
         }
+    
+    TBool disableITUT = 
+               ( iDefaultOrientation == CAknAppUiBase::EAppUiOrientationLandscape ||
+                      ( landscape && !iAvkonAppUi->OrientationCanBeChanged() ) ) ;
+ 
+    if( disableITUT )
+         {
+         //disable V-ITUT, and if current aSuggestMode is EPluginInputModeItut, replace it with EPluginInputModeFSQ;
+         iPenInputServer.SetDisabledLayout( EPluginInputModeItut );
+         if( aSuggestMode == EPluginInputModeItut )
+          {
+              aSuggestMode = EPluginInputModeFSQ;
+          }
+         }
+    else
+         {
+         // if V-ITUT had been disabled before, enable it now;
+         TInt disableMode = iPenInputServer.DisabledLayout();
+         if( disableMode & EPluginInputModeItut )
+          {
+			iPenInputServer.SetDisabledLayout( -1 );//reset
+			iPenInputServer.SetDisabledLayout( disableMode & ~EPluginInputModeItut );
+          }
+         }
 
-    if ( aSuggestMode == EPluginInputModeFSQ || (aSuggestMode == EPluginInputModeFingerHwr 
-	     && iSharedData.InputTextLanguage() == ELangArabic
-	     && iSharedData.AutoRotateEnabled()))
+
+    if ( aSuggestMode == EPluginInputModeFSQ)
         {
         TPluginInputMode tempInputMode = iPluginInputMode;           
         iPluginInputMode = aSuggestMode;
@@ -1128,8 +1212,7 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         else
             {
             if ( (!iSharedData.AutoRotateEnabled() 
-                    && aSuggestMode == EPluginInputModeFSQ) || 
-                  (aSuggestMode == EPluginInputModeFingerHwr))
+                    && aSuggestMode == EPluginInputModeFSQ))
                 {
                 iFepMan.SetNotifyPlugin( EFalse );
                 iAvkonAppUi->SetOrientationL( CAknAppUiBase::EAppUiOrientationLandscape );
@@ -1187,7 +1270,14 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         {
         isSplit = EFalse;
         }    
+
+    if ( iLangMan.IsSplitView() && !isSplit )
+        {
+        NotifyAppUiImeTouchWndStateL( EFalse ); //restore layout
+        }
+
     iLangMan.SetSplitView(isSplit);
+
  
     MAknFepManagerInterface* fepUI = iLangMan.GetPluginInputFepUiL(
                                                     aSuggestMode, 
@@ -1367,7 +1457,17 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
             InformMfneUiStatusL( EFalse );            
             
             iPenInputServer.ClearServerEvent();
-            iCurrentPluginInputFepUI->CloseUI();
+			if(iFocuschangedForSpellEditor)
+				{
+				iFocuschangedForSpellEditor = EFalse;
+				//disable the redrawing, it will be redrawn in 
+				//iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputDisableLayoutDrawing,ETrue);
+				return; //don't close the UI if this is caused by removing spell editor
+				}
+			else
+				{
+				iCurrentPluginInputFepUI->CloseUI();
+				}
             if( aResetState )
                 {
                 iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputWindowClose);
@@ -1415,9 +1515,9 @@ void CAknFepPluginManager::OnResourceChangedL( TInt aType )
         return;
         }
         
-    if ( iPluginInputMode == EPluginInputModeFSQ && 
-         !iSharedData.AutoRotateEnabled() || (iPluginInputMode == EPluginInputModeFingerHwr 
+    if ( (iPluginInputMode == EPluginInputModeFSQ || (iPluginInputMode == EPluginInputModeFingerHwr 
 	     && iSharedData.InputTextLanguage() == ELangArabic))
+	     && !iSharedData.AutoRotateEnabled() )
         {
         return;
         }
@@ -1553,6 +1653,11 @@ void CAknFepPluginManager::ProcessMenuCommandL(TInt aCommandId)
                     break;                
                 case EPenInputCmdVITUT:
                     {
+                    //Here calling this function is to reset menu state when the focus change caused by
+                    //the screen orientation, in the normal circumstance the foucus change should not 
+                    //occur while the screen orientation is handling. So directly resetting menu state 
+                    //to avoid the above case, preconditon is that the option menu must be closed.
+                    ResetMenuState();
 					ClosePluginInputModeL(ETrue);             
                     iFepMan.TryCloseUiL();  
                     TryChangePluginInputModeByModeL(EPluginInputModeItut, 
@@ -1562,6 +1667,11 @@ void CAknFepPluginManager::ProcessMenuCommandL(TInt aCommandId)
                     break;
                 case EPeninputCmdFSQ:
                     {
+                    //Here calling this function is to reset menu state when the focus change caused by
+                    //the screen orientation, in the normal circumstance the foucus change should not 
+                    //occur while the screen orientation is handling. So directly resetting menu state 
+                    //to avoid the above case, preconditon is that the option menu must be closed.                 
+                    ResetMenuState();
 					ClosePluginInputModeL(ETrue);               
                     iFepMan.TryCloseUiL();  
                     TryChangePluginInputModeByModeL(EPluginInputModeFSQ, 
@@ -1571,6 +1681,11 @@ void CAknFepPluginManager::ProcessMenuCommandL(TInt aCommandId)
                     break;
                 case EPeninputCmdHwr:
                 	{
+                    //Here calling this function is to reset menu state when the focus change caused by
+                    //the screen orientation, in the normal circumstance the foucus change should not 
+                    //occur while the screen orientation is handling. So directly resetting menu state 
+                    //to avoid the above case, preconditon is that the option menu must be closed.
+                	ResetMenuState();
                 	ClosePluginInputModeL(ETrue);               
                 	iFepMan.TryCloseUiL();  
                 	TryChangePluginInputModeByModeL( EPluginInputModeFingerHwr, 
@@ -1940,80 +2055,92 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
     	    aMenuPane->SetItemDimmed(EPenInputCmdVITUT, EFalse);
     	    }
     	
-    	//if ( iFepMan.IsArabicInputLanguage() && ( curInputMode != EPluginInputModeFingerHwr )
-    	//		&& !( disabledInputMode & EPluginInputModeFingerHwr ))
-    	//    {
-    	//    aMenuPane->SetItemDimmed( EPeninputCmdHwr, EFalse );
-    	//    }
-        //For arabic finger hwr input orientation.
-        TInt index = 0;        
-        if(iPluginInputMode == EPluginInputModeFingerHwr
-                && (ELangArabic == iSharedData.InputTextLanguage())
-                && (!iSharedData.AutoRotateEnabled()))
+    	if ( FeatureManager::FeatureSupported( KFeatureIdArabicHandwritingRecognitionInput )
+            &&iFepMan.IsArabicInputLanguage() 
+            && ( curInputMode != EPluginInputModeFingerHwr )
+    	    && !( disabledInputMode & EPluginInputModeFingerHwr ))
+    	    {
+    	    aMenuPane->SetItemDimmed( EPeninputCmdHwr, EFalse );
+    	    }
+		
+		// check if this is the arabic finger hwr
+		TBool isArabicFingerHwr = (iPluginInputMode == EPluginInputModeFingerHwr
+		                            && ELangArabic  == iSharedData.InputTextLanguage());
+		
+        // Initialize the menu item for Arabic Finger HWR
+        if(isArabicFingerHwr)
             {
-            TBool disableMenu = ETrue;
-            TPixelsTwipsAndRotation size; 
-            CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
-            TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
-            if(landscape && aMenuPane->MenuItemExists(EPenInputCmdHwrInputToPortrait, index))
-                {
-                disableMenu = EFalse;
-                aMenuPane->SetItemDimmed(EPenInputCmdHwrInputToPortrait,disableMenu);
-                }
-            index = 0;
-            if(!landscape && aMenuPane->MenuItemExists(EPenInputCmdHwrInputToLandscape, index))
-                {
-                disableMenu = EFalse;
-                aMenuPane->SetItemDimmed(EPenInputCmdHwrInputToLandscape,disableMenu);
-                }
-            }   
-        
-        //For arabic finger hwr switch to key based input.
-        index = 0;
-        if(aMenuPane->MenuItemExists(
-                EPenInputCmdSwitchToVkeyBasedInput, index))
-            {
-            TBool disableMenu = ETrue;
-            if(iPluginInputMode == EPluginInputModeFingerHwr
-                    && (ELangArabic == iSharedData.InputTextLanguage()))
-                {
-                disableMenu = EFalse;
-                }   
-            aMenuPane->SetItemDimmed(EPenInputCmdSwitchToVkeyBasedInput,disableMenu);
-            }        
-        //For arabic finger hwr writing speed.
-        index = 0;
-        if(aMenuPane->MenuItemExists(
-                EPenInputCmdWritingSpeed, index))
-            {
-            TBool disableMenu = ETrue;
-            if(iPluginInputMode == EPluginInputModeFingerHwr
-                    && (ELangArabic == iSharedData.InputTextLanguage()))
-                {
-                disableMenu = EFalse;
-                }   
-            aMenuPane->SetItemDimmed(EPenInputCmdWritingSpeed,disableMenu);
-            }        
-        //For arabic finger hwr guide line.
-        index = 0;
-        if(aMenuPane->MenuItemExists(
-                EPenInputCmdGuidingLine, index))
-            {
-            TBool disableMenu = ETrue;
-            if(iPluginInputMode == EPluginInputModeFingerHwr
-                    && (ELangArabic == iSharedData.InputTextLanguage()))
-                {
-                disableMenu = EFalse;
-                }   
-            aMenuPane->SetItemDimmed(EPenInputCmdGuidingLine,disableMenu);
-            }        
+            InitMenuItemForArabicFingerHwrL(aMenuPane);
+            }	     
         
         iLangMan.CurrentImePlugin()->DynInitMenuPaneL(aMenuPane);
         }
-        
-        
-    }    
-
+    }
+    
+void CAknFepPluginManager::InitMenuItemForArabicFingerHwrL(CAknFepUiInterfaceMenuPane* aMenuPane)
+    {
+	TInt index = 0;
+	TBool isAutoRotateEnabled = iSharedData.AutoRotateEnabled();
+	// add menu item to switch to landscape or protrait
+	if(!isAutoRotateEnabled)
+		{
+		TPixelsTwipsAndRotation size; 
+		CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+		TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
+		if(landscape)
+			{
+			index = 0;
+			// add switch to protrait
+			if(aMenuPane->MenuItemExists(EPenInputCmdHwrInputToPortrait, index))
+				{
+				aMenuPane->SetItemDimmed(EPenInputCmdHwrInputToPortrait,EFalse);
+				}
+			}
+		else
+			{
+			index = 0;
+			// add switch to landscape
+			if(aMenuPane->MenuItemExists(EPenInputCmdHwrInputToLandscape, index))
+				{
+				aMenuPane->SetItemDimmed(EPenInputCmdHwrInputToLandscape,EFalse);
+				}
+			}
+		}
+	
+	// hide the setting menu			
+//	index = 0;
+//	if(aMenuPane->MenuItemExists(EPenInputCmdSetting, index))
+//		{
+//		aMenuPane->SetItemDimmed(EPenInputCmdSetting, ETrue);
+//		}    			
+	
+	//Show number mode menu item.
+	if(iFepMan.InputMode() == ENumber || iFepMan.InputMode() == ENativeNumber)
+	    {
+        if(iSharedData.DefaultArabicNumberMode())
+            {
+            aMenuPane->SetItemDimmed(EAknCmdEditModeNumber, EFalse);
+            }
+        else
+            {
+            aMenuPane->SetItemDimmed(EAknCmdEditModeArabicIndicNumber, EFalse);
+            }
+	    }
+	// add the writing speed menu
+	index = 0;
+	if(aMenuPane->MenuItemExists(EPenInputCmdWritingSpeed, index))
+		{
+		aMenuPane->SetItemDimmed(EPenInputCmdWritingSpeed,EFalse);
+		}
+	
+	// add the guidingline menu
+	index = 0;
+	if(aMenuPane->MenuItemExists(EPenInputCmdGuidingLine, index))
+		{ 
+		aMenuPane->SetItemDimmed(EPenInputCmdGuidingLine,EFalse);			
+		}
+	}
+ 
 // ---------------------------------------------------------------------------
 // CAknFepPluginManager::OnFocusChangedL
 // (other items were commented in a header)
@@ -2149,7 +2276,8 @@ void CAknFepPluginManager::OnFocusChangedL( TBool aGainForeground )
                 if ( enableAdaptiveSearch )
                     {
                     if(!(iInMenu && ( iPluginInputMode == EPluginInputModeItut ||
-                                    iPluginInputMode == EPluginInputModeFSQ )))
+                                    iPluginInputMode == EPluginInputModeFSQ ||
+                                    iPluginInputMode ==EPluginInputModeFingerHwr)))
                         {
                         ClosePluginInputModeL(ETrue);
                         if(iPenInputSvrConnected ) //lost foreground
@@ -2867,8 +2995,11 @@ void CAknFepPluginManager::InitializePluginInputL(TInt aOpenMode, TInt aSuggestR
 //    iPenInputServer.UpdateAppInfo(KNullDesC, EAppIndicatorMsg);  
     
     iPluginInputMode =  (TPluginInputMode)iLangMan.CurrentImePlugin()->CurrentMode(); 
-
-    iPenInputServer.SetDataQueryPopped(IsDisplayDataQuery());  
+    
+    // Not only for data query, but also for other pop dialogs contain editor.
+    //iPenInputServer.SetDataQueryPopped(IsDisplayDataQuery());
+    iPenInputServer.SetDataQueryPopped(CCoeEnv::Static()->AppUi()->IsDisplayingDialog() &&
+											CCoeEnv::Static()->AppUi()->TopFocusedControl());  
 
     //adjust VKB window if data query dialog is displaying
     if(IsDisplayDataQuery())
@@ -2891,7 +3022,9 @@ void CAknFepPluginManager::InitializePluginInputL(TInt aOpenMode, TInt aSuggestR
 
     if ( !NotifyInGlobalNoteEditorL() )
     	{
+        iFocuschangedForSpellEditor = EFalse; // restore the flag
     	iCurrentPluginInputFepUI->ActivateUI(); 
+        iNeedFetchDimState = ETrue;
     	}
     
     iFepMan.UpdateIndicators();
@@ -4611,6 +4744,20 @@ void CAknFepPluginManager::DisplaySpellEditorL(const TInt aEditorFlag,
     	{
         iSpell->InputPane()->InputWin()->SetAknEditorCurrentCase(editorCase);
         iSpell->InputPane()->InputWin()->SetAknEditorCurrentInputMode(EAknEditorTextInputMode);
+        if ( iLangMan.IsSplitView() )
+         {
+         iSpell->InputPane()->InputWin()->SetAknEditorFlags( 
+              iSpell->InputPane()->InputWin()->AknEdwinFlags() | 
+              aEditorFlag | EAknEditorFlagNoT9 | 
+              EAknEditorFlagEnablePartialScreen );
+         }
+        else
+         {
+         iSpell->InputPane()->InputWin()->SetAknEditorFlags( 
+              iSpell->InputPane()->InputWin()->AknEdwinFlags() | 
+              aEditorFlag | EAknEditorFlagNoT9 );
+         }
+
         iSpell->MakeVisible( ETrue );
         iSpell->SetInputWinFocus( ETrue );
     	}
@@ -5022,7 +5169,7 @@ void CAknFepPluginManager::SetMenuState(TBool aUpdateEditor)
     if(!iPenInputSvrConnected ) 
         {
         return;
-        }    	
+        }
 
     if (!(PluginInputMode() == EPluginInputModeItut ||
         PluginInputMode() == EPluginInputModeFSQ ||
@@ -5035,9 +5182,15 @@ void CAknFepPluginManager::SetMenuState(TBool aUpdateEditor)
     if (aUpdateEditor && !iInMenu)
         {
         if(iFepMan.FepAwareTextEditor())
-            iCurEditor = iFepMan.FepAwareTextEditor();    
+            {
+            iCurMFNECap = iFepMan.IsMfneEditor() ? iFepMan.ExtendedInputCapabilities() : 0;
+            iCurEditor = iFepMan.FepAwareTextEditor();
+            }
         else
-            iCurEditor = NULL;            
+            {
+            iCurMFNECap = 0;
+            iCurEditor = NULL; 
+            }
         }
         
     iInMenu = ETrue;
@@ -5056,9 +5209,10 @@ void CAknFepPluginManager::ResetMenuState(TBool aUnDim)
     if(!iPenInputSvrConnected ) 
         {
         return;
-        }    	
-    	
+        }
+        
     iInMenu = EFalse;
+    iCurMFNECap = 0;
     iCurEditor = NULL;
     if (aUnDim)
         {
@@ -5138,7 +5292,7 @@ void CAknFepPluginManager::SetCursorVisibility(TBool aVisibility, TBool aReportP
 
 void CAknFepPluginManager::InformMfneUiStatusL( TBool aOpened )
     {
-    if ( iMfne && iMfneChanged )
+    if ( iMfne && ( iMfneChanged || !aOpened ))
         {
         //make the selection longer than maximum length of current 
         //text, so it won't change the behavior of MFNE editor which 
@@ -5197,7 +5351,8 @@ TBool CAknFepPluginManager::NotifyInGlobalNoteEditorL()
 		
     //if it's in global notes, show it.
     if(EPluginInputModeItut == PluginInputMode() ||
-       EPluginInputModeFSQ == PluginInputMode() )      
+       EPluginInputModeFSQ == PluginInputMode() ||
+       EPluginInputModeFingerHwr == PluginInputMode())      
 		{
 		if(iInGlobleNoteEditor && iPenInputSvrConnected)
 			{
@@ -5608,9 +5763,18 @@ TBool CAknFepPluginManager::IsNeedToChangeTextCase( const TPtiTextCase& aTextCas
 //
 void CAknFepPluginManager::SetItiStateL()
     {
-    if ( iIsITIConfigured || !IsSupportITIOnFSQ() )
+    if ( !IsSupportITIOnFSQ() )
     	{
     	return;
+    	}
+    if ( iIsITIConfigured )
+    	{
+        // if fep state has been configed to iti status before,
+        // there is no need to config fep state again,
+        // but sending command to fsq to update iti status flag is needed.               
+        iCurrentPluginInputFepUI->HandleCommandL( ECmdPeninputITIStatus,
+                                              iFepMan.WesternPredictive() );    
+		return;
     	}
     // 1. Config keyboard layout type
     SetItiKeyboardLayoutL();               
@@ -5794,7 +5958,21 @@ TBool CAknFepPluginManager::IsEditorSupportSplitIme()
     //Normal editors
     CAknEdwinState* state = iFepMan.EditorState(); 
     if (iCurEditor && state == NULL)
-		state = static_cast<CAknEdwinState *> (iCurEditor->Extension1()->State(KNullUid));
+        {
+        if( iCurMFNECap )
+            {
+            return CAknExtendedInputCapabilities::EInputEditorPartialScreen == 
+                 ( iCurMFNECap & CAknExtendedInputCapabilities::EInputEditorPartialScreen );
+            }
+        else
+            {
+            MCoeFepAwareTextEditor_Extension1* extension = iCurEditor->Extension1(); 
+            if( extension )
+                {
+                state = static_cast<CAknEdwinState *>( extension->State(KNullUid) );
+                }
+            }
+        }
     if ( state )
         {
         return EAknEditorFlagEnablePartialScreen == 

@@ -359,7 +359,9 @@ void CWesternItutUiStateSpelling::ReCalcLayoutL()
                 iOwner->DataMgr()->RequestData( ESpellIndiPaneWithoutTextRect ));
         TRect iconRect = TItutDataConverter::AnyToRect( 
                 iOwner->DataMgr()->RequestData( ESpellIndiIconWithoutTextRect ));
-        TSize offset( 0, 6 );
+        TSize offset;
+        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
         TSize size( iconRect.Width(), iconRect.Height());
         
         iICF->MsgBubbleCtrl()->SetRect( bubbleRect );

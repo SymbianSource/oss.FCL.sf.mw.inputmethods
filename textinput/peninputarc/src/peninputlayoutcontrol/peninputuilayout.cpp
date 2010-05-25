@@ -28,8 +28,8 @@
 #include <AknDef.h>
 #include <AknsConstants.h>
 #include <coemain.h>
-#include <aknsutils.h> 
-#include <aknsskininstance.h> 
+#include <AknsUtils.h> 
+#include <AknsSkinInstance.h> 
 
 #ifdef RD_TACTILE_FEEDBACK
 #include <touchfeedback.h>
@@ -84,6 +84,7 @@ EXPORT_C void CFepUiLayout::BaseConstructL()
 #endif // RD_TACTILE_FEEDBACK
     iExtension->iSkinInstance = AknsUtils::SkinInstance();
     iExtension->iTouchFeedbackInstance = MTouchFeedback::Instance();
+	iExtension->iDisableDrawing = EFalse;
     }
 
 // ---------------------------------------------------------------------------
@@ -173,6 +174,17 @@ EXPORT_C TInt CFepUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputSendEditorTextAndCurPos:
             {
             TRAP_IGNORE(SendEditorTextAndCursorPosL(aData));
+            }
+            break;
+        case ECmdPeninputEnableOwnBitmap:
+            {
+            SetSelfBmpDeviceFlag(*(reinterpret_cast<TBool*>(aData)));
+            OnResourceChange(KPenInputOwnDeviceChange);
+            }
+            break;
+        case ECmdPeninputDisableLayoutDrawing:
+            {
+            DisableLayoutDrawing(*(reinterpret_cast<TBool*>(aData)));
             }
             break;
         default: 
@@ -572,6 +584,8 @@ EXPORT_C void CFepUiLayout::UpdateArea(const CFepUiBaseCtrl* aCtrl,
                         const TRect& aRect,TBool aUpdateFlag,TBool aImmedFlag)
     {
     //do nothing if it's locked and aCtrl is not the owner.
+    if(!iLayoutReady || iExtension->iDisableDrawing)
+        return;
     TBool bUpdate = ETrue;
     if(!iLockedArea.IsEmpty() )
         {
@@ -876,4 +890,27 @@ EXPORT_C CFepUiCursor* CFepUiLayout::CreateCursor()
     {
     return iRootCtrl->CreateCursor();
     }
+
+EXPORT_C TBool CFepUiLayout::NotDrawToLayoutDevice()
+    {
+    return iExtension->iSelfBmpDeviceFlag;
+    }
+
+void CFepUiLayout::SetSelfBmpDeviceFlag(TBool aFlag)
+    {
+    iExtension->iSelfBmpDeviceFlag = aFlag;
+    }
+
+
+EXPORT_C void CFepUiLayout::DisableLayoutDrawing(TBool aFlag)
+    {
+    if(iExtension->iDisableDrawing == aFlag)
+        return;
+    iExtension->iDisableDrawing = aFlag;
+    TPtrC ptr;
+    ptr.Set(reinterpret_cast<const TUint16*>(&aFlag),sizeof(aFlag)/sizeof(TUint16));
+    
+    SignalOwner(ESignalDisableUpdating,ptr);
+    }
+
 //end of file

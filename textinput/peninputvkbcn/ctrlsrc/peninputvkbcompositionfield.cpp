@@ -783,7 +783,7 @@ void CAknFepVkbCompositionField::HandleAnalysisResponseL(const TDesC& aCompText)
 
     UpdateTextL();
     Draw();
-    UpdateArea(Rect(),EFalse);
+    //UpdateArea(Rect(),EFalse);
     }
     
 // ---------------------------------------------------------

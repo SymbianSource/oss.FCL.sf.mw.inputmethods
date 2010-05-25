@@ -36,7 +36,7 @@
 #include <AknsDrawUtils.h>
 #include <AknsBasicBackgroundControlContext.h>
 #include <AknLayout.lag>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 #include <skinlayout.cdl.h>
 #include <AknLayout2ScalableDef.h>

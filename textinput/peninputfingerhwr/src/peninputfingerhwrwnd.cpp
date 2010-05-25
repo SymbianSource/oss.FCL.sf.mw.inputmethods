@@ -1781,6 +1781,9 @@ void CPeninputFingerHwrWnd::ResetLayoutL()
         {
         rect = iLafManager->CtrlRect( iVirtualNumpad->ControlId() );
         iVirtualNumpad->SetRect( rect );
+        
+        TAknTextLineLayout txtlayout = iLafManager->NumpadKeyTxtLayout();
+        iVirtualNumpad->SetTextLineLayout( txtlayout );
 
         const RPointerArray<CVirtualKey>& keys = iVirtualNumpad->KeyArray();
         RArray<TRect> rects;
@@ -1802,6 +1805,9 @@ void CPeninputFingerHwrWnd::ResetLayoutL()
         rect = iLafManager->CtrlRect( iVirtualSctpad->ControlId() );
         iVirtualSctpad->SetRect( rect );
         
+        TAknTextLineLayout txtlayout = iLafManager->SctpadKeyTxtLayout();
+        iVirtualSctpad->SetTextLineLayout( txtlayout );
+        
         const RPointerArray<CVirtualKey>& keys = iVirtualSctpad->KeyArray();
         RArray<TRect> rects;
         iLafManager->GetVirtualKeyRects( rects );
@@ -1821,6 +1827,9 @@ void CPeninputFingerHwrWnd::ResetLayoutL()
         {
         rect = iLafManager->CtrlRect( iVirtualSctpadFix->ControlId() );
         iVirtualSctpadFix->SetRect( rect );
+                
+        TAknTextLineLayout txtlayout = iLafManager->FixSctpadKeyTxtLayout();
+        iVirtualSctpadFix->SetTextLineLayout( txtlayout );
         
         const RPointerArray<CVirtualKey>& keys = iVirtualSctpadFix->KeyArray();
         RArray<TRect> rects;

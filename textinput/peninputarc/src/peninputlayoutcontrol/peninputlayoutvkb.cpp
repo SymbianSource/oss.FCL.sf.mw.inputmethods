@@ -95,7 +95,6 @@ EXPORT_C CVirtualKeyboard::CVirtualKeyboard(const TRect& /*aRect*/,
                                 iKeyNormalSkinId(KAknsIIDNone),
                                 iKeyHighlightSkinId(KAknsIIDNone),
                                 iKeyDimSkinId(KAknsIIDNone),
-                                iNeedDrawBackground(ETrue),
                                 iIrregularKey(aIrregular),
                                 iBubbleCtrl(NULL),
                                 iBubbleVerticalMargin(0),                                
@@ -113,6 +112,7 @@ EXPORT_C CVirtualKeyboard::CVirtualKeyboard(const TRect& /*aRect*/,
 //
 EXPORT_C CVirtualKeyboard::~CVirtualKeyboard()
     {
+    delete iExt;
     if ( iBubbleCtrl )
         delete iBubbleCtrl;
     if ( iPreviewBubbleRenderer )
@@ -189,7 +189,8 @@ EXPORT_C void CVirtualKeyboard::ConstructL ()
     if (iIrregularKey)
         {
         ConstructIrregularBmps();    
-        }        
+        }  
+    iExt = new(ELeave) CFepUiKeyboardExt;      
     }
 
 // ---------------------------------------------------------------------------
@@ -387,7 +388,12 @@ EXPORT_C void CVirtualKeyboard::Draw()
     	return;    
     const TRect& keyboardRect = Rect();
 
-    if (iNeedDrawBackground)
+    if(UiLayout()->NotDrawToLayoutDevice() && !Bitmap())
+        {
+        TRAP_IGNORE(CreateBmpDevL());
+        }
+
+    if ( NeedRedrawBg())
         {
         CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
 
@@ -527,6 +533,10 @@ EXPORT_C void CVirtualKeyboard::ShowBubble(TBool aFlag)
         if(!flag)
             {
             TRAP_IGNORE(iBubbleCtrl = CBubbleCtrl::NewL(TRect(0,0,0,0),UiLayout(),-0xFFFF));
+            if(iBubbleCtrl && UiLayout()->NotDrawToLayoutDevice())
+                {
+                iBubbleCtrl->CreateBmpDevL();
+                }
             iBubbleSize = TSize(KDefaultBubbleSize,KDefaultBubbleSize);
             }
         }
@@ -1440,5 +1450,155 @@ EXPORT_C void CVirtualKey::HideKeyCtrl( TBool aHide )
         {
         iKeyCtrl->Hide( aHide );
         }
+    }
+
+void CFepUiKeyboardExt::CreateBmpDevL(const TDisplayMode &aMode )
+    {
+    if(iBitmap && iHighlightDev && iHighlightGc && iHighlightKeyBmp && iHighlightKeyDev && 
+            iNormalKeyBmp && iNormalKeyDev && iDimmedKeyBmp && iDimmedKeyDev && iKeyGc)
+        return;
+    
+    delete iBitmap;
+    delete iHighlightDev; 
+    delete iHighlightGc; 
+    delete iHighlightKeyBmp; 
+    delete iHighlightKeyDev; 
+    delete iNormalKeyBmp; 
+    delete iNormalKeyDev; 
+    delete iDimmedKeyBmp; 
+    delete iDimmedKeyDev;
+    delete iKeyGc;
+
+    iBitmap = 0;
+    iHighlightDev = 0 ; 
+    iHighlightGc = 0 ; 
+    iHighlightKeyBmp = 0 ; 
+    iHighlightKeyDev = 0 ; 
+    iNormalKeyBmp = 0 ; 
+    iNormalKeyDev = 0 ; 
+    iDimmedKeyBmp = 0 ; 
+    iDimmedKeyDev = 0;
+    iKeyGc = 0;
+    
+    iBitmap = new ( ELeave ) CFbsBitmap;    
+    User::LeaveIfError( iBitmap->Create( TSize(1,1), aMode) );
+    
+    iHighlightDev = CFbsBitmapDevice::NewL(iBitmap);
+    
+    iHighlightGc = CFbsBitGc::NewL();
+    iHighlightGc->Reset();
+    
+
+    iHighlightKeyBmp = new ( ELeave ) CFbsBitmap;    
+    User::LeaveIfError( iHighlightKeyBmp->Create( TSize(1,1), aMode) );    
+    iHighlightKeyDev = CFbsBitmapDevice::NewL(iHighlightKeyBmp);
+
+    iNormalKeyBmp = new ( ELeave ) CFbsBitmap;    
+    User::LeaveIfError( iNormalKeyBmp->Create( TSize(1,1), aMode) );    
+    iNormalKeyDev = CFbsBitmapDevice::NewL(iNormalKeyBmp);
+
+    iDimmedKeyBmp = new ( ELeave ) CFbsBitmap;    
+    User::LeaveIfError( iDimmedKeyBmp->Create( TSize(1,1), aMode) );    
+    iDimmedKeyDev = CFbsBitmapDevice::NewL(iDimmedKeyBmp);
+    
+    iKeyGc = CFbsBitGc::NewL();
+    iKeyGc->Reset();   
+    }
+
+void CVirtualKeyboard::CreateBmpDevL()
+    {
+    iExt->CreateBmpDevL(UiLayout()->LayoutOwner()->BitmapDevice()->DisplayMode());
+    }
+
+EXPORT_C void CVirtualKeyboard::HandleResourceChange(TInt aType)
+    {
+    if(aType == KPenInputOwnDeviceChange)
+        {
+        if(UiLayout()->NotDrawToLayoutDevice())
+            {
+            TRAP_IGNORE(CreateBmpDevL());
+            }
+        }
+    else
+        CControlGroup::HandleResourceChange(aType);
+    }
+    
+CFbsBitmap* CVirtualKeyboard::PrepareMaskBmpL(CFbsBitGc* aGc, const TDisplayMode& aMode, const TRect& aRect)
+    {
+    CFbsBitmap* mask = new(ELeave) CFbsBitmap();
+    CleanupStack::PushL(mask);
+    User::LeaveIfError( mask->Create( aRect.Size(), aMode) );
+    CFbsBitmapDevice* maskDev = CFbsBitmapDevice::NewL(mask);
+    const TRgb KOpaqueMask = TRgb(KOpaqueColor);
+    DrawBackgroundToDevice(aRect,maskDev,NULL,KOpaqueMask,KOpaqueMask,EFalse);
+    delete maskDev;
+    CleanupStack::Pop(mask);
+    return mask;
+    }
+CFbsBitmap* CVirtualKeyboard::PrepareKeyBmpL(CFbsBitGc* aGc, const TDisplayMode& aMode, const TRect& aRect,
+        const TRect& aInnerRect,const TAknsItemID& aFrameID, const TAknsItemID& aCenterID, const TRect& aKeyRect)
+    {
+    CFbsBitmap* key = new(ELeave) CFbsBitmap();
+    CleanupStack::PushL(key);
+    User::LeaveIfError( key->Create( aRect.Size(), aMode) );
+    
+    CFbsBitmapDevice* dev = CFbsBitmapDevice::NewL(key);
+    CleanupStack::PushL(dev);
+    
+    CFbsBitGc* keyGc = CFbsBitGc::NewL();
+    keyGc->Reset();
+    CleanupStack::PushL(keyGc);
+    
+    keyGc->Activate(dev);
+    
+    CFbsBitGc* layoutGc = static_cast<CFbsBitGc*>(
+                            UiLayout()->LayoutOwner()->BitmapContext());
+    layoutGc->Activate(UiLayout()->LayoutOwner()->BitmapDevice()); 
+    
+    keyGc->BitBlt(TPoint(0,0),*layoutGc,aKeyRect);
+    
+    AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+                             *keyGc, 
+                             aRect, 
+                             aInnerRect,
+                             aFrameID, 
+                             aCenterID);
+
+    layoutGc->Activate(UiLayout()->LayoutOwner()->BitmapDevice());    
+    
+    CleanupStack::PopAndDestroy(2);
+    CleanupStack::Pop(key);
+    
+    return key;
+    }
+
+TBool CVirtualKeyboard::PrepareKeyBmp(CFbsBitmap* aBmp,CFbsBitmapDevice* aDev,const TRect& aRect, 
+                        const TRect& aInnerRect,const TAknsItemID& aFrameID, const TAknsItemID& aCenterID, const TRect& aKeyRect)
+    {
+
+    aBmp->Resize(aRect.Size());
+    aDev->Resize(aRect.Size());
+    iExt->iKeyGc->Activate(aDev);
+    iExt->iKeyGc->Resized();        
+
+    TRect r = aRect;
+    r.Move(-r.iTl.iX, -r.iTl.iY);
+   
+    CFbsBitmap* keyBmp = NULL;
+    TRect inner = aInnerRect;
+    TPoint off = aInnerRect.iTl - aRect.iTl;
+    inner.Move(-inner.iTl.iX + off.iX, -inner.iTl.iY + off.iY);
+    TRAP_IGNORE(keyBmp = PrepareKeyBmpL(iExt->iKeyGc,
+                        UiLayout()->LayoutOwner()->BitmapDevice()->DisplayMode(),
+                        r,inner,aFrameID,aCenterID,aKeyRect));
+    if(!keyBmp)
+        {
+        return EFalse;
+        }
+
+    iExt->iKeyGc->BitBlt(TPoint(0,0), keyBmp,r);      
+
+    delete keyBmp;        
+    return ETrue;
     }
 //end of implementation of Class CVirtualKey    

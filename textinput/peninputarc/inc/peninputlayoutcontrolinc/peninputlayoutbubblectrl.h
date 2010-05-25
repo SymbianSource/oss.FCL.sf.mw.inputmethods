@@ -93,12 +93,18 @@ public:
     void UnFreeze( TBool aUpdate = ETrue );
     inline void SetTextColorIndex( TInt aTxtClrIndex );
     inline TInt TextColorIndex() const;
+
+    inline void SetLangCode( TInt aLangCode );
+
 protected:
     IMPORT_C CBubbleCtrl(const TRect& aRect,
                 CFepUiLayout* aUiLayout,
                 TInt aCtrlId);
                     
     IMPORT_C void ConstructL(TInt aBmpId, TInt aMaskId);
+       
+private:
+    TRect GetRect();
        
 private:
     CFbsBitmap* iForgroundBmp;
@@ -127,8 +133,32 @@ private:
     TInt iTextColorIndex;    
     TSize iIconOffset;
     TSize iIconSize;
-    };
+	
+public:
+    IMPORT_C virtual void SetRect(const TRect& aRect);
+    void SetBmpDevice(CFbsBitGc* aGc,CFbsBitmapDevice* aDevice);
+    void CreateBmpDevL();
+    inline void SetOffset(TPoint& aPt);
+protected:    
+    IMPORT_C void HandleResourceChange(TInt aType);
+private:
     
+        
+private:
+    CFbsBitmap* iBitmap;
+    CFbsBitmap* iMaskBitmap;
+    
+    TPoint iOffset;
+    TInt iReserved1;
+    
+    TInt iLangCode;
+    };
+
+inline void CBubbleCtrl::SetOffset(TPoint& aPt)
+    {
+    iOffset = aPt;
+    }
+
 inline void CBubbleCtrl::SetTextColorIndex( TInt aTxtClrIndex )
 	{
 	iTextColorIndex = aTxtClrIndex;	
@@ -148,6 +178,11 @@ inline void CBubbleCtrl::SetIconOffsetAndSize(
 inline void CBubbleCtrl::GetText( TDes& aText )
     {
     aText.Copy( *iText );
+    }
+
+inline void CBubbleCtrl::SetLangCode( TInt aLangCode )
+    {
+    iLangCode = aLangCode;
     }
 
 class CTooltipBubbleCtrl: public CBubbleCtrl

@@ -15,8 +15,8 @@
 *
 */
 
-#include <PeninputVkbKrWindowConfigInfo_65.rsg>
-#include <PeninputVkbKrWindowKr.rsg>
+#include <peninputvkbkrwindowconfiginfo_65.rsg>
+#include <peninputvkbkrwindowkr.rsg>
 
 #include <aknlayoutscalable_apps.cdl.h>
 #include <aknlayoutscalable_avkon.cdl.h>

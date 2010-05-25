@@ -48,6 +48,8 @@ const TUint16 thaiUnicodeOri[KNumberOfDottedChar] = {0x0E31,0x0E33,0x0E34,0x0E35
 const TUint16 thaiUnicodeNew[KNumberOfDottedChar] = {0xF731,0xF733,0xF734,0xF735,0xF736,0xF737,0xF738,0xF739, 
                               0xF73A,0xF747,0xF748,0xF749,0xF74A,0xF74B,0xF74C,0xF74D}; 
 
+const TInt KNumberOfMirrorChar = 6; 
+const TUint16 mirrorUnicode[KNumberOfMirrorChar] = {0x0029,0x005D,0x003E,0x003C,0x005B,0x0028};
 
 _LIT(KDisplaySpace, "\x0020");
 _LIT(KEmptyString, "");
@@ -221,6 +223,7 @@ TInt CPeninputGenericVkbLayout::HandleCommand( TInt aCmd, TUint8* aData )
             break;
         case ECmdPenInputLanguage:
             {
+            iDataMgr->SetData( EPeninputDataTypeInputLanguage, aData );
             vkbWindow->SetSwitchlistLanguage(*aData);
             vkbWindow->SetDeadKey();
             if ( iLayoutType == EPluginInputModeFSQ )
@@ -493,6 +496,9 @@ void CPeninputGenericVkbLayout::HandleVirtualKeyUpL(TInt aEventType,
                     break;
                     }
                 }
+
+            isDottedChar = TranslateMirrorUnicode( inputCode, outputCode );
+
             if (isDottedChar)
                 {
                 number->Des().Append( outputCode );                    
@@ -503,6 +509,29 @@ void CPeninputGenericVkbLayout::HandleVirtualKeyUpL(TInt aEventType,
         CPeninputCommonLayoutExt::HandleControlEvent(aEventType, aCtrl, eventDataPtr);
         delete number;
         }
+    }
+
+TBool CPeninputGenericVkbLayout::TranslateMirrorUnicode( TUint16 aInputCode, TUint16& aOutputCode )
+    {
+    TBool isMirrorChar = EFalse;
+    TInt langCode = *( ( TInt* )(iDataMgr->RequestData( EPeninputDataTypeInputLanguage )));
+    if (( langCode != ELangArabic ) &&
+        ( langCode != ELangHebrew ) &&
+        ( langCode != ELangFarsi ) &&
+        ( langCode != ELangUrdu ))
+        {
+        return isMirrorChar;
+        }
+    for (TInt i = 0; i < KNumberOfMirrorChar; i++)
+        {
+        if (mirrorUnicode[i] == aInputCode)
+            {
+            aOutputCode = mirrorUnicode[KNumberOfMirrorChar - i - 1];
+            isMirrorChar = ETrue;
+            break;
+            }
+        }
+    return isMirrorChar;
     }
 
 // ---------------------------------------------------------------------------
@@ -531,7 +560,7 @@ void CPeninputGenericVkbLayout::HandleShowTooltipCmdL( TUint8* aData )
         if (tooltipText)
             {
             CleanupStack::PushL(tooltipText);
-            vkbWindow->ShowTooltipL(*tooltipText);
+            vkbWindow->ShowTooltipL(*tooltipText, *( ( TInt* )(iDataMgr->RequestData( EPeninputDataTypeInputLanguage ))));
             CleanupStack::PopAndDestroy(tooltipText);
             }        
         }     

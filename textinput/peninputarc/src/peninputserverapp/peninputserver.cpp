@@ -528,7 +528,10 @@ void CPeninputServer::ActivateSprite()
 
     if(!iUiLayout)
         return;
-    
+
+    TBool notDraw = EFalse;
+    iUiLayout->HandleCommand(ECmdPeninputDisableLayoutDrawing,(unsigned char*)&notDraw);
+  
     // move it out from if(!iActive) to make sure that msg bubble can be 
     // shown if fast swap from other application to msg application.
     TBool bNeedWait = AnimOpNeedWaiting(ESignalPenUiActivated);
@@ -1204,6 +1207,13 @@ TInt CPeninputServer::CreateLayoutL(const RMessage2& aMessage )
 		ClearSpriteGc();
         DeactivateSprite();
         iDestroyingLayout = ETrue;
+        if(iUseWindowCtrl)
+		   {
+		   if(iPenUiCtrl)
+		       {
+			   iPenUiCtrl->Clean();
+			   }
+		   }
         iUiLayout->Destroy();
         iUiLayout = NULL;    
         iDestroyingLayout = EFalse;
@@ -1307,8 +1317,12 @@ TInt CPeninputServer::CreateLayoutL(const RMessage2& aMessage )
         iUseWindowCtrl = ETrue;
 
         if(iUseWindowCtrl)
-            {            
-        iPenUiCtrl->SetExtent(layoutRect.iTl,layoutSize);
+            {
+#ifdef FIX_FOR_NGA
+            TBool flag = ETrue;
+            iUiLayout->HandleCommand(ECmdPeninputEnableOwnBitmap,reinterpret_cast<TUint8*>(&flag));
+#endif            
+            iPenUiCtrl->SetExtent(layoutRect.iTl,layoutSize);
             if(iAnimObj)
                 {
                 iAnimObj->AddEnalbeSpriteCmd(EFalse);
@@ -1562,10 +1576,6 @@ void CPeninputServer::DrawSprite()
    	    } 
     return;
     }
-
-#ifndef FIX_FOR_NGA
-#define FIX_FOR_NGA
-#endif
 
 //MLayoutOwner
 // ---------------------------------------------------------------------------
@@ -1901,15 +1911,11 @@ void CPeninputServer::SignalOwner(TInt aEventType, const TDesC& aEventData)
         	    }
         	    break;
 
-        	case ESignalPopupWndClosed:
-        	    {        	    
-        	    if(iUseWindowCtrl)
-        	        {
-        	        iPenUiCtrl->ClosePopup();
-        	        }
-        	    }
-        	    break;
         	default:
+        	    if(iUseWindowCtrl)                    
+        	        {
+                    iPenUiCtrl->HandleNGASpecificSignal(aEventType, aEventData);
+        	        }
         		break;
         	}
         }
@@ -2117,9 +2123,17 @@ void CPeninputServer::HideLayoutTemporaryL()
             }
         return;    
         }
-*/    if(iActive && !iPrevActive && 
-       iUiLayout->PenInputType() != EPluginInputModeFSQ && 
-       iBackgroudDefaultOri == CAknAppUiBase::EAppUiOrientationUnspecified )
+*/    
+    TInt inputMode = iUiLayout ? iUiLayout->PenInputType() : EPluginInputModeNone;
+	
+    TBool isArabicFingerInput = (inputMode == EPluginInputModeFingerHwr && iInputLanguage == ELangArabic);
+    
+    if(isArabicFingerInput)
+        {
+        return;
+        }
+    
+	if(iActive && !iPrevActive && inputMode != EPluginInputModeFSQ && iBackgroudDefaultOri == CAknAppUiBase::EAppUiOrientationUnspecified )
         {
         
         iPrevActive = ETrue;

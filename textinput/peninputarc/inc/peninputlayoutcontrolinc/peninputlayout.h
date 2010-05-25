@@ -546,6 +546,8 @@ public:
 	//Advanced Tactile feedback REQ417-47932
 	IMPORT_C void ChangeFeedbackType(TInt aId, TInt aNewTactileType);  
 	
+    IMPORT_C TBool NotDrawToLayoutDevice();
+    IMPORT_C void DisableLayoutDrawing(TBool aFlag);
     /**
      * Get the layout SkinInstance
      *
@@ -627,6 +629,7 @@ private:
      * @param aData Editor text and cursor pos information
      */
     void SendEditorTextAndCursorPosL(TUint8* aData);
+	void SetSelfBmpDeviceFlag(TBool aFlag);
 
 private:
     NONSHARABLE_CLASS( CFepUiLayoutExt) : public CBase
@@ -644,6 +647,8 @@ private:
 			 */ 
 			MTouchFeedback*   iTouchFeedbackInstance;    
             
+			TBool iSelfBmpDeviceFlag;
+            TBool iDisableDrawing;   
         };
  
 private:  
@@ -700,6 +705,7 @@ private:
      * Reserved item1
      */
      TInt iReserved1;     
+friend class CFepUiBaseCtrl;
     
 };
 

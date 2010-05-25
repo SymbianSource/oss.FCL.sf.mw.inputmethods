@@ -28,7 +28,7 @@
 #include <AknFepGlobalEnums.h>
 #include "DualLanguageDialog.h"
 #include <aknnotewrappers.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include "GSLangModel.h"
 #include "DualLanguageData.h"
 #include <GSCommon.hrh>

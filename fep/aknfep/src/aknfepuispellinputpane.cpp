@@ -41,7 +41,7 @@
 
 // CONSTANTS
 const TInt KNumberOfControl = 1;
-const TInt KSpellMaxLength = 32;    
+const TInt KSpellMaxLength = 63;    
 const TInt KTouchSpellEditorMaxLine = 1;  
 // Enumarations
 enum TControls
@@ -201,7 +201,15 @@ TKeyResponse CAknFepUiSpellInputPane::OfferKeyEventL(
     {
     if (iInputWin->IsFocused())
         {
-        return iInputWin->OfferKeyEventL( aKeyEvent, aType );
+		TKeyResponse  response = iInputWin->OfferKeyEventL( aKeyEvent, aType );
+		if ( response == EKeyWasNotConsumed )
+			{
+			if ( aType == EEventKeyDown || aType == EEventKeyUp )
+				{
+                response = EKeyWasConsumed;
+                }
+			}
+		return response;
         }
 
     return EKeyWasNotConsumed;

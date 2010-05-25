@@ -23,7 +23,7 @@
 #include "PtiEngineImpl.h"
 #include "PtiDefaultCore.h"
 #include "PtiLanguage.h"
-#include <PtiEngine.rsg>
+#include <ptiengine.rsg>
 #include "PtiUserDicEntry.h"
 #include "PtiEngine.h"
 #include "PtiKeyMappings.h"
@@ -149,6 +149,8 @@ LOCAL_C TBool IsRegionalLang(TInt aVariantCode, TInt& aMainCode)
             aMainCode = ELangSpanish;
             break;
         case ELangEnglish_Taiwan:
+        case ELangEnglish_HongKong:
+        case ELangEnglish_Prc:
             aMainCode = ELangEnglish;
             break;
         default:

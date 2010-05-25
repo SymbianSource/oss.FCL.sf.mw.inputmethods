@@ -21,7 +21,7 @@
 #include "GSLangContainer.h"
 #include "GSLangModel.h"
 #include <gsfwviewuids.h>
-#include <GSLangPluginRsc.rsg>
+#include <gslangpluginrsc.rsg>
 #include <gslistbox.h>
 #include <gsprivatepluginproviderids.h>
 
@@ -45,7 +45,7 @@
 #include <e32property.h>
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 #include "PredictiveSettingDialog.h"
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <akntitle.h>
 #ifdef FF_DUAL_LANGUAGE_SUPPORT
 #include "DualLanguageDialog.h"

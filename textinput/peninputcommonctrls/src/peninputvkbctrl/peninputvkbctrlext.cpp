@@ -392,3 +392,8 @@ EXPORT_C void CPeninputVkbCtrlExt::ConstructFromResourceL()
     	}
     CleanupStack::PopAndDestroy( 1 );		
 	}
+	
+EXPORT_C void CPeninputVkbCtrlExt::HandleResourceChange(TInt aType)
+    {
+    CVirtualKeyboard::HandleResourceChange(aType);
+    }

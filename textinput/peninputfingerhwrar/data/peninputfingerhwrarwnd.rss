@@ -446,20 +446,20 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_akn_fep_hwr_enter
     
     imgmajorskinid=EAknsMajorGeneric;
     
-    nactive=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
-    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
+    nactive=EMbmPeninputfingerhwrarQgn_indi_input_enter;
+    nactivemsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
        
-    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
-    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
+    nactivep=EMbmPeninputfingerhwrarQgn_indi_input_enter;
+    nactivepmsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
     
-    active=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
-    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
+    active=EMbmPeninputfingerhwrarQgn_indi_input_enter;
+    activemsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
         
-    activep=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
-    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
+    activep=EMbmPeninputfingerhwrarQgn_indi_input_enter;
+    activepmsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
     
-    disable=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter;
-    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_arabic_enter_mask;
+    disable=EMbmPeninputfingerhwrarQgn_indi_input_enter;
+    disablemsk=EMbmPeninputfingerhwrarQgn_indi_input_enter_mask;
     }
 
    

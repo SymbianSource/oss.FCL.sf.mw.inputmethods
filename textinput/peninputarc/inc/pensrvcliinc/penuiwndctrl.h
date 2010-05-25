@@ -18,8 +18,48 @@
 #define __PEN_UI_WINDOW_CONTROL__
 
 #include <coecntrl.h>
+#include <AknIconUtils.h>
+#include <AknsUtils.h>
+#include <AknsDrawUtils.h> 
+
+#ifndef FIX_FOR_NGA
+#define FIX_FOR_NGA
+#endif
+
 class RAknUiServer;
 class CPenUiWndCtrl;
+class CPenUiHwnWnd;
+
+struct TCommonBgCtrlSubItem
+    {
+    TRect iRect;    
+    TAknsItemID iFrameID;
+    TAknsItemID iCenterID;
+    TBool iIsShow;      
+    };
+class CPenUiWndCtrl;
+
+class CCursorWindow : public CCoeControl
+    {
+public: // Functions from base classes.
+
+    CCursorWindow(CPenUiWndCtrl* aParent);
+    //void ConstructL(CCoeControl* aParent);
+    /**
+     * From CCoeControl    
+     * Function where control's drawing is done.
+     *
+     * @param aRect Control's area.
+     */
+    void Draw( const TRect &aRect ) const;
+    
+    void SetCursorVisible(TBool aFlag);
+
+private:
+    TBool iCursorVisible;
+    CPenUiWndCtrl* iParent;
+    };
+	
 class CPenUiPopWnd : public CCoeControl
     {
 public: // Constructors and destructor
@@ -153,6 +193,14 @@ public: // New functions
     void DimPenUiForMenu();
     TInt GetWndPriority();
     void SetResourceChange(TBool aResourceChange);
+    void UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,const TRect& aPos);
+    void SetPopupArea(const TRect& aRect, TBool aFlag);
+    void UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos);
+    void UpdateChangedArea(const CFbsBitmap* aBmp,const TRect& aRect,TBool aFlag);
+    void UpdateBubble(const CFbsBitmap* aBmp,const CFbsBitmap* aMaskBmp,const TRect& aPos,TBool aFlag);
+    void Clean();
+    
+    void HandleNGASpecificSignal(TInt aEventType, const TDesC& aEventData);
 public: // Functions from base classes.
 
     /**
@@ -168,7 +216,11 @@ public:
      * Auto refresh timer callback, refresh pen ui. (for NGA)
      */
     void RefreshUI();
-    
+
+protected:
+    CCoeControl* ComponentControl(TInt) const;
+    TInt CountComponentControls() const;
+	    
 private:
 
     /**
@@ -213,6 +265,11 @@ private:
      */
     void StopRefreshTimer();
     
+    void DrawBkground(CWindowGc& aGc,const TRect& aRect) const;
+    void DrawFrame( CWindowGc& aGc,const TRect& aRect,TAknsItemID aFrameID,TAknsItemID aCenterID ) const;
+    
+    void DrawCursor(CWindowGc& aGc) const;
+    void DrawBubbleAsBackground(CFbsBitGc* aGc, CFbsBitmap* aBmp, const TRect& aRect);
 
 private: // Data
     RWindowGroup& iWndGroup;
@@ -238,13 +295,46 @@ private: // Data
     //TBool iUiLayoutChange;
     TBool iInGlobalEditorState;
     TRect iLayoutClipRect;
+
+    CFbsBitmap * iCursorBmp;
+    CFbsBitmap* iICFBmp;
+    CFbsBitmap* iChangedBmp;
+    RPointerArray<CFbsBitmap> iBubblesArea;
+    RPointerArray<CFbsBitmap> iBubblesMaskArea;
+    RArray<TRect> iBubblesPos;
+    
+    TPoint iCursorPos;
+    TPoint iIcfPos;
+    TPoint iChangedPos;
+    TRect iIcfRect;
+    TRect iCursorRect;
+    CIdle *iIdle;
+    TRect iRedrawRect;
+    TInt iTouchCount;
+    
+    TBool iCursorVisible;
+    
+    RRegion iPopRegion;
+
+    TBool iBackground;
+    TAknsItemID iFrameID;
+    TAknsItemID iCenterID;
     
     /**
      * Auto refresh timer
      * own
      */
     CPeriodic* iAutoRefreshTimer;
+
+    /**
+     * The sub items of the background 
+     */
+    RArray<TCommonBgCtrlSubItem> *iSubItems; //not own
     
+    TBool iNotUpdating;
+    CCursorWindow* iCursorWnd;
+    
+friend class CCursorWindow;
     };
 class CInternalBkCtrl : public CCoeControl
     {

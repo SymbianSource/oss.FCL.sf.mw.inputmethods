@@ -30,7 +30,7 @@
 #include <PtiEngine.h>                          //CPtiEngine
 #include <PtiUserDicEntry.h>
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 #include "aknfepinputstatepinyinphrasecreationbase.h"
 #include "AknFepPanic.h"

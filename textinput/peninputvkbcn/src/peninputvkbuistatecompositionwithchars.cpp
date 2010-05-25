@@ -124,27 +124,9 @@ TBool CAknFepVkbUiStateCompositionWithChars::HandleVkbEvent(TInt /*aEventType*/,
 // -----------------------------------------------------------------------------
 //
 TBool CAknFepVkbUiStateCompositionWithChars::HandleBackEvent(TInt /*aEventType*/,
-                                                             const TDesC& aEventData)
-    {
-    TInt lengthPendown = iContext->RequestData(EAknFepDataTypeLengthWhenButtondownOnBack);
-    
-    TInt* data = (TInt*) aEventData.Ptr();
-    
-    //Get the flag of pen up or timer out, true when timer out, false when pen up
-    data++;
-    
-    if ( 1 >= iContext->CompositionFieldStringLength() ) // if no chars
-        {
-        iContext->SendEventToVkbControl(EVkbEventComposition2Standby,NULL);
-        
-        if ( *data == EFalse )  // pen up
-            {
-            iUiStateMgr->SetCurrentUiState(iUiStateMgr->UiStateStandbycn());                       
-            iContext->ForceEditGainFocus(EInputContextFieldGetFocus);              
-            }            
-        }
-    return EFalse;  // If no chars, needn't send to composition again
-        
+                                                             const TDesC& /*aEventData*/)
+    {    
+    return EFalse;  // If no chars, needn't send to composition again        
     }
     
 // -----------------------------------------------------------------------------

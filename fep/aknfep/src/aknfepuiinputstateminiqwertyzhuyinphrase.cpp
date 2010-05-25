@@ -33,7 +33,7 @@
 #include <PtiEngine.h>  
 #include <PtiUserDicEntry.h>
 #include <aknnotewrappers.h> //CAknWarningNote
-#include <AknFep.rsg>  
+#include <aknfep.rsg>  
 
 // User includes
 #include "AknFepUiCtrlContainerChinese.h"

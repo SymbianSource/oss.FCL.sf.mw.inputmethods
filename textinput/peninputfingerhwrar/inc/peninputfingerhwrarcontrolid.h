@@ -47,16 +47,16 @@ enum TPenInputFingerHwrCtrlId
     
     EHwrCtrlIdArrowLeft,
     EHwrCtrlIdArrowRight,
-    EHwrCtrlIdArrowUp,
-    EHwrCtrlIdArrowDown,
+    EHwrCtrlIdBtnEnter,
+    EHwrCtrlIdBtnSpace,
     
-	EHwrCtrlIdBtnEnter,
-	EHwrCtrlIdBtnSpace,
     EHwrCtrlId3Page1Btn,
     EHwrCtrlId3Page2Btn,
     EHwrCtrlId3Page3Btn,
 	EHwrCtrlId2Page1Btn,
-	EHwrCtrlId2Page2Btn
+	EHwrCtrlId2Page2Btn,
+	EHwrCtrlIdNumSymbolTableVkb,
+	EHwrCtrlIdNumSymbolTableVkbGroup
     };
 #endif //PENINPUTFINGERHWRARCONTROLID_H
 

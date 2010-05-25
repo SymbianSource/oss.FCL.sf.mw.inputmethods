@@ -42,6 +42,7 @@ SOURCE    peninputfingerhwrarsymboltable.cpp
 SOURCE    peninputfingerhwrarindicator.cpp
 SOURCE    hbufcarrayar.cpp 
 SOURCE    peninputfingerhwrarwritingwnd.cpp
+SOURCE    peninputfingerhwrarnumsymboltable.cpp
 
 USERINCLUDE     ../inc
 

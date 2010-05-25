@@ -64,4 +64,4 @@
 -c8,8 qgn_indi_input_hwr_arabic_symbol_table.svg
 -c8,8 qgn_indi_input_hwr_arabic_writing_area.svg
 -c8,8 qgn_indi_input_arabic_backspace.svg
--c8,8 qgn_indi_input_arabic_enter.svg
+-c8,8 qgn_indi_input_enter.svg

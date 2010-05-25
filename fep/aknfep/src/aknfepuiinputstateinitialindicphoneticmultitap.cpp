@@ -37,7 +37,7 @@
 #include <PtiDefs.h>
 #include <aknsctdialog.h>
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <EikEnv.h>
 #include <Aknutils.h>
 #define PHONETIC_SEPARATOR 0x2e

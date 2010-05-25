@@ -548,6 +548,25 @@ public:
      *               1 is landscape.
      */
     void SetDefaultArabicFingerHwrOrientation(TInt aValue);
+    /**
+     * Returns a value of default arabic finger hwr number mode.
+     *
+     * @since 5.2
+     * @return 0 is portrait.
+     *         1 is landscape.
+     */
+    TInt DefaultArabicNumberMode() const;
+    
+    /**
+     * Set a value of default arabic finger hwr number mode.
+     *
+     * @since 5.2
+     * @param aValue new value set to default arabic finger hwr number mode 
+     * ared data item which represents the default number mode.
+     *               0 is latin nubmer.
+     *               1 is arabic native number.
+     */
+    void SetDefaultArabicNumberMode(TInt aValue);
 private:
     /**
      * C++ Constructor

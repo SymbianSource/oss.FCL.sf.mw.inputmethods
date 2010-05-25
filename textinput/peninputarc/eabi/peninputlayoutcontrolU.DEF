@@ -702,7 +702,7 @@ EXPORTS
 	_ZTI26CPeninputPenTraceDecorator @ 701 NONAME ; #<TI>#
 	_ZTV26CPeninputPenTraceDecorator @ 702 NONAME ; #<VT>#
 	_ZN22CFepLayoutMultiLineIcf17TooltipBubbleCtrlEv @ 703 NONAME
-	_ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16RK5TRect @ 704 NONAME
+	_ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16RK5TRecti @ 704 NONAME
 	_ZN22CFepLayoutMultiLineIcf11HideTooltipEv @ 705 NONAME
 	_ZTI18CTooltipBubbleCtrl @ 706 NONAME
 	_ZTV18CTooltipBubbleCtrl @ 707 NONAME
@@ -731,4 +731,14 @@ EXPORTS
 	_ZN14CFepUiBaseCtrl21CancelExtResponseAreaEv @ 730 NONAME
 	_ZN14CFepUiBaseCtrl21EnableExtResponseAreaEiRK5TRect @ 731 NONAME
 	_ZN11CButtonBase14BaseConstructLEv @ 732 NONAME
+	_ZN11CBubbleCtrl20HandleResourceChangeEi @ 733 NONAME
+	_ZN11CBubbleCtrl7SetRectERK5TRect @ 734 NONAME
+	_ZN12CFepUiLayout20DisableLayoutDrawingEi @ 735 NONAME
+	_ZN12CFepUiLayout21NotDrawToLayoutDeviceEv @ 736 NONAME
+	_ZN14CFepUiBaseCtrl12BitmapDeviceEv @ 737 NONAME
+	_ZN14CFepUiBaseCtrl16MaskBitmapDeviceEv @ 738 NONAME
+	_ZN14CFepUiBaseCtrl5BitGcEv @ 739 NONAME
+	_ZN14CFepUiBaseCtrl9BkMaskBmpEv @ 740 NONAME
+	_ZN16CVirtualKeyboard20HandleResourceChangeEi @ 741 NONAME
+	_ZN18CFepLayoutPopupWnd20HandleResourceChangeEi @ 742 NONAME
 

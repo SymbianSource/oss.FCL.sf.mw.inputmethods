@@ -86,7 +86,8 @@ enum TPluginCmd
     EPluginSwitchToLandscape,
     EPluginSwitchMode,
     EPluginUpdatePenInputITIStatus,
-	EPluginEnableFetchDimState
+	EPluginEnableFetchDimState,
+    EPluginArabicNumModeChanged
     };
 
 /** 
@@ -848,6 +849,13 @@ private:
     void SetICFTextForSpellL();
     
     void SendMatchListCmd(const RArray<TPtrC>& aList);
+	/**
+	 * Initialize the Menu item in Option Menu for Arabic Finger HWR
+	 *
+	 * @CAknFepUiInterfaceMenuPane* aMenuPane The menu pane used to add more menu items
+	 */
+	void InitMenuItemForArabicFingerHwrL(CAknFepUiInterfaceMenuPane* aMenuPane);
+	
 private:    // Data
     
     /**
@@ -989,6 +997,7 @@ private:    // Data
     
     TBool iLaunchMenu;
     TBool iInMenu; // need to check whether it can be replaced by iLaunchMenu
+    TUint iCurMFNECap;
     MCoeFepAwareTextEditor* iCurEditor;
     MCoeFepAwareTextEditor* iOldFepAwareEditor;
 
@@ -1071,6 +1080,8 @@ private:    // Data
     TBool iCurrentDimState;
     
     TBool iLaunchSCTInSpell;
+	
+    TBool iFocuschangedForSpellEditor;
     };
 
 class CConnectAo : public CActive

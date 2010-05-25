@@ -30,6 +30,7 @@ class CPeninputFingerHwrArStateManagerBase;
 class CPeninputFingerHwrArDataStore;
 class CRepository;
 class CPeninputFingerHwrArWnd;
+class CPeninputFingerHwrArCallBack;
 
 // class DECLARATIONS
 
@@ -155,7 +156,13 @@ public:
      * @return none
      */
     void OnDeActivate();
-    
+    void CallBackL();
+	
+	/**
+	 * Check if the First string will be allowed to submitted directly to editor without selection 
+	 */
+	TBool IsAllowedToSubmitDefaultCandiate();
+	
 public:
     //from MEventObserver;    
     /**
@@ -453,6 +460,21 @@ private:
      */
     void ChangeCurStateToStandby();
 	
+    /**
+     * handler of NumMapping changed event.
+     *  
+     * @since S60 5.0
+     * @return none
+     */
+    void OnNumMappingChangedL();
+    /**
+     * revert special characters direction before sending to editor.
+     * 
+     * @since S60 v5.2
+     * @return none 
+     */
+    TBool RevertSymbolDirection(TInt aInChar, TInt & aOutChar);
+    
 private:
     
     /**
@@ -489,11 +511,23 @@ private:
      */
     CRepository* iRepositorySetting;
     
+    /**
+     * repository object.
+     */
+//    CRepository* iCommonEngineRepository;    
+    
 	/**
 	 * Check if the stroke of drawing the character on the 
 	 * HWR box is started
 	 */
 	TBool iIsStrokeOfDrawingCharacerStarted;
+	
+	CPeninputFingerHwrArCallBack* iCallBack;
+	
+	/**
+	 * Check if the editor is MFNE
+	 */
+	TBool iIsEditorMFNE;
 	
     /**
      * Last overlap index.

@@ -96,7 +96,7 @@
 #include <PtiEngine.h> 
 #include <PtiDefs.h>
 #include <PtiUserDicEntry.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 // CONSTANTS
 
 /**
@@ -382,18 +382,35 @@ TInt CAknFepUIManagerWestern::SupportLanguage(TInt aMode) const
         {
         case ELatin:
             {
-            if ( iLanguage == ELangTaiwanChinese ||
-                 iLanguage == ELangHongKongChinese ||
-                 iLanguage == ELangPrcChinese ||
-                 iLanguage == ELangJapanese || 
-                 iLanguage == ELangHindi )
+            switch ( iLanguage )
+                {
+                case ELangTaiwanChinese:
+                    {
+                    lang = ELangEnglish_Taiwan;
+                    break;
+                    }
+                case ELangHongKongChinese:
+                    {
+                    lang = ELangEnglish_HongKong;
+                    break;
+                    }
+                case ELangPrcChinese:
+                    {
+                    lang = ELangEnglish_Prc;
+                    break;
+                    }
+                case ELangJapanese:
+                case ELangHindi:
                 {
                 // Chinese and Japanese languages uses always English as a latin language.
                 lang = ELangEnglish;
+                    break;
                 }
-            else
+                default:
                 {
                 lang = iLanguage;
+                    break;
+                    }
                 }
             }
             break;

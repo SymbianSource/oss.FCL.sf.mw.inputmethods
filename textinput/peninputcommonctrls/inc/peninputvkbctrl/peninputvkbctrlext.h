@@ -186,6 +186,8 @@ private: // Data
      * The left top point
      */
     TPoint iLeftTopPoint;
+protected:
+    virtual IMPORT_C void HandleResourceChange(TInt aType);
     };  
 
 #endif // C_CPENINPUTVKBCTRLEXT_H

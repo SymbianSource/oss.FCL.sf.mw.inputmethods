@@ -1035,13 +1035,6 @@ void CPeninputFingerHwrLayout::OnHwrStrokeStartedL()
         
         // The default candidate cell is not highlight
         iDataStore->SetHighlight(EFalse);
-              
-        iHwrWnd->UpdateLayout(EFalse);
-        
-        // Show two empty dropdown list       
-        iHwrWnd->CandidateList()->ResetAndClear();
-        iHwrWnd->PredictiveList()->ResetAndClear();
-        
 #else
         if(iDataStore->PrimaryRange() == ERangeEnglish)
             {
@@ -1052,18 +1045,6 @@ void CPeninputFingerHwrLayout::OnHwrStrokeStartedL()
         
         // The default candidate cell is not highlight
         iDataStore->SetHighlight(EFalse);      
-        iHwrWnd->UpdateLayout(EFalse);
-        
-        // Show empty upper row in Native range
-        // Show fix English Symbol in English range
-        if(iDataStore->PrimaryRange() != ERangeEnglish)
-            {
-            iHwrWnd->CandidateList()->ResetAndClear();
-            }
-            
-        // Show empty lower row
-        iHwrWnd->PredictiveList()->ResetAndClear();
-        
 #endif
         }
         

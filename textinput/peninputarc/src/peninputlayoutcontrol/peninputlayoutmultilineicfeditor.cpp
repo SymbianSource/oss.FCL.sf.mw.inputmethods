@@ -345,7 +345,6 @@ void CFepLayoutMultiLineIcfEditor::DeletePromptTextL()
 
 void CFepLayoutMultiLineIcfEditor::RecalculatePosByNewPromptTextL(const TDesC& aNewPromptText)
     {
-    // recalculate cursor pos
     AdjustSelectionL(TCursorSelection(iTextView->Selection().iCursorPos + aNewPromptText.Length() - iPromptTextLen,
                      iTextView->Selection().iAnchorPos + aNewPromptText.Length() - iPromptTextLen));
 
@@ -357,7 +356,6 @@ void CFepLayoutMultiLineIcfEditor::RecalculatePosByNewPromptTextL(const TDesC& a
     iPreAutoEndPos += (aNewPromptText.Length() - iPromptTextLen);
     iPreTextSelStartPos += (aNewPromptText.Length() - iPromptTextLen);
     iPreTextSelEndPos += (aNewPromptText.Length() - iPromptTextLen);
-
     }
 
 const HBufC* CFepLayoutMultiLineIcfEditor::PromptText()
@@ -367,7 +365,6 @@ const HBufC* CFepLayoutMultiLineIcfEditor::PromptText()
 	
 void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBool aCleanContent)
     {
-    
     if ( aCleanContent )
     	{
     	//clean all the content (include prompt text) on the ICF
@@ -379,15 +376,24 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBoo
         iNoMatchState = EFalse;
     	}
     else 
-        {
-        /*if ( ( ( !iInitPromptText && aPromptText.Length() == 0 ) )|| 
+        {   
+        if ( ( ( !iInitPromptText && aPromptText.Length() == 0 ) )|| 
             ( iInitPromptText && *iInitPromptText == aPromptText && 
             iPromptText && TextWidth(*iPromptText) <= iViewRect.Width()) )
     	    {
     	    //prompt text has not been change then need not to be reset
     	    //but iLineSeparator may be changed, need reset prompt text
-    	    return;
-            }*/
+            TBool newLineSeparator = iLineSeparator;
+            if ( !iLineSeparator )
+                {
+                newLineSeparator = ( TBidiText::TextDirectionality( aPromptText )
+                                                     == TBidiText:: ERightToLeft );
+                }
+            if ( newLineSeparator == iLineSeparator )
+                {
+                return;
+                }
+            }
         //prompt text need to be reset and not clean the content
         iRichText->DeleteL( 0,  iPromptTextLen );
         iTextView->HandleInsertDeleteL(TCursorSelection(0, 0), iPromptTextLen );
@@ -549,6 +555,7 @@ void CFepLayoutMultiLineIcfEditor::SetMfneTextL(const TFepInputContextFieldData&
                 iRichText->DeleteL(iPromptTextLen, delLen );
                 iTextView->HandleInsertDeleteL(TCursorSelection(iPromptTextLen, iPromptTextLen), 
                                                delLen);
+                iTextView->SetSelectionL(TCursorSelection(iPromptTextLen, iPromptTextLen));
                 }
             ptr.Copy(icfdata.iText);
             }
@@ -1635,7 +1642,8 @@ void CFepLayoutMultiLineIcfEditor::SetInfoBubbleCtrlSize(const TSize& aSize)
     }
 
 void CFepLayoutMultiLineIcfEditor::ShowTooltipL( const TDesC& aText, 
-		                                         const TRect& aRect )
+		                                         const TRect& aRect,
+		                                         TInt aLangCode )
 	{
 	if ( !iTooltip )
 	    {
@@ -1643,6 +1651,7 @@ void CFepLayoutMultiLineIcfEditor::ShowTooltipL( const TDesC& aText,
 	    }
 
     iTooltip->SetTextL( aText );
+    iTooltip->SetLangCode( aLangCode );
     TPoint tl( 0, 0 ), br( 0, 0 );
     InlineTextPos( tl, br );    
     
@@ -1685,6 +1694,12 @@ void CFepLayoutMultiLineIcfEditor::ShowTooltipL( const TDesC& aText,
 	    	tooltipRect.iTl.iX += moveX;
 	    	}
 	    }		
+
+	if (( iTooltip->Rect().iTl != tooltipRect.iTl ) && ( iTooltip->Rect().iBr != tooltipRect.iBr ))
+	    {
+        iTooltip->Close();
+	    }
+
     iTooltip->Popup( tooltipRect );
 	}
 

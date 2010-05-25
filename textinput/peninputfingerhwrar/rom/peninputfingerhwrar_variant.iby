@@ -24,7 +24,7 @@
 
 #ifdef __PEN_SUPPORT
 #ifdef FF_CAPACITIVE_DISPLAY
-#ifdef __HANDWRITING_RECOGNITION_INPUT
+#ifdef FF_ARABIC_HANDWRITING_RECOGNITION_INPUT
 
 
 data = DATAZ_\RESOURCE_FILES_DIR\peninputfingerhwrarwnd.rsc    RESOURCE_FILES_DIR\peninputfingerhwrarwnd.rsc
@@ -33,7 +33,7 @@ data = DATAZ_\RESOURCE_FILES_DIR\apps\peninputfingerhwrar.mif       RESOURCE_FIL
 ECOM_PLUGIN(peninputfingerhwrar.dll, peninputfingerhwrar.rsc)
 
 
-#endif //__HANDWRITING_RECOGNITION_INPUT
+#endif //FF_ARABIC_HANDWRITING_RECOGNITION_INPUT
 #endif //FF_CAPACITIVE_DISPLAY
 #endif // __PEN_SUPPORT
 

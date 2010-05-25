@@ -57,6 +57,7 @@
 #include "peninputsplitqwertylayout.h"
 
 #include <peninputaknvkbpreviewbubblerenderer.h>
+#include <peninputlongpressbutton.h>
 
 // Constants
 const TInt KPeninputVkbWndInvalidIndex = -1;
@@ -481,7 +482,82 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
     
     switch ( aEventType )
         {
-        case EEventButtonUp:
+        case EPeninputLayoutEventMultiRangeLongPress:
+            {
+            const TInt range = CPeninputDataConverter::AnyToInt(
+                iLayoutContext->RequestData(EPeninputDataTypeCurrentRange));
+            
+            const TInt langId = CPeninputDataConverter::AnyToInt(
+                iLayoutContext->RequestData(EPeninputDataTypeInputLanguage));
+
+            if ( aCtrl->ControlId() == EPeninutWindowCtrlIdRangeBtn )
+                {
+                if ( range == ERangeAccent )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
+                        {
+                        ChangeRange(ERangeNative);
+                        }
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
+                        {
+                        ChangeRange(ERangeEnglish);
+                        }
+                    }
+                else if ( range == ERangeNative )
+                    {            
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNativeNumber ) )
+                        {
+                        
+                        if ( langId != ELangArabic && langId != ELangFarsi 
+                                && langId != ELangUrdu && langId != ELangThai )
+                            {
+                                ChangeRange(ERangeNativeNumber);
+                            }
+                        }
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNumber ) )
+                        {
+                        if ( langId != ELangArabic && langId != ELangFarsi 
+                                && langId != ELangUrdu && langId != ELangThai )
+                            {
+                                ChangeRange(ERangeNumber);
+                            }                       
+                        }
+                    }
+                else if ( range == ERangeEnglish )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNumber ) )
+                        {
+                        ChangeRange(ERangeNumber);
+                        }
+                    }
+                else if ( range == ERangeNativeNumber )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
+                        {
+                        ChangeRange(ERangeNative);
+                        }                   
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
+                        {
+                        ChangeRange(ERangeEnglish);
+                        }
+                    }
+                else if ( range == ERangeNumber )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
+                        {
+                        ChangeRange(ERangeNative);
+                        }                   
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
+                        {
+                        ChangeRange(ERangeEnglish);
+                        }                   
+                    }
+
+                TRAP_IGNORE( UpdateRangeCtrlsL() );
+                }
+            }
+            break;
+        case EPeninputLayoutEventMultiRange:
             {
             if ( ctrlId == EPeninutWindowCtrlIdRangeBtn )
                 {
@@ -1293,12 +1369,13 @@ void CPeninputSplitQwertyWindow::ConstructL()
 //
 void CPeninputSplitQwertyWindow::AddRangeBarL()
     {
-    CAknFepCtrlCommonButton* button = CAknFepCtrlCommonButton::NewL(
-                                        UiLayout(), 
-                                        EPeninutWindowCtrlIdRangeBtn,
-                                        KAknsIIDQsnFrFunctionButtonNormal,
-                                        KAknsIIDQsnFrFunctionButtonPressed,
-                                        KAknsIIDQsnFrFunctionButtonInactive );
+    CAknFepCtrlLongPressButton* button = CAknFepCtrlLongPressButton::NewL( 
+            UiLayout(), 
+            EPeninutWindowCtrlIdRangeBtn, 
+            0xffff, 0,
+            KAknsIIDQsnFrFunctionButtonNormal,
+            KAknsIIDQsnFrFunctionButtonPressed,
+            KAknsIIDQsnFrFunctionButtonInactive );                
 
     CleanupStack::PushL( button ); 
     button->SetResourceId( R_PENINPUT_LAYOUT_VKB_RANGE_DEFAULT );

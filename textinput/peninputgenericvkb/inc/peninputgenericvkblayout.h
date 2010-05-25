@@ -194,6 +194,8 @@ private:
      * @return pointer of a HBufC storing the string in it
      */ 
     HBufC* ReadTextInfoHBufCL( TUint16* aStartPtr, TInt aLength );
+    
+    TBool TranslateMirrorUnicode( TUint16 aInputCode, TUint16& aOutputCode );
         
 private:
 

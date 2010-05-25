@@ -912,7 +912,7 @@ RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_pinyin_spelling_drop_down_list
 
     colormajorskinid=EAknsMajorSkin;
     textcolorgrp=EAknsMinorQsnTextColors;
-    textcoloridx=59;
+    textcoloridx=64;
 
     bordercolormajorskinid=EAknsMajorSkin;
     bordercolorgrp=EAknsMinorQsnOtherColors;
@@ -979,7 +979,7 @@ RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_punc_drop_down_list
 
     colormajorskinid=EAknsMajorSkin;
     textcolorgrp=EAknsMinorQsnTextColors;
-    textcoloridx=59;
+    textcoloridx=64;
 
     bordercolormajorskinid=EAknsMajorSkin;
     bordercolorgrp=EAknsMinorQsnOtherColors;
@@ -1051,7 +1051,7 @@ RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_pinyin_cand_drop_down_list
 
     colormajorskinid=EAknsMajorSkin;
     textcolorgrp=EAknsMinorQsnTextColors;
-    textcoloridx=59;
+    textcoloridx=64;
 
     bordercolormajorskinid=EAknsMajorSkin;
     bordercolorgrp=EAknsMinorQsnOtherColors;
@@ -1120,7 +1120,7 @@ RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_akn_fep_normal_cand_drop_down_list
 
     colormajorskinid=EAknsMajorSkin;
     textcolorgrp=EAknsMinorQsnTextColors;
-    textcoloridx=59;
+    textcoloridx=64;
 
     bordercolormajorskinid=EAknsMajorSkin;
     bordercolorgrp=EAknsMinorQsnOtherColors;

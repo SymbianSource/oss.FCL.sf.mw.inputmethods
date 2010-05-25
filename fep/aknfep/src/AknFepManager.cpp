@@ -69,7 +69,7 @@
 #include <frmtview.h>
 #include <aknedformaccessor.h>
 
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <avkon.mbg>
 
 #include "aknconsts.h"
@@ -1248,8 +1248,7 @@ TKeyResponse CAknFepManager::HandleKeyEventL(TUint aCode, TKeyPressLength aLengt
         							&wordIndexToSelect );
                             
                         	if( iQwertyInputMode 
-                        	    && ( iExactWordPopupContent->IsPopUpVisible() 
-                        	    	|| ( iFepPluginManager && iFepPluginManager->IsTooltipOpenOnFSQ() ) )
+                        	    && IsExactWordPopUpShown()
                         	    && aCode == EKeyUpArrow )
 	                        	{
 		                        iExactWordPopupContent->HidePopUp();
@@ -1515,10 +1514,7 @@ TKeyResponse CAknFepManager::HandleKeyEventL(TUint aCode, TKeyPressLength aLengt
                     response = EKeyWasConsumed;
                     }
                 SendEventsToPluginManL( EPluginHideTooltip );
-                if(iExactWordPopupContent && iExactWordPopupContent->IsPopUpVisible())
-                    {
-                    iExactWordPopupContent->HidePopUp();
-                    }               
+                iExactWordPopupContent->HidePopUp();
 #else
                 else if (FepUI()->HandleKeyL(aCode, aLength))
                     {
@@ -1544,10 +1540,7 @@ TKeyResponse CAknFepManager::HandleKeyEventL(TUint aCode, TKeyPressLength aLengt
             // also need to check and close tooltip on it.
 			SendEventsToPluginManL( EPluginHideTooltip );
 
-			if(iExactWordPopupContent && iExactWordPopupContent->IsPopUpVisible())
-				{
-		        iExactWordPopupContent->HidePopUp();
-				}
+		    iExactWordPopupContent->HidePopUp();
         	if ( IsFlagSet( EFlagInsideInlineEditingTransaction ) )
             	{
             	TryRemoveNoMatchesIndicatorL();
@@ -3312,7 +3305,10 @@ TBool CAknFepManager::HandleQwertyKeyEventL(const TKeyEvent& aKeyEvent, TKeyResp
             aResponse = EKeyWasConsumed;
 #ifdef RD_INTELLIGENT_TEXT_INPUT
             // Predictive QWERTY changes ---->
-            ShowExactWordPopupIfNecessaryL();
+            if ( iLangMan->IsSplitView() || ( iFepPluginManager && !iFepPluginManager->EnableITIOnFSQ()))
+                {
+                ShowExactWordPopupIfNecessaryL();
+                }
             // Predictive QWERTY changes <----
             }
 #endif //RD_INTELLIGENT_TEXT_INPUT
@@ -3828,6 +3824,12 @@ void CAknFepManager::HandleInputCapabilitiesEventL( TInt aEvent, TAny* /*aParams
         {
         case CAknExtendedInputCapabilities::MAknEventObserver::EActivatePenInputRequest:
             SendEventsToPluginManL( EPluginEditorActivate );
+            break;
+        case CAknExtendedInputCapabilities::MAknEventObserver::EClosePenInputRequest:
+            if ( iFepPluginManager )
+                {
+                iFepPluginManager->ClosePluginInputModeL( EFalse );
+                }
             break;
         case CAknExtendedInputCapabilities::MAknEventObserver::EPointerEventReceived:
 
@@ -4462,6 +4464,16 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
             iCaseMan->SetCurrentCase(EAknEditorLowerCase);
             break;
         case EAknCmdEditModeNumber:
+            //if current input is arabic finger hwr, then change the default 
+            //number mode.
+            if(iSharedDataInterface->InputTextLanguage() == ELangArabic 
+               && iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
+                {
+                iSharedDataInterface->SetDefaultArabicNumberMode(0);
+                HandleChangeInFocus();
+                SendEventsToPluginManL(EPluginArabicNumModeChanged, 0);                
+                break;
+                }
         case EJapanFepCmdEditModeNumber:
         case EChinFepCmdModeNumber:
             SendEventsToPluginManL( EPluginCloseMode, EFalse );
@@ -4475,10 +4487,22 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
             TryChangeModeL(ENumber);
             break;
         case EAknCmdEditModeArabicIndicNumber:
-            SendEventsToPluginManL( EPluginCloseMode, EFalse );
-            HandleChangeInFocus();
-            iLanguageCapabilities.iLocalDigitType = EDigitTypeArabicIndic;
-            TryChangeModeL(ENativeNumber);
+            //if current input is arabic finger hwr, then change the default 
+            //number mode.
+            if(iSharedDataInterface->InputTextLanguage() == ELangArabic 
+               && iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
+                {
+                iSharedDataInterface->SetDefaultArabicNumberMode(1);
+                SendEventsToPluginManL(EPluginArabicNumModeChanged, 1);
+                HandleChangeInFocus();
+                }
+            else
+                {
+                SendEventsToPluginManL( EPluginCloseMode, EFalse );
+                HandleChangeInFocus();
+                iLanguageCapabilities.iLocalDigitType = EDigitTypeArabicIndic;
+                TryChangeModeL(ENativeNumber);
+                }
             break;
             /*For Eastern Arabic Numeric*/
         case EAknCmdEditModeEasternArabicIndicNumber:
@@ -4603,29 +4627,14 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
             if ( (iLanguageCapabilities.iInputLanguageCode == ELangThai ) &&
                  (iMode!=ENumber && iMode != ENativeNumber ) )
                 {
-#ifdef RD_INTELLIGENT_TEXT_INPUT                 	
-                // if itut call Thai multitap HandleCommandL to Launch SCT	
-                if(!iQwertyInputMode)
-                    {
-#endif                    	
-                    TInt resourceId = 0;
-                    if (iAknFepThaiSCTSelector)
-                         {
-                        resourceId = iAknFepThaiSCTSelector->ThaiSCRResourceId(PreviousChar(),EPtiKeyStar);
-                        }
-                    LaunchSpecialCharacterTableL(resourceId, 
-                                                 aCommandId==EAknCmdEditInsertSymbol, 
-                                                 aCommandId==EAknCmdEditInsertSmiley);
-#ifdef RD_INTELLIGENT_TEXT_INPUT                 	                    
-                    }
-                else
-                    {
-                    CAknFepUIManagerWestern* westernUIManager = static_cast<CAknFepUIManagerWestern*>(FepUI());
-                    LaunchSpecialCharacterTableL(westernUIManager->ThaiSCTResourceId(static_cast<TChar>(PreviousChar()),EPtiKeyStar),
-                                                 aCommandId==EAknCmdEditInsertSymbol, 
-                                                 aCommandId==EAknCmdEditInsertSmiley);                    
-                    }
-#endif                    
+				TInt resourceId = 0;
+				if (iAknFepThaiSCTSelector)
+					{
+					resourceId = iAknFepThaiSCTSelector->ThaiSCRResourceId(PreviousChar(),EPtiKeyStar);
+					}
+				LaunchSpecialCharacterTableL(resourceId, 
+											 aCommandId==EAknCmdEditInsertSymbol, 
+											 aCommandId==EAknCmdEditInsertSmiley);                  
                 }
             else
             {
@@ -4971,29 +4980,25 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
             SendEventsToPluginManL( EPluginSwitchToLandscape);
             }
             break;
-        case EPenInputCmdSwitchToVkeyBasedInput:
+        /*case EPenInputCmdSwitchToVkeyBasedInput:
             {
             SendEventsToPluginManL( EPluginCloseMode, EFalse );
             HandleChangeInFocus();            
             SendEventsToPluginManL( EPluginSwitchMode);
             }
-            break;
+            break;*/
         case EPenInputCmdWritingSpeed:
             {
-            SetStopProcessFocus(ETrue);
-            HandleChangeInFocus();
+            SetStopProcessFocus(ETrue,EFalse);
             LaunchWritingSpeedPopupListL();
-            HandleChangeInFocus();
-            iStopProcessFocus = EFalse;
+			SetStopProcessFocus(EFalse);
             }
             break;
         case EPenInputCmdGuidingLine:
             {
-            SetStopProcessFocus(ETrue);
-            HandleChangeInFocus();
+            SetStopProcessFocus(ETrue,EFalse);
             LaunchGuidingLinePopupListL();
-            HandleChangeInFocus();
-            iStopProcessFocus = EFalse;
+			SetStopProcessFocus(EFalse);
             }
             break;
         default:
@@ -8482,7 +8487,7 @@ void CAknFepManager::ShowExactWordPopupIfNecessaryL()
     // TryPopExactWordInOtherPlaceL directly after extracting them from
     // the OLD ShowExactWordPopupIfNecessaryL.
     iExactWordPopupContent->HidePopUp();
-    SendEventsToPluginManL(EPluginHideTooltip);
+//    SendEventsToPluginManL(EPluginHideTooltip);
     if (!iWesternPredictive || !IsFlagSet(EFlagInsideInlineEditingTransaction))
         return;
 
@@ -8493,7 +8498,7 @@ void CAknFepManager::ShowExactWordPopupIfNecessaryL()
         return;
         }
 
-    TryPopExactWordInICFL();
+    //TryPopExactWordInICFL();
     if (iFepPluginManager && !iFepPluginManager->IsTooltipOpenOnFSQ())
         TryPopExactWordInOtherPlaceL();
     }
@@ -8506,21 +8511,30 @@ void CAknFepManager::TryPopExactWordInICFL()
 	
     // Before open tooltip,  
     // also need to check and close tooltip on it.
-    SendEventsToPluginManL(EPluginHideTooltip);
+//    SendEventsToPluginManL(EPluginHideTooltip);
     if (!iWesternPredictive || !IsFlagSet(EFlagInsideInlineEditingTransaction))
+        {
+        SendEventsToPluginManL(EPluginHideTooltip);
         return;
+        }
 
     TInt activeIdx, secondaryIdx;
     GetCandidatesWithIndexL(NULL, activeIdx, secondaryIdx);
     if (activeIdx == secondaryIdx)
+        {
+        SendEventsToPluginManL(EPluginHideTooltip);
         return;
+        }
 
     CDesCArray* candidates = new (ELeave) CDesCArrayFlat(16);
     CleanupStack::PushL(candidates);
     GetCandidatesWithIndexL(candidates, activeIdx, secondaryIdx);
     CleanupStack::PopAndDestroy(candidates);
     if (activeIdx == secondaryIdx)
+        {
+        SendEventsToPluginManL(EPluginHideTooltip);
         return;
+        }
 
     if (iFepPluginManager)
         SendEventsToPluginManL(EPluginShowTooltip, secondaryIdx);
@@ -12983,7 +12997,8 @@ void CAknFepManager::UpdateIndicators()
            // Add This condition for  Phonebook, ReTe, PF52.50_2008_wk32: 
            // Navigation bar disappears after tapping find pane and then returning back to Names list view.
            if (!(editingStateIndicator == (MAknEditingStateIndicator*)iIndicator &&
-               ( iFepPluginManager && iFepPluginManager->PluginInputMode() == EPluginInputModeItut ) &&
+               ( iFepPluginManager && ( iFepPluginManager->PluginInputMode() == EPluginInputModeItut 
+            		                    || iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ) ) &&
                IsFindPaneEditor()))
                {
                editingStateIndicator->SetState(newState);
@@ -15106,7 +15121,12 @@ TKeyResponse CAknFepManager::HandleNaviEventOutsideInlineEditL(TUint aCode,
                                                                TKeyPressLength aLength)
     {
     TKeyResponse response = EKeyWasNotConsumed;
-
+    if ( iFepPluginManager && iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr 
+    	 && aCode == EKeyBackspace )
+    	{
+        return response;
+    	}
+    
     if (TryHandleCommonArrowAndBackspaceFunctionalityL(aCode, response))
         {
         return response;
@@ -18216,7 +18236,8 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
         }
     if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == charMap && 
        ( R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_LATIN_ONLY == currentEditorSCTResId || 
-         R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG == currentEditorSCTResId ) )
+         R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG == currentEditorSCTResId || 
+         R_AVKON_URL_SPECIAL_CHARACTER_TABLE_DIALOG == currentEditorSCTResId) )
         {
         TBool isEmpty = ETrue;
         TRAP_IGNORE(isEmpty = GetSctLengthL(charMap));
@@ -18378,7 +18399,28 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
             SetCcpuFlag(ECcpuStateSupressCursorMoveToEnd);
 			// after closing SCT, need change dim state.
             SendEventsToPluginManL(EPluginEnableFetchDimState);
-
+#ifdef RD_SCALABLE_UI_V2 
+            iNotifyPlugin = EFalse;
+            if( iFepFullyConstructed && iFepPluginManager)
+                {
+                 if (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
+                     iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
+                     iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
+                    {
+                    SetStopProcessFocus(EFalse);
+                    }            
+                 else
+                    {
+                    HandleChangeInFocus();
+                    }
+                }
+            else
+                {
+                HandleChangeInFocus();
+                }   
+            // Set the flag, not change focus for next.
+            iNotifyPlugin = ETrue;
+#endif            
 
             //Removes auto-complition part if SCT is launched and any special character is selected 
 #ifdef RD_INTELLIGENT_TEXT_INPUT
@@ -18431,9 +18473,6 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                                                                    iUncommittedText.iAnchorPos);
                                 }
                             }
-                        // Get new InputCapabilities immediatly.
-                        CCoeEnv* coeEnv = CCoeEnv::Static();
-                        iInputCapabilities = static_cast<const CCoeAppUi*>(coeEnv->AppUi())->InputCapabilities();
                         if (EditorState())
                             {
                             if (charAsDesc[0] == CEditableText::EParagraphDelimiter)
@@ -18474,28 +18513,6 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                         }
                     }
                 }
-#ifdef RD_SCALABLE_UI_V2 
-            iNotifyPlugin = EFalse;
-            if( iFepFullyConstructed && iFepPluginManager)
-                {
-                 if (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
-                     iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
-                     iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
-                    {
-                    SetStopProcessFocus(EFalse);
-                    }            
-                 else
-                    {
-                    HandleChangeInFocus();
-                    }
-                }
-            else
-                {
-                HandleChangeInFocus();
-                }   
-            // Set the flag, not change focus for next.
-            iNotifyPlugin = ETrue;
-#endif
             }
         else
             {
@@ -18795,11 +18812,13 @@ TBool CAknFepManager::HandleSelModeArrowKeyEventL(const TKeyEvent& aKeyEvent,
     	iInputCapabilities.FepAwareTextEditor()->
     		GetCursorSelectionForFep(currentEditorSelection);
     	}    
-        
-	if(!IsMfneEditor() &&
-		(PluginInputMode() == EPluginInputModeItut ||
-		 PluginInputMode() == EPluginInputModeFSQ)  &&
-		 currentEditorSelection.Length() != 0)
+    
+    TInt inputMode = PluginInputMode();
+    TBool isArabicFingerHwr = (inputMode == EPluginInputModeFingerHwr &&
+	                           GetInputLanguageFromSharedDataInterface() == ELangArabic);	
+	if(!IsMfneEditor() && (inputMode == EPluginInputModeItut || 
+		                   inputMode == EPluginInputModeFSQ  || isArabicFingerHwr)  
+		               && currentEditorSelection.Length() != 0)
     	{
     	
         if ((aKeyEvent.iScanCode == EStdKeyLeftArrow) || (aKeyEvent.iScanCode == EStdKeyRightArrow)) 
@@ -20722,12 +20741,18 @@ void CAknFepManager::SetChangeModeByShiftAndSpace( TBool aFlag )
 
 void CAknFepManager::HideExactWordPopUp()
 	{
-	iExactWordPopupContent->HidePopUp();	
+	iExactWordPopupContent->HidePopUp();
+	SendEventsToPluginManL( EPluginHideTooltip );
 	}
 
 TBool CAknFepManager::IsExactWordPopUpShown()
 	{
-return iExactWordPopupContent->IsPopUpVisible();	
+#ifdef RD_SCALABLE_UI_V2 
+	return iExactWordPopupContent->IsPopUpVisible()
+           || ( iFepPluginManager && iFepPluginManager->IsTooltipOpenOnFSQ() );
+#else
+	return iExactWordPopupContent->IsPopUpVisible();
+#endif // RD_SCALABLE_UI_V2
 	}
 void CAknFepManager::StopDisplayingMenuBar()
     {

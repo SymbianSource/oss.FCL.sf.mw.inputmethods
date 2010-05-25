@@ -31,6 +31,7 @@ class CPeninputFingerHwrArLafManager;
 class CPeninputArabicFingerHwrSymbolTable;
 class CPeninputArabicFingerHwrIndicator;
 class CPeninputArabicFingerHwrWritingWnd;
+class CPeninputArabicFingerHwrNumSymbolTable;
 
 /**
  *  class CPeninputFingerHwrArWnd.
@@ -240,7 +241,16 @@ public: // show symbol table page
      * @return none
      */
     void ShowSymbolPage( TInt aPageNo, TInt aPos );
-    
+    /**
+     * accept editor's number mapping restriction.
+     * 
+     * @since S60 v5.0
+     * @param aNumMapping a string contains numbers and related char. max length is 16.
+     * @return none
+     */
+    void SetNumericMapping( const TDesC& aNumMapping );
+
+
 public: //child control access
     
     /**
@@ -260,13 +270,13 @@ public: //child control access
      */    
     CFepCtrlDropdownList* CandidateList();
     
-    /**
-     * retrieve the number candicate list control. 
-     * 
-     * @since Symbian TB9.2
-     * @return pointer to candicate list 
-     */    
-    CFepCtrlDropdownList* NumCandidateList();
+//    /**
+//     * retrieve the number candicate list control. 
+//     * 
+//     * @since Symbian TB9.2
+//     * @return pointer to candicate list 
+//     */    
+//    CFepCtrlDropdownList* NumCandidateList();
 	
     /**
      * dim arrow buttons
@@ -327,7 +337,8 @@ public: // symbol table & candidate list
      */
     TBool IsSymbolTableShowingUp();
 	
-	/**
+
+    /**
      * Check if the candidate list was opened up
      * 
      * @since Symbian TB9.2
@@ -356,7 +367,21 @@ public: // symbol table & candidate list
 	 * Handle window open
 	 */
 	void HandleWindowOpenCommandL();
-	
+    /*
+     * set arabic number mode.
+     * @since s60 v5.2
+     * @param aIsNativeNumMode a flag to indicate whether it is native number mode.
+     * @return none.
+     */
+    void SetNativeNumMode(const TBool aIsNativeNumMode);
+    
+    /*
+     * set icf language.
+     * @since s60 v5.2
+     * @param aLang language id.
+     * @return none.
+     */
+    void SetIcfLanguage( TInt aLang );    
 protected:
 
     /**
@@ -395,13 +420,13 @@ private:
      * @return None
      */
     void CreateCandidateListL();
-    /**
-     * create number candidate lists.
-     * 
-     * @since Symbian TB9.2
-     * @return None
-     */
-    void CreateNumCandidateListL();
+//    /**
+//     * create number candidate lists.
+//     * 
+//     * @since Symbian TB9.2
+//     * @return None
+//     */
+//    void CreateNumCandidateListL();
     
     /**
      * create writing box.
@@ -426,6 +451,14 @@ private:
      * @return None
      */    
     void CreateSymbolTableL();
+    
+    /**
+     * create virtual number modesct pad.
+     * 
+     * @since Symbian TB9.2
+     * @return None
+     */    
+    void CreateNumSymbolTableL();
     
     /**
      * EventButton creation helper.
@@ -463,6 +496,16 @@ private:
      */      
     void LoadSymbolVirtualKeysL( const TInt aResId, const RArray<TRect>& aCellRects );
 
+    /**
+     * load virtual number mode sct keys.
+     * 
+     * @since Symbian TB9.2
+     * @param aResId resource id.
+     * @param aCellRects rects of virtual keys.
+     * @return None
+     */      
+    void LoadNumSymbolVirtualKeysL( const TInt aResId, const RArray<TRect>& aCellRects );
+    
     /**
      * relayout full ui, reset all controls position. 
      * 
@@ -550,7 +593,7 @@ private:
 	 * @return None
 	 */
     void DrawGuideLine();
-    
+
 private: // datas
 
     /**
@@ -567,11 +610,6 @@ private: // datas
     CFepCtrlDropdownList* iCandidateList;
     
     
-    /**
-     * number Candidate list control.
-     * Not own.
-     */    
-    CFepCtrlDropdownList* iNumCandidateList;
     /**
      * Writing box control.
      * Not own.
@@ -630,12 +668,28 @@ private: // datas
      * Not own.
      */     
     CAknFepCtrlEventButton* iSymbolTableBtn;
+    /**
+     * enter button control.
+     * Not own.
+     */     
+    CAknFepCtrlEventButton* iEnterBtn;
+    /**
+     * space button control.
+     * Not own.
+     */     
+    CAknFepCtrlEventButton* iSpaceBtn;
     
     /**
      * Symbol table control.
      * Not own.
      */     
     CPeninputArabicFingerHwrSymbolTable* iSymbolTable;
+
+    /**
+     * Number mode Symbol table control.
+     * Not own.
+     */     
+    CPeninputArabicFingerHwrNumSymbolTable* iNumSymbolTable;
     
     /**
      * L&F manager.

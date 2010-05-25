@@ -35,6 +35,7 @@
 #include <peninputmultiimagebutton.h>
 #include <peninputcommonctrls.hrh>
 #include <peninputcommonlayoutglobalenum.h>
+#include <peninputlongpressbutton.h>
 
 const TInt KInvalidBmp = -1 ;
 
@@ -2454,6 +2455,10 @@ EXPORT_C CFepUiBaseCtrl* CAknFepCtrlRepeatButton::HandlePointerDownEventL(const 
     //PRINTF((_L("CAknFepCtrlRepeatButton::HandleButtonDown()\n")));
     
     //PRINTF((_L("Set long press Timer\n")));
+    if( IsDimmed() )
+    	{
+    	return NULL;
+    	}
     iLongPressTimer->SetTimer(iLongPressInterval);
     TInt unicode = Unicode();
     TPtrC ptr = (TUint16*)(&unicode);
@@ -4099,4 +4104,188 @@ EXPORT_C void CAknFepCtrlMultiImageButton::Move(const TPoint& aOffset)
     iForground2BmpRect.Move( aOffset );
     }
 
+// ---------------------------------------------------------
+// Constructor
+// ---------------------------------------------------------
+//
+EXPORT_C CAknFepCtrlLongPressButton* CAknFepCtrlLongPressButton::NewLC(CFepUiLayout* aUiLayout, 
+                                                                 TInt aCtrlId,
+                                                                 TInt aEvent,
+                                                                 TInt aUnicode,
+                                                                 TAknsItemID aNormalID,
+                                                                 TAknsItemID aPressedID,
+                                                                 TAknsItemID aInactiveID)
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::NewLC(), aCtrlId = %d\n"), aCtrlId));
+    CAknFepCtrlLongPressButton *self = new(ELeave) CAknFepCtrlLongPressButton(aUiLayout, 
+                                                                        aCtrlId, 
+                                                                        aEvent, 
+                                                                        aUnicode,
+                                                                        aNormalID,
+                                                                        aPressedID,
+                                                                        aInactiveID);
+
+    CleanupStack::PushL(self);
+    self->ConstructL();
+    
+    return self;
+    }
+
+// ---------------------------------------------------------
+// Constructor
+// ---------------------------------------------------------
+//
+EXPORT_C CAknFepCtrlLongPressButton* CAknFepCtrlLongPressButton::NewL(CFepUiLayout* aUiLayout, 
+                                                                TInt aCtrlId,
+                                                                TInt aEvent,
+                                                                TInt aUnicode,
+                                                                TAknsItemID aNormalID,
+                                                                TAknsItemID aPressedID,
+                                                                TAknsItemID aInactiveID)
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::NewL(), aCtrlId = %d\n"), aCtrlId));
+    CAknFepCtrlLongPressButton *self = NewLC(aUiLayout, aCtrlId, aEvent, aUnicode,
+                                          aNormalID, aPressedID, aInactiveID);
+    CleanupStack::Pop(self);
+    
+    return self;
+    }
+        
+// ---------------------------------------------------------
+// Destructor
+// ---------------------------------------------------------
+//
+EXPORT_C CAknFepCtrlLongPressButton::~CAknFepCtrlLongPressButton()
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::~CAknFepCtrlLongPressButton()\n")));
+    CancelTimer();
+
+    delete iLongPressTimer;
+    }
+    
+// ---------------------------------------------------------
+// Constructor
+// ---------------------------------------------------------
+//
+EXPORT_C CAknFepCtrlLongPressButton::CAknFepCtrlLongPressButton(CFepUiLayout* aUiLayout, 
+                                                          TInt aCtrlId,
+                                                          TInt aEvent,
+                                                          TInt aUnicode,
+                                                          TAknsItemID aNormalID,
+                                                          TAknsItemID aPressedID,
+                                                          TAknsItemID aInactiveID)
+    :CAknFepCtrlEventButton(aUiLayout, aCtrlId, aEvent, aUnicode,
+                                                        aNormalID,
+                                                        aPressedID,
+                                                        aInactiveID)
+    {
+    iLongPressInterval = KLongPressInterval;
+    }
+
+// ---------------------------------------------------------
+// Constructor
+// ---------------------------------------------------------
+//
+EXPORT_C void CAknFepCtrlLongPressButton::ConstructL()
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::ConstructL()\n")));
+    BaseConstructL();
+    iIsLongPress = EFalse;
+    iLongPressTimer = CAknFepTimer::NewL(this);
+    }
+    
+// ---------------------------------------------------------
+// Time out event handler of long press timer
+// ---------------------------------------------------------
+//
+EXPORT_C void CAknFepCtrlLongPressButton::HandleTimerOut(const CAknFepTimer* aTimer)
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::HandleTimerOut()--")));
+    if (aTimer == iLongPressTimer)
+        {
+        iIsLongPress = ETrue;
+        CancelTimer();
+        TInt unicode = Unicode();
+        TPtrC ptr = (TUint16*)(&unicode);
+        ReportEvent(EPeninputLayoutEventMultiRangeLongPress, ptr);
+        }
+    }
+
+// ---------------------------------------------------------
+// Handle button down start long press timer 
+// ---------------------------------------------------------
+//
+EXPORT_C CFepUiBaseCtrl* CAknFepCtrlLongPressButton::HandlePointerDownEventL(const TPoint& aPt)
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::HandleButtonDown()\n")));
+    //PRINTF((_L("Set long press Timer\n")));
+    if ( IsDimmed() )
+        {
+        return;
+        }
+    
+    iLongPressTimer->SetTimer(iLongPressInterval);
+
+    return CAknFepCtrlCommonButton::HandlePointerDownEventL(aPt);
+    }
+                                                          
+// ---------------------------------------------------------
+// Handle button up cancel timer
+// ---------------------------------------------------------
+//
+EXPORT_C CFepUiBaseCtrl* CAknFepCtrlLongPressButton::HandlePointerUpEventL(const TPoint& aPt)
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::HandleButtonUp()\n")));
+
+    if ( IsDimmed() )
+        {
+        return;
+        }
+
+    CancelTimer();
+    
+    if (!iIsLongPress)
+        {
+        TInt unicode = Unicode();
+        TPtrC ptr = (TUint16*)(&unicode);
+        ReportEvent(EPeninputLayoutEventMultiRange, ptr);   
+        }
+
+    iIsLongPress = EFalse;
+    
+    
+    return CAknFepCtrlCommonButton::HandlePointerUpEventL(aPt);
+    }
+
+// ---------------------------------------------------------
+// Handle pointer leave event cancel timer 
+// ---------------------------------------------------------
+//
+EXPORT_C void CAknFepCtrlLongPressButton::HandlePointerLeave(const TPoint& aPoint)
+    {
+    CAknFepCtrlCommonButton::HandlePointerLeave(aPoint);
+
+    CancelTimer();
+    }
+
+// ---------------------------------------------------------------------------
+// CAknFepCtrlLongPressButton::CancelPointerDownL
+// Cancel pointer down event
+// (other items were commented in a header).
+// ---------------------------------------------------------------------------
+//    
+EXPORT_C void CAknFepCtrlLongPressButton::CancelPointerDownL()
+    {
+    // No implementation needed
+    }
+
+// ---------------------------------------------------------
+// Cancel timer
+// ---------------------------------------------------------
+//
+EXPORT_C void CAknFepCtrlLongPressButton::CancelTimer()
+    {
+    //PRINTF((_L("CAknFepCtrlLongPressButton::CancelTimer()\n")));
+    iLongPressTimer->Cancel();
+    }
 //  End Of File

@@ -29,10 +29,7 @@
 #include <e32property.h>
 #include <avkondomainpskeys.h>
 #endif
-
-#ifndef FIX_FOR_NGA
-#define FIX_FOR_NGA
-#endif
+#include "peninputcmd.h"
 
 const TInt KAknCapServerUid = 0x10207218;
 const TInt KAknNotifySrvUid = 0x10281EF2;  
@@ -74,7 +71,13 @@ CPenUiWndCtrl::~CPenUiWndCtrl()
         {
         iAutoRefreshTimer->Cancel();
         }
-    delete iAutoRefreshTimer;    
+    delete iAutoRefreshTimer; 
+	iPopRegion.Close();
+	iBubblesArea.Close();
+    iBubblesMaskArea.Close();
+	iBubblesPos.Close();
+    
+	delete iCursorWnd;   
 }
 
 void CPenUiWndCtrl::ConstructL()
@@ -84,7 +87,7 @@ void CPenUiWndCtrl::ConstructL()
 
     Window().SetRequiredDisplayMode( EColor16MA );
     iIncallBubble = CAknIncallBubble::NewL();        
-    MakeVisible( EFalse );
+
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS    
     // only change registration, if not registered, don't register
     if (!GfxTransEffect::IsRegistered( this ) ) 
@@ -96,24 +99,39 @@ void CPenUiWndCtrl::ConstructL()
     iPopupWnd = CPenUiPopWnd::NewL(iWndGroup,iBitmap,this);
     
     iAutoRefreshTimer = CPeriodic::NewL( CActive::EPriorityStandard );
+
+    iCursorWnd = new (ELeave) CCursorWindow(this);
+    //iCursorWnd->ConstructL(this);
+    iCursorWnd->SetContainerWindowL(*this);
+    
+    MakeVisible( EFalse );
 }
 
 
 void CPenUiWndCtrl::Draw(const TRect& aRect) const
     {
+    if(iNotUpdating)
+        return;
+    
     CWindowGc& gc = SystemGc();
         
     if ( iShowPopup ) 
         {
         //layout is extended by popup
-        TRect rect = aRect;
-        rect.Intersection( iLayoutClipRect );        
-        TPoint pos = rect.iTl - iLayoutClipRect.iTl;
-        gc.BitBlt( pos, iBitmap, rect );
-        return;
+        gc.SetClippingRect( iLayoutClipRect );
         }
-    
-    gc.BitBlt(aRect.iTl,iBitmap,aRect);
+
+	#ifdef FIX_FOR_NGA
+	gc.BitBlt(TPoint(0,0),iBitmap,Rect());
+
+	//draw bubble
+	for(TInt i = 0 ; i < iBubblesArea.Count(); ++i)
+		{
+		gc.BitBlt(iBubblesPos[i].iTl,iBubblesArea[i]);
+		}
+	#else    
+		gc.BitBlt(aRect.iTl,iBitmap,aRect);
+	#endif            
     }
 
 void CPenUiWndCtrl::RefreshUI()
@@ -131,6 +149,152 @@ void CPenUiWndCtrl::RefreshUI()
     CCoeEnv::Static()->WsSession().Flush();
     CCoeEnv::Static()->WsSession().Finish();
     
+    }
+
+void CPenUiWndCtrl::Clean()
+    {
+    iCursorBmp = NULL;
+    iBubblesArea.Reset();
+    iBubblesPos.Reset();
+	iBubblesMaskArea.Close();
+	iPopRegion.Close();
+    iChangedBmp= NULL;
+    iBackground = EFalse;
+    iNotUpdating = EFalse;
+    }
+
+CCursorWindow::CCursorWindow(CPenUiWndCtrl* aParent)
+                            :iParent(aParent) 
+    {
+    }
+
+void CCursorWindow::SetCursorVisible(TBool aFlag)
+    {
+    iCursorVisible = aFlag;
+    DrawNow();
+    }
+void CCursorWindow::Draw(const TRect &aRect ) const
+    {
+    if(!iCursorVisible)
+        return;
+   
+    CWindowGc& gc = SystemGc();
+    iParent->DrawCursor(gc);  
+    }
+
+void CPenUiWndCtrl::DrawCursor(CWindowGc& aGc) const
+    {
+    aGc.SetPenColor(KRgbBlack);
+    aGc.SetBrushStyle(CGraphicsContext::ESolidBrush);
+    aGc.SetBrushColor(KRgbBlack);
+    aGc.SetDrawMode(CGraphicsContext::EDrawModeNOTSCREEN);
+    aGc.SetPenStyle(CGraphicsContext::ESolidPen);
+    aGc.SetPenSize( TSize(1,1));
+    
+    TRect drawRect = iCursorRect;
+    if(!iPopRegion.IsEmpty() && iPopRegion.Intersects(iCursorRect))
+        {
+        RRegion r;
+        r.AddRect(iCursorRect);
+        const TRect* rl = iPopRegion.RectangleList();
+        
+        for(TInt i = 0 ; i < iPopRegion.Count(); ++i)
+            {
+            drawRect = iCursorRect;
+            drawRect.Intersection(rl[i]);
+            if(!drawRect.IsEmpty())
+                r.SubRect(drawRect);
+            }
+        
+        for(TInt ii = 0; ii < r.Count(); ++ii)
+            {
+        aGc.DrawRect(r.RectangleList()[ii]);
+            }
+        r.Close();
+        }
+    else
+        aGc.DrawRect(iCursorRect);
+
+    // restore normal draw mode
+    aGc.SetDrawMode(CGraphicsContext::EDrawModePEN);
+    aGc.SetBrushStyle(CGraphicsContext::ENullBrush);
+    
+    }
+void CPenUiWndCtrl::UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,const TRect& aRect)
+    {
+    if(iNotUpdating || !IsReadyToDraw())
+        {
+        //some times when layout is diabled, the cursor is still change its pos, and draw to the last place
+        //when layout enabled. So we set the cursor invisible, and wait for next cursor updating event.
+		iCursorWnd->SetCursorVisible(EFalse);
+        return;
+        }
+    
+    iCursorBmp = const_cast<CFbsBitmap*>(aCursorBmp);
+    iCursorPos = aRect.iTl;
+	
+    if(iCursorRect != aRect)
+        {
+        iCursorRect = aRect;
+        iCursorWnd->SetRect(iCursorRect);
+        }
+    iCursorWnd->SetCursorVisible(aOnFlag);
+    }
+	
+void CPenUiWndCtrl::UpdateBubble(const CFbsBitmap* aBmp,const CFbsBitmap* aMask,
+                                                const TRect& aPos,TBool aFlag)
+    {
+    TInt idx = iBubblesArea.Find(aBmp);
+    
+    if(aFlag)
+        {
+        if(KErrNotFound == idx)
+            {
+            iBubblesArea.Append(aBmp);
+            iBubblesMaskArea.Append(aMask);
+            iBubblesPos.Append(aPos);
+            }
+        else
+            {
+            iBubblesPos[idx] = aPos;
+            }
+
+        }
+    else
+        {
+        //remove
+        if(idx != KErrNotFound)
+            {
+            iBubblesArea.Remove(idx);
+            iBubblesMaskArea.Remove(idx);
+            iBubblesPos.Remove(idx);            
+            }        
+        }
+    Invalidate(Rect(), ETrue);
+    }
+void CPenUiWndCtrl::UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos)
+    {
+    iICFBmp = const_cast<CFbsBitmap*>(aBmp);
+    iIcfPos = aPos;
+    Invalidate(Rect(), ETrue);   
+    }
+void CPenUiWndCtrl::UpdateChangedArea(const CFbsBitmap* aBmp,const TRect& aPos,TBool aFlag)
+    {
+    UpdateBubble(aBmp,0,aPos,aFlag);
+    return;
+
+    
+    }
+void CPenUiWndCtrl::SetPopupArea(const TRect& aRect, TBool aFlag)
+    {
+    if(aFlag) //add pop area
+        {
+        iPopRegion.AddRect(aRect);
+        }
+    else
+        {
+        iPopRegion.SubRect(aRect);
+        }
     }
 
 TInt CPenUiWndCtrl::WndPriority()
@@ -232,6 +396,7 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
 
 void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
     {
+    iCursorBmp = NULL;
     if (aResChanging)
         {
         TRAP_IGNORE(iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputHide ));
@@ -271,13 +436,10 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
         }
 #endif // RD_UI_TRANSITION_EFFECTS_POPUPS
 
-    //iResourceChange = EFalse;
     iShowPopup = EFalse;
     iWndGroup.SetOrdinalPosition( -1, ECoeWinPriorityNormal-1 );
     DrawableWindow()->SetOrdinalPosition(-1, ECoeWinPriorityNormal-1 );
     TRAP_IGNORE(iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputHide ));
-    //MakeVisible( EFalse );
-      
 }
 
 
@@ -465,6 +627,181 @@ void CPenUiWndCtrl::SetResourceChange(TBool aResourceChange)
     iResourceChange = aResourceChange;
     }
     
+void CPenUiWndCtrl::HandleNGASpecificSignal(TInt aEventType, const TDesC& aEventData)
+    {
+    switch(aEventType)
+        {
+        case ESignalPopupWndClosed:
+            {               
+            ClosePopup();
+            }               
+            break;
+        case ESignalUpdateCursor :
+            {
+            struct SData
+                {
+                TBool onOff;
+                CFbsBitmap* bmp;
+                TRect rect;
+                } data;
+            
+            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            UpdateCursor(data.onOff,data.bmp,data.rect);
+              
+            }
+            break;
+        case ESignalPopupArea:
+            {
+            struct SData
+                {
+                TRect rr;
+                TBool flag;
+                } data;
+            
+            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            SetPopupArea(data.rr,data.flag);
+            }
+            break;
+        case ESignalUpdateICFArea:            
+            {
+            struct SData
+                {
+                CFbsBitmap* bmp;                        
+                TPoint pos;
+                } data;
+            
+            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            UpdateICFArea(data.bmp,data.pos);
+            }
+            break;
+        case ESignalUpdateBubble:
+            {
+            struct SData
+                {
+                TBool flag;
+                TRect pos;
+                CFbsBitmap* bmp;
+                CFbsBitmap* mask;
+                } data;
+            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            UpdateBubble(data.bmp,data.mask,data.pos,data.flag);
+            }
+            break;
+        case ESignalUpdateChangedArea:
+            {
+            struct SData
+                {
+                TBool flag;
+                CFbsBitmap* bmp;
+                TRect pos;
+                } data;
+            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            UpdateChangedArea(data.bmp,data.pos,data.flag);
+            }
+            break;
+        case ESignalRegisterBkControl:
+            {
+            
+            struct SData
+                {
+                //TBool bChangeFrameId;
+        
+                TAknsItemID frameID;
+                TAknsItemID centerID;        
+                RArray<TCommonBgCtrlSubItem> *subItems;
+                } data;
+            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            iSubItems = data.subItems;
+            iFrameID = data.frameID;
+            iCenterID = data.centerID;
+            iBackground = ETrue;
+            }
+            break;
+        case ESignalDisableUpdating:
+            {
+            iNotUpdating = * (reinterpret_cast<TBool*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            }
+			break;
+        case ESignalDrawBackground:
+            {
+            struct SData
+                {
+                CFbsBitGc* gc;
+                CFbsBitmap* bmp;
+                TRect rect;
+                } data;
+            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
+            DrawBubbleAsBackground(data.gc,data.bmp,data.rect);
+            }
+            break;
+        default:
+            break;
+        }
+    
+    }
+
+void CPenUiWndCtrl::DrawBkground(CWindowGc& aGc,const TRect& aRect)  const
+    {
+    
+    DrawFrame(aGc,aRect, iFrameID, iCenterID);
+    
+    for( TInt i = 0; i < (*iSubItems).Count(); i++ )
+        {
+        if( (*iSubItems)[i].iIsShow )
+            {
+            DrawFrame(aGc, (*iSubItems)[i].iRect, 
+                       (*iSubItems)[i].iFrameID, 
+                       (*iSubItems)[i].iCenterID );                
+            }
+        }       
+    
+    }
+
+void CPenUiWndCtrl::DrawBubbleAsBackground(CFbsBitGc* aGc, CFbsBitmap* aBmp, const TRect& aRect)
+    {
+    for(TInt i = 0 ; i < iBubblesArea.Count(); ++i)
+        {
+        if(iBubblesArea[i] != aBmp) //not draw same bitmap
+            {
+            //gc.BitBlt(iBubblesPos[i],iBubblesArea[i]);
+            TRect r = aRect;
+            TRect rect2 = iBubblesPos[i];
+            r.Intersection(rect2);
+            if(!r.IsEmpty())
+                {
+                TRect src = r;
+                r.Move(TPoint(-aRect.iTl.iX,-aRect.iTl.iY));
+                src.Move(TPoint(-rect2.iTl.iX,-rect2.iTl.iY));
+                aGc->BitBlt(r.iTl, iBubblesArea[i], src);
+                }
+            }
+        }
+    
+    }
+
+
+CCoeControl* CPenUiWndCtrl::ComponentControl(TInt) const
+    {
+    return iCursorWnd;
+    }
+TInt CPenUiWndCtrl::CountComponentControls() const
+    {
+    return 1;
+    }
+
+
+void CPenUiWndCtrl::DrawFrame(CWindowGc& aGc, const TRect& aRect,TAknsItemID aFrameID,
+                                                TAknsItemID aCenterID )  const
+    {    
+    MAknsSkinInstance* skin = AknsUtils::SkinInstance();
+    TRect innerRect = aRect;
+    innerRect.Shrink( 4, 4 );
+    
+    AknsDrawUtils::DrawFrame(
+                            skin, aGc, 
+                            aRect, innerRect, 
+                            aFrameID, aCenterID);
+    }
 
 void CPenUiWndCtrl::RestartRefreshTimer()
     {

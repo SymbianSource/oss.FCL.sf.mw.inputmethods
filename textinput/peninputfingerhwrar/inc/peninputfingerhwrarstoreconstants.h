@@ -71,7 +71,12 @@ enum TPagePosition
     EPagePosLastPage,
     EPagePosFirstPage,
     };
-		
+
+enum TNumSCTType
+    {
+    ENumSCTLatin,
+    ENumSCTArabic
+    };
 // the default end mark    
 const TInt KDefaultStrokeEndMarkX = -65536;
 const TInt KDefaultStrokeEndMarkY = -65536;

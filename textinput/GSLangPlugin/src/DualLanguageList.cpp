@@ -29,7 +29,7 @@
 #include "GsLangPlugin.hrh"
 #include "DualLanguageList.h"
 #include <aknsettingitemlist.h> 
-#include <GsLangPluginRsc.rsg>
+#include <gslangpluginrsc.rsg>
 #include "DualLanguageDialog.h"
 
 CGSLanguageSettingItem::CGSLanguageSettingItem( TInt aResourceId, TBool aPrimary, CGSDualLanguageData* aData)

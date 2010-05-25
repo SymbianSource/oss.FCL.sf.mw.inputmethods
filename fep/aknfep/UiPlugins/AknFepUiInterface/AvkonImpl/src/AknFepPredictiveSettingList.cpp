@@ -34,7 +34,7 @@
 #include <AvkonInternalCRKeys.h>
 #include <e32property.h>
 #include <PtiDefs.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <AknFepGlobalEnums.h>
 #include <featmgr.h> 
 

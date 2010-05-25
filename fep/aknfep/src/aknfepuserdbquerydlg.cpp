@@ -21,7 +21,7 @@
 #include <aknnotewrappers.h> //CAknWarningNote
 #include <eikedwin.h> //CEikEdwin 
 
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 #include "aknfepuserdbquerydlg.h"
 #include "dbmanagement.h"

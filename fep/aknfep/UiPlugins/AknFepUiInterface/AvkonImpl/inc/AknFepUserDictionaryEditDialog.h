@@ -34,7 +34,7 @@
 #define AKNFEPUSERDICTIONARYEDITDIALOG_H_
 
 #include <aknselectionlist.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <aknsfld.h>
 #include <AknQueryDialog.h>
 #include <avkon.hrh>

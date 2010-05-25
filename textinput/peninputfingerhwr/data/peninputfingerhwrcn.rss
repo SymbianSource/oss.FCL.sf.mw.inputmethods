@@ -251,7 +251,7 @@ RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_fshwr_candidate_drop_down_list
     
     colormajorskinid=EAknsMajorSkin;
     textcolorgrp=EAknsMinorQsnTextColors;
-    textcoloridx=59;
+    textcoloridx=64;
     
     bordercolormajorskinid=EAknsMajorSkin;
     bordercolorgrp=EAknsMinorQsnOtherColors;
@@ -315,7 +315,7 @@ RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_fshwr_predict_drop_down_list
     
     colormajorskinid=EAknsMajorSkin;
     textcolorgrp=EAknsMinorQsnTextColors;
-    textcoloridx=59;
+    textcoloridx=64;
     
     bordercolormajorskinid=EAknsMajorSkin;
     bordercolorgrp=EAknsMinorQsnOtherColors;

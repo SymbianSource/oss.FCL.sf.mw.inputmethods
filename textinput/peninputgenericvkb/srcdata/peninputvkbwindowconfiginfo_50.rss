@@ -775,8 +775,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x200C>;
-                    scancode=0x200C;
+                    unicode=<0x0631>;
+                    scancode=0x0631;
                     beginrow=2;
                     begincolumn=4;
                     highlightbmpindex=0;
@@ -784,8 +784,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x200D>;
-                    scancode=0x200D;
+                    unicode=<0x0630>;
+                    scancode=0x0630;
                     beginrow=2;
                     begincolumn=5;
                     highlightbmpindex=0;

@@ -489,8 +489,17 @@ EXPORT_C void CFepLayoutScrollableList::DrawItem(TInt aItemIndex, TBool aItemAct
 	gc->SetPenSize(PenSize());
 
 	TBuf<KDisplayTextLen> buf;
-	AknBidiTextUtils::ConvertToVisualAndClip(item->iText, buf, *iFont,
-										 itemRect.Width(), itemRect.Width());
+	if ( iAlign == CGraphicsContext::ERight )
+	    {
+        AknBidiTextUtils::ConvertToVisualAndClip(item->iText, buf, *iFont,
+                                         itemRect.Width(), itemRect.Width(),
+                                         AknBidiTextUtils::ERightToLeft );
+	    }
+	else
+	    {
+        AknBidiTextUtils::ConvertToVisualAndClip(item->iText, buf, *iFont,
+                                         itemRect.Width(), itemRect.Width());
+	    }
 	gc->DrawText(buf, itemRect, baseLine, iAlign);
 	gc->DiscardFont();
     }

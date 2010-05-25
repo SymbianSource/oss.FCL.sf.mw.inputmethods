@@ -1683,7 +1683,9 @@ void CSplitItutWindow::SetIndiBubble()
         TRect iconRect = TItutDataConverter::AnyToRect( 
                 iDataMgr->RequestData( EIndiIconWithoutTextRect ));
         
-        TSize offset( 0, 6 );
+        TSize offset;
+        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
         TSize size( iconRect.Width(), iconRect.Height());
         
         iICF->MsgBubbleCtrl()->SetRect( bubbleRect );

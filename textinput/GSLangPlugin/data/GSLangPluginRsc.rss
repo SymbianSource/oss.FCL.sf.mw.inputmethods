@@ -31,7 +31,7 @@ NAME    GSLA // 4 letter ID
 #include    <avkon.rh>
 #include    <avkon.loc>
 #include    <uikon.rh>
-#include    <GSApp.rsg>
+#include    <gsapp.rsg>
 #include     <gs.loc>
 
 #include    <eikon.rh>

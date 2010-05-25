@@ -28,7 +28,7 @@
 #include <AknFepGlobalEnums.h>
 #include "PredictiveSettingDialog.h"
 #include <aknnotewrappers.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <hlplch.h> // HlpLauncher
 #include <csxhelp/cp.hlp.hrh> 
 #ifdef SYMBIAN_ENABLE_SPLIT_HEADERS

@@ -179,6 +179,9 @@ enum TAknFepPenInputCmd
     ECmdPeninputSpellLanguageMode,
 	ECmdPeninputSpellICFDisplayContent,
 	ECmdPenInputDimEnterKey,
+    ECmdPeninputEnableOwnBitmap,    
+	ECmdPeninputDisableLayoutDrawing,
+	ECmdPeninputArabicNumModeChanged,
     ECmdPenInputImeCmdBase = 2000
     };
 

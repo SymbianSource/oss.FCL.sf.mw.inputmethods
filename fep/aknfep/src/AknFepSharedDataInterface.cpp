@@ -1860,6 +1860,35 @@ void CAknFepSharedDataInterface::SetDefaultArabicFingerHwrOrientation(TInt aValu
         }
     }
 	
+/**
+ * Returns a value of default arabic finger hwr number mode.
+ *
+ * @since 5.2
+ * @return Value of default arabic finger hwr number mode.
+ */
+TInt CAknFepSharedDataInterface::DefaultArabicNumberMode() const
+     {
+     TInt value = 0;
+     if (iAknFepRepository)
+       {
+       iAknFepRepository->Get(KAknFepDefaultArabicNumberMode, value);
+       }
+     return value;     
+     }
+
+/**
+ * Set a value of default arabic finger hwr number mode.
+ *
+ * @since 5.2
+ * @param aValue new value set to default arabic finger hwr number mode shared data item
+ */
+void CAknFepSharedDataInterface::SetDefaultArabicNumberMode(TInt aValue)
+    {
+    if (iAknFepRepository)
+        {
+        iAknFepRepository->Set(KAknFepDefaultArabicNumberMode, aValue);
+        }
+    }
 #endif
 
 // End of File

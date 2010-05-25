@@ -342,7 +342,7 @@ public:
      * @param aText The text to be displayed in ICF
      * @return None
      */
-	void ShowTooltipL( const TDesC& aText );
+	void ShowTooltipL( const TDesC& aText, TInt aLangCode = ELangTest );
 	
     /**
      * Hide tooltip of ICF

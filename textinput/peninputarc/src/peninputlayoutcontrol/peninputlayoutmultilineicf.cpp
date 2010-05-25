@@ -448,13 +448,14 @@ EXPORT_C CTooltipBubbleCtrl* CFepLayoutMultiLineIcf::TooltipBubbleCtrl()
 // ---------------------------------------------------------------------------
 //
 EXPORT_C void CFepLayoutMultiLineIcf::ShowTooltipL( const TDesC& aText,
-		                                            const TRect& aRect )
+		                                            const TRect& aRect,
+		                                            TInt aLangCode )
     {
     if ( !iTooltip || !iIcfEditor )
         {
         return;
         }
-    iIcfEditor->ShowTooltipL( aText, aRect );
+    iIcfEditor->ShowTooltipL( aText, aRect, aLangCode );
     }
 
 // ---------------------------------------------------------------------------

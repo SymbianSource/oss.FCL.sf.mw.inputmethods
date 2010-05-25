@@ -30,7 +30,7 @@
 // System includes
 #include <PtiEngine.h>   
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 //#include <aknquerydialog.h> //CAknQueryDialog  
 
 // User includes

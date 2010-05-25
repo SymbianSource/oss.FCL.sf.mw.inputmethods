@@ -209,7 +209,8 @@ public:
      * @return None
      */
     IMPORT_C void ShowTooltipL( const TDesC& aText,
-                                const TRect& aRect );
+                                const TRect& aRect, 
+                                TInt aLangCode = ELangTest );
     
 
     /**
@@ -397,7 +398,7 @@ public:
     IMPORT_C void SetInfoBubbleCtrlSize(const TSize& aSize);
     
     // For addition of ITI features on FSQ
-    void ShowTooltipL( const TDesC& aText, const TRect& aRect );
+    void ShowTooltipL( const TDesC& aText, const TRect& aRect, TInt aLangCode = ELangTest );
     void HideTooltip();
     /**
      * Returen the auto-completion state

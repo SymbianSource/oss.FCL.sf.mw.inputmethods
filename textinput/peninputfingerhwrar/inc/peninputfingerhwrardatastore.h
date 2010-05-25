@@ -23,10 +23,10 @@
 #include <e32def.h>
 #include <w32std.h>
 #include <eikon.hrh>
-#include <aknutils.h>
+#include <AknUtils.h>
 
 //FEP INCLUDES
-#include <ptiengine.h>
+#include <PtiEngine.h>
 #include <peninputpluginutils.h>
 
 
@@ -311,22 +311,6 @@ public:
      */   
     TBool Highlight();
     
-    /**
-     * Remove duplicate candidate from predictive candidate list
-     *
-     * @since Symbian TB9.2
-     * @param aSrc The punctuation candidate list
-     * @param aTgt The predicative candidate list
-     * @param aSrcStartIdx 
-     * @param aTgtStartIdx 
-     * @return last overlap index
-     */   
-    TInt RemoveDuplicateCand(const RPointerArray<HBufC>& aSrc,
-                             RPointerArray<HBufC>& aTgt,
-                             TInt aSrcStartIdx,
-                             TInt aTgtStartIdx);
-    
-    
 	/**
      * Get top guide line from hwr engine
      *
@@ -373,6 +357,24 @@ public:
      * @return ETrue if it is, EFalse otherwise
      */
     TBool IsArabicNumber(TUint16 aChar);
+    
+    /**
+     * Check if it is in number only mode.
+     *
+     * @since s60 v5.2
+     * @param None
+     * @return ETrue if it is, EFalse otherwise
+     */
+    TBool IsNumberOnlyMode();
+    
+    /**
+     * check if it is native number mode.
+     * 
+     * @since s60 v5.2
+     * @param None
+     * @return ETrue if it is, EFalse otherwise
+     */
+    TBool IsNativeNumMode();
 private:  
 
     /**
@@ -489,6 +491,11 @@ private:// data
     CRepository* iRepositoryFep;
 
     /**
+     * repository object.
+     */
+    CRepository* iCommonEngineRepository;    
+    
+    /**
      * The engine (Own);
      */
     CPeninputFingerHwrArEngine* iHwrEngine;
@@ -553,6 +560,11 @@ private:// data
      * First candidate type.
      */
     TFirstCandidateType iFirstCandidateType;
+    
+    /**
+     * the number mode flag
+     */
+    TBool iIsNativeNumMode;
  };
 
 

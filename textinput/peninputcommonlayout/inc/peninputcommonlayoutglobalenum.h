@@ -71,6 +71,7 @@ enum TPeninputLayoutEvent
     EPeninputLayoutEventRightArrow,    
     
 	EPeninputLayoutEventMultiRange,
+	EPeninputLayoutEventMultiRangeLongPress,
     EPeninputLayoutEventLast = 2000  // user event starts from here, same as base control
     };
 

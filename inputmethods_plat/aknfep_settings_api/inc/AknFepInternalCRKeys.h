@@ -361,6 +361,13 @@ const TUint32 KAknFepDefaultArabicFingerHwrOrientation = 0x00000023;
  *
  */
 const TUint32 KAknFepKoreanCombineWordFlag = 0x00000024;              
+
+/*
+ * This key is used for arabic finger hwr to set or get the default number mode.
+ * in number table.
+ * 0 is for latin number and 1 is for native number.
+ */
+const TUint32 KAknFepDefaultArabicNumberMode = 0x00000025;
 #endif
 
 // End of file

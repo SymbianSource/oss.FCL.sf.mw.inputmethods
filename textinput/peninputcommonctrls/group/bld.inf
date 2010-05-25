@@ -43,6 +43,7 @@ PRJ_EXPORTS
 ../inc/peninputbuttons/peninputrawkeybutton.inl             |../../../inc/peninputrawkeybutton.inl
 ../inc/peninputbuttons/peninputcommonbutton.h               |../../../inc/peninputcommonbutton.h
 ../inc/peninputbuttons/peninputmultiimagebutton.h               |../../../inc/peninputmultiimagebutton.h
+../inc/peninputbuttons/peninputlongpressbutton.h               |../../../inc/peninputlongpressbutton.h
 
 // From peninputbasewindow
 ../inc/peninputbasewindow/peninputbasewindow.h              |../../../inc/peninputbasewindow.h

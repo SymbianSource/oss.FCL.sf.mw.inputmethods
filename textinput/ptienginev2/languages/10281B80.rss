@@ -26,8 +26,8 @@
 
 
 
-#include <Eikon.rh>
-#include <ecom/RegistryInfo.rh>
+#include <eikon.rh>
+#include <ecom/registryinfo.rh>
 
 
 RESOURCE REGISTRY_INFO theInfo

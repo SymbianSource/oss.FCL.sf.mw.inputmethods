@@ -42,7 +42,7 @@
 #include <AknFepGlobalEnums.h>
 #include "AknFepPredictiveSettingDialog.h"
 #include <aknnotewrappers.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <hlplch.h>
 #include <csxhelp/cp.hlp.hrh> 
 #include <akntitle.h> //CAknTitlePane
@@ -69,6 +69,7 @@ void CAknFepPredictiveSettingDialog::ConstructL( TInt aMenuTitleResourceId )
 	CAknDialog::ConstructL(aMenuTitleResourceId);
 	PrepareStatusPaneL();
 	iItemCloseEventCheck = CIdle::NewL(CActive::EPriorityStandard);
+	iSimuKey = EFalse;
 	}
 
 CAknFepPredictiveSettingDialog ::CAknFepPredictiveSettingDialog(TInt aConfirmationQueryResId, TInt aTitlePaneResId):
@@ -647,14 +648,18 @@ void CAknFepPredictiveSettingDialog::HandleResourceChange(TInt aType)
             {
             if(iSettingItemInEditingState)
             	{
-            	// If we are currently editing the settings item then generate a cancel event
-            	// and start the scheduler so as to close the settings page 
-            	// when the blocking call completes. 
-            	RWsSession& wsSession = CEikonEnv::Static()->WsSession();
-            	TKeyEvent escapeEvent = {EKeyEscape, EStdKeyEscape, 0, 0};
-            	TRAP_IGNORE(CEikonEnv::Static()->SimulateKeyEventL(escapeEvent, EEventKey));
-            	wsSession.Flush();
-            	iItemCloseEventCheck->Start( TCallBack(EventCheckCallback, this) );
+				if (!iSimuKey)
+				    {
+					// If we are currently editing the settings item then generate a cancel event
+					// and start the scheduler so as to close the settings page 
+					// when the blocking call completes. 
+					RWsSession& wsSession = CEikonEnv::Static()->WsSession();
+					TKeyEvent escapeEvent = {EKeyEscape, EStdKeyEscape, 0, 0};
+					TRAP_IGNORE(CEikonEnv::Static()->SimulateKeyEventL(escapeEvent, EEventKey));
+					iSimuKey = ETrue;
+					wsSession.Flush();
+					iItemCloseEventCheck->Start( TCallBack(EventCheckCallback, this) );
+				    }
             	}
             else
 	            {
@@ -785,4 +790,16 @@ void CAknFepPredictiveSettingDialog::DynInitMenuPaneL(TInt aResourceId, CEikMenu
             aMenuPane->SetItemDimmed(EAknFepCmdPredSettingChange, ETrue);
             }
         } 
+    }
+
+/**
+ * From CAknDialog
+ */
+void CAknFepPredictiveSettingDialog::SizeChanged()
+    {
+    if( iSettingsList != NULL && iSettingsList->ListBox() != NULL )
+    	{
+        iSettingsList->ListBox()->EnableStretching(EFalse);
+    	}
+    CAknDialog::SizeChanged();
     }

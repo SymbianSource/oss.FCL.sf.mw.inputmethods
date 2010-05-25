@@ -254,6 +254,7 @@ TInt CAknFepVkbLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputWindowClose:
 			iVkbWindow->Hide(ETrue);
             LayoutOwner()->Hide(ETrue);            
+            iVkbWindow->HideTooltipOnFSQ();
             break;
         case ECmdPenInputRange:
             SetCurrentRange(*data);
@@ -605,6 +606,13 @@ void CAknFepVkbLayout::HandleControlEvent(TInt aEventType, CFepUiBaseCtrl* aCtrl
             
         case EVkbEventCompFieldNoChars:       
             SendEventToVkbControl(EVkbEventComposition2Standby,NULL);            
+            SendEventToVkbControl( aEventType, aCtrl, aEventData );
+            if ( iUiStateMgr )
+            	{
+				iUiStateMgr->SetCurrentUiState( iUiStateMgr->UiStateStandbycn());
+				ForceEditGainFocus( EInputContextFieldGetFocus );
+            	}
+            break;
         case EVkbEventClearContent:
             SendEventToVkbControl(aEventType,aCtrl,aEventData);
             break;

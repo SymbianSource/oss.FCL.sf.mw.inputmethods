@@ -35,7 +35,7 @@
 #include <aknPopupHeadingPane.h>
 #include <AknsDrawUtils.h>
 #include <AknsBasicBackgroundControlContext.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <barsread.h>
 #include <eikmop.h>
 #include <AknLayout.lag>

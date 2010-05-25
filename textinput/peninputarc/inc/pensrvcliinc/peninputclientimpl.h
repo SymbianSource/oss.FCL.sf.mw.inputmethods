@@ -32,29 +32,6 @@ class CPeninputServerObserver;
 class MPenUiActivationHandler;
 class CPenUiBackgroundWnd;
 	  
-NONSHARABLE_CLASS(CPeninputServerWaiter) : public CBase
-    {
-    public:
-        static CPeninputServerWaiter* NewL();    
-        void Start();
-        void Stop(TInt aFlag);
-        TBool IsStarted() 
-            {
-             return iWaitScheduler->IsStarted();
-            }
-        TInt Error() 
-            {
-             return iError;
-            }
-        ~CPeninputServerWaiter();
-    protected:
-    private:
-        //CPeninputServerWaiter();
-        void ConstructL();       
-        TInt iError;
-        CActiveSchedulerWait* iWaitScheduler;                         
-    };
-
 NONSHARABLE_CLASS(TUiNotificationHandler)
     {
     public:
@@ -426,7 +403,7 @@ public:
     void UpdateAppInfo(const TDesC& aInfo, TPeninputAppInfo aType);    
     
     void HandleServerExit();
-    void OnServerReady(TBool aFlag = ETrue);
+    //void OnServerReady(TBool aFlag = ETrue);
     TBool IsForegroundSession();
     //void SetForegroundFlag(TBool aFlag);
     void FinalClose();    
@@ -539,9 +516,6 @@ private:    // Data
     TBool  iServerExit;
         
     TBool iLaunchServer;
-    
-    //CActiveSchedulerWait* iWaitScheduler;
-    CPeninputServerWaiter * iWaitScheduler;
     
     TInt iCurPenUiType;    
     

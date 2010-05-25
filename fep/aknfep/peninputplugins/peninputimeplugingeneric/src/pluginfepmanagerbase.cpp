@@ -600,7 +600,14 @@ void CPluginFepManagerBase::SetLayoutPermitedRanges( TInt aPermittedMode )
 		    }
 		iPermittedRange |= ERangeNumber;
         }
-        
+    else if(aPermittedMode == (EAknEditorNumericInputMode | EAknEditorFullWidthNumericInputMode))
+        {
+        if ( SupportNativeNumberRange() )
+            {
+            iPermittedRange = ERangeNativeNumber;
+            }
+        iPermittedRange |= ERangeNumber;    
+        }
     else if ( aPermittedMode & EAknEditorTextInputMode )
         {
         // Derived from edwin and EAknEditorTextInputMode
@@ -663,6 +670,11 @@ void CPluginFepManagerBase::SetLayoutRange(
                 {
                 iPermittedRange = ERangeNativeNumber;
                 } 
+            }
+        else if( iPermittedMode == 
+                 (EAknEditorNumericInputMode | EAknEditorFullWidthNumericInputMode))
+            {
+            iPermittedRange = ERangeNumber | ERangeNativeNumber;            
             }
         }
 

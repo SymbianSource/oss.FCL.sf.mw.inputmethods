@@ -37,7 +37,7 @@
 #include <PtiEngine.h>                             //CPtiEngine
 #include <PtiDefs.h>                            //keys
 #include <e32keys.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 TAknFepInputStateEntryThaiPredictive::
 TAknFepInputStateEntryThaiPredictive(MAknFepUIManagerStateInterface* aOwner)

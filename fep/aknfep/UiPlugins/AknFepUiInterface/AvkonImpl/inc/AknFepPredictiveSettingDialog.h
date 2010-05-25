@@ -105,6 +105,13 @@ class CAknFepPredictiveSettingDialog : public CAknDialog
 		virtual void DynInitMenuPaneL( TInt aResourceId, 
 		                               CEikMenuPane* aMenuPane );
 	    
+	protected:
+        /**
+        * From CAknDialog
+        * Lays out the dialog's components when the size of the dialog 
+        * is changed.
+        */
+        virtual void SizeChanged();
 	private:
 		void ConstructL( TInt aMenuTitleResourceId );
 		CAknFepPredictiveSettingDialog(TInt aConfirmationQueryResId, TInt aTitlePaneResId);
@@ -138,6 +145,7 @@ class CAknFepPredictiveSettingDialog : public CAknDialog
 	    // the settings item and the flip staus changes.
 	    TBool 						iSettingItemInEditingState; 
 	    CIdle* 						iItemCloseEventCheck;
+		TBool                       iSimuKey;
 	
 	protected:
 	CAknFepPredictiveSettingList*	iSettingsList;

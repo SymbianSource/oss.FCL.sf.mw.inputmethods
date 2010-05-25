@@ -39,7 +39,7 @@
 #include "AknFepUICtrlPinyinPopup.h"
 #include "AknFepUIManagerStateInterface.h"  
 #include "AknFepManager.h" 
-#include <AknFep.rsg>                 
+#include <aknfep.rsg>                 
 
 // Constant definition
 const TInt KMinCandidateCount = 1;

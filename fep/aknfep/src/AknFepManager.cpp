@@ -69,7 +69,7 @@
 #include <frmtview.h>
 #include <aknedformaccessor.h>
 
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <avkon.mbg>
 
 #include "aknconsts.h"
@@ -104,7 +104,7 @@
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 #include "AknFepUiWordPopupContent.h"
 #include "AknFepFnKeyManager.h"
-#include <csxhelp/cp.hlp.hrh> 
+//#include <csxhelp/cp.hlp.hrh> 
 #endif //RD_INTELLIGENT_TEXT_INPUT
 
 #ifdef RD_TACTILE_FEEDBACK
@@ -132,6 +132,7 @@
 
 const TInt KSelectItemSize(10);
 _LIT(KAknFepResourceFileName, "z:\\resource\\fep\\aknfep.rsc");
+_LIT(KFEPPREDINPUT_HLP_INPUT, "PREDINPUT_HLP_INPUT"); // 
 
 #define text_to_field_mode_hash_key ';'
 #define iAvkonAppUi ((CAknAppUi*)CEikonEnv::Static()->EikAppUi())
@@ -4900,7 +4901,7 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
                     new (ELeave) CArrayFixFlat<TCoeHelpContext>( KArrayGranularity );
 	    	CleanupStack::PushL ( contexts );
 	    	TUid appuid = { 0x100058EC };
-	    	contexts->AppendL( TCoeHelpContext( appuid, KPREDINPUT_HLP_INPUT ) );
+	    	contexts->AppendL( TCoeHelpContext( appuid, KFEPPREDINPUT_HLP_INPUT ) );
 	    	CleanupStack::Pop( contexts );
 	    	HlpLauncher::LaunchHelpApplicationL( CEikonEnv::Static()->WsSession(), contexts );			
 			}

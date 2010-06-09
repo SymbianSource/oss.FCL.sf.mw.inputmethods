@@ -138,7 +138,8 @@ TKeyResponse CAknFepHashKeyManager::HandleKeyWesternL(TKeyPressLength aLength)
     {
     TKeyResponse response = EKeyWasNotConsumed;
     TBool phoneIdle = (iFepMan.EditorType() == CAknExtendedInputCapabilities::EPhoneNumberEditor); 
-    if(phoneIdle)
+    // Don't handle hash key unless it comes from virtual keyboard.
+    if( phoneIdle && !iFepMan.PluginInputMode() )
         {
         return response;
         }

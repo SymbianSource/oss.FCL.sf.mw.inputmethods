@@ -110,28 +110,39 @@ void CPenUiWndCtrl::ConstructL()
 
 void CPenUiWndCtrl::Draw(const TRect& aRect) const
     {
-    if(iNotUpdating)
+    if (iNotUpdating)
         return;
-    
+
     CWindowGc& gc = SystemGc();
-        
-    if ( iShowPopup ) 
+    if (iShowPopup)
         {
         //layout is extended by popup
-        gc.SetClippingRect( iLayoutClipRect );
+        TRect rect = aRect;
+        rect.Intersection(iLayoutClipRect);
+        TPoint pos = rect.iTl - iLayoutClipRect.iTl;
+        gc.BitBlt(pos, iBitmap, rect);
+#ifdef FIX_FOR_NGA
+        //draw bubble
+        for (TInt i = 0; i < iBubblesArea.Count(); ++i)
+            {
+            gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
+            }
+#endif   
+        return;
+        //layout is extended by popup
+        //gc.SetClippingRect( iLayoutClipRect );
         }
+#ifdef FIX_FOR_NGA
+    gc.BitBlt(TPoint(0, 0), iBitmap, Rect());
+    //draw bubble
+    for (TInt i = 0; i < iBubblesArea.Count(); ++i)
+        {
+        gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
+        }
+#else    
+    gc.BitBlt(aRect.iTl,iBitmap,aRect);
+#endif     
 
-	#ifdef FIX_FOR_NGA
-	gc.BitBlt(TPoint(0,0),iBitmap,Rect());
-
-	//draw bubble
-	for(TInt i = 0 ; i < iBubblesArea.Count(); ++i)
-		{
-		gc.BitBlt(iBubblesPos[i].iTl,iBubblesArea[i]);
-		}
-	#else    
-		gc.BitBlt(aRect.iTl,iBitmap,aRect);
-	#endif            
     }
 
 void CPenUiWndCtrl::RefreshUI()
@@ -230,7 +241,6 @@ void CPenUiWndCtrl::UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,cons
         return;
         }
     
-    iCursorBmp = const_cast<CFbsBitmap*>(aCursorBmp);
     iCursorPos = aRect.iTl;
 	
     if(iCursorRect != aRect)
@@ -335,6 +345,7 @@ TInt CPenUiWndCtrl::GetWndPriority()
     
 void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
     {
+    iCursorWnd->SetCursorVisible(EFalse);
     if (iResourceChange)
         {
         ActivateL();
@@ -396,7 +407,6 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
 
 void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
     {
-    iCursorBmp = NULL;
     if (aResChanging)
         {
         TRAP_IGNORE(iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputHide ));
@@ -495,8 +505,14 @@ void CPenUiWndCtrl::OnActivate(EditorType aType)
     {
     //TBool dim = IsDimmed();
     RestoreSystemFadeStatus();
-    //have to call this, otherwise pen UI is faded
-    iWndGroup.SetNonFading(ETrue);
+	
+	// if we were opened under a global note
+	// we need to dim pen ui
+	if(aType != EGlobleNotesWithEditor && aType != EGlobleNotes)
+	   {
+	   //have to call this, otherwise pen UI is faded
+       iWndGroup.SetNonFading(ETrue);
+	   }
     
     if (iResourceChange)
         {
@@ -720,6 +736,10 @@ void CPenUiWndCtrl::HandleNGASpecificSignal(TInt aEventType, const TDesC& aEvent
         case ESignalDisableUpdating:
             {
             iNotUpdating = * (reinterpret_cast<TBool*>( const_cast<TUint16*>( aEventData.Ptr() )));
+			if(iNotUpdating)
+			    {
+				UpdateCursor(EFalse,NULL,iCursorWnd?iCursorWnd->Rect():TRect(TPoint(0,0),TSize(0,0)));
+				}
             }
 			break;
         case ESignalDrawBackground:
@@ -819,7 +839,15 @@ void CPenUiWndCtrl::StopRefreshTimer()
         iAutoRefreshTimer->Cancel();
         }
     }
-
+	
+void CPenUiWndCtrl::LiftUpPriority()
+    {
+	TInt priority = GetWndPriority();
+    iPriority =  priority;
+    iWndGroup.SetOrdinalPosition( 0, iPriority);
+    DrawableWindow()->SetOrdinalPosition( 0, iPriority);
+	}
+	
 //End Of File
 // class CInternalBkCtrl
 CInternalBkCtrl::CInternalBkCtrl(RWindowGroup& aWndGroup)    

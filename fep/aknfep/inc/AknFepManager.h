@@ -902,6 +902,8 @@ public:
 		TBool IsSpecialNumericEditor();
 		
 	void TryPopExactWordInICFL();
+	
+	void HandleChangeInFocusForSettingFep();
 
 private:
 
@@ -2813,6 +2815,14 @@ private:
      * can not changed in other cases, e.g. in latin-only editor
      */
     TInt iActiveInputLanguage;
+    
+    /**
+     * indicate whether matches popup list was lauched,
+     * when rotating the screen, we need to consider it, e.g V-ITUT  to FSQ
+     */
+    TBool iMatchesListLaunched;
+
+
 public:
 
     //the follow 8 functions for phrase creation 

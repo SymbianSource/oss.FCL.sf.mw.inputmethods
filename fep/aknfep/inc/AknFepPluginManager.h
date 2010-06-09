@@ -87,7 +87,8 @@ enum TPluginCmd
     EPluginSwitchMode,
     EPluginUpdatePenInputITIStatus,
 	EPluginEnableFetchDimState,
-    EPluginArabicNumModeChanged
+    EPluginArabicNumModeChanged,
+	EPluginEnablePriorityChangeOnOriChange
     };
 
 /** 

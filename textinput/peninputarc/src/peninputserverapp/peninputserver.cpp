@@ -187,6 +187,7 @@ CPeninputServer::CPeninputServer ( TInt aPriority) :  CServer2 ( aPriority,EShar
     //iDispMode = iDispModeForMask= CCoeEnv::Static()->WsSession().GetDefModeMaxNumColors(col,grey);    
     iPreNonGloebalNotesWndGrpId = -1;
     iNoNeedClean = EFalse;
+	iEnablePriorityChangeOnOriChange = ETrue;
     }
 
 
@@ -427,6 +428,9 @@ void CPeninputServer::DecreaseSessionCount(CPeninputServerSession* aSession)
 //
 void CPeninputServer::ActivateSpriteInGlobalNotesL()
     {
+    TBool notDraw = EFalse;
+    iUiLayout->HandleCommand( ECmdPeninputDisableLayoutDrawing, 
+    		                 (unsigned char*)&notDraw );    
     if(iActive)
         {
 	    if(iUseWindowCtrl)
@@ -591,13 +595,35 @@ void CPeninputServer::ActivateSprite()
 		            }
 	            }
             }
+        iIsLayoutReDrawAllowWhenActive = EFalse;    
         }
     else
         {
         //actived but dimmed by global notes
         if(iUseWindowCtrl)
             {
-            ActivatePenUiLayout(EFalse);
+            /**
+            * 1. IF THE GLOBAL NOTES HAS BEEN OPENED UP, WE NEED TO REDRAW THE LAYOUT
+            * 2. IF iIsLayoutReDrawAllowWhenActive was set to be ETrue. 
+            *    if we did not put this condition guard, the layout
+            *    redraw will be executed even if the layout is active. But if this flag is
+            *    set to be ture, layout redraw will be carried out even if the layout is active, so
+            *    it will leave this for layout to decide if it need set this flag to be ture or false
+            *    in some special cases: for example for entering and exiting the spell mode.
+            *    
+            */
+            if(iInGlobalNotesApp || iInGlobalEditorState || iIsLayoutReDrawAllowWhenActive )
+                {
+                ActivatePenUiLayout(EFalse);
+                if(iIsLayoutReDrawAllowWhenActive)
+                    {
+                    iIsLayoutReDrawAllowWhenActive = EFalse;    
+                    }
+                }
+            else
+			    {
+				ActivatePenUiLayout(EFalse,ETrue);
+				}
 
             if (iDimmed && (iInGlobalNotesApp || iInGlobalEditorState))
                 {
@@ -1132,7 +1158,12 @@ TInt CPeninputServer::HandleMessageL(const RMessage2& aMessage)
 						                 (unsigned char*)&iInputLanguage);  
 				}
     	    }
-    	    break;            
+    	    break;
+        case EPeninputEnablePriorityChangeOnOriChange:
+            {
+			TPckg<TBool> enablePriority( iEnablePriorityChangeOnOriChange );
+            aMessage.ReadL( 0, enablePriority );
+			}
         default: //Let user pluging handling the user command
             break;
         }
@@ -1204,7 +1235,10 @@ TInt CPeninputServer::CreateLayoutL(const RMessage2& aMessage )
     iUILayoutReady = EFalse;    
     if(iUiLayout)
         {
-		ClearSpriteGc();
+        //if(!iUseWindowCtrl)
+        	//{
+			//ClearSpriteGc();
+        	//}
         DeactivateSprite();
         iDestroyingLayout = ETrue;
         if(iUseWindowCtrl)
@@ -1545,7 +1579,7 @@ void CPeninputServer::ClearSpriteGc()
 void CPeninputServer::DrawSprite()
     {
 
-    if(!iUiLayout)
+    if(!iUiLayout || iActive)
         return;
     ClearSpriteGc();
     
@@ -1674,7 +1708,10 @@ void CPeninputServer::Hide(TBool aHideFlag)
         }
     else
         {
-        ActivateSprite();
+        if(!iActive)
+            {
+            ActivateSprite();
+            }
         }
     }
 
@@ -1910,6 +1947,13 @@ void CPeninputServer::SignalOwner(TInt aEventType, const TDesC& aEventData)
             	    }
         	    }
         	    break;
+            case ESignalEnableLayoutRedrawWhenActive:
+                {
+				TUint16* buf = const_cast<TUint16* >( aEventData.Ptr() );    
+                TBool* retVal = reinterpret_cast< TBool* > ( buf );
+				iIsLayoutReDrawAllowWhenActive = *retVal;
+				}
+				break;	
 
         	default:
         	    if(iUseWindowCtrl)                    
@@ -2018,7 +2062,54 @@ void CPeninputServer::DoIdleConstructL()
 // ---------------------------------------------------------------------------
 //    
 void CPeninputServer::HandleResourceChange(TInt aType)
-    {   
+    {
+	#ifdef FIX_FOR_NGA 
+	// iEnablePriorityChangeOnOriChange will be set to be EFalse, if some dialog in FEP end were opened and 
+	// not close after rotation for example: Symbol Table, Writing Language list and Match Dialog on ITI
+	if(iUiLayout && iActive && iEnablePriorityChangeOnOriChange && aType == KEikDynamicLayoutVariantSwitch)
+        {
+        TPixelsTwipsAndRotation size; 
+        CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+                
+        TBool isPortrait = ( size.iPixelSize.iWidth < size.iPixelSize.iHeight );
+   
+        TBool needToLiftUp = EFalse;
+        TInt inputMode = 0; 
+        inputMode = iUiLayout->PenInputType();
+        if(inputMode == EPluginInputModeItut)
+            {
+            if(!isPortrait)
+                {
+                needToLiftUp = ETrue;
+                }
+            }
+        else if(inputMode == EPluginInputModeFSQ)
+            {
+            if(isPortrait)
+                {
+                needToLiftUp = ETrue;
+                }
+            }
+    
+        else if(inputMode == EPluginInputModeFingerHwr)
+            {
+            ClearSpriteGc();
+            //Close the UI immediately, without notify UI handler 
+            DeactivateSprite(ETrue, ETrue);
+            }
+        if(needToLiftUp)
+            {
+            if(iPenUiCtrl)
+                {
+                
+                // must lift up the wnd group priority otherwise when rotating screen, the underling application will show first and then
+                // our PEN UI, but we should keep an eye on this issue. If NGA will fix the fliker assigned on them, we will check if it will
+                // work if we remove this line of code. 
+                iPenUiCtrl->LiftUpPriority();				
+                }
+            }
+        }
+	#endif	
     if(iUiLayout && !(iUiLayout->PenInputType() & DisabledByOrientation()) )
         {
         //hide the layout if it's already shown
@@ -2135,11 +2226,31 @@ void CPeninputServer::HideLayoutTemporaryL()
     
 	if(iActive && !iPrevActive && inputMode != EPluginInputModeFSQ && iBackgroudDefaultOri == CAknAppUiBase::EAppUiOrientationUnspecified )
         {
-        
+        #ifdef FIX_FOR_NGA
+        if(inputMode == EPluginInputModeFingerHwr)
+            {
+            iPrevActive = ETrue;
+            ClearSpriteGc();
+            //Close the UI immediately, without notify UI handler 
+            DeactivateSprite(ETrue, ETrue);
+            }
+        else
+            {// for other input mode: we are not going to cose UI, since it will cause
+             // serious fliker: which will have the mixed ui(with other app ui) on pen input ui
+            
+			if(iUiLayout)
+			    {
+				TBool notDraw = ETrue;
+	            iUiLayout->HandleCommand(ECmdPeninputDisableLayoutDrawing,(unsigned char*)&notDraw);
+	            iUiLayout->OnDeActivate();
+			    }
+            }       
+        #else
         iPrevActive = ETrue;
         ClearSpriteGc();
-	    //Close the UI immediately, without notify UI handler 
-	    DeactivateSprite(ETrue, ETrue);
+        //Close the UI immediately, without notify UI handler 
+        DeactivateSprite(ETrue, ETrue);
+        #endif
         }    
     }
     
@@ -2263,13 +2374,14 @@ void CPeninputServer::HandleRawEventL(const TRawEvent& aEvent)
     if(iActive)
         { 
         if( aEvent.Type() == TRawEvent::ENone && 
-        	aEvent.IsTip() &&
-        	iCrpService->IsDsaActive() )
+        	aEvent.IsTip() 
+        	&& iCrpService && iCrpService->IsDsaActive() )
             {
             SignalOwner( ESignalLayoutClosed, KNullDesC );    
             }
                    
-        TBool handled = iUiLayout->HandleEventL(ERawEvent,&aEvent);
+        TBool handled = iUiLayout ? iUiLayout->HandleEventL(ERawEvent,&aEvent)
+        		        : EFalse;
 
         if (TRawEvent::EButton1Down == aEvent.Type())
             {

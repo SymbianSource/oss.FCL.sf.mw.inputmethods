@@ -44,6 +44,8 @@ const TUint32 KOpaqueColor = 0xffffff;
 typedef TInt64 TControlType;
 
 const TInt KPenInputOwnDeviceChange = -1;
+const TInt KPenInputOwnDeviceResourceChange = -2;
+
 const TUint KFepCtrlExtId = 0x00000000;
 //UI layout leave code
 enum TUiLayoutErrorCode

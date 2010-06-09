@@ -377,11 +377,12 @@ void CVirtualKeyCtrl::DrawNormalStateKey()
         TBool bHasDrawn = EFalse;
         if(UiLayout()->NotDrawToLayoutDevice())
             {
-            TBool ret = iKeyboard->PrepareKeyBmp(iKeyboard->NormalKeyBmp(),
+            /*TBool ret = iKeyboard->PrepareKeyBmp(iKeyboard->NormalKeyBmp(),
                                     iKeyboard->NormalKeyDev(),
                                     rect,innerrect,
                                     iKeyboard->KeySkinId(EKeyBmpNormal), 
-                                    KAknsIIDDefault,Rect());
+                                    KAknsIIDDefault,Rect());*/
+            TBool ret = iKeyboard->PrepareNormalKeyBmp(rect,innerrect,Rect());                                    
             if(ret)
                 {
                 gc->BitBlt(rect.iTl,iKeyboard->NormalKeyBmp());
@@ -502,11 +503,12 @@ void CVirtualKeyCtrl::DrawHighlightKey()
         TBool bHasDrawn = EFalse;
         if(UiLayout()->NotDrawToLayoutDevice())
             {
-            TBool ret = iKeyboard->PrepareKeyBmp(iKeyboard->HighightKeyBmp(),
+            /*TBool ret = iKeyboard->PrepareKeyBmp(iKeyboard->HighightKeyBmp(),
                                     iKeyboard->HighlightKeyDev(),
                                     rect,innerrect,
                                     iKeyboard->KeySkinId(EKeyBmpHighlight), 
-                                    KAknsIIDDefault,Rect());
+                                    KAknsIIDDefault,Rect());*/
+            TBool ret = iKeyboard->PrepareHighlightKeyBmp(rect,innerrect,Rect());                                    
             if(ret)
                 {
                 gc->BitBlt(rect.iTl,iKeyboard->HighightKeyBmp());

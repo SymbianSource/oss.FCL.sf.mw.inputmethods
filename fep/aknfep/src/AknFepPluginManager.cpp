@@ -686,6 +686,8 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
             case ESignalEnterSpellMode:
                 {
                 iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputDisableLayoutDrawing,ETrue);
+                // this will allow the layout to be redraw even if the layout was activeated
+                iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputEnalbeLayoutReDrawWhenActive,ETrue);
                 iFepMan.LaunchEditWordQueryL();
                 }
                 break;
@@ -698,6 +700,8 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
 				iFocuschangedForSpellEditor = ETrue;
 				iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputDisableLayoutDrawing,ETrue);
 				
+                // this will allow the layout to be redraw even if the layout was activeated
+                iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputEnalbeLayoutReDrawWhenActive,ETrue);
                 exitbyok ? iFepMan.ExitPluginSpellModeByOk() : 
                            iFepMan.ExitPluginSpellModeByCancel();
                 }
@@ -1079,6 +1083,15 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
                         ECmdPeninputArabicNumModeChanged,aEventData);                            
                 }
             break;
+		case EPluginEnablePriorityChangeOnOriChange:
+            if(iCurrentPluginInputFepUI)
+                {
+                if(ConnectServer())
+                    {
+                    iPenInputServer.EnablePriorityChangeOnOriChange(TBool(aEventData));  
+                    }
+                }
+
         default:
             break;
         }
@@ -1163,15 +1176,23 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
     TPixelsTwipsAndRotation size; 
     CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
     TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;     
-    TBool disableFSQ = 
-        (  aSuggestMode == EPluginInputModeFSQ &&
-           ( iDefaultOrientation == CAknAppUiBase::EAppUiOrientationPortrait ||
-		     ( !landscape && !iAvkonAppUi->OrientationCanBeChanged() ) ) );
-
-          
+    // For portrait only mode, need to disable FSQ.
+    TBool disableFSQ = iDefaultOrientation == CAknAppUiBase::EAppUiOrientationPortrait 
+    		           || ( !landscape && !iAvkonAppUi->OrientationCanBeChanged() );         
     if ( disableFSQ )
         {
         iPenInputServer.SetDisabledLayout( EPluginInputModeFSQ );
+        }
+    else
+        {
+        // if fsq had been disabled before and now application is not portrait only,
+        // need to enable fsq again;
+        TInt disableMode = iPenInputServer.DisabledLayout();
+        if( disableMode & EPluginInputModeFSQ )
+            {
+            iPenInputServer.SetDisabledLayout( -1 );//reset disable type
+            iPenInputServer.SetDisabledLayout( disableMode & ~EPluginInputModeFSQ );
+            }
         }
     
     TBool disableITUT = 
@@ -1183,19 +1204,19 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
          //disable V-ITUT, and if current aSuggestMode is EPluginInputModeItut, replace it with EPluginInputModeFSQ;
          iPenInputServer.SetDisabledLayout( EPluginInputModeItut );
          if( aSuggestMode == EPluginInputModeItut )
-          {
-              aSuggestMode = EPluginInputModeFSQ;
-          }
+             {
+             aSuggestMode = EPluginInputModeFSQ;
+             }
          }
     else
          {
          // if V-ITUT had been disabled before, enable it now;
          TInt disableMode = iPenInputServer.DisabledLayout();
          if( disableMode & EPluginInputModeItut )
-          {
-			iPenInputServer.SetDisabledLayout( -1 );//reset
-			iPenInputServer.SetDisabledLayout( disableMode & ~EPluginInputModeItut );
-          }
+             {
+			 iPenInputServer.SetDisabledLayout( -1 );//reset
+			 iPenInputServer.SetDisabledLayout( disableMode & ~EPluginInputModeItut );
+             }
          }
 
 
@@ -1270,11 +1291,6 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         {
         isSplit = EFalse;
         }    
-
-    if ( iLangMan.IsSplitView() && !isSplit )
-        {
-        NotifyAppUiImeTouchWndStateL( EFalse ); //restore layout
-        }
 
     iLangMan.SetSplitView(isSplit);
 
@@ -1534,30 +1550,48 @@ void CAknFepPluginManager::OnResourceChangedL( TInt aType )
     
     iResourceChange = ETrue;   
 
+    TBool needToChangeInputMode = ETrue;
     if ( iSharedData.AutoRotateEnabled() && 
         ( iPluginInputMode == EPluginInputModeFSQ || iPluginInputMode == EPluginInputModeItut ) )
         {
         if ( IsSpellVisible() )
             {
             iFepMan.ExitPluginSpellModeByCancel();
+            iFepMan.SetNotifyPlugin( EFalse );
+            iFepMan.HandleChangeInFocusForSettingFep();
+            iFepMan.SetNotifyPlugin( ETrue );
             }
-        
-        if ( iPenInputMenu && iPenInputMenu->IsShowing() )
-            {
-            iPenInputMenu->Hide();
-            ResetMenuState();
-            }
-        ClosePluginInputModeL(ETrue);               
-        iFepMan.TryCloseUiL(); 
         TPixelsTwipsAndRotation size; 
         CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
 
-        iPluginInputMode = ( size.iPixelSize.iWidth < size.iPixelSize.iHeight ) ? 
+        TPluginInputMode inputModeBeforeOri = ( size.iPixelSize.iWidth < size.iPixelSize.iHeight ) ? 
             EPluginInputModeItut : EPluginInputModeFSQ;
+        
+            if ( iPenInputMenu && iPenInputMenu->IsShowing() )
+                {
+                iPenInputMenu->Hide();
+                ResetMenuState(EFalse);
+                }
+            
+        if(inputModeBeforeOri != iPluginInputMode)
+            {
+            iPluginInputMode = inputModeBeforeOri; 
+            ClosePluginInputModeL(ETrue);               
+            iFepMan.TryCloseUiL();
+            }
+        else
+            {
+            needToChangeInputMode = EFalse;
+            }
         }
-    TryChangePluginInputModeByModeL( iPluginInputMode,
+    
+    if(needToChangeInputMode)
+	    {
+		TryChangePluginInputModeByModeL( iPluginInputMode,
                                      EPenInputOpenManually,
                                      ERangeInvalid ); 
+		}
+    
     /*if(size.iPixelSize.iWidth > size.iPixelSize.iHeight ) //landscape
         {
         if ( iPluginInputMode == EPluginInputModeVkb )
@@ -1585,12 +1619,15 @@ void CAknFepPluginManager::OnResourceChangedL( TInt aType )
         iCurrentPluginInputFepUI->ResourceChanged(aType);
         }
     
-    if (iInMenu)
-        {
-        SetMenuState(EFalse);
-        }
-        
-    if (setResChange)    
+	if(needToChangeInputMode)
+	    {
+		if (iInMenu)
+			{
+			SetMenuState(EFalse);
+			}
+		}
+
+	if (setResChange)    
         {
         iPenInputServer.SetResourceChange(EFalse);         
         }
@@ -5947,6 +5984,14 @@ void CAknFepPluginManager::NotifyAppUiImeTouchWndStateL( const TBool aTouchState
 //
 TBool CAknFepPluginManager::IsEditorSupportSplitIme()
     {
+	
+	TBool disablePartialInput = FeatureManager::FeatureSupported( KFeatureIdChinese ) 
+	                            || FeatureManager::FeatureSupported( KFeatureIdKorean );
+	if ( disablePartialInput )
+	    {
+	    return EFalse;
+	    }
+
     //Mfne editors
     if ( iFepMan.IsMfneEditor() )
         {

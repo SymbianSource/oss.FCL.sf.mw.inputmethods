@@ -3507,6 +3507,11 @@ void CAknFepManager::HandleChangeInFocus()
         }
     }
 
+void CAknFepManager::HandleChangeInFocusForSettingFep()
+	{
+	HandleChangeInFocus();
+	}
+
 void CAknFepManager::HandleDestructionOfFocusedItem()
     {
     if (iInputCapabilities.FepAwareTextEditor())
@@ -5327,6 +5332,11 @@ void CAknFepManager::DynInitMenuPaneL(TInt aResourceId, CAknFepUiInterfaceMenuPa
                         
         case R_AVKON_PREDICTIVE_TEXT_MENU_T9:
             {
+            if( (iPtiEngine->NumberOfCandidates() <= 1) && !IsFlagSet(EFlagRemoveMatchesMenuItem ) )
+			   {
+			   SetFlag( EFlagRemoveMatchesMenuItem );
+			   }
+
             if (iMode != ELatin)
                 {
                 aMenuPane->SetItemDimmed(EAknCmdT9PredictiveInsertWord, ETrue);
@@ -8065,10 +8075,14 @@ void CAknFepManager::LaunchMatchesPopupListL()
 
         TUid fepUid = CCoeEnv::Static()->FepUid();
         ClearExtendedFlag(EExtendedFlagEdwinEditorDestroyed);
+		SendEventsToPluginManL(EPluginEnablePriorityChangeOnOriChange,EFalse);
         // Fire up the dialog
+		iMatchesListLaunched = ETrue;
         TInt returnValue = iUiInterface->LaunchListPopupL(R_AVKON_T9_MATCHES_QUERY, index, 
                                                           currentIndex, matchesList, NULL);
+        iMatchesListLaunched = EFalse;
         PrepareFepAfterDialogExitL(fepUid);
+		SendEventsToPluginManL(EPluginEnablePriorityChangeOnOriChange,ETrue);
         if(returnValue == EAknSoftkeyOk)
             {// Selected item 'index' from the matches array
             HandleChangeInFocusL();
@@ -15792,6 +15806,7 @@ void CAknFepManager::LaunchLanguagesPopupListL(TBool aLaunchedByTouchWin)
 #endif //RD_SCALABLE_UI_V2
     TUid fepUid = CCoeEnv::Static()->FepUid();
     ClearExtendedFlag(EExtendedFlagEdwinEditorDestroyed);
+	SendEventsToPluginManL(EPluginEnablePriorityChangeOnOriChange,EFalse);
     TInt returnValue = iUiInterface->LaunchListPopupL(R_AVKON_T9_LANGUAGES_QUERY, index, 
                                                       selectedLanguageIndex, languagesList, icons);
 #ifdef RD_SCALABLE_UI_V2
@@ -15840,6 +15855,7 @@ void CAknFepManager::LaunchLanguagesPopupListL(TBool aLaunchedByTouchWin)
         
           
         }
+	SendEventsToPluginManL(EPluginEnablePriorityChangeOnOriChange,ETrue);	
     CleanupStack::PopAndDestroy( languages );
     }
 
@@ -18382,7 +18398,7 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
         	{
             iFepPluginManager->SetLaunchSCTInSpell( ETrue );            
         	}        	
-        
+        SendEventsToPluginManL(EPluginEnablePriorityChangeOnOriChange,EFalse);
 		if (iUiInterface->CharMapDialogL(
 			sctChars, 
 			specialChars, 
@@ -18520,6 +18536,7 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
             iStopProcessFocus = EFalse;                   
             }		   
         PrepareFepAfterDialogExitL(fepUid);
+		SendEventsToPluginManL(EPluginEnablePriorityChangeOnOriChange,ETrue);
         }
     }
 
@@ -18757,20 +18774,28 @@ void CAknFepManager::HandleResourceChange(TInt aType)
         iAsyncResouceChanged.CallBack();
     	}
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-    if(iCandidatePopup && iPtiEngine && (aType == KEikDynamicLayoutVariantSwitch))        
-        {
+    
+    if(aType == KEikDynamicLayoutVariantSwitch)        
+        {		
+		if ( iAvkonAppUi->IsDisplayingDialog() && iMatchesListLaunched )
+			{
+			 iUiInterface->DeleteDialogs();
+			}
+        
         //When there is a change of layout, the inline text position changes and hence the candidate 
         //list position also needs to change accordingly.
         //We need the editor to be brought back to focus, this is because we need the position of
         //the inline text.
-        iCandidatePopup->UnFocus();
-        //Need to get the editor state back after it is brought back to focus.
-        TRAP_IGNORE( HandleChangeInFocusL()); 
-        
-        // Add candidate list control stack to get the layout change event
-        // after dialog control......
-        TRAP_IGNORE( iCandidatePopup->SetFocusAddStackReducePriorityL() );
-        
+        if( iCandidatePopup && iPtiEngine )
+        	{
+			iCandidatePopup->UnFocus();
+			//Need to get the editor state back after it is brought back to focus.
+			TRAP_IGNORE( HandleChangeInFocusL()); 
+			
+			// Add candidate list control stack to get the layout change event
+			// after dialog control......
+			TRAP_IGNORE( iCandidatePopup->SetFocusAddStackReducePriorityL() );
+        	}        
         }
 #endif		
     TRAP_IGNORE(SendEventsToPluginManL( EPluginResourceChanged, aType ));

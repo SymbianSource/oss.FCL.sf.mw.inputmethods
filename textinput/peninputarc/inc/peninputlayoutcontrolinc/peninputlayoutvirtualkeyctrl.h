@@ -235,7 +235,7 @@ private:
     
     TVirtualKeyDrawInfo iVirtualKeyDrawInfo;     
     
-protected:
+public:
     void UpdateChangedArea(TBool aFlag);    
 private:    
     CFbsBitGc* GetGc();

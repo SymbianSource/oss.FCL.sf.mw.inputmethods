@@ -505,5 +505,9 @@ EXPORT_C void RPeninputServer::SetResourceChange(TBool aFlag)
     iSingletonServer->SetResourceChange(aFlag);   
     }    
 
+EXPORT_C void RPeninputServer::EnablePriorityChangeOnOriChange(TBool aEnabled)
+    {
+	iSingletonServer->EnablePriorityChangeOnOriChange(aEnabled);
+	}	
 //end of class RPeninputServer
 // End of File

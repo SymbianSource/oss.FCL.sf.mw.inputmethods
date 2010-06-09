@@ -2017,13 +2017,13 @@ void CPeninputFingerHwrWnd::LayoutStandbySymbol()
    
     iWritingBox->Hide( ETrue );
     iVirtualNumpad->Hide( ETrue );
-    iVirtualSctpad->Hide( EFalse );
-    iVirtualSctpadFix->Hide( EFalse );
-    
     iArrowLeftBtn->Hide( ETrue );
     iArrowRightBtn->Hide( ETrue );
     iArrowUpBtn->Hide( ETrue );
     iArrowDownBtn->Hide( ETrue );
+    
+    iVirtualSctpad->Hide( EFalse );
+    iVirtualSctpadFix->Hide( EFalse );
     iOptionBtn->Hide( EFalse );
     iImeSwitchBtn->Hide( EFalse );  
     

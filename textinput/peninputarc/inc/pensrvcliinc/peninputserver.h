@@ -980,6 +980,8 @@ private:    // Data
     RProperty       iDiscreetPopProperty;
     RAknUiServer    iAknUiSrv; 
     TRect iDiscreetPopArea;
+	TBool iEnablePriorityChangeOnOriChange;
+    TBool iIsLayoutReDrawAllowWhenActive;
     };
 
 /**

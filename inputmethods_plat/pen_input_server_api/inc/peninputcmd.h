@@ -111,6 +111,7 @@ enum TSignalEvent
     ESignalRegisterBkControl,
     ESignalDisableUpdating,
     ESignalDrawBackground,
+    ESignalEnableLayoutRedrawWhenActive,
     ESignalFepEventBase = 1500,    //Event base for Fep. All fep event
                                     //is re-directed to Fep.
     ESignalKeyEvent = 1501,        //hwr recongition selection event.

@@ -496,10 +496,10 @@ void CPeninputGenericVkbLayout::HandleVirtualKeyUpL(TInt aEventType,
                     break;
                     }
                 }
+		    TBool bIsMirror = EFalse;
+		    bIsMirror = TranslateMirrorUnicode( inputCode, outputCode );
 
-            isDottedChar = TranslateMirrorUnicode( inputCode, outputCode );
-
-            if (isDottedChar)
+            if ( isDottedChar || bIsMirror )
                 {
                 number->Des().Append( outputCode );                    
                 data->iKeyData.Set(*number);

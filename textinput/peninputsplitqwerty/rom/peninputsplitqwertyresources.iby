@@ -25,10 +25,11 @@
 #ifdef __PEN_SUPPORT
 #if defined(__VIRTUAL_KEYBOARD_INPUT) || defined(FF_VIRTUAL_FULLSCR_QWERTY_INPUT)
 #ifdef RD_SCALABLE_UI_V2 
-
+#if !defined(__CHINESE) && !defined(__KOREAN)
 
 data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwin.rsc               RESOURCE_FILES_DIR\plugins\peninputssqwin.rsc
 
+#endif // __CHINESE __KOREAN
 #endif // RD_SCALABLE_UI_V2
 #endif //__VIRTUAL_KEYBOARD_INPUT || FF_VIRTUAL_FULLSCR_QWERTY_INPUT  
 #endif // __PEN_SUPPORT

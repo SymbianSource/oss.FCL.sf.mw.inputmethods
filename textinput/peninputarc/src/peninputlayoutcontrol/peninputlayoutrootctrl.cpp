@@ -815,7 +815,12 @@ void CFepUiLayoutRootCtrl::Draw()
 
 	if(!AbleToDraw())
         return;
-
+    
+    if(UiLayout()->NotDrawToLayoutDevice())
+	    {
+	    HandleResourceChange(KPenInputOwnDeviceResourceChange);
+	    }
+	    
 	Clear();	
     CControlGroup::Draw();
 

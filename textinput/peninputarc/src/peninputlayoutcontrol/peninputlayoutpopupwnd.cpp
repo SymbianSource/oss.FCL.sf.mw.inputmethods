@@ -501,6 +501,7 @@ EXPORT_C void CFepLayoutPopupWnd::CloseWindow()
         layoutOwner->SetPosition(iPrevLayoutRect.iTl);
        	layoutOwner->LayoutSizeChanged(iPrevLayoutRect.Size());
         RootControl()->GraphicDeviceSizeChanged();
+        bRedraw = ETrue;
 	    }
 	    
     if (bRedraw)    

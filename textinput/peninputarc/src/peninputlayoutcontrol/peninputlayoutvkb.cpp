@@ -1349,6 +1349,10 @@ EXPORT_C void CVirtualKey::SetLatched(TBool aFlag)
         {
         //find key        
         //iKeyboard->DrawKey(this);
+        if ( !aFlag )
+            {
+            iKeyCtrl->UpdateChangedArea(EFalse);
+            }
         iKeyCtrl->Draw();
         }
     }
@@ -1503,6 +1507,9 @@ void CFepUiKeyboardExt::CreateBmpDevL(const TDisplayMode &aMode )
     
     iKeyGc = CFbsBitGc::NewL();
     iKeyGc->Reset();   
+    
+    iHighlightKeyResourceChanged = ETrue;
+    iNormalKeyResourceChanged = ETrue;   
     }
 
 void CVirtualKeyboard::CreateBmpDevL()
@@ -1519,8 +1526,15 @@ EXPORT_C void CVirtualKeyboard::HandleResourceChange(TInt aType)
             TRAP_IGNORE(CreateBmpDevL());
             }
         }
+    else if(aType == KPenInputOwnDeviceResourceChange)
+        {
+        iExt->iHighlightKeyResourceChanged = ETrue;
+        iExt->iNormalKeyResourceChanged = ETrue;
+        }    
     else
+    	{
         CControlGroup::HandleResourceChange(aType);
+        }
     }
     
 CFbsBitmap* CVirtualKeyboard::PrepareMaskBmpL(CFbsBitGc* aGc, const TDisplayMode& aMode, const TRect& aRect)
@@ -1601,4 +1615,31 @@ TBool CVirtualKeyboard::PrepareKeyBmp(CFbsBitmap* aBmp,CFbsBitmapDevice* aDev,co
     delete keyBmp;        
     return ETrue;
     }
+
+TBool CVirtualKeyboard::PrepareHighlightKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect)
+    {
+    if(HighightKeyBmp()->SizeInPixels() != aRect.Size() || iExt->iHighlightKeyResourceChanged)
+        {
+        iExt->iHighlightKeyResourceChanged = EFalse;
+        return PrepareKeyBmp(HighightKeyBmp(),HighlightKeyDev(),aRect,aInnerRect
+                                ,KeySkinId(EKeyBmpHighlight),KAknsIIDDefault,aKeyRect);
+        
+        }
+    
+    return ETrue;
+    }
+    
+TBool CVirtualKeyboard::PrepareNormalKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect)
+    {
+    if(NormalKeyBmp()->SizeInPixels() != aRect.Size() || iExt->iNormalKeyResourceChanged)
+        {
+        iExt->iNormalKeyResourceChanged = EFalse; 
+        return PrepareKeyBmp(NormalKeyBmp(),NormalKeyDev(),aRect,aInnerRect
+                            ,KeySkinId(EKeyBmpNormal),KAknsIIDDefault,aKeyRect);
+                           
+        }
+        
+    return ETrue;
+    }
+        
 //end of implementation of Class CVirtualKey    

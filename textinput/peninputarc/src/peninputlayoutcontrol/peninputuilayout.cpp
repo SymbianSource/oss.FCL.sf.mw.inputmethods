@@ -187,6 +187,13 @@ EXPORT_C TInt CFepUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
             DisableLayoutDrawing(*(reinterpret_cast<TBool*>(aData)));
             }
             break;
+        case ECmdPeninputEnalbeLayoutReDrawWhenActive:
+            {
+            TBool enableLayoutRedraw = ETrue;
+            TPtrC data(reinterpret_cast<TUint16*>(&enableLayoutRedraw),sizeof(TBool)/2);
+            SignalOwner(ESignalEnableLayoutRedrawWhenActive,data);
+            }
+            break;
         default: 
             {
             ret = -1;
@@ -480,6 +487,9 @@ EXPORT_C void CFepUiLayout::OnDeActivate()
     {
     iLayoutReady = EFalse;
     iRootCtrl->OnDeActivate();
+    TBool enableLayoutRedraw = ETrue;
+    TPtrC data(reinterpret_cast<TUint16*>(&enableLayoutRedraw),sizeof(TBool)/2);
+    SignalOwner(ESignalEnableLayoutRedrawWhenActive,data);
     }    
 // ---------------------------------------------------------------------------
 // CFepUiLayout::SetLayoutPos

@@ -2145,7 +2145,7 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerMoveEventL(const TPoi
         {
         if ( iLastCursorPos != iCursorSel.iCursorPos ) 
             {
-            UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
+            UiLayout()->DoTactileFeedback(ETouchFeedbackEdit);
             iLastCursorPos = iCursorSel.iCursorPos;
             }
         }

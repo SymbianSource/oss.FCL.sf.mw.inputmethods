@@ -1475,6 +1475,12 @@ void CGenericItutWindow::SetPromptTextL(TUint8* aData)
 
 void CGenericItutWindow::SetSpellDisplayContentL( TUint8* aData )
 	{
+	TBool isInSpell = iDataMgr->IsSpellMode();
+	if ( isInSpell )
+		{
+	    return;
+		}
+	
 	RDesReadStream readStream;
 
 	TPtr8 countPtr( aData, 3 * sizeof(TInt), 3 * sizeof(TInt));

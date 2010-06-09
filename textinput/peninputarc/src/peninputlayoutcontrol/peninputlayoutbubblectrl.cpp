@@ -111,6 +111,7 @@ EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
         {
         iShowing = ETrue;              
         SetHidenFlag(EFalse);   
+        /*
         if(UiLayout()->NotDrawToLayoutDevice())
             {
             struct SData
@@ -124,16 +125,19 @@ EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
             ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
         
             UiLayout()->SignalOwner(ESignalPopupArea,ptr);
-            }     
+            }  
+        */
         return;
         }
-    if(!iShowing || aRect != Rect() || iNeedRedraw)
+    if( !iShowing || iNeedRedraw )
         {
         iShowing = ETrue;  
         TRect rect = Rect();
-        SetRect(aRect);
+        //SetRect(aRect);
         SetHidenFlag(EFalse);        
         BringToTop();
+        
+        /*
         //redraw the control under bubble control
         if(aRect != rect)        
             {
@@ -160,7 +164,8 @@ EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
 				RootControl()->ReDrawRect(rect); 
 				}
             }
-		
+            */
+		/*
         // signal server to add the pop area		
         if(UiLayout()->NotDrawToLayoutDevice())
             {
@@ -177,6 +182,7 @@ EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
     
             UiLayout()->SignalOwner(ESignalPopupArea,ptr);
             }
+            */
         
 		// signal server to copy the background as background bitmap for its own bitmap
         if(UiLayout()->NotDrawToLayoutDevice())
@@ -582,8 +588,37 @@ EXPORT_C void CBubbleCtrl::HandleResourceChange(TInt aType)
 
 EXPORT_C void CBubbleCtrl::SetRect(const TRect& aRect)
     {
-    if(aRect == Rect())
+    if( aRect == Rect())
+        {
         return;
+        }
+    else
+        {
+        if( UiLayout()->NotDrawToLayoutDevice())
+            {
+            struct SData
+                {
+                TRect rr;
+                TBool flag;
+                } data;
+        
+            // Remove the original region from list
+            data.rr = Rect();
+            data.flag = EFalse;
+            TPtrC ptrForRemove;
+            ptrForRemove.Set( 
+                    reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
+            UiLayout()->SignalOwner( ESignalPopupArea, ptrForRemove );
+            
+            // Add the new region to list
+            data.rr = aRect;
+            data.flag = ETrue;
+            TPtrC ptrForAdd;
+            ptrForAdd.Set( 
+                    reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
+            UiLayout()->SignalOwner( ESignalPopupArea, ptrForAdd );
+            }
+        }
     CFepUiBaseCtrl::SetRect(aRect);
     ResizeDeviceL();
     }

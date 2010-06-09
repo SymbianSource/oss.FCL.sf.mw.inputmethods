@@ -165,6 +165,12 @@ TInt CPeninputFingerHwrLayout::HandleCommandL( const TInt aCmd, TUint8* aData )
             break;
         case ECmdPenInputWindowOpen:
             {
+            if( !iIsOpenFingerHWR )
+                {
+                iDataStore->GetKeyboardType();
+                iDataStore->SetKeyboardToQwerty();
+                }
+            
             LayoutOwner()->Hide( EFalse );
             RootControl()->UpdateValidRegion( NULL, EFalse );
 
@@ -174,12 +180,6 @@ TInt CPeninputFingerHwrLayout::HandleCommandL( const TInt aCmd, TUint8* aData )
             iDataStore->SetScreenSize(hwrSize);
             ChangeCurStateManagerToStandby();
             
-            if( !iIsOpenFingerHWR )
-                {
-                iDataStore->GetKeyboardType();
-                iDataStore->SetKeyboardToQwerty();
-                }
-                
             iIsOpenFingerHWR = ETrue;
             ret = KErrNone;
             }

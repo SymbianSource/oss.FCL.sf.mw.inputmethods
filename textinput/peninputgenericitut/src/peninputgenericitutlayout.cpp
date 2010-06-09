@@ -170,7 +170,6 @@ TInt CGenericItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputLanguage:
             {
             TRAP_IGNORE(SetInputLanguageL(*data));
-            
             }
             break;
         case ECmdPenInputRange:
@@ -206,10 +205,10 @@ TInt CGenericItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputFingerSpelling:
             {
 
-            if (UiMgr())
+            if ( iWesternUiMgr )
                 {
                 TInt handled = KErrNone;
-                TRAP_IGNORE(handled = UiMgr()->HandleCommandL(aCmd, aData));
+                TRAP_IGNORE( handled = iWesternUiMgr->HandleCommandL( aCmd, aData ));
                 return handled;
                 }
             }
@@ -385,14 +384,21 @@ CGenericItutUiMgrBase* CGenericItutUiLayout::UiMgr()
     
 void CGenericItutUiLayout::SetInputModeL(TInt aMode)
     {
-		TBool numericOnlyChanged = iDataMgr->IsCharFlagChanged() ? ETrue : EFalse;
-		//only number mode need judge it
+	// Input mode can not be set to EnativeNumber in Thai
+    TInt inputLanguage = iDataMgr->InputLanguage();
+    if ( aMode ==  ENativeNumber && inputLanguage == ELangThai )
+        {
+        aMode = ENumber;
+        }
+    
+    TBool numericOnlyChanged = iDataMgr->IsCharFlagChanged() ? ETrue : EFalse;
+    //only number mode need judge it
 
-		//  both EStrokeFind and EStroke will be stored as Estroke  ///// 
-		if ( aMode != iDataMgr->InputMode() || 
-			 aMode == EStroke || aMode == EStrokeFind || 
-			 aMode == EZhuyin || aMode == EZhuyinFind || 
-			 numericOnlyChanged )
+    //  both EStrokeFind and EStroke will be stored as Estroke  ///// 
+    if ( aMode != iDataMgr->InputMode() || 
+        aMode == EStroke || aMode == EStrokeFind || 
+        aMode == EZhuyin || aMode == EZhuyinFind || 
+        numericOnlyChanged )
         {
         // deactivate original uimgr first
         if (iCurrentUiMgr 

@@ -201,6 +201,7 @@ public: // New functions
     void Clean();
     
     void HandleNGASpecificSignal(TInt aEventType, const TDesC& aEventData);
+    void LiftUpPriority();
 public: // Functions from base classes.
 
     /**

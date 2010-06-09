@@ -27,6 +27,7 @@
 
 #ifdef RD_SCALABLE_UI_V2 
 
+#if !defined(__CHINESE) && !defined(__KOREAN)
 data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputsplititut.rsc          RESOURCE_FILES_DIR\plugins\peninputsplititut.rsc
 data = DATAZ_\RESOURCE_FILES_DIR\apps\peninputsplititut.mif             RESOURCE_FILES_DIR\apps\peninputsplititut.mif
 ECOM_PLUGIN(peninputsplititut.dll,peninputsplititut.rsc)
@@ -91,6 +92,7 @@ data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputsplititutconfig_chinese.rsc    
 data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputsplititutconfig_devanagari.rsc        RESOURCE_FILES_DIR\plugins\peninputsplititutconfig_devanagari.rsc
 #endif // hindi marathi
 
+#endif // __CHINESE
 #endif // RD_SCALABLE_UI_V2
 
 #endif //FF_VIRTUAL_ITUT_INPUT 

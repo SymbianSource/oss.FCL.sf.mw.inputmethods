@@ -102,29 +102,34 @@ CFepUiCursor::~CFepUiCursor()
 EXPORT_C void CFepUiCursor::SetPosition(const TPoint& aPosition)
     {
     
-    TBool isOn = iIsOn;
-    if (isOn)
-        {
-        SetOn(EFalse);
-        }
-    iPosition=aPosition;
-    TPoint correction(KCursorPosCorrectionX,KCursorPosCorrectionY );
-    TRect rect = TRect(iPosition + correction , TSize(KCursorWidth,iHeight));
-    if(rect != iCursorRect)
-        {
-        SetRect(rect);
-        iCursorRect = rect;
-        //must update clip region again.
-        for(TInt i = 0 ; i < RootControl()->PopCtrlList().Count(); ++i)
-            {
-            UpdateValidRegion(RootControl()->PopCtrlList()[i],EFalse);
-            }
-        }
-        
-    if (isOn)
-        {
-        SetOn(ETrue);
-        }
+	if( iPosition != aPosition )
+		{
+		TBool isOn = iIsOn;
+		if (isOn)
+			{
+			SetOn(EFalse);
+
+			}
+		iPosition=aPosition;
+		TPoint correction(KCursorPosCorrectionX,KCursorPosCorrectionY );
+		TRect rect = TRect(iPosition + correction , TSize(KCursorWidth,iHeight));
+		if(rect != iCursorRect)
+			{
+			SetRect(rect);
+			iCursorRect = rect;
+			//must update clip region again.
+			for(TInt i = 0 ; i < RootControl()->PopCtrlList().Count(); ++i)
+				{
+				UpdateValidRegion(RootControl()->PopCtrlList()[i],EFalse);
+				}
+			}
+			
+		if (isOn)
+			{
+			SetOn(ETrue);
+			}
+		}
+
     }
 
 // ---------------------------------------------------------------------------
@@ -168,6 +173,7 @@ EXPORT_C void CFepUiCursor::SetOn(TBool aOn, TBool aImmediately)
             {
             iCursorBlinkingTimer->Cancel();    
             }
+        InvalidateInsertionPoint();
         }
     else
         {
@@ -184,7 +190,7 @@ EXPORT_C void CFepUiCursor::SetOn(TBool aOn, TBool aImmediately)
         }
         
         // Invalidate InsertionPoint's rect, so it will be removed from editarea
-    InvalidateInsertionPoint();
+    //InvalidateInsertionPoint();
     }
 
 // ---------------------------------------------------------------------------
@@ -380,7 +386,7 @@ TInt CFepUiCursor::CursorBlinkCallBack(TAny *aPtr)
 //
 void CFepUiCursor::InvalidateInsertionPoint()
     {    
-    //if(AbleToDraw())
+    if(AbleToDraw())
         {        
         Draw();
         //UpdateArea(iCursorRect,EFalse);
@@ -437,7 +443,7 @@ void CFepUiCursor::HandleTimerOut(TInt /*aTimeType*/)
     iCursorTempDisabled = EFalse;
     iIsOn = ETrue;
     //To avoid the ugly first shown, we draw the cursor directly here.
-    InvalidateInsertionPoint();
+    //InvalidateInsertionPoint();
     SetOn(ETrue, EFalse);    
     }
     

@@ -4221,7 +4221,7 @@ EXPORT_C CFepUiBaseCtrl* CAknFepCtrlLongPressButton::HandlePointerDownEventL(con
     //PRINTF((_L("Set long press Timer\n")));
     if ( IsDimmed() )
         {
-        return;
+        return NULL;
         }
     
     iLongPressTimer->SetTimer(iLongPressInterval);
@@ -4239,7 +4239,7 @@ EXPORT_C CFepUiBaseCtrl* CAknFepCtrlLongPressButton::HandlePointerUpEventL(const
 
     if ( IsDimmed() )
         {
-        return;
+        return NULL;
         }
 
     CancelTimer();

@@ -35,6 +35,11 @@ PRJ_EXPORTS
 // If there's no destination then the source file will be copied
 // to the same name in /epoc32/include
 
+PRJ_PLATFORMS
+DEFAULT
+//  Help exports
+#include "../help/group/bld.inf"
+
 ../inc/AknFepManagerInterface.h     |../../../inc/AknFepManagerInterface.h
 ../inc/AknFepManagerUIInterface.h   |../../../inc/AknFepManagerUIInterface.h
 ../inc/AknFepUiIndicEnums.h         |../../../inc/AknFepUiIndicEnums.h

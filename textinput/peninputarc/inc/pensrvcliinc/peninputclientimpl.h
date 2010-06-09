@@ -450,6 +450,8 @@ public:
     void SetResourceChange(TBool aFlag);
     
     void SetDataQueryPopped(TBool aFlag);
+	
+	void EnablePriorityChangeOnOriChange(TBool aEnabled);
     /**
      * Starts the server thread
      *

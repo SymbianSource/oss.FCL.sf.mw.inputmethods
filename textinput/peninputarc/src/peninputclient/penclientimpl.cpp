@@ -331,7 +331,7 @@ void RPeninputServerImpl::DimUiLayoutL(TBool aFlag)
     if(aFlag)
         {
         //show the background control
-        if(!iBackgroundCtrl)
+        if(!iBackgroundCtrl && bmpHandle != -1)
             {
             iBackgroundCtrl = CPenUiBackgroundWnd::NewL(CCoeEnv::Static()->RootWin(),bmpHandle);
             }
@@ -1158,6 +1158,14 @@ void RPeninputServerImpl::SetResourceChange(TBool aFlag)
     arg.Set(KMsgSlot0,&msg);    
     SendReceive(EPeninputRequestDimResChangeLayout,arg);       
     }
+
+void RPeninputServerImpl::EnablePriorityChangeOnOriChange(TBool aEnabled)
+    {
+	TIpcArgs arg;
+	TPckg<TBool> msg(aEnabled);
+    arg.Set(KMsgSlot0,&msg); 
+	SendReceive(EPeninputEnablePriorityChangeOnOriChange,arg); 
+	}
     
 //end of class RPeninputServerImpl
 

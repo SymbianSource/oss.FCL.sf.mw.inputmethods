@@ -26,6 +26,8 @@
 #if defined(__VIRTUAL_KEYBOARD_INPUT) || defined(FF_VIRTUAL_FULLSCR_QWERTY_INPUT)
 #ifdef RD_SCALABLE_UI_V2 
 
+#if !defined(__CHINESE) && !defined(__KOREAN)
+
 #if defined(LOCALES_SC_IBY) || defined(__LOCALES_01_IBY__)|| defined(__LOCALES_157_IBY__) || defined(__LOCALES_158_IBY__) \
 || defined(__LOCALES_159_IBY__) || defined(__LOCALES_10_IBY__) || defined(__LOCALES_161_IBY__) || defined(__LOCALES_129_IBY__) || defined(__LOCALES_186_IBY__) || defined(__LOCALES_230_IBY__)
 #define PENINPUT_VKB_GENERIC_PLUGIN
@@ -261,6 +263,8 @@ data = DATAZ_\RESOURCE_FILES_DIR\apps\peninputsplitqwerty.mif       RESOURCE_FIL
 ECOM_PLUGIN(peninputsplitqwerty.dll,peninputsplitqwerty.rsc)
 #endif //PENINPUT_VKB_GENERIC_PLUGIN
 
+
+#endif // __CHINESE __KOREAN
 #endif // RD_SCALABLE_UI_V2
 #endif //__VIRTUAL_KEYBOARD_INPUT || FF_VIRTUAL_FULLSCR_QWERTY_INPUT  
 #endif // __PEN_SUPPORT

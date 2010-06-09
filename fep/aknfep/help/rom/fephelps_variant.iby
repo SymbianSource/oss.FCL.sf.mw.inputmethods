@@ -1,0 +1,11 @@
+#ifndef  __AKNFEPHELPS_VARIANT_IBY__
+#define  __AKNFEPHELPS_VARIANT_IBY__
+
+#if defined(FF_S60_HELPS_IN_USE)
+    data=LOCALISE(DATAZ_\resource\xhtml\%02d\0x100056de\contents.zip, RESOURCE_FILES_DIR\xhtml\%02d\0x100056de\contents.zip)
+    data=LOCALISE(DATAZ_\resource\xhtml\%02d\0x100056de\index.xml, RESOURCE_FILES_DIR\xhtml\%02d\0x100056de\index.xml)
+    data=LOCALISE(DATAZ_\resource\xhtml\%02d\0x100056de\keywords.xml, RESOURCE_FILES_DIR\xhtml\%02d\0x100056de\keywords.xml)
+    data=LOCALISE(DATAZ_\resource\xhtml\%02d\0x100056de\meta.xml, RESOURCE_FILES_DIR\xhtml\%02d\0x100056de\meta.xml)
+#endif
+
+#endif

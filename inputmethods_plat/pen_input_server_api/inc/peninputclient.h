@@ -427,7 +427,7 @@ public:
     IMPORT_C void SetResourceChange(TBool aFlag); 
     IMPORT_C TInt ConnectAsyc(TRequestStatus& aStatus);
 	IMPORT_C void SetDataQueryPopped(TBool aFlag);
-
+    IMPORT_C void EnablePriorityChangeOnOriChange(TBool aEnabled);
 private:    // Data
     /**
      * The singleton client to the input server

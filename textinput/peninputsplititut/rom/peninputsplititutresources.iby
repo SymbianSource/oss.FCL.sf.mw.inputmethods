@@ -26,8 +26,13 @@
 
 #ifdef RD_SCALABLE_UI_V2 
 
+#if !defined(__CHINESE) && !defined(__KOREAN)
+
 
 data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputsplititutnew.rsc          RESOURCE_FILES_DIR\plugins\peninputsplititutnew.rsc
+
+
+#endif // __CHINESE  __KOREAN
 
 #endif // RD_SCALABLE_UI_V2
 

@@ -168,7 +168,8 @@ private:
     CFbsBitmapDevice* iHighlightKeyDev;
     CFbsBitmapDevice* iDimmedKeyDev;
     CFbsBitGc* iKeyGc;
-    
+    TBool iHighlightKeyResourceChanged;
+    TBool iNormalKeyResourceChanged;
 friend class CVirtualKeyboard;   
     };
 
@@ -935,6 +936,8 @@ private:
     
     TBool PrepareKeyBmp(CFbsBitmap* aBmp,CFbsBitmapDevice* aDev,const TRect& aRect, 
             const TRect& aInnerRect,const TAknsItemID& aFrameID, const TAknsItemID& aCenterID,const TRect& aKeyRect);
+    TBool PrepareHighlightKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect);
+    TBool PrepareNormalKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect);        
 
 friend class CVirtualKeyCtrl;
 friend class CVirtualRawKeyCtrl;

@@ -37,7 +37,7 @@
 #include <PtiDefs.h>
 #include <aknSctDialog.h>
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <e32std.h>
 
 #include <AknFepManager.h>

@@ -36,7 +36,7 @@
 #include <aknlistquerydialog.h>
 #include <aknedsts.h>               //CAknEdwinState
 #include <barsread.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include "AknFepGlobalEnums.h"
 #include <aknstyluspopupmenu.h>
 #include <aknSctDialog.h>           //CAknCharMapDialog

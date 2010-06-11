@@ -41,7 +41,7 @@ const TInt KMinCandidateCount = 1;
 #include "aknfepuictrleditpane.h"           //phrase creation
 #include "AknFepUIManagerStateInterface.h"  
 #include "AknFepManager.h" 
-#include <AknFep.rsg>                 
+#include <aknfep.rsg>                 
 
 // ---------------------------------------------------------------------------
 // AknFepUiInputStateCandidateMiniQwertyPinyinAndStrokePhrase::

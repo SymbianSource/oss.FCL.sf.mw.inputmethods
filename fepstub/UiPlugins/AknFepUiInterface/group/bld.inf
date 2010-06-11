@@ -1,0 +1,63 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:           
+*       Bldmake component description file.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <platform_paths.hrh>
+
+PRJ_EXPORTS
+// specify the source file followed by its destination here
+// copy will be used to copy the source file to its destination
+// If there's no destination then the source file will be copied
+// to the same name in /epoc32/include
+
+../inc/aknfepindicator.h        	|../../../../../inc/aknfepindicator.h
+../inc/AknFepUICtrlCandidatePane.h	|../../../../../inc/AknFepUICtrlCandidatePane.h
+../inc/AknFepUICtrlCandidatePaneInterface.h	|../../../../../inc/AknFepUICtrlCandidatePaneInterface.h
+../inc/AknFepUiCtrlContainerChinese.h	|../../../../../inc/AknFepUiCtrlContainerChinese.h
+../inc/AknFepUICtrlContainerJapanese.h	|../../../../../inc/AknFepUICtrlContainerJapanese.h
+../inc/AknFepUICtrlInputPane.h	|../../../../../inc/AknFepUICtrlInputPane.h
+../inc/AknFepUICtrlPinyinPopup.h	|../../../../../inc/AknFepUICtrlPinyinPopup.h
+../inc/AknFepUIStylusPopupMenu.h	|../../../../../inc/AknFepUIStylusPopupMenu.h
+../inc/aknfepuictrleditpane.h     |../../../../../inc/aknfepuictrleditpane.h
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+../inc/AknFepCandidatePopup.h 		|../../../../../inc/AknFepCandidatePopup.h
+../inc/AknFepCandidatePopupCallback.h   |../../../../../inc/AknFepCandidatePopupCallback.h
+../inc/AknFepUiWordPopupContent.h	|../../../../../inc/AknFepUiWordPopupContent.h
+#endif //RD_INTELLIGENT_TEXT_INPUT
+
+PRJ_MMPFILES
+// specify the .mmp files required for building the important component releasables
+// note that you should specify any .mmp files for test programs further down the file.
+//
+// Use C++ style #defines to denote that a component is only built for a particular platform
+
+// ../group/aknfepuiinterface.mmp This is now built from aknfep's main bld.inf.
+
+
+
+// End of file

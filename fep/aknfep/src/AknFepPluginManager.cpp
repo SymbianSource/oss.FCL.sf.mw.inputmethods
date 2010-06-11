@@ -42,7 +42,7 @@
 #include <AvkonInternalCRKeys.h>    // KAknQwertyInputModeActive
 #include <hlplch.h>
 //#include <peninputgsinterface.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <avkon.rsg>
 #include <AknIndicatorContainer.h>  //CAknIndicatorContainer
 #include <StringLoader.h>

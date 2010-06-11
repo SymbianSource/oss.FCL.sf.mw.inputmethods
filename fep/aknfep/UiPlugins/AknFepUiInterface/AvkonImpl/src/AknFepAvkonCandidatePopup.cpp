@@ -44,7 +44,7 @@
 #include <AknFepInternalCRKeys.h>
 #include <AvkonInternalCRKeys.h>
 
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <AknFepGlobalEnums.h>
 #include <avkon.hrh>
 #include "AknFepAvkonCandidatePopup.h"

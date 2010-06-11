@@ -43,7 +43,7 @@
 #include "AknFepCaseManager.h"
 #include "AknFepPanic.h"
 
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <AknIndicatorContainer.h>  // CAknIndicatorContainer::TIndicatorContext
 #include <PtiEngine.h> 
 #include <PtiDefs.h>

@@ -29,10 +29,10 @@ file=ABI_DIR\BUILD_DIR\peninputclient.dll            SHARED_LIB_DIR\peninputclie
 #ifdef __PEN_SUPPORT
 file=ABI_DIR\BUILD_DIR\peninputlayoutinterface.dll         SHARED_LIB_DIR\peninputlayoutinterface.dll
 file=ABI_DIR\BUILD_DIR\peninputlayouteng.dll            SHARED_LIB_DIR\peninputlayouteng.dll
-file=ABI_DIR\BUILD_DIR\peninputlayoutcontrol.dll     SHARED_LIB_DIR\peninputlayoutcontrol.dll
+//file=ABI_DIR\BUILD_DIR\peninputlayoutcontrol.dll     SHARED_LIB_DIR\peninputlayoutcontrol.dll
 file=ABI_DIR\BUILD_DIR\peninputanim.dll            SHARED_LIB_DIR\peninputanim.dll
 file=ABI_DIR\BUILD_DIR\peninputserver.exe            SHARED_LIB_DIR\peninputserver.exe
-file=ABI_DIR\BUILD_DIR\peninputpluginutils.dll            SHARED_LIB_DIR\peninputpluginutils.dll
+//file=ABI_DIR\BUILD_DIR\peninputpluginutils.dll            SHARED_LIB_DIR\peninputpluginutils.dll
 
 S60_APP_AIF_RSC(peninputserver)
 data = \EPOC32\DATA\Z\resource\apps\peninputserver.RSC 	"resource\apps\peninputserver.rsc" 

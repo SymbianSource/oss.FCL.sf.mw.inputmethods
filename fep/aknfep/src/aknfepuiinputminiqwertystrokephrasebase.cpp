@@ -33,7 +33,7 @@
 #include <PtiEngine.h>
 #include <PtiDefs.h>
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <PtiUserDicEntry.h>
 #include <aknnotewrappers.h> //CAknWarningNote 
 

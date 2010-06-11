@@ -39,7 +39,7 @@
 #include <PtiDefs.h>                    // keys
 #include <PtiEngine.h>
 #include <PtiCompositionDataIF.h>       // MPtiEngineCompositionDataInterface
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 
 // CONSTANTS

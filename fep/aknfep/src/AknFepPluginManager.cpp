@@ -827,6 +827,15 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
 //                OnPenInputServerKeyEventL(pBuf);                
                 }
                 break;
+            case ESignalDeactivateSprite:
+            	{
+                ClosePluginInputUiL( ETrue );
+                if(iPenInputSvrConnected ) //lost foreground
+                    {
+                    iPenInputServer.LoseForeground();
+                    }
+            	}
+            	break;
             default:
                 break;
             }
@@ -1525,8 +1534,8 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
 // 
 void CAknFepPluginManager::OnResourceChangedL( TInt aType )
     { 
-    if ( !iCurrentPluginInputFepUI || !iPenInputServer.IsForeground() || 
-         iPluginInputMode == EPluginInputModeNone )
+    if ( !iCurrentPluginInputFepUI 
+    	 || iPluginInputMode == EPluginInputModeNone )
         {
         return;
         }
@@ -1536,23 +1545,45 @@ void CAknFepPluginManager::OnResourceChangedL( TInt aType )
 	     && !iSharedData.AutoRotateEnabled() )
         {
         return;
+        }    
+
+    TInt preInputMode = iPluginInputMode;
+    if ( iSharedData.AutoRotateEnabled() && 
+        ( preInputMode == EPluginInputModeFSQ || preInputMode == EPluginInputModeItut ) )
+        {
+        // Calculate current input mode by orientation.
+        // even though peninputserver is brought to backgroud, 
+        // the value for current input mode also needs to be ready. 
+        // For example, when open task switcher, pen ui is invisible and peniput server is background, 
+        // then switch orientation...
+        // After that when focus go back to editor, config FEP must be done before pen ui open,
+        // And FEP must know for which kind of input method it configur.        
+        TPixelsTwipsAndRotation size; 
+        CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);        
+        iPluginInputMode = ( size.iPixelSize.iWidth < size.iPixelSize.iHeight ) ? 
+            EPluginInputModeItut : EPluginInputModeFSQ;            
         }
-        
+    
+    if ( !iPenInputServer.IsForeground() )
+	    {
+	    return;
+	    }
+
     TBool setResChange = EFalse;
     
-    if (iPluginInputMode == EPluginInputModeItut || 
-         iPluginInputMode == EPluginInputModeFSQ ||
-        iPluginInputMode == EPluginInputModeFingerHwr)
+    if ( preInputMode == EPluginInputModeItut || 
+    	 preInputMode == EPluginInputModeFSQ ||
+    	 preInputMode == EPluginInputModeFingerHwr )
         {
         setResChange = ETrue;
-        iPenInputServer.SetResourceChange(ETrue);    
+        iPenInputServer.SetResourceChange(ETrue);           
         }
     
     iResourceChange = ETrue;   
 
     TBool needToChangeInputMode = ETrue;
     if ( iSharedData.AutoRotateEnabled() && 
-        ( iPluginInputMode == EPluginInputModeFSQ || iPluginInputMode == EPluginInputModeItut ) )
+         ( preInputMode == EPluginInputModeFSQ || preInputMode == EPluginInputModeItut ) )
         {
         if ( IsSpellVisible() )
             {
@@ -1561,22 +1592,16 @@ void CAknFepPluginManager::OnResourceChangedL( TInt aType )
             iFepMan.HandleChangeInFocusForSettingFep();
             iFepMan.SetNotifyPlugin( ETrue );
             }
-        TPixelsTwipsAndRotation size; 
-        CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
-
-        TPluginInputMode inputModeBeforeOri = ( size.iPixelSize.iWidth < size.iPixelSize.iHeight ) ? 
-            EPluginInputModeItut : EPluginInputModeFSQ;
         
-            if ( iPenInputMenu && iPenInputMenu->IsShowing() )
-                {
-                iPenInputMenu->Hide();
-                ResetMenuState(EFalse);
-                }
+         if ( iPenInputMenu && iPenInputMenu->IsShowing() )
+             {
+             iPenInputMenu->Hide();
+             ResetMenuState(EFalse);
+             }
             
-        if(inputModeBeforeOri != iPluginInputMode)
-            {
-            iPluginInputMode = inputModeBeforeOri; 
-            ClosePluginInputModeL(ETrue);               
+        if( preInputMode != iPluginInputMode )
+            {            
+            ClosePluginInputModeL(ETrue);
             iFepMan.TryCloseUiL();
             }
         else
@@ -1591,6 +1616,16 @@ void CAknFepPluginManager::OnResourceChangedL( TInt aType )
                                      EPenInputOpenManually,
                                      ERangeInvalid ); 
 		}
+    else 
+        {
+        if ( !NotifyInGlobalNoteEditorL() )
+            {
+            iFocuschangedForSpellEditor = EFalse; 
+            iCurrentPluginInputFepUI->ActivateUI(); 
+            iNeedFetchDimState = ETrue;
+            }
+        }
+
     
     /*if(size.iPixelSize.iWidth > size.iPixelSize.iHeight ) //landscape
         {

@@ -924,7 +924,7 @@ items=
     MENU_ITEM
         {
         command = EAknFepCmdPredHelp;
-        txt = qtn_pred_suboption_help;
+        txt = qtn_options_help;
         }
     };
 }

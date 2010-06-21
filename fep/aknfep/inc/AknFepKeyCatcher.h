@@ -122,6 +122,7 @@ private:
     inline void SetFlag(TInt aFlag);
     inline void ClearFlag(TInt aFlag);
     inline TBool IsFlagSet(TInt aFlag) const;
+    TKeyResponse CheckForSpecilacaseHandlingTosetKeyboardtype(const TKeyEvent& aKeyEvent, TEventCode aEventCode);
 	TBool IsNaviKey(TUint aCode);
 private:    
     // Data not owned
@@ -131,6 +132,9 @@ private:
     TUint iFlags;
     TKeyPressLength     iKeyPressLength;
     TInt iLongPressedScanCode;
+    TBool iPreviousKeyeventNormal;
+    TBool iPreviousKeyeventSpecial;
+    TBool iRetainKeyBoardtypeFornextkeyevent;
     };
 
 /**

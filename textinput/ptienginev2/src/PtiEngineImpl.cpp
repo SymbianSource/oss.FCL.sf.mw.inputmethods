@@ -712,14 +712,36 @@ TInt CPtiEngineImpl::SetInputMode(TPtiEngineInputMode aMode)
 			return KErrNoSuitableCore;	
 			}
 		}
-
-    iInputMode = aMode;	
+	
+	if (iInputMode != aMode)
+		{
+		OnInputModeChanged(iInputMode, aMode);
+		iInputMode = aMode;		
+		}
 
 	TFileName temp;
 	temp.Copy(iTextBuffer);
 	return SetCurrentWord( temp );
 	}
 
+void CPtiEngineImpl::OnInputModeChanged(TPtiEngineInputMode /*aOldMode*/, TPtiEngineInputMode aNewMode)
+	{
+	if (aNewMode == EPtiEngineQwertyPredictive)
+		{
+		HBufC16* oldTextBuf = iTextBuffer.Alloc(); 
+		ClearCurrentWord();
+		if (oldTextBuf)
+			{
+			// why assigned here? eh, I don't want to do that either.
+			// SetCurrentWord will use core(), which will use iInputMode, and 
+			// obviously, the core should return the new core, that is why.
+			iInputMode = aNewMode;
+		
+			SetCurrentWord(oldTextBuf->Des());
+			delete oldTextBuf;
+			}
+		}
+	}
 
 // ---------------------------------------------------------------------------
 // CPtiEngineImpl::CountToneMarks
@@ -3964,10 +3986,12 @@ TPtiKeyboardType CPtiEngineImpl::ActiveKeyboardType() const
 	// When the default physical keyboard is 0, 
 	// it means that there is no physical keyboard,
 	// also need to get the active virtual keyboard type.
+	TInt isQwertyOn = 0;
+	RProperty::Get(KCRUidAvkon, KAknQwertyInputModeActive, isQwertyOn);	
 	TInt isVirtualInputActive = 0;
 	RProperty::Get( KPSUidAknFep, KAknFepTouchInputActive, 
 					isVirtualInputActive );    
-	if ( isVirtualInputActive > 0 || keyboardType == 0 )
+	if (( isVirtualInputActive > 0 || keyboardType == 0) && !isQwertyOn)
 		{
 		// Active keyboard is virtual keyboard          
 		RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, 

@@ -26,12 +26,12 @@
 #ifdef FF_CAPACITIVE_DISPLAY
 #ifdef FF_ARABIC_HANDWRITING_RECOGNITION_INPUT
 
-
+#if defined(__LOCALES_37_IBY__)
 data = DATAZ_\RESOURCE_FILES_DIR\peninputfingerhwrarwnd.rsc    RESOURCE_FILES_DIR\peninputfingerhwrarwnd.rsc
 data = DATAZ_\RESOURCE_FILES_DIR\apps\peninputfingerhwrar.mif       RESOURCE_FILES_DIR\apps\peninputfingerhwrar.mif
 
 ECOM_PLUGIN(peninputfingerhwrar.dll, peninputfingerhwrar.rsc)
-
+#endif //__LOCALES_37_IBY__
 
 #endif //FF_ARABIC_HANDWRITING_RECOGNITION_INPUT
 #endif //FF_CAPACITIVE_DISPLAY

@@ -205,6 +205,13 @@ public: //symbol table
     TRect VirtualSctpadCellSize();
     
     /**
+     * get cell size of virtual numpad.
+     * 
+     * @since Symbian TB9.2
+     * @return cell size of virtual sctpad.
+     */     
+    TRect VirtualNumpadCellSize();
+    /**
      * get cell rect of virtual sctpad.
      * 
      * @since Symbian TB9.2

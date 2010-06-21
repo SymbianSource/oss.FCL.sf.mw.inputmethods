@@ -949,7 +949,6 @@ void CPeninputGenericVkbWindow::ReorganizeControls( TInt aClientLayoutId,
         // read LAF data for tooltip box
         const TPeninputTooltipBoxLayoutData& tooltipBoxLAF 
                                           = iLafMgr->TooltipBoxLayoutData();
-        icf->TooltipBubbleCtrl()->SetRect( tooltipBoxLAF.iRect );
         icf->TooltipBubbleCtrl()->SetTextFormat( tooltipBoxLAF.iTooltipTextLayout );
         icf->TooltipBubbleCtrl()->SetTextColorIndex( EAknsCIQsnTextColorsCG55 );
         icf->TooltipBubbleCtrl()->SetBitmapParam(NULL,

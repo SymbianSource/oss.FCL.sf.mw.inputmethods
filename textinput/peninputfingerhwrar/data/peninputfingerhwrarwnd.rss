@@ -133,6 +133,11 @@ RESOURCE AKN_FEP_FINGERHWR_SYMBOLTABLE r_fingerhwr_arabic_symboltable
     bgimage = r_fingerhwr_window_background;
     }
 
+RESOURCE AKN_FEP_FINGERHWR_SYMBOLTABLE r_fingerhwr_arabic_numbertable
+    {
+    bgimage = r_fingerhwr_window_background;
+    }
+
 RESOURCE PENINPUT_LAYOUT_WINDOW_SHADOW r_fingerhwr_window_shadow
     {
     bmpfile = AKN_FEP_FINGERHWR_BMP;

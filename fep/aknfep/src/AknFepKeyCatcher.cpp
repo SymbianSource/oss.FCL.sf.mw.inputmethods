@@ -79,7 +79,7 @@ CAknFepKeyCatcher::~CAknFepKeyCatcher()
 
 TKeyResponse CAknFepKeyCatcher::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aEventCode)
     {
-   
+    CheckForSpecilacaseHandlingTosetKeyboardtype(aKeyEvent, aEventCode);
 #ifdef RD_SCALABLE_UI_V2     
     if (aEventCode == EEventKeyUp && 
         aKeyEvent.iScanCode == EStdKeyNo)
@@ -646,7 +646,8 @@ void CAknFepKeyCatcher::SetState(const enum TAknFepManagerState aState)
 
 CAknFepKeyCatcher::CAknFepKeyCatcher(CAknFepManager& aFepMan)
     : iFepMan(aFepMan),
-      iKeyCatcherState(EAknFepStateNull)
+      iKeyCatcherState(EAknFepStateNull),iPreviousKeyeventNormal(ETrue),
+      iPreviousKeyeventSpecial(EFalse),iRetainKeyBoardtypeFornextkeyevent(EFalse)
     {
     }
 
@@ -768,4 +769,70 @@ void CAknFepKeyCatcher::MonitorWsMessage(const TWsEvent& aEvent)
 
 #endif //RD_SCALABLE_UI_V2 
 
+//To set to ITU-T mode when qwerty keypad is open and user try to use ITU-T Keypad.
+TKeyResponse CAknFepKeyCatcher::CheckForSpecilacaseHandlingTosetKeyboardtype(const TKeyEvent& aKeyEvent, TEventCode aEventCode)
+	{
+	
+	//These modifiers will set by dialer application, to simulate
+	// touch button events, hence check event has come from touch keypad and set keyboardlayout accordingly
+			
+	if(aKeyEvent.iModifiers & EModifierNumLock &&
+        aKeyEvent.iModifiers & EModifierKeypad 
+        )
+		{
+		//Check for modifiers and previous event handled is normal or special.
+		if(iFepMan.KeyboardLayout() != EPtiKeyboard12Key &&
+			 iPreviousKeyeventNormal)
+	        {	        
+	        iFepMan.SetKeyboardLayout(EPtiKeyboard12Key);
+	        iFepMan.SetFnKeyMappingState();
+	        iFepMan.SetQwertyMode(0);
+	        
+	        //This variable will be set, while handling special key events,	        
+	        iPreviousKeyeventSpecial = ETrue;
+	        
+	        //This variable will be set while handling normal keyevent
+	        iPreviousKeyeventNormal = EFalse;
+	        iRetainKeyBoardtypeFornextkeyevent = EFalse;	        
+	        }
+	        
+	        //Additional modifier set by query dialog, while simulating event
+	        // As raw key events are used to simulate, modifiers and scan codes cannot be set at a time
+	        // In the 1st event, modifiers are set and in subsequent event, scan codes will be set. 
+	        if(aKeyEvent.iModifiers & EModifierSpecial)
+	        	{
+	        	iRetainKeyBoardtypeFornextkeyevent = ETrue;   
+	        	iPreviousKeyeventSpecial = ETrue;
+	        	iPreviousKeyeventNormal = ETrue;     	
+	        	return EKeyWasConsumed;	        
+	        	}	        							
+		}
+	else if(iFepMan.KeyboardLayout() == EPtiKeyboard12Key && iPreviousKeyeventSpecial)	 
+		{
+		//In case of query dialog, treat it as special event, till keyup event.
+		if(!iRetainKeyBoardtypeFornextkeyevent)
+			{		
+			TInt activeKeypad=0;
+			TInt activeKeypadType =0;
+			RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout,activeKeypad);
+	        RProperty::Get(KCRUidAvkon, KAknQwertyInputModeActive, activeKeypadType);
+			iFepMan.SetKeyboardLayout((TPtiKeyboardType)activeKeypad);
+	        iFepMan.SetFnKeyMappingState();
+	        iFepMan.SetQwertyMode(activeKeypadType);
+	        iPreviousKeyeventNormal = ETrue;
+	        iPreviousKeyeventSpecial = EFalse;
+			}
+		else if(aEventCode == EEventKeyUp)	//In case of query dialog reset flag in Keyup event.			
+			iRetainKeyBoardtypeFornextkeyevent =EFalse;	
+		}
+		
+	if(iPreviousKeyeventSpecial)
+		{
+		iFepMan.CancelShiftKeyTimer();
+		iFepMan.ClearFlag(CAknFepManager::EFlagShiftKeyDepressed);					
+		}
+		
+	return EKeyWasNotConsumed;
+	}
+	
 // End of file

@@ -149,12 +149,12 @@ void CPeninputFingerHwrArWnd::ConstructFromResourceL()
     // read keypad image info
     if ( iNumSymbolTable )
         {
-        TSize keysize = iLafManager->VirtualSctpadCellSize().Size();
+        TSize keysize = iLafManager->VirtualNumpadCellSize().Size();
         iNumSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_NUMPAD_IMAGE, keysize );
         
         RArray<TRect> rects;
         CleanupClosePushL( rects );
-        iLafManager->GetVirtualKeyRects( rects );
+        iLafManager->GetNumVirtualKeyRects( rects );
         LoadNumSymbolVirtualKeysL( R_FINGER_HWR_NUMPAD, rects );
         CleanupStack::PopAndDestroy(); //rects
         }
@@ -752,7 +752,7 @@ void CPeninputFingerHwrArWnd::CreateNumSymbolTableL()
     {
     iNumSymbolTable = CPeninputArabicFingerHwrNumSymbolTable::NewL(UiLayout(),EHwrCtrlIdNumSymbolTableVkbGroup);
     iNumSymbolTable->Hide(ETrue);
-    iNumSymbolTable->SetResourceId(R_FINGERHWR_ARABIC_SYMBOLTABLE);
+    iNumSymbolTable->SetResourceId(R_FINGERHWR_ARABIC_NUMBERTABLE);
     iNumSymbolTable->ConstructFromResourceL();
     AddControlL( iNumSymbolTable );
     iNumSymbolTable->AddEventObserver( UiLayout() );
@@ -934,7 +934,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
 							  iLafManager->IsLandscape());
 	//number mode symbol table
     // load number mode vkb key image
-    TSize numkeysize = iLafManager->VirtualSctpadCellSize().Size();
+    TSize numkeysize = iLafManager->VirtualNumpadCellSize().Size();
     iNumSymbolTable->LoadVkbKeyImageL(R_FINGER_HWR_NUMPAD_IMAGE, numkeysize );
     
     // get the key rect
@@ -1049,18 +1049,28 @@ void CPeninputFingerHwrArWnd::MoveIconButton( CAknFepCtrlEventButton* aButton,
     TRect rcInner = aRect;
     if (  rcInner.Width()> rcInner.Height() )
         {
-            TInt dx = ( rcInner.Width() - rcInner.Height() ) / 2;
+            TInt dx = ( rcInner.Width() - rcInner.Height() ) / 4;
             rcInner.Move( dx, 0 );
-            rcInner.SetWidth( rcInner.Height() );
+            rcInner.SetWidth( rcInner.Height() + 2*dx);
         }
     else
         {
-        TInt dy = ( rcInner.Height() - rcInner.Width() ) / 2;
+        TInt dy = ( rcInner.Height() - rcInner.Width() ) / 4;
         rcInner.Move( 0, dy );
-        rcInner.SetHeight( rcInner.Width() );        
+        rcInner.SetHeight( rcInner.Width() + 2*dy);        
         }
-
     rcInner.Shrink( aXPadding, aYPadding );
+    if(aButton->ControlId() == EHwrCtrlIdBtnSpace)
+        {
+        // config 3 pieces icon info       
+        TRect middleIconRect = rcInner;
+        middleIconRect.Shrink(2,2);
+        ( static_cast<CAknFepCtrlCommonButton*> (aButton) )->SetDraw3PieceFrameInfo(
+                                          TDraw3PiecesFrame(KAknsIIDQgnIndiInputSpaceL,
+                                          KAknsIIDQgnIndiInputSpaceMiddle,
+                                          KAknsIIDQgnIndiInputSpaceR,
+                                          middleIconRect));                     
+        }
     aButton->SizeChanged( aRect, rcInner, aReloadImages );
     }
     

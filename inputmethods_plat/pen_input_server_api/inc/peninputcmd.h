@@ -152,6 +152,7 @@ enum TSignalEvent
     EPeninputOpSetDiscreeptPop,  
     ESignalDeleteLastInput,
     ESignalArabicSCTChar,
+    ESignalDeactivateSprite,
     ESignalUserEventBase = 2000
     };
 

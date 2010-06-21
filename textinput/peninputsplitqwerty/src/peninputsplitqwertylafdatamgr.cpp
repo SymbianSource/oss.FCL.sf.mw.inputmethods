@@ -300,8 +300,8 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
     CPeninputQwtLayoutDataInfo* data = new( ELeave ) CPeninputQwtLayoutDataInfo;
     CleanupStack::PushL( data );
 
-    TAknWindowLineLayout linelayout;
-    TAknLayoutRect layoutrect;
+    TAknWindowLineLayout linelayout, linelayoutInner;
+    TAknLayoutRect layoutrect, layoutInnerect;
 
     TAknLayoutRect keypadRect, keypaneRect, keycellRect, keylabelRect;  
     TAknLayoutRect pic3paneRect;
@@ -451,18 +451,17 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
     data->iClearButton.iInnerRect = OffsetRect( rectXInner, dx, dy );
     dx += rectXPane.Width();   
 
-    keyText = AknLayoutScalable_Avkon::popup_fep_char_pre_window_t1(0).LayoutLine();
+    // preview popup window    
+    keyText = AknLayoutScalable_Avkon::popup_fep_char_preview_window_t1( v2 ).LayoutLine();
+    linelayout = AknLayoutScalable_Avkon::popup_fep_char_preview_window( v2 ).LayoutLine();
+    linelayoutInner = AknLayoutScalable_Avkon::bg_popup_fep_char_preview_window_g9().LayoutLine();
     
-    linelayout = AknLayoutScalable_Avkon::popup_fep_char_pre_window(0).LayoutLine();
     layoutrect.LayoutRect( pic3paneRect.Rect(), linelayout );
-    TRect preBubbleRect = layoutrect.Rect();
-    preBubbleRect.Move( -preBubbleRect.iTl );
-    TRect preBubbleInner = preBubbleRect;
-    preBubbleInner.Shrink( 10, 10 );
+    layoutInnerect.LayoutRect( layoutrect.Rect(), linelayoutInner );
     
     data->iPreviewWndText = keyText;
-    data->iPreviewWndRect = preBubbleRect;
-    data->iPreviewWndInnerRect = preBubbleInner;
+    data->iPreviewWndRect = layoutrect.Rect();
+    data->iPreviewWndInnerRect = layoutInnerect.Rect();
     
     return data;
     }

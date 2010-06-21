@@ -1465,8 +1465,6 @@ void CAknFepVkbWindow::SetITILayoutOnFSQ()
         // read LAF data for tooltip box
         const TPeninputCnTooltipBoxLayoutData& tooltipBoxLAF 
                                         = iLafMgr->TooltipBoxLayoutData();
-        iInputContextField->TooltipBubbleCtrl()->SetRect( 
-                                        tooltipBoxLAF.iRect );
         iInputContextField->TooltipBubbleCtrl()->SetTextFormat( 
                                         tooltipBoxLAF.iTooltipTextLayout );
         iInputContextField->TooltipBubbleCtrl()->SetTextColorIndex( 

@@ -709,7 +709,7 @@ TBool TAknFepInputStateEntryWesternPredictive::HandleStarKeyL(TKeyPressLength aL
                    ( fepMgr->PluginUIManager()->PluginInputMode() == EPluginInputModeItut ))
                     {
                     // launch full screen query for split itut
-                    fepMgr->LaunchEditWordQueryL();
+                    fepMgr->PluginUIManager()->HandleServerEventL(ESignalEnterSpellMode);  
                     }
                 else
                     {

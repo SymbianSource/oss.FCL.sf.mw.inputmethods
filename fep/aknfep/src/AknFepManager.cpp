@@ -132,6 +132,8 @@
 #include <aknCharMap.h>
 
 #include <AknFepInternalPSKeys.h>
+#include <e32property.h>
+#include <AknDef.h>
 
 const TInt KSelectItemSize(10);
 _LIT(KAknFepResourceFileName, "z:\\resource\\fep\\aknfep.rsc");
@@ -248,6 +250,9 @@ const TInt KWordToFocusInCandidateList = 1;
 #endif
 
 LOCAL_C TInt RemapVietnameseAccentedCharacter(TUint16 aChr);
+
+static _LIT_SECURITY_POLICY_PASS( KAllowAllPolicy );
+static _LIT_SECURITY_POLICY_C1( KPowerMgmtPolicy, ECapabilityPowerMgmt );
 
 //
 // Class TTextDirectionalInfo
@@ -442,6 +447,13 @@ void CAknFepManager::ConstructL(const CCoeFepParameters& aFepParameters)
     iHybridAplphaChangedToAlphanumeric = EFalse;
     iLastFocusedEditor = NULL;
     iFepAwareDialogParentEditor = NULL;
+	
+	RProperty::Define(
+            KPSUidAknFep, 
+            KAknFepSettingDialogState, 
+            RProperty::EInt, 
+            KAllowAllPolicy,  // None
+            KPowerMgmtPolicy ); 
     }
 
 void CAknFepManager::ConstructFullyL()
@@ -8858,7 +8870,7 @@ void CAknFepManager::LaunchFepQueryDialogL(TInt aResourceId, const TDesC& aIniti
     TInt textQueryEditorFlag = 0;
     if ((aResourceId == R_AVKON_INSERT_WORD_QUERY ||
          aResourceId == R_AVKON_EDIT_WORD_QUERY ) &&
-        IsChineseInputLanguage())
+         FeatureManager::FeatureSupported( KFeatureIdChinese ))
     	{
 	    textQueryEditorFlag = EAknEditorFlagLatinInputModesOnly;
     	}

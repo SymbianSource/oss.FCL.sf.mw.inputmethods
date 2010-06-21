@@ -429,8 +429,12 @@ void CPeninputServer::DecreaseSessionCount(CPeninputServerSession* aSession)
 void CPeninputServer::ActivateSpriteInGlobalNotesL()
     {
     TBool notDraw = EFalse;
-    iUiLayout->HandleCommand( ECmdPeninputDisableLayoutDrawing, 
-    		                 (unsigned char*)&notDraw );    
+    
+    if(iUiLayout)
+    	{
+		iUiLayout->HandleCommand( ECmdPeninputDisableLayoutDrawing, 
+								 (unsigned char*)&notDraw );  
+    	}
     if(iActive)
         {
 	    if(iUseWindowCtrl)
@@ -693,14 +697,20 @@ void CPeninputServer::DimPenUiWnd(TBool aFlag)
     if(aFlag)
         {
         iEventBufferQueue->Cancel();                   
-        iUiLayout->OnDeActivate(); 
+        if( iUiLayout )
+        	{
+			iUiLayout->OnDeActivate(); 
+        	}
         if(iUseWindowCtrl)
             iPenUiCtrl->OnDeactivate(); //disable non fading                     
         }
     else
         {
         iEventBufferQueue->GetEvent();                   
-        iUiLayout->OnActivate(); 
+        if( iUiLayout )
+        	{
+			iUiLayout->OnActivate(); 
+        	}
         if(iUseWindowCtrl)
             iPenUiCtrl->OnActivate(CPenUiWndCtrl::ENoremalEditor); //disable non fading                             
         }
@@ -2114,7 +2124,18 @@ void CPeninputServer::HandleResourceChange(TInt aType)
         {
         //hide the layout if it's already shown
         
+        if ( iActive )
+            {
+            iUiLayout->OnActivate();  
+            }  
+        
         iUiLayout->OnResourceChange(aType);
+        
+        if(iUseWindowCtrl)
+            {
+            iPenUiCtrl->DrawNow();
+            }
+            
         //show the layout if it's active
         }
     }
@@ -2240,8 +2261,8 @@ void CPeninputServer::HideLayoutTemporaryL()
             
 			if(iUiLayout)
 			    {
-				TBool notDraw = ETrue;
-	            iUiLayout->HandleCommand(ECmdPeninputDisableLayoutDrawing,(unsigned char*)&notDraw);
+				//TBool notDraw = ETrue;
+	            //iUiLayout->HandleCommand(ECmdPeninputDisableLayoutDrawing,(unsigned char*)&notDraw);
 	            iUiLayout->OnDeActivate();
 			    }
             }       
@@ -2445,30 +2466,32 @@ void CPeninputServer::HandleWsEventL(const TWsEvent &aEvent,
                     break;
                     }
                 */
-                if(IsGlobalNotesApp(focusApp))
-                        {
-                        iInGlobalNotesState = ETrue;
-                        // add this to enable global dim   
-                        DeactivatePenUiLayout(EFalse);           
-                        break;            
-                        }
+                if( IsGlobalNotesApp(focusApp) )
+                    {
+                    iInGlobalNotesState = ETrue;
+                    // add this to enable global dim   
+                    DeactivatePenUiLayout(EFalse);           
+                    break;            
+                    }
                     
 /*                else if (focusApp.iUid == 0x102750f0)
                     {
                     DeactivateSprite();    
                     }
-*/                else
+*/               else
                     {
-                        if(iInGlobalNotesState)
-                            {			  
-                            //fix for fast swap case
+                    if(iInGlobalNotesState)
+                        {			  
+                        //fix for fast swap case
                         iInGlobalNotesState = EFalse;                        
-                        if(iPreNonGloebalNotesWndGrpId != focusApp.iUid)
+                        if(iPreNonGloebalNotesWndGrpId != focusApp.iUid )
                             {                            
-                            iPreNonGloebalNotesWndGrpId = focusApp.iUid;    
-             
+                            iPreNonGloebalNotesWndGrpId = focusApp.iUid;
                             DeactivateSprite(ETrue);//hide pen ui immediately if switched to another application
-                            iForegroundSession = NULL;
+                            // Notify FEP to close touch input window.
+                            // Under this case, touch input window can't be closed without norifying FEP side.
+                            // After close touch input window, FEP must change some states.
+                            SignalOwner( ESignalDeactivateSprite, KNullDesC );                            
                             }
                         }
                     else
@@ -2476,7 +2499,7 @@ void CPeninputServer::HandleWsEventL(const TWsEvent &aEvent,
                         DeactivateSprite(ETrue);
                         }
                     }
-                        break;                            
+                break;                            
                 }   
             DeactivateSprite(ETrue);//hide pen ui immediately
     	    }
@@ -2576,7 +2599,7 @@ TBool CPeninputServer::AnimOpNeedWaiting(TInt aSignalCode)
         }
     if(iForegroundUiHandler)
         {
-        TInt uiType = iUiLayout->PenInputType();
+		TInt uiType = iUiLayout  ? iUiLayout->PenInputType() : EPluginInputModeNone;
         bNeedWait = iForegroundUiHandler->SignalUiActivationObserver(
                                             			aSignalCode,uiType);
         }	
@@ -2604,6 +2627,11 @@ void CPeninputServer::RecoverSimulatedKeyEventState()
 
 void CPeninputServer::RecoverButtonEventState()
     {
+	if(!iUiLayout)
+		{
+		return;
+		}
+	
         if (TRawEvent::EButton1Down == iLastRawEvent.Type())
             {
             iLastRawEvent.Set(TRawEvent::EButton1Up);//,iLastSimulatedKeyEvent.ScanCode()

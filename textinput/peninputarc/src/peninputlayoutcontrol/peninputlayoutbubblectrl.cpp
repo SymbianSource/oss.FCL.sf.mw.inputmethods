@@ -105,11 +105,13 @@ EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
 
 EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
     {
-    SetRect(aRect);
+    //SetRect(aRect);
 
     if(iFreeze)
         {
-        iShowing = ETrue;              
+        iShowing = ETrue; 
+        SetRect(aRect);
+        
         SetHidenFlag(EFalse);   
         /*
         if(UiLayout()->NotDrawToLayoutDevice())
@@ -131,7 +133,9 @@ EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
         }
     if( !iShowing || iNeedRedraw )
         {
-        iShowing = ETrue;  
+        iShowing = ETrue;
+        SetRect(aRect);
+        
         TRect rect = Rect();
         //SetRect(aRect);
         SetHidenFlag(EFalse);        
@@ -588,39 +592,46 @@ EXPORT_C void CBubbleCtrl::HandleResourceChange(TInt aType)
 
 EXPORT_C void CBubbleCtrl::SetRect(const TRect& aRect)
     {
-    if( aRect == Rect())
-        {
-        return;
-        }
-    else
-        {
-        if( UiLayout()->NotDrawToLayoutDevice())
-            {
-            struct SData
-                {
-                TRect rr;
-                TBool flag;
-                } data;
-        
-            // Remove the original region from list
-            data.rr = Rect();
-            data.flag = EFalse;
-            TPtrC ptrForRemove;
-            ptrForRemove.Set( 
-                    reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-            UiLayout()->SignalOwner( ESignalPopupArea, ptrForRemove );
-            
-            // Add the new region to list
-            data.rr = aRect;
-            data.flag = ETrue;
-            TPtrC ptrForAdd;
-            ptrForAdd.Set( 
-                    reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-            UiLayout()->SignalOwner( ESignalPopupArea, ptrForAdd );
-            }
-        }
-    CFepUiBaseCtrl::SetRect(aRect);
-    ResizeDeviceL();
+	if( !( UiLayout()->NotDrawToLayoutDevice()))
+		{
+		if( aRect != Rect())
+			{
+			CFepUiBaseCtrl::SetRect( aRect );
+			}
+		}
+	else
+		{
+		if( iShowing )
+			{
+			struct SData
+				{
+				TRect rr;
+				TBool flag;
+				} data;
+
+			 // Remove the original region from list
+			data.rr = Rect();
+			data.flag = EFalse;
+			TPtrC ptrForRemove;
+			ptrForRemove.Set( 
+				reinterpret_cast<const TUint16*>(&data), sizeof(data)/sizeof(TUint16));
+			UiLayout()->SignalOwner( ESignalPopupArea, ptrForRemove );
+
+			// Add the new region to list
+			data.rr = aRect;
+			data.flag = ETrue;
+			TPtrC ptrForAdd;
+			ptrForAdd.Set( 
+				reinterpret_cast<const TUint16*>(&data), sizeof(data)/sizeof(TUint16));
+			UiLayout()->SignalOwner( ESignalPopupArea, ptrForAdd );     
+			}
+			
+		if( aRect != Rect())
+			{
+			CFepUiBaseCtrl::SetRect( aRect );
+			ResizeDeviceL();
+			}                   
+		}
     }
 
 // ---------------------------------------------------------------------------

@@ -27,7 +27,7 @@
 
 
 //system include files
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <PtiUserDicEntry.h>
 #include <PtiEngine.h>
 #include <StringLoader.h> 

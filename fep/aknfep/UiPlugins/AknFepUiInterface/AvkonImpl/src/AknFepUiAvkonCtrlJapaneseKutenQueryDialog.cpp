@@ -36,7 +36,7 @@
 #include <aknsoundsystem.h>
 #include <charconv.h>
 #include <PtiDefs.h>                //keys
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <avkon.hrh>
 
 #include "AknFepUIAvkonCtrlJapaneseKutenQueryDialog.h"

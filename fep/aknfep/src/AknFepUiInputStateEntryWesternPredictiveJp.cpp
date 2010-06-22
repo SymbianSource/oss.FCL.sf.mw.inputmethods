@@ -37,7 +37,7 @@
 #include <PtiDefs.h>                            //keys
 #include <featmgr.h>                //FeatureManager
 #include <e32keys.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 TAknFepInputStateEntryWesternPredictiveJp::
 TAknFepInputStateEntryWesternPredictiveJp(MAknFepUIManagerStateInterface* aOwner)

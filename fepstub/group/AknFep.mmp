@@ -1,0 +1,98 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:           
+*       MakMake Project file.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+#include <platform_paths.hrh>
+
+TARGET          avkonfep.dll
+TARGETTYPE      plugin
+
+UID             0x10009d8d 0x100056de
+CAPABILITY      All -Tcb
+
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../resource
+
+START RESOURCE 100056de.rss
+TARGET AvkonFep.rsc
+END
+
+START RESOURCE  AknFep.rss
+HEADER
+TARGETPATH      FEP_RESOURCES_DIR
+LANGUAGE_IDS
+END
+
+USERINCLUDE     ../inc .
+//sort this out when move to 2.0 env
+
+
+// Added APP_LAYER_SYSTEMINCLUDE for header split and relocation activity
+APP_LAYER_SYSTEMINCLUDE
+
+
+// This is a SYSTEMINCLUDE macro containing the middleware
+// layer specific include directories
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   ../inc
+SYSTEMINCLUDE   ../../../inc
+//SYSTEMINCLUDE   ../../inc
+
+SOURCEPATH      ../src
+
+SOURCE          AknFepManager.cpp
+
+SOURCE          AknFepPlugin.cpp
+
+LIBRARY         euser.lib
+LIBRARY         fepbase.lib
+LIBRARY         cone.lib
+LIBRARY         ws32.lib
+LIBRARY         eikcoctl.lib
+LIBRARY         eikctl.lib
+LIBRARY         eikcore.lib
+LIBRARY         avkon.lib
+LIBRARY         bafl.lib
+LIBRARY         apparc.lib
+LIBRARY         tagma.lib
+LIBRARY         gdi.lib
+
+
+LIBRARY ecom.lib
+
+
+START WINS
+BASEADDRESS     0x70500000
+END
+
+
+// End of file

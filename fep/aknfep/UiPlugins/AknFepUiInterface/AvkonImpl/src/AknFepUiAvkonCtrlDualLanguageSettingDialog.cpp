@@ -32,7 +32,7 @@
 #include <AvkonInternalCRKeys.h>
 #include <AknFepGlobalEnums.h>
 #include <aknnotewrappers.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include "AknFepUIAvkonCtrlDualLanguageSettingDialog.h"
 #include "AknFepUIAvkonCtrlDualLanguageSettingModel.h"
 #include "AknFepUIAvkonCtrlDualLanguageSettingData.h"

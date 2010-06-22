@@ -29,7 +29,7 @@
 
 #include <PtiEngine.h>                          //CPtiEngine
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 #include "aknfepuiinputstatezhuyinphrasecreationbase.h"
 #include "AknFepUIManagerStateInterface.h"      //MAknFepUIManagerStateInterface

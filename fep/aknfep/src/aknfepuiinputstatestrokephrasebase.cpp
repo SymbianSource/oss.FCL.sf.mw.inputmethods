@@ -31,7 +31,7 @@
 // System includes
 #include <PtiEngine.h>
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <PtiUserDicEntry.h>
 #include <aknnotewrappers.h> //CAknWarningNote 
 

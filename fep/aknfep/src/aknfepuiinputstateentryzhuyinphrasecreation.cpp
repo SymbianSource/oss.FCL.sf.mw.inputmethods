@@ -31,7 +31,7 @@
 
 #include <PtiDefs.h>                            //keys
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <aknnotewrappers.h>
 
 #include "AknFepPanic.h"

@@ -22,7 +22,7 @@
 #include "PtiLanguage.h"
 #include "PtiEngine.h"
 #include "PtiKeyMappings.h"
-#include <PtiEngine.rsg>
+#include <ptiengine.rsg>
 #include "PtiDefaultNumberModeMappingdata.h"
 
 #include <data_caging_path_literals.hrh> 

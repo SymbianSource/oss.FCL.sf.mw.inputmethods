@@ -37,7 +37,7 @@
 #include "AknFepUICtrlInputPane.h"
 #include "AknFepUICtrlPinyinPopup.h"        //Pinyin phrase
 #include "AknFepUiCtrlContainerChinese.h"
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <PtiEngine.h>      //CPtiEngine
 #include <e32keys.h>        //keys  
 #include <avkon.rsg>

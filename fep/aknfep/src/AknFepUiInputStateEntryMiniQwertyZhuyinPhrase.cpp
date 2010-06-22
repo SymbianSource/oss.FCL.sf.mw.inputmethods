@@ -41,7 +41,7 @@
 #include <e32keys.h>
 #include <PtiDefs.h>    
 #include <avkon.rsg>            //keys
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 const TInt KInputPaneLength = 32;
 _LIT(KSep, "'");

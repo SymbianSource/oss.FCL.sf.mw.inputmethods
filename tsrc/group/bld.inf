@@ -22,9 +22,9 @@ PRJ_TESTMMPFILES
 //#include "../../inputmethods_plat/pen_input_server_api/tsrc/group/bld.inf"
 //#include "../../inputmethods_plat/ptiengine_hwr_api/tsrc/group/bld.inf"
 //#include "../../inputmethods_plat/aknfep_uiinterface_api/tsrc/group/bld.inf"
-#include "../../inputmethods_plat/ptiengine_key_definations_api/tsrc/group/bld.inf"
+//#include "../../inputmethods_plat/ptiengine_key_definations_api/tsrc/group/bld.inf"
 
 
-#include "../../inputmethods_pub/ptiengine_iti_api/tsrc/group/bld.inf"
+//#include "../../inputmethods_pub/ptiengine_iti_api/tsrc/group/bld.inf"
 //#include "../../inputmethods_pub/optical_character_recognition_api/tsrc/group/bld.inf"
 //#include "../../inputmethods_pub/input_language_info_api/tsrc/group/bld.inf"

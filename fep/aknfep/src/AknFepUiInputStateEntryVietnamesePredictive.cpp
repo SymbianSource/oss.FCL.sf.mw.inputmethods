@@ -38,7 +38,7 @@
 #include <PtiDefs.h>                            //keys
 #include <aknSctDialog.h>
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 #include "AknFepUiManagerWestern.h"
 TAknFepInputStateEntryVietnamesePredictive::

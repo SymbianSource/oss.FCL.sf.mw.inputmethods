@@ -62,9 +62,9 @@ PRJ_EXPORTS
 ../rom/aknfep_variant.iby                   CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(aknfep_variant.iby)
 ../rom/aknfepResources.iby                  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(aknfepResources.iby)
 ../rom/aknfepuiinterface.iby                CORE_MW_LAYER_IBY_EXPORT_PATH(aknfepuiinterface.iby)
-../rom/peninputimeplugincn_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugincn_Variant.iby)
-../rom/peninputimeplugingeneric.iby         CORE_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugingeneric.iby)
-../rom/peninputimepluginitut_Variant.iby    CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginitut_Variant.iby)
+//../rom/peninputimeplugincn_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugincn_Variant.iby)
+//../rom/peninputimeplugingeneric.iby         CORE_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugingeneric.iby)
+//../rom/peninputimepluginitut_Variant.iby    CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginitut_Variant.iby)
 //../rom/PeninputPluginKr.iby                 CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(PeninputPluginKr.iby)
 //../rom/peninputimepluginjp_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginjp_Variant.iby)
 
@@ -87,10 +87,10 @@ PRJ_MMPFILES
 ../UiPlugins/AknFepUiInterface/AvkonImpl/group/AknFepUiAvkonPlugin.mmp
 
 #ifdef RD_SCALABLE_UI_V2
-../peninputplugins/peninputimepluginitut/group/peninputimepluginitut.mmp
-../peninputplugins/peninputimeplugincn/group/peninputimeplugincn.mmp
+//../peninputplugins/peninputimepluginitut/group/peninputimepluginitut.mmp
+//../peninputplugins/peninputimeplugincn/group/peninputimeplugincn.mmp
 //../peninputplugins/peninputimepluginjp/group/peninputimepluginjp.mmp
-../peninputplugins/peninputimeplugingeneric/group/peninputimeplugingeneric.mmp
+//../peninputplugins/peninputimeplugingeneric/group/peninputimeplugingeneric.mmp
 //../peninputplugins/PeninputPluginKr/group/PeninputPluginKr.mmp
 #endif //RD_SCALABLE_UI_V2
 

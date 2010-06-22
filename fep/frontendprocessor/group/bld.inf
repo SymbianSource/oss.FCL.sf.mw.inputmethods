@@ -20,7 +20,7 @@
 */
 
 // include test code
-#include "../test/group/BLD.INF"
+#include "../test/group/bld.inf"
 
 PRJ_PLATFORMS
 DEFAULT

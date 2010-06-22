@@ -38,7 +38,7 @@
 #include <PtiEngine.h>      //CPtiEngine
 #include <e32keys.h>        //keys  
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 TAknFepInputStateEntryZhuyinStrokeBasePhrase::TAknFepInputStateEntryZhuyinStrokeBasePhrase(
                                 MAknFepUIManagerStateInterface* aOwner,

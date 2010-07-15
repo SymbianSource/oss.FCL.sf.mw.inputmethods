@@ -394,7 +394,7 @@ TInt CPeninputGenericVkbLayout::LayoutType()
     }
 TInt CPeninputGenericVkbLayout::SizeChanged( const TAny* aData )
     {
-    (( CPeninputGenericVkbWindow*)iLayoutWindow)->UpdateLafData();
+    //(( CPeninputGenericVkbWindow*)iLayoutWindow)->UpdateLafData();
     return CPeninputCommonLayoutExt::SizeChanged( aData );
     }
 void CPeninputGenericVkbLayout::HandleAppInfoChange(const TDesC& aInfo, 

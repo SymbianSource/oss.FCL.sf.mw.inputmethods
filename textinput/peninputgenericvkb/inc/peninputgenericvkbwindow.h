@@ -576,6 +576,14 @@ private:
     * Retrieve text color from skin for autocompletion part
     */
     TRgb AutoCompletionPartColor();
+    
+    /**
+     * Called when short press occurs on range button.
+     *
+     * @since S60 v3.2
+     * @return None
+     */
+    void HandleRangeButtonShortPress();
         
 private: // Data
 
@@ -718,6 +726,11 @@ private: // Data
      * Range labels for range list
      */
     TAllRangeLabels iRangeLabels;
+    
+    /**
+     * Indicates whether range button short press is handled.
+     */
+    TBool iHandleRangeShortPress;
 
 private:	
 	CFepLayoutScrollableList* iCandidateList;

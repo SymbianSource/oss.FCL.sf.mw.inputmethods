@@ -582,6 +582,14 @@ private:
      */
     void PrepareRangeListItems( RArray<CFepLayoutChoiceList::SItem>& aRangeItems );
     
+    /**
+     * Called when short press occurs on range button.
+     *
+     * @since S60 v3.2
+     * @return None
+     */
+    void HandleRangeButtonShortPress();
+    
 private: // Data
 
     /**
@@ -727,6 +735,10 @@ private: // Data
      */
     TAllRangeLabels iRangeLabels;
 
+    /**
+     * Indicates whether range button short press is handled.
+     */
+    TBool iHandleRangeShortPress;
     };
 
 inline TBool CPeninputSplitQwertyWindow::IsRtoLLanguage( TInt aLanguage )

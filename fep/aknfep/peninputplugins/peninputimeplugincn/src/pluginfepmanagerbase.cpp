@@ -324,7 +324,10 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
 //
 void CPluginFepManagerBase::CloseUI()
     {
-    iPenInputServer->ActivateLayout( EFalse ); 
+    if (iPenInputServer->IsVisible())
+	    {
+    	iPenInputServer->ActivateLayout( EFalse ); 
+		}
     }
 
 // -----------------------------------------------------------------------------

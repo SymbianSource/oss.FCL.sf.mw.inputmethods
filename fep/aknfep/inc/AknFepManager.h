@@ -902,6 +902,13 @@ public:
 		TBool IsSpecialNumericEditor();
 		
 	void TryPopExactWordInICFL();
+    
+    /**
+     * checks whether the current editor is a Java Secret editor.
+     * return value: Etrue when it is a Java Secret editor.
+     * Efalse when it is not.
+     */
+    TBool IsJavaSecretEditor();    
 	
 	void HandleChangeInFocusForSettingFep();
 
@@ -2609,6 +2616,14 @@ public:
 
 private:
     void ConvertCharToKey(TChar aIn, TUint16& aKey) const;
+    
+    /** 
+     * Update editor state' flag 
+     * @since Symbian^3 
+     * @param aFlag  editor state flag
+     * @param aAdd   adding or removing
+     */
+    void UpdateEditorStateFlags( TInt aFlag, TBool aAdd = ETrue ) const;
 
 private:
     // Data owned by this class

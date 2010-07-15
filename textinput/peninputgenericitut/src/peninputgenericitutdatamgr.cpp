@@ -100,11 +100,13 @@ CGenericItutDataMgr::~CGenericItutDataMgr()
     CCoeEnv::Static()->DeleteResourceFile(iAvkonResId);
         
     CCoeEnv::Static()->DeleteResourceFile(iCommonResId);
-    
-    if (iConfigResId)
+
+    // Remove all resource files from control environment
+    for (TInt i=0; i< iConfigResIds.Count(); i++)
         {
-        CCoeEnv::Static()->DeleteResourceFile(iConfigResId);
+        CCoeEnv::Static()->DeleteResourceFile(iConfigResIds[i]);
         }
+    iConfigResIds.Close();
 
     ClearChnCandidates(EItutCandidates);
     ClearChnCandidates(EItutPuncCandidates);
@@ -1143,14 +1145,14 @@ void CGenericItutDataMgr::SetIcfTextAlignment(TInt aAlignment)
 void CGenericItutDataMgr::SetLanguageL(TInt aLanguage)
     {    
     ASSERT( IsValidLanguage( aLanguage ) );
-    	
+        
     if (iLanguage != aLanguage)
-        {	        
+        {            
         if( IsValidLanguage( iLanguage ) )
-        	iIsLangDirectionSwitch =  IsRtoLLanguage( aLanguage ) ^ IsRtoLLanguage( iLanguage );
+            iIsLangDirectionSwitch =  IsRtoLLanguage( aLanguage ) ^ IsRtoLLanguage( iLanguage );
         else        
-        	//Check mirroring is needed when first setting language
-        	iIsLangDirectionSwitch = IsRtoLLanguage( aLanguage );        	
+            //Check mirroring is needed when first setting language
+            iIsLangDirectionSwitch = IsRtoLLanguage( aLanguage );            
         
         iLanguage = aLanguage;
         iInputMode = KInvalidImMode;
@@ -1165,14 +1167,21 @@ void CGenericItutDataMgr::SetLanguageL(TInt aLanguage)
 
             CCoeEnv* coeEnv = CCoeEnv::Static();
             
-            if (iConfigResId)
-                {
-                coeEnv->DeleteResourceFile(iConfigResId);
-                }
-
             TFileName resourceConfigName(iResourceFilename);
             BaflUtils::NearestLanguageFile(coeEnv->FsSession(), resourceConfigName);
-            iConfigResId = coeEnv->AddResourceFileL(resourceConfigName);
+            // Do not delete resource file from control environment if changing language.
+            // Otherwise crash happens if switching theme. For example:If writing language
+            // is Chinese, enters spell mode, then switches theme, crash happens. 
+            TInt configResId = coeEnv->AddResourceFileL(resourceConfigName);
+            if ( iConfigResIds.Find(configResId) ==  KErrNotFound)
+                {
+                iConfigResIds.Append( configResId );
+                }
+            else
+                {
+                // Remove resource file to ensure the resource file is added only one time.
+                coeEnv->DeleteResourceFile( configResId );
+                }
             
             if (IsChinese())
                 {
@@ -1180,9 +1189,9 @@ void CGenericItutDataMgr::SetLanguageL(TInt aLanguage)
                 }
             
             if( IsKorean())
-            	{
+                {
                 iLayoutContext->UiManager()->CreateKoreanSpecificCtrlsIfNeededL();
-            	}
+                }
 
             NotifyChangeControlLayout(MItutPropertySubscriber::EItutPropertyKeypadResourceId, 
                                       KeypadResourceId());  
@@ -1927,7 +1936,6 @@ CGenericItutDataMgr::CGenericItutDataMgr(MItutLayoutContext* aLayoutContext,
                                          iInputMode(KInvalidImMode),
                                          iCase(EAknEditorUpperCase),
                                          iIsChineseSpell( EFalse ),
-                                         iConfigResId(0),
                                          iLayoutContext(aLayoutContext),
                                          iCurrentScriptIdx(KInvalidIndex),
                                          iLandScape(EFalse),

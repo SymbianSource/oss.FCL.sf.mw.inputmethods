@@ -431,6 +431,13 @@ public:
      */
     virtual TBool IsSupportsSecretText() const = 0;
     
+    /**
+     * checks whether the current editor is a Java Secret editor.
+     * return value: Etrue when it is a Java Secret editor.
+     * Efalse when it is not.
+     */
+    virtual TBool IsJavaSecretEditor() = 0;
+    
 
 	/**
 	* Returns current input mode.

@@ -4225,6 +4225,7 @@ EXPORT_C CFepUiBaseCtrl* CAknFepCtrlLongPressButton::HandlePointerDownEventL(con
         }
     
     iLongPressTimer->SetTimer(iLongPressInterval);
+    iIsLongPress = EFalse;
 
     return CAknFepCtrlCommonButton::HandlePointerDownEventL(aPt);
     }
@@ -4277,6 +4278,7 @@ EXPORT_C void CAknFepCtrlLongPressButton::HandlePointerLeave(const TPoint& aPoin
 EXPORT_C void CAknFepCtrlLongPressButton::CancelPointerDownL()
     {
     // No implementation needed
+	CAknFepCtrlCommonButton::CancelPointerDownL();
     }
 
 // ---------------------------------------------------------

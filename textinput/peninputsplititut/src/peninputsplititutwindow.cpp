@@ -54,6 +54,7 @@ const TInt KInvalidBmp = -1;
 
 const TUint KDefaultIcfTextColor = 0x000000;
 const TUint KDefaultIcfFrameColor = 0x000000;
+const TInt KTextLength = 100;
 
 
 
@@ -1457,6 +1458,11 @@ void CSplitItutWindow::SetUnicodesForHardKey1L(CVirtualKey* aKey, const TDesC& a
 
 void CSplitItutWindow::UpdateIndiBubbleL( TUint8* aData )
     {  
+	// if icf is hidden, not call updateindibubblel
+    if( iICF->Hiden() )     
+    	{
+        return;
+    	}
     RDesReadStream readStream;
     TFepIndicatorInfo indicatorData;
 
@@ -1484,7 +1490,7 @@ void CSplitItutWindow::UpdateIndiBubbleL( TUint8* aData )
                              indicatorData.iIndicatorTextImgID,
                              indicatorData.iIndicatorTextMaskID );
             
-		TBuf<100> text;	
+		TBuf<KTextLength> text;	
         iICF->MsgBubbleCtrl()->GetText( text );
         iICF->ShowBubble( text, iICF->MsgBubbleCtrl()->Rect());
         }

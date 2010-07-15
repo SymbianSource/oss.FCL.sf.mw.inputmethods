@@ -629,7 +629,7 @@ EXPORT_C void CBubbleCtrl::SetRect(const TRect& aRect)
 		if( aRect != Rect())
 			{
 			CFepUiBaseCtrl::SetRect( aRect );
-			ResizeDeviceL();
+			TRAP_IGNORE(ResizeDeviceL());
 			}                   
 		}
     }

@@ -484,76 +484,12 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
         {
         case EPeninputLayoutEventMultiRangeLongPress:
             {
-            const TInt range = CPeninputDataConverter::AnyToInt(
-                iLayoutContext->RequestData(EPeninputDataTypeCurrentRange));
-            
-            const TInt langId = CPeninputDataConverter::AnyToInt(
-                iLayoutContext->RequestData(EPeninputDataTypeInputLanguage));
-
-            if ( aCtrl->ControlId() == EPeninutWindowCtrlIdRangeBtn )
+            if ( ctrlId == EPeninutWindowCtrlIdRangeBtn )
                 {
-                if ( range == ERangeAccent )
-                    {
-                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
-                        {
-                        ChangeRange(ERangeNative);
-                        }
-                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
-                        {
-                        ChangeRange(ERangeEnglish);
-                        }
-                    }
-                else if ( range == ERangeNative )
-                    {            
-                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNativeNumber ) )
-                        {
-                        
-                        if ( langId != ELangArabic && langId != ELangFarsi 
-                                && langId != ELangUrdu && langId != ELangThai )
-                            {
-                                ChangeRange(ERangeNativeNumber);
-                            }
-                        }
-                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNumber ) )
-                        {
-                        if ( langId != ELangArabic && langId != ELangFarsi 
-                                && langId != ELangUrdu && langId != ELangThai )
-                            {
-                                ChangeRange(ERangeNumber);
-                            }                       
-                        }
-                    }
-                else if ( range == ERangeEnglish )
-                    {
-                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNumber ) )
-                        {
-                        ChangeRange(ERangeNumber);
-                        }
-                    }
-                else if ( range == ERangeNativeNumber )
-                    {
-                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
-                        {
-                        ChangeRange(ERangeNative);
-                        }                   
-                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
-                        {
-                        ChangeRange(ERangeEnglish);
-                        }
-                    }
-                else if ( range == ERangeNumber )
-                    {
-                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
-                        {
-                        ChangeRange(ERangeNative);
-                        }                   
-                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
-                        {
-                        ChangeRange(ERangeEnglish);
-                        }                   
-                    }
-
-                TRAP_IGNORE( UpdateRangeCtrlsL() );
+                // Before pop up list, cancel down event, and set range button un-highlight.
+                TRAP_IGNORE( aCtrl->CancelPointerDownL());
+                static_cast<CAknFepCtrlCommonButton*>(aCtrl)->SetHighlight( EFalse );
+                PopupChoiceList();                
                 }
             }
             break;
@@ -561,8 +497,13 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
             {
             if ( ctrlId == EPeninutWindowCtrlIdRangeBtn )
                 {
-                PopupChoiceList();
+                if ( iHandleRangeShortPress )
+                    {
+                    HandleRangeButtonShortPress();
+                    }
                 }
+            
+            iHandleRangeShortPress = ETrue;
             }
             break;
         case EPeninputLayoutVkbEventResetShift: 
@@ -581,6 +522,14 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
             break;
         case EEventChoiceSelected:
             {
+            CFepUiBaseCtrl* btn = Control( EPeninutWindowCtrlIdRangeBtn );
+            
+            if ( btn )
+                {
+                iHandleRangeShortPress = EFalse;
+                TRAP_IGNORE( btn->HandlePointerUpEventL( btn->Rect().iBr ) );
+                iHandleRangeShortPress = ETrue;
+                }
             CFepLayoutChoiceList::SEvent* event = NULL;
             event = (CFepLayoutChoiceList::SEvent*) aEventData.Ptr();
 
@@ -686,6 +635,7 @@ void CPeninputSplitQwertyWindow::ConstructFromResourceL()
         }
         
     iFirstConstruct = EFalse;
+    iHandleRangeShortPress = ETrue;
     }
 
 // ---------------------------------------------------------------------------
@@ -2020,4 +1970,74 @@ void CPeninputSplitQwertyWindow::PrepareRangeListItems(
             }
         }
     }
+
+void CPeninputSplitQwertyWindow::HandleRangeButtonShortPress()
+    {
+    const TInt range = CPeninputDataConverter::AnyToInt(
+         iLayoutContext->RequestData(EPeninputDataTypeCurrentRange));
+     
+    const TInt langId = CPeninputDataConverter::AnyToInt(
+         iLayoutContext->RequestData(EPeninputDataTypeInputLanguage));    
+
+    switch ( langId )
+        {
+        case ELangRussian:
+        case ELangBulgarian:
+        case ELangUkrainian:
+            {
+            range == ERangeNative ? ChangeRange( ERangeNumber ) : ChangeRange( ERangeNative );
+            }
+            break;
+
+        case ELangArabic:
+        case ELangFarsi:
+        case ELangUrdu:
+            {
+            range == ERangeNative ? ChangeRange( ERangeNativeNumber ) : ChangeRange( ERangeNative );
+            }
+            break;
+            
+        case ELangThai:
+            {
+            range == ERangeNative ? ChangeRange( ERangeNumber ) : ChangeRange( ERangeNative ); 
+            }
+            break;
+
+        case ELangGreek:
+        case ELangHebrew:
+            {
+            range == ERangeNative ? ChangeRange( ERangeNumber ) : ChangeRange( ERangeNative ); 
+            }
+            break;
+        default: // Latin, vietnamese, and other possible languages
+            {
+            if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNative ) )
+                {
+                if ( range == ERangeNative )
+                    {
+                    if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNativeNumber ) )
+                        {
+                        ChangeRange( ERangeNativeNumber );
+                        }
+                    else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeNumber ) )
+                        {
+                        ChangeRange( ERangeNumber );
+                        }
+                    }
+                else
+                    {
+                    ChangeRange( ERangeNative );
+                    }
+                }
+            else if ( ConfigInfo()->RangeBarInfo()->FindRange( ERangeEnglish ) )
+                {
+                range == ERangeEnglish ? ChangeRange( ERangeNumber ) : ChangeRange( ERangeEnglish );
+                }
+            }
+            break;
+        }
+    
+    TRAP_IGNORE( UpdateRangeCtrlsL() );
+    }
+
 // End Of File

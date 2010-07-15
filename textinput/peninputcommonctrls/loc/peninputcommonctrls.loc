@@ -31,6 +31,18 @@
 #define qtn_input_switcher_fs_qwerty "Full Screen Qwerty"
 
 //d:Text in touch input mode swither list
+//d:portrait touch input method (full sreen qwerty or ITU-T)
+//l:list_single_pane_t1_cp2
+//r: 5.0
+#define qtn_tin_option_menu_portrait_editor "Edit portrait"
+
+//d:Text in touch input mode swither list
+//d:landscape full sreen qwerty touch input method
+//l:list_single_pane_t1_cp2
+//r: 5.0
+#define qtn_tin_option_menu_landscape_editor "Edit landscape"
+
+//d:Text in touch input mode swither list
 //d:small virtual key board touch input method
 //l:list_single_pane_t1_cp2
 //r: 5.0   

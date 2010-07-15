@@ -969,7 +969,10 @@ TBool CAknFepUIManagerBase::RollbackPreviousCharL()
             TPtrC curWord = iPtiEngine->CurrentWord();
             iFepMan->UpdateInlineEditL( curWord, curWord.Length() );
             }
-		if ( iFepMan->IsSupportsSecretText() )
+        //a temporary solution to fix the error: long key press will input q1 instead of 1.
+        //if the secret editor is a java secret editor, then do not simulate the key EF20 like avkon secret editor
+        //&& !( iFepMan->IsJavaSecretEditor() ) was added    
+		if ( ( iFepMan->IsSupportsSecretText() ) && !( iFepMan->IsJavaSecretEditor() ) )
         	{
             // Fep communicates with secret text editors using simulated events.
             iFepMan->SimulateKeyEventL(EKeyF20);
@@ -982,7 +985,10 @@ TBool CAknFepUIManagerBase::RollbackPreviousCharL()
         // The previous key entered character(s) directly to the editor
         for ( TInt i=0 ; i<iEditorTextLenDeltaWithLastKey ; ++i )
             {
-            if ( iFepMan->IsSupportsSecretText() )
+            //a temporary solution to fix the error: long key press will input q1 instead of 1.
+            //if the secret editor is a java secret editor, then do not simulate the key EF20 like avkon secret editor
+            //&& !( iFepMan->IsJavaSecretEditor() ) was added
+            if ( ( iFepMan->IsSupportsSecretText() ) && !( iFepMan->IsJavaSecretEditor() ) )
                 {
                 // Fep communicates with secret text editors using simulated events.
                 iFepMan->SimulateKeyEventL(EKeyF20);

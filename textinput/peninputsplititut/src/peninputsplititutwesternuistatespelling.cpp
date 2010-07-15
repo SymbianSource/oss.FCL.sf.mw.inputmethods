@@ -133,6 +133,7 @@ void CWesternSplitItutUiStateSpelling::OnEntryL()
 
 void CWesternSplitItutUiStateSpelling::OnExit()
     {    
+	iICF->HideBubble(); //Hide bubble when full screen ITUT closed
     iOk->Hide(ETrue);
     iCancel->Hide(ETrue);
     iOwner->DataMgr()->SetSpellMode(EFalse);

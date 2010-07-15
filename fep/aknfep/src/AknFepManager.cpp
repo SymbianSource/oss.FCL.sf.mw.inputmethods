@@ -251,9 +251,6 @@ const TInt KWordToFocusInCandidateList = 1;
 
 LOCAL_C TInt RemapVietnameseAccentedCharacter(TUint16 aChr);
 
-static _LIT_SECURITY_POLICY_PASS( KAllowAllPolicy );
-static _LIT_SECURITY_POLICY_C1( KPowerMgmtPolicy, ECapabilityPowerMgmt );
-
 //
 // Class TTextDirectionalInfo
 //
@@ -448,12 +445,9 @@ void CAknFepManager::ConstructL(const CCoeFepParameters& aFepParameters)
     iLastFocusedEditor = NULL;
     iFepAwareDialogParentEditor = NULL;
 	
-	RProperty::Define(
-            KPSUidAknFep, 
-            KAknFepSettingDialogState, 
-            RProperty::EInt, 
-            KAllowAllPolicy,  // None
-            KPowerMgmtPolicy ); 
+    // Fep manager should have both read and write privilege.
+    // Known case: Auto-completion cannot be changed in setting dialog.
+    RProperty::Define( KPSUidAknFep, KAknFepSettingDialogState, RProperty::EInt );
     }
 
 void CAknFepManager::ConstructFullyL()
@@ -10103,25 +10097,25 @@ void CAknFepManager::CommitInlineEditL()
 	                        }
 	                    else
 	                        {
-	                        // Go directly via CTextView because the normal way via the FepAwareEditor can only be called
-	                        // during an inline edit.
-	                        // Line cursor is made invisible here.  There is no line cursor in S60 LAF, even though there is
-	                        // an Edwin flag which govern this.  See CEikEdwin::SetCursorVisibilityL(TBool)
-	                        // Cursor is not set if this CommitInlineEditL call was prompted when losing focus.
+                            // Line cursor is made invisible here.  There is no line cursor in S60 LAF, even though there is
+                            // an Edwin flag which govern this.  See CEikEdwin::SetCursorVisibilityL(TBool)
+                            // Cursor is not set if this CommitInlineEditL call was prompted when losing focus.
 	                        MAknFepDocumentNavigation* docNavi = AknFepDocumentNavigation();
-	                        if ( (docNavi || TextView()) && !IsCcpuFlagSet(ECcpuStateLosingFocus) )
-	                        	{
-	                        	if (docNavi)
-	                        		{
-		                            docNavi->SetCursorVisibilityL( TCursor::EFCursorInvisible, 
-	                                                             TCursor::EFCursorFlashing );
-	                        		}
-	                        	else 
-	                        		{
-		                            TextView()->SetCursorVisibilityL( TCursor::EFCursorInvisible, 
-	                                                                TCursor::EFCursorFlashing );
-	                        		}
-	                        	}
+                            
+                            // Use FepAwareTextEditor to judge, not use TextView()
+                            if ( (docNavi || FepAwareTextEditor()) && !IsCcpuFlagSet(ECcpuStateLosingFocus) )
+                                {
+                                if (docNavi)
+                                    {
+                                    docNavi->SetCursorVisibilityL( TCursor::EFCursorInvisible, 
+                                                                 TCursor::EFCursorFlashing );
+                                    }
+                                else 
+                                    {
+                                    //Use Edwin (FepAwareTextEditor) to set cursor visibility
+                                    FepAwareTextEditor()->SetInlineEditingCursorVisibilityL( ETrue );
+                                    }
+                                }
 	                        }
 	                    }
 	                // iMatchState=EWordMatchFirst;
@@ -10302,6 +10296,33 @@ TBool CAknFepManager::EditorHasFreeSpace( TInt aRequiredNumberOfCharacter ) cons
         }
     return EFalse;
     }
+    
+// -----------------------------------------------------------------------------
+// check whether the current editor is a Java secret editor
+// ----------------------------------------------------------------------------- 
+TBool CAknFepManager::IsJavaSecretEditor()
+    {
+    TBool JavaSecretEditor = EFalse;
+    
+    TUint ConstraintValue = 0;
+    MObjectProvider* mop = iInputCapabilities.ObjectProvider();
+    
+    if ( mop )
+        {
+        CAknExtendedInputCapabilities* extendedInputCapabilities = 
+        mop->MopGetObject( extendedInputCapabilities );
+        if ( extendedInputCapabilities && iInputCapabilities.FepAwareTextEditor() ) 
+            {
+            ConstraintValue = extendedInputCapabilities->MIDPConstrainst();
+            }
+        }
+    if( ConstraintValue & 0x10000 ) 
+        {
+        JavaSecretEditor = ETrue;
+        }
+    
+    return JavaSecretEditor;
+    }       
 
 TBool CAknFepManager::IsEditorHasFreeSpace() const
     {
@@ -16146,12 +16167,20 @@ TTmDocPosSpec CAknFepManager::DocPos()
     	}
     else
     	{
-	    CTextView* textView = TextView();
-	    if (textView)
-	        {
-	        TextView()->GetCursorPos(rawDocPos);
-	        gotPos = ETrue;
-	        }
+        // Use Edwin (FepAwareTextEditor() ) to get the position of document
+        if ( FepAwareTextEditor() )
+            {
+            TCursorSelection cursorSel( 0, 0 );
+            // Get the postion of document
+            FepAwareTextEditor()->GetCursorSelectionForFep( cursorSel );
+
+            // Set the leading edge of the document.
+            rawDocPos.iPos = cursorSel.iCursorPos;
+            CAknEdwinState* state( EditorState() );
+            rawDocPos.iLeadingEdge = ( state && 
+                state->Flags() & EAknEditorFlagCursorLedingEdge );                
+            gotPos = ETrue;
+            }
     	}
     if (gotPos)
     	{
@@ -16397,6 +16426,10 @@ TBool CAknFepManager::GetVisualDocStart( TTmDocPosSpec& aPos) const
 
 TBool CAknFepManager::GetVisualDocEnd( TTmDocPosSpec& aPos) const
     {
+    // Set EAknEditorFlagNeedWholeTextData to Editor State
+    // EAknEditorFlagNeedWholeTextData means needing to get whole document data to editor
+    UpdateEditorStateFlags( EAknEditorFlagNeedWholeTextData );
+
     TInt docLength = iInputCapabilities.FepAwareTextEditor()->DocumentLengthForFep();
 
     // Set up the initial try as trailing after the last logical character
@@ -16422,6 +16455,9 @@ TBool CAknFepManager::GetVisualDocEnd( TTmDocPosSpec& aPos) const
         aPos.iPos = docLength;
         aPos.iType = TTmDocPosSpec::ETrailing;
         }
+        
+    // Remove EAknEditorFlagNeedWholeTextData fromEditor State
+    UpdateEditorStateFlags( EAknEditorFlagNeedWholeTextData, EFalse );
     return success;
     }
 
@@ -17012,6 +17048,16 @@ TBool CAknFepManager::GetLocalLanguage( TLanguage& aLanguage ) const
         else
             {
             aLanguage = EditorState()->LocalLanguage();
+            
+            // Change local language to ELangEnglish if application, e.g. Search Widget,
+            // sets local language to ELangEnglish_Taiwan, ELangEnglish_HongKong 
+            // and ELangEnglish_Prc. 
+            if( aLanguage == ELangEnglish_Taiwan || 
+                    aLanguage == ELangEnglish_HongKong || 
+                    aLanguage == ELangEnglish_Prc )
+                {
+                aLanguage = ELangEnglish;
+                }
             }
             
         if ( aLanguage != ELangTest )
@@ -17474,8 +17520,10 @@ TKeyResponse CAknFepManager::AttemptCursorFlipAtAmbiguousPointL( const TUint aCo
         {
         if ( aCode == EKeyRightArrow || aCode == EKeyLeftArrow )
             {
+            // Never use TextView() to get editor data, 
+            // use FepAwareTextEditor() condition instead of TextView()
             if ( iInputCapabilities.FepAwareTextEditor() && EditorState() 
-            && (AknFepDocumentNavigation() || TextView()) )
+            && AknFepDocumentNavigation() )
                 {
                 TTmDocPosSpec docPos = DocPos();
                 TTextDirectionalInfo status = LocalTextDirectionalStatus( docPos );
@@ -17583,8 +17631,11 @@ void CAknFepManager::DoCursorDirectionCheckL()
 
 void CAknFepManager::AdjustCursorTypeForCurrentPosition()
     {
+    
+    // Never use TextView() to get editor data, 
+    // use FepAwareTextEditor() condition instead of TextView()
     if ( iInputCapabilities.FepAwareTextEditor() && EditorState() 
-    && (AknFepDocumentNavigation() || TextView()) )
+    && AknFepDocumentNavigation())
         AdjustCursorTypeForPosition( DocPos() );
     }
 
@@ -20779,7 +20830,7 @@ void CAknFepManager::SetChangeModeByShiftAndSpace( TBool aFlag )
 void CAknFepManager::HideExactWordPopUp()
 	{
 	iExactWordPopupContent->HidePopUp();
-	SendEventsToPluginManL( EPluginHideTooltip );
+	TRAP_IGNORE( SendEventsToPluginManL( EPluginHideTooltip ));
 	}
 
 TBool CAknFepManager::IsExactWordPopUpShown()
@@ -21001,6 +21052,30 @@ TBool CAknFepManager::GetSctLengthL(TInt resourceId)const
 	CleanupStack::PopAndDestroy();  //reader 
 	return isEmpty;
 	}
+    
+// ========================================
+// Update Editor State Flag
+// Add editor state flags or 
+// Remove editor state flags
+// ========================================
+void CAknFepManager::UpdateEditorStateFlags( TInt aFlag, TBool aAdd ) const
+    {
+    CAknEdwinState* state( EditorState() );
+    if ( state )
+        {
+        TInt flags( state->Flags() );
+        if ( aAdd )
+            {
+            flags |= aFlag;  // Add flag
+            }
+        else
+            {
+            flags &= ~aFlag;  // Remove flag
+            }
+        state->SetFlags( flags );
+        }
+    }
+
 
 // ---------------------------------------------------------------------------
 // LOCAL METHODS

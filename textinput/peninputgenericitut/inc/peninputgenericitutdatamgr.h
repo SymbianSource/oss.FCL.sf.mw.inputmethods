@@ -301,7 +301,7 @@ private: // data member
 
     // resource id for generic itut resource file
     TInt iCommonResId;
-    TInt iConfigResId;
+    RArray<TInt> iConfigResIds;
 
     TInt iAvkonResId;
     

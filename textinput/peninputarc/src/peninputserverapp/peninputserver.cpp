@@ -431,21 +431,41 @@ void CPeninputServer::ActivateSpriteInGlobalNotesL()
     TBool notDraw = EFalse;
     
     if(iUiLayout)
+        {
+        iUiLayout->HandleCommand( ECmdPeninputDisableLayoutDrawing, 
+                                 (unsigned char*)&notDraw );  
+        }
+
+    // [[[ temporary solution for Virtual keyboard becomes corrupted after several rotations
+    if(!iUiLayout)
     	{
-		iUiLayout->HandleCommand( ECmdPeninputDisableLayoutDrawing, 
-								 (unsigned char*)&notDraw );  
+        return;
     	}
+    
+    // we should not be able to activate and show pen ui if this mode is disabled currently
+    if(iUiLayout->PenInputType() & DisabledByOrientation())
+        {
+        // we have activate the animation otherwise we will see the penui but not reponse
+        // when clicking on it in the case we rotating the screen quickly and continously
+        if(iAnimObj)
+            {
+            iAnimObj->AddActivationCmd(ECmdActivate,EFalse);                
+            }
+        return;
+        }
+    // ]]] temporary solution for Virtual keyboard becomes corrupted after several rotations
+    
     if(iActive)
         {
-	    if(iUseWindowCtrl)
-	        {
+        if(iUseWindowCtrl)
+            {
 /*            RWsSession &ws = CCoeEnv::Static()->WsSession();
             TInt wgId =ws.GetFocusWindowGroup();
             //TInt wgHandle = ws.GetWindowGroupHandle(wgId);
 
       
-    		TInt priority;
-    		//TInt pos;
+            TInt priority;
+            //TInt pos;
             //wg.Construct(wgHandle);
             //pos = wg.FullOrdinalPosition();
             priority = ws.GetWindowGroupOrdinalPriority(wgId);*/
@@ -454,57 +474,57 @@ void CPeninputServer::ActivateSpriteInGlobalNotesL()
             ActivatePenUiLayout(EFalse);
             iDimmed = EFalse;
             iPenUiCtrl->ShowPenUiL(iDimmed);            
-	        }
-	    return;
+            }
+        return;
         }
 
-        TBool bNeedWait = AnimOpNeedWaiting(ESignalPenUiActivated);
-        //add animation command
+    TBool bNeedWait = AnimOpNeedWaiting(ESignalPenUiActivated);
+    //add animation command
         
-        /*
-        if(iAnimObj->AddActivationCmd(ECmdActivate,bNeedWait))
-        	{
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        //iUiLayout->OnActivate();                  
-            ActivatePenUiLayout();
-	        
-	        DrawSprite();        
-	        
-	        iEventBufferQueue->GetEvent();
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
-                iPenUiCtrl->ShowPenUi();
-            }
-            */
-        if(ActivatePenUiLayout(bNeedWait))
+    /*
+    if(iAnimObj->AddActivationCmd(ECmdActivate,bNeedWait))
             {
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        
-	        DrawSprite();        	        
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
-	            {
-                /*RWsSession &ws = CCoeEnv::Static()->WsSession();
-                TInt wgId =ws.GetFocusWindowGroup();
-                //TInt wgHandle = ws.GetWindowGroupHandle(wgId);
+            if(bNeedWait)
+                iForegroundUiHandler->AddDelayedCmd();
+            //iUiLayout->OnActivate();                  
+            ActivatePenUiLayout();
+            
+            DrawSprite();        
+            
+            iEventBufferQueue->GetEvent();
+            
+            iActive = ETrue;                
+            
+            if(iUseWindowCtrl)
+                iPenUiCtrl->ShowPenUi();
+        }
+        */
+    if(ActivatePenUiLayout(bNeedWait))
+        {
+        if(bNeedWait)
+            iForegroundUiHandler->AddDelayedCmd();
+            
+        DrawSprite();                    
+            
+        iActive = ETrue;                
+            
+        if(iUseWindowCtrl)
+            {
+            /*RWsSession &ws = CCoeEnv::Static()->WsSession();
+            TInt wgId =ws.GetFocusWindowGroup();
+            //TInt wgHandle = ws.GetWindowGroupHandle(wgId);
 
-          
-        		TInt priority;
-        		//TInt pos;
-                //wg.Construct(wgHandle);
-                //pos = wg.FullOrdinalPosition();
-                priority = ws.GetWindowGroupOrdinalPriority(wgId);*/
-                //wg.Close();           
-                iPenUiCtrl->ShowPenUiL(iDimmed);            	        
-	            }
+            TInt priority;
+            //TInt pos;
+            //wg.Construct(wgHandle);
+            //pos = wg.FullOrdinalPosition();
+            priority = ws.GetWindowGroupOrdinalPriority(wgId);*/
+            //wg.Close();           
+            iPenUiCtrl->ShowPenUiL(iDimmed);                        
             }
         }
+    }
+
 // ---------------------------------------------------------------------------
 // CPeninputServer::ActivateSprite
 // Activate sprite
@@ -536,6 +556,21 @@ void CPeninputServer::ActivateSprite()
 
     if(!iUiLayout)
         return;
+    
+    // [[[ temporary solution for Virtual keyboard becomes corrupted after several rotations
+    // we should not be able to activate and show pen ui if this mode is disabled currently
+    if(iUiLayout->PenInputType() & DisabledByOrientation())
+        {
+        // we have activate the animation otherwise we will see the penui but not reponse 
+        // when clicking on it in the case we rotating the screen quickly and continously
+        if(iAnimObj)
+            {
+            iAnimObj->AddActivationCmd(ECmdActivate,EFalse);
+            }
+        
+        return;
+        }
+    // ]]] temporary solution for Virtual keyboard becomes corrupted after several rotations
 
     TBool notDraw = EFalse;
     iUiLayout->HandleCommand(ECmdPeninputDisableLayoutDrawing,(unsigned char*)&notDraw);
@@ -561,43 +596,43 @@ void CPeninputServer::ActivateSprite()
         
         /*
         if(iAnimObj->AddActivationCmd(ECmdActivate,bNeedWait))
-        	{
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        //iUiLayout->OnActivate();                  
+            {
+            if(bNeedWait)
+                iForegroundUiHandler->AddDelayedCmd();
+            //iUiLayout->OnActivate();                  
             ActivatePenUiLayout();
-	        
-	        DrawSprite();        
-	        
-	        iEventBufferQueue->GetEvent();
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
+            
+            DrawSprite();        
+            
+            iEventBufferQueue->GetEvent();
+            
+            iActive = ETrue;                
+            
+            if(iUseWindowCtrl)
                 iPenUiCtrl->ShowPenUi();
             }
             */
             
         if(ActivatePenUiLayout(bNeedWait, ETrue))
             {
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        
-	        DrawSprite();        	        
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
-	            {
-                TRAP_IGNORE( iPenUiCtrl->ShowPenUiL(iDimmed) );            	        
-                           	        
-		        if (iPreNonGloebalNotesWndGrpId != focusApp.iUid &&
-		            IsGlobalNotesApp(focusApp) && !iInGlobalEditorState )
-		            {
-	                iDimmed = ETrue;
-	                DimPenUi();                
-		            }
-	            }
+            if(bNeedWait)
+                iForegroundUiHandler->AddDelayedCmd();
+            
+            DrawSprite();                    
+            
+            iActive = ETrue;                
+            
+            if(iUseWindowCtrl)
+                {
+                TRAP_IGNORE( iPenUiCtrl->ShowPenUiL(iDimmed) );                        
+                                       
+                if (iPreNonGloebalNotesWndGrpId != focusApp.iUid &&
+                    IsGlobalNotesApp(focusApp) && !iInGlobalEditorState )
+                    {
+                    iDimmed = ETrue;
+                    DimPenUi();                
+                    }
+                }
             }
         iIsLayoutReDrawAllowWhenActive = EFalse;    
         }
@@ -625,9 +660,9 @@ void CPeninputServer::ActivateSprite()
                     }
                 }
             else
-			    {
-				ActivatePenUiLayout(EFalse,ETrue);
-				}
+                {
+                ActivatePenUiLayout(EFalse,ETrue);
+                }
 
             if (iDimmed && (iInGlobalNotesApp || iInGlobalEditorState))
                 {
@@ -638,7 +673,7 @@ void CPeninputServer::ActivateSprite()
             TRAP_IGNORE( iPenUiCtrl->ShowPenUiL(iDimmed) );
             iDimmed = EFalse;
             }
-        }				  
+        }                  
     }
 
 // ---------------------------------------------------------------------------

@@ -535,7 +535,7 @@ EXPORT_C void CVirtualKeyboard::ShowBubble(TBool aFlag)
             TRAP_IGNORE(iBubbleCtrl = CBubbleCtrl::NewL(TRect(0,0,0,0),UiLayout(),-0xFFFF));
             if(iBubbleCtrl && UiLayout()->NotDrawToLayoutDevice())
                 {
-                iBubbleCtrl->CreateBmpDevL();
+                TRAP_IGNORE(iBubbleCtrl->CreateBmpDevL());
                 }
             iBubbleSize = TSize(KDefaultBubbleSize,KDefaultBubbleSize);
             }

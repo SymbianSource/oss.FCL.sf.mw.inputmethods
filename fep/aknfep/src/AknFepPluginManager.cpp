@@ -288,8 +288,6 @@ void CAknFepPluginManager::ConstructL()
     iAvkonRepository = CRepository::NewL( KCRUidAvkon ); 
     
     iConnectAo = new (ELeave)CConnectAo(this);
-    
-    RProperty::Define( KPSUidAknFep, KAknFepSettingDialogState, RProperty::EInt );
     }
 
 // -----------------------------------------------------------------------------
@@ -1093,9 +1091,10 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
                 }
             break;
 		case EPluginEnablePriorityChangeOnOriChange:
-            if(iCurrentPluginInputFepUI)
+            if( iCurrentPluginInputFepUI && PluginInputMode() != EPluginInputModeNone )
                 {
-                if(ConnectServer())
+				// Don't handle this command if pen ui is not opened.
+                if( iPenInputSvrConnected )
                     {
                     iPenInputServer.EnablePriorityChangeOnOriChange(TBool(aEventData));  
                     }
@@ -4219,9 +4218,10 @@ TBool CAknFepPluginManager::IsEnableSettingBtn()
     TInt enalbeInStartup = 0;
     RProperty::Get(KPSUidUikon, KUikGlobalNotesAllowed, enalbeInStartup);
     ebable = enalbeInStartup;
-    
-    if (iInGlobleNoteEditor || 
-        (iPenInputMenu && iPenInputMenu->IsShowing()))
+
+    TInt priority = CCoeEnv::Static()->RootWin().OrdinalPriority();
+    if (iInGlobleNoteEditor || ECoeWinPriorityNormal < priority ||
+            (iPenInputMenu && iPenInputMenu->IsShowing()))
         {
         ebable = EFalse;    
         }
@@ -5417,8 +5417,8 @@ TBool CAknFepPluginManager::NotifyInGlobalNoteEditorL()
 	iInGlobleNoteEditor = IsGlobalNotesApp(curAppId) ? ETrue:EFalse;
 	if (iCurrentPluginInputFepUI)
 		{
-		iCurrentPluginInputFepUI->HandleCommandL( 
-		    ECmdPenInputEnableSettingBtn, !iInGlobleNoteEditor);
+        iCurrentPluginInputFepUI->HandleCommandL( ECmdPenInputEnableSettingBtn, 
+	                                                  IsEnableSettingBtn() );
 		}
 		
     //if it's in global notes, show it.

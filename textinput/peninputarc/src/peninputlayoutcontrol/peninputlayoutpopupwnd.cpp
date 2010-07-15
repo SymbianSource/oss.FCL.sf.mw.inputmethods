@@ -635,7 +635,7 @@ void CFepLayoutPopupWnd::CPopupWndExt::SetRect(const TRect& aRect)
     iRect = aRect;
     if(iBitmap && iBitmap->SizeInPixels() != aRect.Size())
         {            
-        ResizeBackupDeviceL(aRect.Size());
+        TRAP_IGNORE(ResizeBackupDeviceL(aRect.Size()));
         }
     }
 //  End of File  

@@ -41,12 +41,14 @@
 #include <AknFepGlobalEnums.h>
 #include "AknFepPredictiveSettingDialog.h"
 #include <aknnotewrappers.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <hlplch.h>
-#include <csxhelp/cp.hlp.hrh> 
+//#include <csxhelp/cp.hlp.hrh> 
 #include <akntitle.h> //CAknTitlePane
 #include <StringLoader.h>
 #include <aknnavide.h>
+
+_LIT(KFEPIMPLPREDINPUT_HLP_INPUT, "PREDINPUT_HLP_INPUT"); // 
 
 CAknFepPredictiveSettingDialog *CAknFepPredictiveSettingDialog::NewL(TInt aMenuResId, TInt aConfirmationQueryResId, TInt aTitlePaneResId)
 	{
@@ -186,7 +188,7 @@ void CAknFepPredictiveSettingDialog::ProcessCommandL(TInt aCommandId)
                     new (ELeave) CArrayFixFlat<TCoeHelpContext>( KArrayGranularity );
 	    	CleanupStack::PushL ( contexts );
 	    	TUid appuid = { 0x100058EC };
-	    	contexts->AppendL( TCoeHelpContext( appuid, KPREDINPUT_HLP_INPUT ) );
+	    	contexts->AppendL( TCoeHelpContext( appuid, KFEPIMPLPREDINPUT_HLP_INPUT ) );
 	    	CleanupStack::Pop( contexts );
 	    	HlpLauncher::LaunchHelpApplicationL( CEikonEnv::Static()->WsSession(), contexts );		
 			}

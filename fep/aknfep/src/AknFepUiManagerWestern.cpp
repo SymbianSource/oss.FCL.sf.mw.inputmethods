@@ -96,7 +96,7 @@
 #include <PtiEngine.h> 
 #include <PtiDefs.h>
 #include <PtiUserDicEntry.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 // CONSTANTS
 
 /**

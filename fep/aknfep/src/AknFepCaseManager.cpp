@@ -30,7 +30,7 @@
 #include "AknFepPanic.h"
 #include "aknfeppeninputenums.h"
 
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <aknedsts.h>
 #include <barsread.h>
 #include <jplangutil.h>

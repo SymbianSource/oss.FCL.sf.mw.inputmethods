@@ -41,7 +41,7 @@
 #include <PtiCompositionDataIF.h>   //MPtiEngineCompositionDataInterface
 #include <featmgr.h>                //FeatureManager
 #include <e32keys.h>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 
 static const TInt KKeyMappingsLength = 63;

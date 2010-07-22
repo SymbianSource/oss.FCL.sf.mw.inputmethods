@@ -121,7 +121,7 @@
 #include <PtiDefs.h>
 
 #include <avkon.rsg>        //phrase creation
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 
 // CONSTANTS
 const TInt16 KStrokeHorizontalValue = 0x4e00; 

@@ -37,7 +37,7 @@
 #include <PtiDefs.h>
 #include <aknSctDialog.h>
 #include <avkon.rsg>
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <eikenv.h>
 
 #define PTI_CLEAR_CURRENTWORD( A, B ) \

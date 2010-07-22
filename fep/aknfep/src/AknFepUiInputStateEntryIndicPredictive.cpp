@@ -30,7 +30,7 @@
 #include "AknFepUIManagerStateInterface.h"      //MAknFepUIManagerStateInterface
 #include "AknFepPanic.h"
 #include "AknFepManagerUIInterface.h"
-#include <AknFep.rsg>
+#include <aknfep.rsg>
 #include <PtiEngine.h>
 #include <PtiDefs.h>
 

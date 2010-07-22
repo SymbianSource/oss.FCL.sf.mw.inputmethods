@@ -23,7 +23,7 @@
 #include "PtiEngineImpl.h"
 #include "PtiDefaultCore.h"
 #include "PtiLanguage.h"
-#include <PtiEngine.rsg>
+#include <ptiengine.rsg>
 #include "PtiUserDicEntry.h"
 #include "PtiEngine.h"
 #include "PtiKeyMappings.h"

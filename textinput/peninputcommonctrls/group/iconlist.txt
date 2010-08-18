@@ -1,3 +1,0 @@
--c8,8 qgn_graf_fep_candi_list_sec.svg                                  
--c8,8 qgn_graf_fep_candi_list_sel.svg                                  
-

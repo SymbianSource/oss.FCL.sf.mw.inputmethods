@@ -213,7 +213,6 @@ private: // Data
     
     TInt iPriority;
     TInt iPreEditorPriority;
-    CAknIncallBubble* iIncallBubble;
     CPenUiPopWnd* iPopupWnd;
     
     TBool iShowPopup;

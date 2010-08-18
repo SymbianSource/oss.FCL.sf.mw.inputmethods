@@ -15,7 +15,6 @@
 *
 */
 #include <AknSgcc.h>
-#include <AknIncallBubbleNotify.h>
 #include <avkon.hrh>
 #include <eikappui.h>
 #include <apgwgnam.h>
@@ -45,7 +44,6 @@ CPenUiWndCtrl::~CPenUiWndCtrl()
 {
     delete iPopupWnd;
 
-	delete iIncallBubble;  
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS
 
     if ( GfxTransEffect::IsRegistered( this ) )
@@ -64,7 +62,6 @@ void CPenUiWndCtrl::ConstructL()
     SetComponentsToInheritVisibility();
 
     Window().SetRequiredDisplayMode( EColor16MA );
-    iIncallBubble = CAknIncallBubble::NewL();        
     MakeVisible( EFalse );
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS    
     // only change registration, if not registered, don't register
@@ -140,7 +137,6 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
     if (iResourceChange)
         {
         ActivateL();
-        iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputShow );
         MakeVisible( ETrue );
     	ClaimPointerGrab( ETrue );
         return;
@@ -154,7 +150,6 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
     iWndGroup.SetNonFading(ETrue);
     //ChangeSysteFadeStatus();
     ActivateL();
-    iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputShow );
    // MakeVisible( ETrue );
 	ClaimPointerGrab( ETrue );
 	
@@ -196,7 +191,6 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
     {
     if (aResChanging)
         {
-        TRAP_IGNORE(iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputHide ));
         MakeVisible( EFalse );
         return;
         }
@@ -233,7 +227,6 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
     iShowPopup = EFalse;
     iWndGroup.SetOrdinalPosition( -1, ECoeWinPriorityNormal-1 );
     DrawableWindow()->SetOrdinalPosition(-1, ECoeWinPriorityNormal-1 );
-    TRAP_IGNORE(iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputHide ));
     //MakeVisible( EFalse );
       
 }

@@ -100,7 +100,7 @@ public:
 	 * sizechanged
 	 *
 	 */
-	void SizeChanged(const TRect aVirtualKeypadRect, const RArray<TRect> aBtnRects,
+	void SizeChanged(const TRect aVirtualKeypadRect, const RArray<TRect> & aBtnRects,
                      const TInt aKeypadRow, const TInt aKeypadCol, TBool aIsLandscape = ETrue);
     
 	/**
@@ -223,20 +223,6 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
      */     
     void MoveIconButton( CAknFepCtrlEventButton* aButton, const TRect& aRect, 
             TInt aXPadding=0, TInt aYPadding=0, TBool aReloadImages=ETrue );
-    
-	/** 
-	 * create a new virtual key
-	 *
-	 */
-	CVirtualKey* CreateVkbKeyL(TResourceReader& aReader, const TRect aKeyRect);
-	
-	/**
-	 * update the virtal key
-	 *
-	 */
-	void UpdateVkbKeyL( CVirtualKey* aVirtualKey, TResourceReader& aReader, 
-	                    const TRect aKeyRect );
-    void OnActivate();
 	
 	/**
 	 * Show the visible page button

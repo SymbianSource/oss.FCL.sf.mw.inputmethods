@@ -46,6 +46,10 @@
 #include "peninputlayoutsmiley.h"
 
 #include <gdi.h>
+
+#include <e32std.h>
+#include <e32const.h>
+
 const TInt KParagraphSeperator = 0x2029;
 const TInt KSecretUpdateTimer = 1000000; // 1s
 const TInt KSecretInstantShowTimer = 100000; // 100ms
@@ -1049,6 +1053,7 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(const CFont* aFont)
         }    
     
     TFontSpec fontSpec;
+    fontSpec = aFont->FontSpecInTwips();
     fontSpec.iHeight = aFont->HeightInPixels();
     CFont*  font;
     iCoeEnv->ScreenDevice()->ReleaseFont(CONST_CAST(CFont*, iFont));
@@ -1067,6 +1072,7 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(const CFont* aFont)
     iCharFormat.iFontSpec.iHeight = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(iFontHeight);
     iCharFormat.iFontSpec.iFontStyle.SetStrokeWeight(EStrokeWeightNormal);
     iCharFormat.iFontSpec.iFontStyle.SetBitmapType(EAntiAliasedGlyphBitmap);
+    iCharFormat.iFontSpec.iTypeface = iFont->FontSpecInTwips().iTypeface;
 
     iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, iRichText->DocumentLength());    
     if( InlineStateOn() || AutoCompletionStateOn() )
@@ -1981,6 +1987,19 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerUpEventL(const TPoint
         iCursorSel = TCursorSelection(cursorPos+iPromptTextLen, 
                                       iCursorSel.iAnchorPos);
         AdjustFepCursorPosForPromptText( ETrue );
+        
+        TAmPmName amName(EAm);
+        TAmPmName pmName(EPm);
+        TInt offset = iMfneIcfData->Find(amName)!= KErrNotFound?
+                        iMfneIcfData->Find(amName):iMfneIcfData->Find(pmName);
+	    //if current is 12-hour format and touch on correct position
+        if(offset != KErrNotFound &&
+           iCursorSel.LowerPos()-iPromptTextLen>= offset &&
+           iCursorSel.LowerPos()-iPromptTextLen<= offset+amName.Length())
+            {
+            UiLayout()->SignalOwner(ESignalChangeAmPm);
+            }
+
         return this;
         }
         

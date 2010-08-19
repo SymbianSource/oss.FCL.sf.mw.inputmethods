@@ -62,6 +62,8 @@
 // Constants
 const TInt KPeninputVkbWndInvalidIndex = -1;
 const TInt KInvalidImg = -1 ;
+const TInt KKeyCodeSize = 1;
+const TInt KKeyDouble = 2;
 
 _LIT( KVkbWindowResourceFile, "z:\\resource\\plugins\\peninputssqwin.rsc" );
 _LIT( KConfigurationResourceFile, "z:\\resource\\plugins\\peninputssqwinconfiginfo_" );
@@ -550,7 +552,9 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
             break;
         case EEventVirtualKeyUnLatched:
             {
-            UiLayout()->SignalOwner( ESignalKeyEvent, iNewDeadKeyBuf );
+            // Sumbit Deadkey
+            TRAP_IGNORE( SubmitDeadKeyL( iNewDeadKeyBuf ) );
+             
             TBool deadKeyChange = EFalse;
             iLayoutContext->SetData( EAkninputDataTypeLatchedSet, &deadKeyChange );
             iNewDeadKeyBuf = KNullDesC;
@@ -578,13 +582,21 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
             TInt latchedFlag = IntContext( EAkninputDataTypeLatchedSet );
             if ( latchedFlag )
                 {
-                TInt length = aEventData.Length() + iNewDeadKeyBuf.Length();
-                HBufC* newCharBuf = HBufC::New( length );
-                if ( newCharBuf )
+                HBufC* newCharBuf = HBufC::New( KKeyDouble * iNewDeadKeyBuf.Length() 
+                                                + aEventData.Length() );
+                if( newCharBuf )
                     {
+                    CPeninputSplitQwertyLayout* layout 
+                         = static_cast<CPeninputSplitQwertyLayout*>( UiLayout() );
+                    if( layout->IsEnableITI() )
+                        {
+                        // If ITI is open, double same keys should be send for one dead key,
+                        // core will handle them as one key.                    
+                        newCharBuf->Des().Append( iNewDeadKeyBuf );
+                        }
                     newCharBuf->Des().Append( iNewDeadKeyBuf );
                     newCharBuf->Des().Append( aEventData );
-                    }                
+                    }
                 
                 UnLatchDeadKey( iNewDeadKeyBuf );
 
@@ -599,6 +611,7 @@ void CPeninputSplitQwertyWindow::HandleControlEvent( TInt aEventType,
                     }
                 iNewDeadKeyBuf = KNullDesC;
                 delete newCharBuf;
+                newCharBuf = NULL;
                 }
             }
             break;
@@ -776,10 +789,11 @@ void CPeninputSplitQwertyWindow::HandleVirtualKeyLatchedEvent(TInt /*aEventType*
         iOldDeadKeyBuf = iNewDeadKeyBuf;
         iNewDeadKeyBuf = deadKey;
 
-        // When type another DeadKey, submit the previous one.
-        UiLayout()->SignalOwner( ESignalKeyEvent, iOldDeadKeyBuf );
+        // Submit old Deadkey
+        TRAP_IGNORE( SubmitDeadKeyL( iOldDeadKeyBuf ) );
+     
         // Unlatch the previous DeadKey
-        UnLatchDeadKey(iOldDeadKeyBuf);
+        UnLatchDeadKey( iOldDeadKeyBuf );
         }
     else
         {
@@ -795,6 +809,31 @@ void CPeninputSplitQwertyWindow::HandleVirtualKeyLatchedEvent(TInt /*aEventType*
 //    UiLayout()->SignalOwner( ESignalKeyEvent, iNewDeadKeyBuf );
     }
 
+// ---------------------------------------------------------------------------
+// Submit dead key
+// ---------------------------------------------------------------------------
+//
+void CPeninputSplitQwertyWindow::SubmitDeadKeyL( const TDesC& abuf )
+    {
+    HBufC* newCharBuf = HBufC::NewL( KKeyDouble * abuf.Length() );
+    if( newCharBuf )
+        {
+        CPeninputSplitQwertyLayout* layout 
+                = static_cast<CPeninputSplitQwertyLayout*>( UiLayout() );
+        if( layout->IsEnableITI() )
+            {
+            // If ITI is open, double same keys should be send for one dead key,
+            // core will handle them as one key.
+            newCharBuf->Des().Append( abuf );
+            }
+        newCharBuf->Des().Append( abuf );
+        
+        // Submit DeadKey
+        UiLayout()->SignalOwner( ESignalKeyEvent, *newCharBuf );
+        delete newCharBuf;
+        newCharBuf = NULL;
+        }
+    }
 // ---------------------------------------------------------------------------
 // Handle virtual key up event
 // ---------------------------------------------------------------------------
@@ -1682,14 +1721,39 @@ void CPeninputSplitQwertyWindow::HandlePopupSizeChange()
 //
  TBool CPeninputSplitQwertyWindow::HandleDeadKeyL( TInt aEventType, 
                                                    const TDesC& aEventData )
-     {
+    {
     // Set DeadKey to unlatched state
     TBool deadKeyChange = EFalse;
     iLayoutContext->SetData( EAkninputDataTypeLatchedSet, &deadKeyChange );
     UnLatchDeadKey( iNewDeadKeyBuf );
 
+    // Handle dead key when ITI is enable
+    CPeninputSplitQwertyLayout* layout 
+                      = static_cast<CPeninputSplitQwertyLayout*>( UiLayout() );
+    if ( layout->IsEnableITI() )
+         {
+         TBuf<KKeyCodeSize> buf;
+         TKeyEvent* event = (TKeyEvent*) aEventData.Ptr();
+         buf.Append( event->iCode );
+
+         HBufC* newCharBuf = HBufC::NewL( iNewDeadKeyBuf.Length() + buf.Length() );
+         if( newCharBuf )
+             {
+             newCharBuf->Des().Append( iNewDeadKeyBuf );
+             newCharBuf->Des().Append( buf );
+
+             // Submit DeadKey + Key at the same time
+             UiLayout()->SignalOwner(ESignalKeyEvent,*newCharBuf);
+
+             delete newCharBuf;
+             newCharBuf = NULL;
+             }
+         
+         return ETrue;
+         }
+     
     // Get the accent char
-    HBufC* newCharBuf = HBufC::NewL( 1 );
+    HBufC* newCharBuf = HBufC::NewL( KKeyCodeSize );
     
     TBool handled = HandleAccentCharEvent( aEventType, 
                                            aEventData, 
@@ -1702,13 +1766,15 @@ void CPeninputSplitQwertyWindow::HandlePopupSizeChange()
         UiLayout()->SignalOwner( ESignalKeyEvent, *newCharBuf );
         iNewDeadKeyBuf = KNullDesC;
         delete newCharBuf;
+        newCharBuf = NULL;
         return ETrue;
         }
     
     delete newCharBuf;
+    newCharBuf = NULL;
     
     return EFalse;
-     }
+    }
 
  // --------------------------------------------------------------------------
  // Handle resource of button(base on language direction)

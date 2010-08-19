@@ -45,6 +45,7 @@
 #include <AvkonInternalCRKeys.h>    // KAknQwertyInputModeActive
 #include <settingsinternalcrkeys.h> //Pen related settings
 #include <sensorplugindomaincrkeys.h> // KCRUidSensorSettings
+#include <featmgr.h>                  // Feature Manager
 
 // TODO: include CommonengineInternalCRKeys.h
 const TUid KCRUidCommonEngineKeys = {0x1020503B};
@@ -359,6 +360,32 @@ TInt CAknFepSharedDataInterface::PluginInputMode() const
 
 void CAknFepSharedDataInterface::SetPluginInputMode(TInt aDevice)
     {
+    // Check validity of the input mode to be set.
+    if ( aDevice == EPluginInputModeItut )
+        {
+        __ASSERT_DEBUG( FeatureManager::FeatureSupported( 
+            KFeatureIdVirtualItutInput ), 
+            User::Panic( _L( "Wrong input mode - ITU-T" ), __LINE__ ) );
+        }
+    else if ( aDevice == EPluginInputModeFSQ )
+        {
+        __ASSERT_DEBUG(  FeatureManager::FeatureSupported( 
+            KFeatureIdVirtualFullscrQwertyInput ), 
+            User::Panic( _L( "Wrong input mode - Landscape FSQ" ), 
+                __LINE__ ) );
+        }
+    else if ( aDevice == EPluginInputModePortraitFSQ )
+        {
+        __ASSERT_DEBUG( FeatureManager::FeatureSupported( 
+            KFeatureIdFfVirtualFullscrPortraitQwertyInput ), 
+            User::Panic( _L( "Wrong input mode - Portrait FSQ" ), 
+                __LINE__ ) );
+        }
+    else
+        {
+        // Do nothing.
+        }
+
     if (iAknFepRepository)
         {
         iAknFepRepository->Set(KAknFepLastUsedInput, aDevice);
@@ -1891,4 +1918,94 @@ void CAknFepSharedDataInterface::SetDefaultArabicNumberMode(TInt aValue)
     }
 #endif
 
+/**
+ * Get the last used plugin input mode for portrait orientation
+ *
+ * @since 5.2
+ * @return Value of KAknFepLastUsedPortraitInput setting.
+ */    
+TPluginInputMode CAknFepSharedDataInterface::PluginPortraitInputMode() const
+    {
+    TInt cenRepValue( 0 );
+    if ( iAknFepRepository )
+        {
+        iAknFepRepository->Get( KAknFepLastUsedPortraitInput, cenRepValue );
+        }
+
+    TPluginInputMode lastUsedPortraitInputMode = 
+         static_cast<TPluginInputMode>( cenRepValue );
+    
+    // Check portrait FSQ and ITU-T feature are enabled.
+    TBool isPortraitFSQEnabled = FeatureManager::FeatureSupported( 
+        KFeatureIdFfVirtualFullscrPortraitQwertyInput );
+    TBool isITUTEnabled = FeatureManager::FeatureSupported( 
+        KFeatureIdVirtualItutInput );
+    
+    // If both ITU-T and portrait FSQ features are enabled, use the saved
+    // portrait input mode.
+    if ( isITUTEnabled && isPortraitFSQEnabled )
+        {
+        // If the saved portrait input mode is not valid, use the default
+        // value, EPluginInputModeItut.
+        if ( ! ( lastUsedPortraitInputMode == EPluginInputModeItut ||
+                 lastUsedPortraitInputMode == EPluginInputModePortraitFSQ ) )
+            {
+            lastUsedPortraitInputMode = EPluginInputModeItut;
+            }
+        }
+    // If only ITU-T feature is enabled, use the mode.
+    else if ( isITUTEnabled )
+        {
+        lastUsedPortraitInputMode = EPluginInputModeItut;
+        }
+    // If only portrait FSQ feature is enabled, use the mode.
+    else if ( isPortraitFSQEnabled )
+        {
+        lastUsedPortraitInputMode = EPluginInputModePortraitFSQ;
+        }
+    // If none of the features are enabled, EPluginInputModeNone is assigned
+    // for exception handling.
+    else
+        {
+        lastUsedPortraitInputMode = EPluginInputModeNone;
+        }
+
+    return lastUsedPortraitInputMode;
+    }
+
+/**
+ * Replaces the last used plugin input mode for portrait orientation
+ *
+ * @since 5.2
+ * @return Replace value of KAknFepLastUsedPortraitInput setting.
+ */
+void CAknFepSharedDataInterface::SetPluginPortraitInputMode( 
+    TPluginInputMode aLastUsedPortraitInputMode )
+    {
+    // Check validity of the input mode to be set.  The input mode is not 
+    // valid if,
+         // i) The input mode is not neither ITU-T nor portrait FSQ.
+    if ( !( aLastUsedPortraitInputMode == EPluginInputModeItut ||
+            aLastUsedPortraitInputMode == EPluginInputModePortraitFSQ ) ||
+         // ii) The input mode is ITU-T but the feature is disabled.
+          ( aLastUsedPortraitInputMode == EPluginInputModeItut &&  
+            !FeatureManager::FeatureSupported( KFeatureIdVirtualItutInput ) ) ||
+         // iii) The input mode is portrait FSQ but the feature is disabled.
+          ( aLastUsedPortraitInputMode == EPluginInputModePortraitFSQ && 
+            !FeatureManager::FeatureSupported(
+                KFeatureIdFfVirtualFullscrPortraitQwertyInput ) ) )
+        {
+        __ASSERT_DEBUG( 0, 
+            User::Panic( _L( "Wrong portrait input mode" ), __LINE__ ) );
+        // Return without saving the value if the portrait input is invalid.
+        return;  
+        }
+        
+   if ( iAknFepRepository )
+        {
+        TInt err = iAknFepRepository->Set( KAknFepLastUsedPortraitInput,
+            static_cast<TInt>( aLastUsedPortraitInputMode ) );
+        }
+    }
+    
 // End of File

@@ -731,6 +731,11 @@ private: // Data
      * Indicates whether range button short press is handled.
      */
     TBool iHandleRangeShortPress;
+    
+    /**
+     * Indicates whether US rsc file exist or not
+     */   
+    TBool iUSRscFileExist;
 
 private:	
 	CFepLayoutScrollableList* iCandidateList;

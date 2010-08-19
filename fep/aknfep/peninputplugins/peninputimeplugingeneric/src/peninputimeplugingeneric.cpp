@@ -49,6 +49,7 @@ const TInt KInvalidImplId = 0;
 _LIT(KHwrImeName, "Generic HWR");
 _LIT(KVkbImeName, "Generic VKB");
 _LIT(KFSQImeName, "Generic FSQ");
+_LIT(KPrtFSQImeName, "Portrait QWERTY");
 _LIT(KSSQImeName, "Split View Qwerty");
 _LIT(KFingerHwrImeName, "Generic Fingerhwr");
 _LIT(KHwrResourceFormatPattern, "peninputhwrwindowconfiginfo_*.rsc");
@@ -207,6 +208,16 @@ MAknFepManagerInterface* CPenInputImePluginGeneric::GetInputMethodUiL(
                 }
             }
             break;
+        case EPluginInputModePortraitFSQ:
+            {
+            // UI layout for portrait FSQ.
+            // Note: Don't need to check whether portrait QWERTY feature is 
+            // enabled.  Because otherwise, aMode can not have 
+            // EPluginInputModePortraitFSQ.
+            layoutId.iUid = KPrtFsqUiId;
+            }
+            break;
+
         case EPluginInputModeFingerHwr:
             {
             layoutId.iUid = KFingerHwrUiId;
@@ -271,6 +282,13 @@ MAknFepManagerInterface* CPenInputImePluginGeneric::GetInputMethodUiL(
         {
         mode = EPluginInputModeFSQ;
         }
+    // If full screen portrait QWERTY feature is enabled, portrait QWERTY UI 
+    // layout is used.
+    else if( aLayoutId == KPrtFsqUiId ) 
+        {
+        mode = EPluginInputModePortraitFSQ;
+        }
+
     else if( aLayoutId == KFingerHwrUiId )
         {
         mode = EPluginInputModeFingerHwr;
@@ -363,6 +381,11 @@ TInt CPenInputImePluginGeneric::LayoutUiImplId()
         case EPluginInputModeFSQ:
             {
             id = KFsqUiId;
+            }
+            break;
+        case EPluginInputModePortraitFSQ:
+            {
+            id = KPrtFsqUiId;
             }
             break;
         case EPluginInputModeFingerHwr:
@@ -465,6 +488,7 @@ TInt CPenInputImePluginGeneric::SupportModesL(CPtiEngine* /*aPtiEngine*/,
     TBool hwr = EFalse;
     TBool vkb = EFalse;
     TBool fsq = EFalse;
+    TBool prtfsq = EFalse;
     TBool ssq = EFalse;
     TBool fingerhwr = EFalse;  
     CleanupStack::PushL( TCleanupItem( Cleanup, &infoArray ) );
@@ -487,6 +511,14 @@ TInt CPenInputImePluginGeneric::SupportModesL(CPtiEngine* /*aPtiEngine*/,
                 && FeatureManager::FeatureSupported(KFeatureIdVirtualFullscrQwertyInput))
             {
             fsq = ETrue;
+            }
+            
+        // If full screen portrait QWERTY feature is enabled, set the mode is enabled.
+        if ( infoArray[i]->ImplementationUid().iUid == KPrtFsqUiId
+            && FeatureManager::FeatureSupported( 
+                KFeatureIdFfVirtualFullscrPortraitQwertyInput ) )
+            {
+            prtfsq = ETrue;
             }
             
         if (infoArray[i]->ImplementationUid().iUid == KSsqUiId
@@ -533,7 +565,7 @@ TInt CPenInputImePluginGeneric::SupportModesL(CPtiEngine* /*aPtiEngine*/,
   	    delete dir;
         }
 
-    if( vkb || fsq )
+    if( vkb || fsq || prtfsq )
         {
       	TFindFile fileFinder(CCoeEnv::Static()->FsSession());
       	TFileName resName;
@@ -571,6 +603,34 @@ TInt CPenInputImePluginGeneric::SupportModesL(CPtiEngine* /*aPtiEngine*/,
                     j <=  KSupportLanguages[i].iLangEnd; ++j)
                     {
                     VkbResNameFromLangId( resName, j);
+                    
+                    if( IsFileInDir( dir, resName ) )
+                        {
+                        detail.iLanguage = j;
+                        detail.iMeritValue = KSupportLanguages[i].iMerit;
+                        aSupportList.Append(detail);
+                        }
+                    }
+                }
+            }
+
+        // Add portrait full qwerty as the supported mode.
+        // Note: Feature flag check is not needed here because prtfsq should be
+        // EFalse if the feature flag is not enabled.
+        // Note: We share the same layout for portrait FSQ with landscape FSQ.
+        if( prtfsq )
+            {
+            detail.iMode = EPluginInputModePortraitFSQ;
+            // Display name is "Portrait QWERTY".
+            detail.iDisplayName.Copy( KPrtFSQImeName() );
+            // Add all the support languages.  They are defined in 10282358.rss.
+            for ( TInt i = 0; i < sizeof( KSupportLanguages ) / sizeof( TLangMeritPair ); ++i )
+                {
+                for ( TInt j =  KSupportLanguages[i].iLangStart; 
+                    j <=  KSupportLanguages[i].iLangEnd; ++j )
+                    {
+                    VkbResNameFromLangId( resName, j );
+
                     if( IsFileInDir( dir, resName ) )
                         {
                         detail.iLanguage = j;
@@ -768,6 +828,7 @@ CPluginFepManagerBase* CPenInputImePluginGeneric::GetPluginUiL( TInt aMode )
             }
         case EPluginInputModeVkb:
         case EPluginInputModeFSQ:
+        case EPluginInputModePortraitFSQ:
             {
             return iPluginUiManager = CPluginFepManagerVkb::NewL(*this, iPenInputServer);
             }

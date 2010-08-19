@@ -137,14 +137,6 @@ public:
      */
     TInt PrimaryRange();
     
-    /**
-     * Get current range
-     *
-     * @since Symbian TB9.2
-     * @return Current range.
-     */   
-    TFingerHwrRange CurrentRange();
-    
      
     /**
      * Set case
@@ -454,11 +446,6 @@ private:// data
      * Permitted ranges
      */
     RArray<TInt> iPermittedRanges;
-    
-    /**
-     * Current range
-     */
-    TFingerHwrRange iCurrentRange;
     
     /**
      * Permitted range in int format

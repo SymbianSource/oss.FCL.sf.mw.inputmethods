@@ -539,13 +539,9 @@ void CPluginKrFepManagerBase::SetLayoutPermitedRanges( TInt aPermittedMode )
     // Not derived from edwin
     if ( aPermittedMode == EAknEditorNumericInputMode ) 
         {
-        if ( SupportNativeNumberRange() )
-            {
-            iPermittedRange = ERangeNativeNumber;
-            }
-        iPermittedRange |= ERangeNumber;
+        // Only number range is supported in Korean Variant
+        iPermittedRange = ERangeNumber;
         }
-        
     else if ( aPermittedMode & EAknEditorTextInputMode )
         {
         // Derived from edwin and EAknEditorTextInputMode

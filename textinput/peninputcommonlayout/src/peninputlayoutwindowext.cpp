@@ -490,7 +490,57 @@ TBool CPeninputLayoutWindowExt::CheckResourceExist( const TDesC& aFileName )
         return ETrue;
         }
     }
-  
+
+// ---------------------------------------------------------------------------
+// CPeninputLayoutWindowExt::CancelDeadKey
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//
+void CPeninputLayoutWindowExt::CancelDeadKey()
+	{
+    // Get the dead key status
+	TInt latchedFlag = CPeninputDataConverter::AnyToInt(
+		iLayoutContext->RequestData( EAkninputDataTypeLatchedSet ));
+	// If the DeadKey is latched, cancel it
+	if ( latchedFlag )
+		{
+		RPointerArray<CPeninputVkbLayoutInfo> vkbListInfo;
+		RPointerArray<CPeninputVkbKeyInfo> keyInfoList;
+		
+		// Get the vkb layout list supportted by current writing language
+		vkbListInfo = iVkbLayout->VkbLayoutInfoList();
+		TInt vkbListNum = vkbListInfo.Count();
+		
+		CVirtualKey* pKey;
+		TBool deadKeyChange = EFalse;
+		
+		// Find the latched DeadKey in all kinds of vkb layout 
+		// which supportted by current writing language
+		for ( TInt i = 0; i < vkbListNum && !deadKeyChange ; i++ )
+			{
+			// Get the key info list in one vkb layout
+			keyInfoList = vkbListInfo[i]->KeyInfoList();
+			TInt keyListNum = keyInfoList.Count();
+			for ( TInt j = 0; j < keyListNum && !deadKeyChange ; j++ )
+				{
+				pKey = keyInfoList[j]->Key();
+				// If the Dead key is latched
+				if ( pKey->Latched())
+					{
+					// Unlatch the DeadKey
+					pKey->SetLatched( EFalse );
+					
+					// Set the DeadKey state
+					iLayoutContext->SetData( 
+						EAkninputDataTypeLatchedSet, &deadKeyChange );
+					
+					deadKeyChange = ETrue;
+					} 
+				}
+			}
+		}	
+	}
+
 // ---------------------------------------------------------------------------
 // CPeninputLayoutWindowExt::ChangeInputLanguageL
 // (other items were commented in a header)
@@ -518,6 +568,9 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeInputLanguageL( TInt aLangID )
         
     if ( found ) 
         {
+        // Remove the dead key's latched status
+		CancelDeadKey();
+    
         // Store language
         iLayoutContext->SetData( EPeninputDataTypeInputLanguage, &aLangID );
    
@@ -820,45 +873,10 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeClientLayout(
 //
 EXPORT_C void CPeninputLayoutWindowExt::ChangeVkbLayout( TInt aVkbLayoutId )
     {
-    TInt latchedFlag = CPeninputDataConverter::AnyToInt(
-                       iLayoutContext->RequestData(EAkninputDataTypeLatchedSet));
-    // If the DeadKey is latched, cancel it and then change the VKB layout
-    if(latchedFlag)
-        {
-        RPointerArray<CPeninputVkbLayoutInfo> vkbListInfo;
-        RPointerArray<CPeninputVkbKeyInfo> keyInfoList;
-        
-        vkbListInfo = iVkbLayout->VkbLayoutInfoList();
-        TInt vkbListNum = vkbListInfo.Count();
-        
-        CVirtualKey* pKey;
-        TBool deadKeyChange = EFalse;
-        // Find the latched DeadKey in all the Vkb layout
-        for(TInt i = 0; i < vkbListNum; i++)
-            {
-            // Get key info list in one VKB layout
-            keyInfoList = vkbListInfo[i]->KeyInfoList();
-            TInt keyListNum = keyInfoList.Count();
-            for(TInt j = 0; j < keyListNum; j++)
-                {
-                pKey = keyInfoList[j]->Key();
-                if(pKey->Latched())
-                    {
-                    // Unlatch the DeadKey
-                    pKey->SetLatched(EFalse);
-                    
-                    // Set the DeadKey state
-                    iLayoutContext->SetData(EAkninputDataTypeLatchedSet, &deadKeyChange);
-                    deadKeyChange = ETrue;
-                    break;
-                    } 
-                }
-            if(deadKeyChange)
-                {
-                break;
-                }
-            }
-        }
+
+	// Remove the dead key's latched status
+	CancelDeadKey();
+
     
     TInt curVkbId = CPeninputDataConverter::AnyToInt
         ( iLayoutContext->RequestData( EPeninputDataTypeVkbLayout ) );

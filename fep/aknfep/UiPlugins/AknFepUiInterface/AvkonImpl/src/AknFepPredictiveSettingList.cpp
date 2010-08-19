@@ -36,11 +36,14 @@
 #include <PtiDefs.h>
 #include <aknfep.rsg>
 #include <AknFepGlobalEnums.h>
-#include <featmgr.h> 
+#include <featmgr.h>
+#include <AknFepInternalPSKeys.h>
 
 #include "AknFepPredictiveSettingList.h"
 #include "AknFepPredictiveSettingData.h"
 #include "AknFepPredictiveSettingDialog.h"
+
+const TInt KFSQMode = 2;
 
 CAknFepMultiSelectionSettingItem::CAknFepMultiSelectionSettingItem ( 
         TInt aResourceId, CAknFepPredictiveSettingData &aData, CCoeEnv* aCoeEnv )
@@ -289,37 +292,56 @@ CAknSettingItem * CAknFepPredictiveSettingList::CreateSettingItemL (TInt aIdenti
     switch (aIdentifier)
         {
         case EAknFepCmdPredAutoComplSetting:
+            {
             settingItem = new (ELeave) CAknBinaryPopupSettingItem (
                         aIdentifier, iSettingsData.AutoWordCompl());
             if(DeviceHasMultipleKeyboards())
                 {
                 settingItem->SetHidden(ETrue);
                 }
+            }
             break;
         case EAknFepCmdPredAutoComplMultiSetting:
+            {
             settingItem = new (ELeave) CAknFepMultiSelectionSettingItem (
                     aIdentifier, iSettingsData, iCoeEnv ); 
             if(!DeviceHasMultipleKeyboards())
                 {
                 settingItem->SetHidden(ETrue);
                 }
+            }
             break;
         case EAknFepCmdPredNumberCandidateSetting:
+            {
             settingItem = new (ELeave) CAknBinaryPopupSettingItem (
                                             aIdentifier, 
                                             iSettingsData.NumberCandidates());
-            if(keyboardLayout == EPtiKeyboard12Key || keyboardLayout == EPtiKeyboardHalfQwerty)
+            
+            TInt dialogState = 0;
+            RProperty::Get( KPSUidAknFep, KAknFepSettingDialogState, dialogState );   
+            //Remove Number Candidate item from setting dialog
+            if ( dialogState == KFSQMode || 
+                 keyboardLayout == EPtiKeyboard12Key || 
+                 keyboardLayout == EPtiKeyboardHalfQwerty)
+                {
+                // When dialog state is 2, it means that the setting dialog is opened
+                // for virtual qwerty keyboard
                 settingItem->SetHidden(ETrue);
+                }
+            }
             break;
         case EAknFepCmdPredTypingCorrectionSetting:
+            {
             settingItem = new (ELeave) CAknEnumeratedTextPopupSettingItem (
                                             aIdentifier, 
                                             iSettingsData.TypingCorrection());
             // Disabled for ITU-T
             if(keyboardLayout == EPtiKeyboard12Key || keyboardLayout == EPtiKeyboardHalfQwerty)
                 settingItem->SetHidden(ETrue);
+            }
             break;
         case EAknFepCmdPredPrimaryCandidateSetting:
+            {
             settingItem = new (ELeave) CAknBinaryPopupSettingItem (
                                             aIdentifier, 
                                             iSettingsData.PrimaryCandidate());
@@ -327,6 +349,7 @@ CAknSettingItem * CAknFepPredictiveSettingList::CreateSettingItemL (TInt aIdenti
             if(keyboardLayout == EPtiKeyboardHalfQwerty ||
                     keyboardLayout == EPtiKeyboard12Key)
                 settingItem->SetHidden(ETrue);
+            }
             break;
         default:
             break;

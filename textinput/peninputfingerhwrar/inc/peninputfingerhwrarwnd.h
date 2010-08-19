@@ -504,7 +504,8 @@ private:
      * @param aCellRects rects of virtual keys.
      * @return None
      */      
-    void LoadNumSymbolVirtualKeysL( const TInt aResId, const RArray<TRect>& aCellRects );
+    void LoadNumSymbolVirtualKeysL( const TInt aResId, 
+            const RArray<TRect>& aCellRects, TBool aReload = ETrue );
     
     /**
      * relayout full ui, reset all controls position. 

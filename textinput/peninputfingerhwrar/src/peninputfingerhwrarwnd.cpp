@@ -87,7 +87,7 @@ CPeninputFingerHwrArWnd* CPeninputFingerHwrArWnd::NewLC( CFepUiLayout* aFepUiLay
 CPeninputFingerHwrArWnd::~CPeninputFingerHwrArWnd()
     {
     #ifdef RD_TACTILE_FEEDBACK
-    if(UiLayout())
+    if(UiLayout() && iWritingBox)
         {
 		UiLayout()->DeRegisterFeedbackArea(reinterpret_cast<TInt>(iWritingBox),
 	                                 iWritingBox->Rect());
@@ -352,7 +352,10 @@ void CPeninputFingerHwrArWnd::SetBubbleTextL( const TDesC& aInfo )
     {
     if ( aInfo.Length() > 0 )
         {
-        iContextField->ShowBubble( aInfo, iContextField->MsgBubbleCtrl()->Rect() );
+        TRect rect(iLafManager->IndicatorBubbleRect());
+        iContextField->MsgBubbleCtrl()->SetRect(rect);
+//        iContextField->ShowBubble( aInfo, iContextField->MsgBubbleCtrl()->Rect());
+        iContextField->ShowBubble( aInfo, rect);
         }
     else
         {
@@ -619,6 +622,7 @@ void CPeninputFingerHwrArWnd::CreateContextFieldL()
                                           KAknsIIDQsnFrInputPreviewMiddle,
                                           KAknsIIDQsnFrInputPreviewSideR );  
     iContextField->SetMsgBubbleCtrlSize( TSize( bubbleLineLayout.iW,bubbleLineLayout.iH ) );    
+    iContextField->MsgBubbleCtrl()->SetTextL(KNullDesC);
     
     iContextField->SetLineSeparatorAfterPrompt(ETrue);
     
@@ -821,7 +825,7 @@ void CPeninputFingerHwrArWnd::LoadSymbolVirtualKeysL( const TInt aResId,
 // ---------------------------------------------------------------------------
 //
 void CPeninputFingerHwrArWnd::LoadNumSymbolVirtualKeysL( const TInt aResId, 
-    const RArray<TRect>& aCellRects )
+    const RArray<TRect>& aCellRects, TBool aReload)
     {
     TAknTextLineLayout txtlayout = iLafManager->NumpadKeyTxtLayout();
     iNumSymbolTable->KeyPad()->SetTextLineLayout( txtlayout );
@@ -829,8 +833,14 @@ void CPeninputFingerHwrArWnd::LoadNumSymbolVirtualKeysL( const TInt aResId,
     TInt fontid = txtlayout.FontId();
     const CFont* font = AknLayoutUtils::FontFromId( fontid );
     iNumSymbolTable->KeyPad()->SetFont( font );
-    
-    iNumSymbolTable->LoadVirtualKeypadKeyL(aResId,aCellRects);
+    if(aReload)
+        {
+        iNumSymbolTable->LoadVirtualKeypadKeyL(aResId,aCellRects);
+        }
+    else
+        {
+        iNumSymbolTable->UpdateAllVirtualKeysRect(aCellRects);
+        }
     }
 
 // ---------------------------------------------------------------------------
@@ -943,7 +953,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     iLafManager->GetNumVirtualKeyRects( numrects );
     
     // load keys
-    LoadNumSymbolVirtualKeysL(R_FINGER_HWR_NUMPAD, numrects);
+    LoadNumSymbolVirtualKeysL(R_FINGER_HWR_NUMPAD, numrects,EFalse);
         
     CleanupStack::PopAndDestroy();//rects
     
@@ -954,9 +964,7 @@ void CPeninputFingerHwrArWnd::ResetLayoutL()
     rect = iLafManager->CtrlRect(iNumSymbolTable->ControlId());
     iNumSymbolTable->SetRect(rect);
     
-    iNumSymbolTable->SizeChanged(iLafManager->GetVirtualNumKeyRect(),
-                              iLafManager->GetSymBtnArray(), numpadrows, numpadcols,
-                              iLafManager->IsLandscape());
+    iNumSymbolTable->SizeChanged(iLafManager->GetVirtualNumKeyRect());
     }
 
 
@@ -1484,7 +1492,7 @@ TBool CPeninputFingerHwrArWnd::GetCharBeforeCursor(TInt aCharPos, TUint16& aChar
 //
 void CPeninputFingerHwrArWnd::SetNumericMapping( const TDesC& aNumMapping )
     {
-    iNumSymbolTable->SetNumericMapping(aNumMapping);
+    iNumSymbolTable->UpdateTableSymbol(aNumMapping);
     }
 // ---------------------------------------------------------------------------
 //  set native number mode on or off.

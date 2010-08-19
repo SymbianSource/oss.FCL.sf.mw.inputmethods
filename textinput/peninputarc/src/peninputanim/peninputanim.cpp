@@ -1051,7 +1051,7 @@ TBool CPeninputAnim::OnRawKeyEvent(const TRawEvent& aRawEvent)
 // 
 void CPeninputAnim::StartTimer()
     {
-    if ( iIsActive )
+    if ( iIsActive && !iFlushTimer->IsActive())
         {
         iFlushTimer->Start(
             KFlushTimerPeriod, 

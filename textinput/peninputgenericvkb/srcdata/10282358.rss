@@ -44,6 +44,15 @@ RESOURCE REGISTRY_INFO theInfo
                 // Info for CImplementation1
                 IMPLEMENTATION_INFO
                     {
+                    implementation_uid = 0x20026837;
+                    version_no = 1;
+                    display_name = "Portrait QWERTY Keypad";
+                    default_data = "1||16||33||37||42||50||57||54||93||94||96"; // Supported language
+                    opaque_data= "16||33||37||42||50||57||54||93||94||96"; // Prefered lanaguage
+                    },
+                // Info for CImplementation1
+                IMPLEMENTATION_INFO
+                    {
                     implementation_uid = 0x2001114D;
                     version_no = 1;
                     display_name = "Generic FSQ Implementation version 1";

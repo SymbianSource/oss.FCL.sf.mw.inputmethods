@@ -291,6 +291,14 @@ public:
     TBool HandleVirtualKeyUpEvent( TInt aEventType, CFepUiBaseCtrl* aCtrl,
                                    const TDesC& aEventData );
 
+    /**
+     * Submit dead key
+     *
+     * @param abuf Dead key buffer 
+     * @return None
+     */   
+    void SubmitDeadKeyL( const TDesC& abuf );
+
     /*
      * Set dead key
      *

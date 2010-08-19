@@ -37,7 +37,7 @@
 #include <peninputclientlayoutinfo.h>
 #include <peninputlayoutchoicelist.h>
 #include <peninputlongpressbutton.h>
-
+#include <bautils.h>
 #include <aknlayoutscalable_apps.cdl.h>
 #include <peninputlayoutbubblectrl.h>
 #include <peninputscrollablelist.h>
@@ -95,7 +95,8 @@ CPeninputGenericVkbWindow::CPeninputGenericVkbWindow(
       iPopupSet(EFalse),
       iLafMgr(NULL),
       iFirstConstruct(ETrue),
-      iIndiWithText( EFalse )
+      iIndiWithText( EFalse ),
+      iUSRscFileExist( EFalse )
     {
     }
 
@@ -140,6 +141,20 @@ void CPeninputGenericVkbWindow::ConstructL()
     iLafMgr->SetInputModeL(TPluginInputMode (iLayoutContext->LayoutType()));
     CPeninputLayoutWindowExt::ConstructL();
 
+    // Save whether American rsc file exist or not
+    TBuf<KMaxFileLength>  usUSRscFileName; 
+    usUSRscFileName= KConfigurationResourceFile();
+    usUSRscFileName.AppendNum( ELangAmerican );
+    usUSRscFileName.Append( KResourceFileExtName );
+
+    RFs fileSession;
+    User::LeaveIfError( fileSession.Connect() );
+    CleanupClosePushL( fileSession );
+    if ( BaflUtils::FileExists( fileSession , usUSRscFileName ))
+    	{
+        iUSRscFileExist = ETrue;
+    	}
+    CleanupStack::PopAndDestroy( 1 );
     // For addition of ITI features, add a candidate list in vkb window   
     CreateCandidateListL();    
     }
@@ -458,8 +473,12 @@ const TDesC& CPeninputGenericVkbWindow::GetWindowConfigResFileName(
             file.Close();
             aLangID = ELangCanadianFrench;   
             }
-
         }
+     // If US Rsc file exist, use it instead of English rsc file
+     if(( aLangID == ELangEnglish ) && ( iUSRscFileExist ))
+    	 {
+         aLangID = ELangAmerican; 
+    	 }
     iResourceFilename.Zero();
     // Generate resource file name according to language id
     iResourceFilename = KConfigurationResourceFile();

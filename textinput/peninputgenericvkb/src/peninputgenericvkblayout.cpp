@@ -71,7 +71,29 @@ CPeninputGenericVkbLayoutImp* CPeninputGenericVkbLayoutImp::NewL(
     return self;
     }
 
+// ---------------------------------------------------------------------------
+// CPeninputGenericVkbLayoutImp::NewFsqL
+// Entry point for landscape FSQ.
+// ---------------------------------------------------------------------------
+//
 CPeninputGenericVkbLayoutImp* CPeninputGenericVkbLayoutImp::NewFsqL( 
+    TAny* /*aInitParams*/ )
+    {
+    CPeninputGenericVkbLayoutImp* self = new ( ELeave ) 
+        CPeninputGenericVkbLayoutImp();
+    CleanupStack::PushL( self );
+    self->Construct( ETrue ); 
+    CleanupStack::Pop( self );
+
+    return self;
+    }
+
+// ---------------------------------------------------------------------------
+// CPeninputGenericVkbLayoutImp::NewPrtFsqL
+// Entry point for portrait FSQ.
+// ---------------------------------------------------------------------------
+//
+CPeninputGenericVkbLayoutImp* CPeninputGenericVkbLayoutImp::NewPrtFsqL( 
     TAny* /*aInitParams*/ )
     {
     CPeninputGenericVkbLayoutImp* self = new ( ELeave ) 

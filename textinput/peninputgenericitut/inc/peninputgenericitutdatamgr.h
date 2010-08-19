@@ -301,7 +301,14 @@ private: // data member
 
     // resource id for generic itut resource file
     TInt iCommonResId;
-    RArray<TInt> iConfigResIds;
+    /**
+     * resource id for current input language
+     */    
+    TInt iConfigResId;
+    /**
+     * resource id for special controls in Chinese/Korean variant
+     */  
+    TInt iSpecialResId;
 
     TInt iAvkonResId;
     

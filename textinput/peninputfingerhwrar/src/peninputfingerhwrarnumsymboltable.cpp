@@ -41,8 +41,9 @@
 #include "peninputfingerhwrarstoreconstants.h"
 #include "peninputlayoutvkb.h"
 #include "peninputfingerhwrarnumsymboltable.h"
+#include "peninputfingerhwarvkbutility.h"
 
-
+const TUint16 KInvalidChar = 0xFFFF;
 // ---------------------------------------------------------------------------
 // Symbian Constructor
 // ---------------------------------------------------------------------------
@@ -99,9 +100,25 @@ void CPeninputArabicFingerHwrNumSymbolTable::OpenSymbolTable()
     {
     CapturePointer( ETrue );
     iPopupVisible = ETrue; 
-    iCurrentNumSCTType = ENumSCTLatin;
-	UiLayout()->LockArea(UiLayout()->Rect(),this);  
-    UpdateNumSymbolTable(ENumSCTLatin);
+    UiLayout()->LockArea(UiLayout()->Rect(),this);
+    // signal server to add the pop area        
+    if(UiLayout()->NotDrawToLayoutDevice())
+        {
+        struct SData
+            {
+            TRect rr;
+            TBool flag;
+            } data;
+            
+        data.rr = iNumKeypad->Rect();
+        data.flag = ETrue;
+        TPtrC ptrForAdd;
+        ptrForAdd.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
+
+        UiLayout()->SignalOwner(ESignalPopupArea,ptrForAdd);
+        }
+    
+    RefreshNumSymbolTable();;
 	}
 
 // ---------------------------------------------------------------------------
@@ -112,6 +129,22 @@ void CPeninputArabicFingerHwrNumSymbolTable::CloseSymbolTable()
     {
     CapturePointer( EFalse );
     iPopupVisible = EFalse;
+    // signal server to remove the pop area        
+    if(UiLayout()->NotDrawToLayoutDevice())
+        {
+        struct SData
+            {
+            TRect rr;
+            TBool flag;
+            } data;
+            
+        data.rr = iNumKeypad->Rect();
+        data.flag = EFalse;
+        TPtrC ptrForRemove;
+        ptrForRemove.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
+
+        UiLayout()->SignalOwner(ESignalPopupArea,ptrForRemove);
+        }    
     UiLayout()->UnLockArea(UiLayout()->Rect(),this);
     }
 
@@ -210,15 +243,10 @@ void CPeninputArabicFingerHwrNumSymbolTable::ConstructL()
 // SizeChanged
 // ---------------------------------------------------------------------------
 //	
-void CPeninputArabicFingerHwrNumSymbolTable::SizeChanged(
-                     const TRect aVirtualKeypadRect, const RArray<TRect> /*aBtnRects*/,
-                     const TInt /*aKeypadRow*/, const TInt /*aKeypadCol*/, TBool aIsLandscape)
+void CPeninputArabicFingerHwrNumSymbolTable::SizeChanged(const TRect& aVirtualKeypadRect)
     {
-	iIsLandscape = aIsLandscape;
-	
 	// relayout the virtual key pad
 	iNumKeypad->SetRect(aVirtualKeypadRect);
-	
 	}
 	
 // ---------------------------------------------------------------------------
@@ -246,11 +274,6 @@ void CPeninputArabicFingerHwrNumSymbolTable::CreateVirtualKeypadL()
     iNumKeypad->SetKeyTextColorGroup( EAknsCIQsnTextColorsCG68 );
     iNumKeypad->SetDrawOpaqueBackground( EFalse );    
     }
-
-void CPeninputArabicFingerHwrNumSymbolTable::OnActivate()
-    {
-    CControlGroup::OnActivate();
-	}
 
 // ---------------------------------------------------------------------------
 //  Read control's background info.
@@ -339,53 +362,7 @@ void CPeninputArabicFingerHwrNumSymbolTable::LoadBackgroundFromResourceL( const 
 //	
 void CPeninputArabicFingerHwrNumSymbolTable::LoadVkbKeyImageL(TInt aResId, const TSize& aKeySize)
     {
-	TResourceReader reader;    
-    CCoeEnv::Static()->CreateResourceReaderLC( reader, aResId );      
-    
-    TPtrC bmpFileName = reader.ReadTPtrC();
-    TInt32 imgMajorSkinId = reader.ReadInt32();
-    TAknsItemID id;
-    
-    TSize keySize = aKeySize;
-    
-    for ( TInt index = 0; index <= EKeyBmpLastType ; index += 2 )
-        { 
-        // Get the image ids and mask ids from resource
-        TInt bmpId = reader.ReadInt16(); 
-        TInt bmpMskId = reader.ReadInt16();
-        
-        // read skin item id
-        const TInt skinitemid = reader.ReadInt16();
-        id.Set( TInt( imgMajorSkinId ), skinitemid );
-        
-        if ( bmpId != KInvalidImg )
-            {
-            CFbsBitmap* bmp = NULL;
-            CFbsBitmap* maskbmp = NULL;
-
-            if ( bmpMskId != KInvalidImg )
-                {
-                AknsUtils::CreateIconL( AknsUtils::SkinInstance(),
-                   id, bmp, maskbmp, bmpFileName, bmpId, bmpMskId );
-                
-                // set maskbmp and size
-                AknIconUtils::SetSize( maskbmp, keySize, EAspectRatioNotPreserved );
-                iNumKeypad->SetNonIrregularKeyBitmapL( 
-                TVirtualKeyBmpType( EKeyBmpNormal + index + 1 ), maskbmp );
-                }
-            else
-                {
-                AknsUtils::CreateIconL( AknsUtils::SkinInstance(), id, 
-                    bmp, bmpFileName, bmpId );
-                }
-            // set bmp and size
-            AknIconUtils::SetSize( bmp, keySize, EAspectRatioNotPreserved );
-            iNumKeypad->SetNonIrregularKeyBitmapL( 
-                TVirtualKeyBmpType( EKeyBmpNormal + index ), bmp );
-            }       
-        }
-    // Pop and destroy reader
-    CleanupStack::PopAndDestroy( 1 );        
+    PeninputFingerHwrArVkbUtility::LoadVkbKeyImageL(*iNumKeypad,aResId,aKeySize);
 	}
 
 // ---------------------------------------------------------------------------
@@ -394,124 +371,57 @@ void CPeninputArabicFingerHwrNumSymbolTable::LoadVkbKeyImageL(TInt aResId, const
 //	
 void CPeninputArabicFingerHwrNumSymbolTable::LoadVirtualKeypadKeyL(const TInt aResId, const RArray<TRect>& aCellRects)
     {
-	iNumKeypad->SetResourceId(aResId);
-	
-	TResourceReader reader;
-    CCoeEnv::Static()->CreateResourceReaderLC( reader, aResId );
-
-    // construct keys
-    TInt resKeyCount = reader.ReadInt16();
-    TInt existsKeyCount = iNumKeypad->KeyArray().Count();
-    TInt rectCount = aCellRects.Count();
-    
-    for ( TInt i = 0; i < resKeyCount; i++ )
-        {
-        if ( i < existsKeyCount )
-            {
-            CVirtualKey* vk = iNumKeypad->KeyArray()[i];
-            UpdateVkbKeyL( vk, reader, aCellRects[i%rectCount] );
-            }
-        else
-            {
-            CVirtualKey* vk = CreateVkbKeyL( reader, aCellRects[i%rectCount] );
-            CleanupStack::PushL( vk );
-            iNumKeypad->AddKeyL( vk );
-            
-            CleanupStack::Pop( vk );
-            }
-        }
-    
-    CleanupStack::PopAndDestroy( 1 ); // reader
-    
-    iNumKeypad->Draw();
-    iNumKeypad->UpdateArea( iNumKeypad->Rect() );
+	PeninputFingerHwrArVkbUtility::LoadVirtualKeypadKeyL(*iNumKeypad,aResId,aCellRects);
 	}
-
-// ---------------------------------------------------------------------------
-// create virtual key.
-// ---------------------------------------------------------------------------
-//
-CVirtualKey* CPeninputArabicFingerHwrNumSymbolTable::CreateVkbKeyL( TResourceReader& aReader, 
-    const TRect aKeyRect )
-    {
-    CHBufCArray* keytexts = CHBufCArray::NewL();
-    CleanupStack::PushL( keytexts );
-    
-    for ( TInt i = 0; i <= EPosLast; i++ )
-        {
-        HBufC* unicode = aReader.ReadHBufCL();
-        keytexts->Array().AppendL( unicode );
-        }
-
-    TInt keyscancode = aReader.ReadInt16();
-
-    HBufC* text = keytexts->Array()[0];
-    
-    CVirtualKey* vk = NULL;
-    if ( text )
-        {
-        vk = CVirtualKey::NewL( *text, keyscancode, aKeyRect, aKeyRect, 0 );
-        }
-    else 
-        {
-        vk = CVirtualKey::NewL( KNullDesC, keyscancode, aKeyRect, aKeyRect, 0 );
-        }
-
-    CleanupStack::PopAndDestroy( keytexts ); //keytexts
-
-    
-    TRect innerrect = aKeyRect;
-    innerrect.Shrink( TSize(10, 10) );
-    vk->SetInnerRect( innerrect );
-    
-    return vk;
-    }
-
-// ---------------------------------------------------------------------------
-// update virtual key info.
-// ---------------------------------------------------------------------------
-//
-void CPeninputArabicFingerHwrNumSymbolTable::UpdateVkbKeyL( CVirtualKey* aVirtualKey, 
-    TResourceReader& aReader, const TRect aKeyRect )
-    {
-    CHBufCArray* keytexts = CHBufCArray::NewL();
-    CleanupStack::PushL( keytexts );
-    
-    for ( TInt i = 0; i <= EPosLast; i++ )
-        {
-        HBufC* unicode = aReader.ReadHBufCL();
-        keytexts->Array().AppendL( unicode );
-        }
-
-    TInt keyscancode = aReader.ReadInt16();
-
-    HBufC* text = keytexts->Array()[0];
-    if ( text )
-        {
-        aVirtualKey->SetKeyData( *text );
-        }
-    else
-        {
-        aVirtualKey->SetKeyData( KNullDesC );
-        }
-    
-    aVirtualKey->SetKeyScancode( keyscancode );
-
-    CleanupStack::PopAndDestroy( keytexts ); //keytexts
-
-    aVirtualKey->SetRect(aKeyRect);
-    TRect innerrect = aKeyRect;
-    innerrect.Shrink( TSize(10,10) );
-    aVirtualKey->SetInnerRect( innerrect );
-    }
 
 // ---------------------------------------------------------------------------
 // accept editor's number mapping restriction.
 // ---------------------------------------------------------------------------
 //
-void CPeninputArabicFingerHwrNumSymbolTable::SetNumericMapping( const TDesC& aNumMapping )
+void CPeninputArabicFingerHwrNumSymbolTable::UpdateTableSymbol( const TDesC& aNumMapping )
     {
-    //format of aNumMapping is "0123456789******"
+    HBufC* charTable = GenerateCharTable(aNumMapping);
+    if(charTable)
+    	{
+    	TInt charTalbeCount = charTable->Length();
+     
+	    //numberpad
+	    TInt keyCount = iNumKeypad->KeyArray().Count();
+	    for ( TInt i = 0; i < keyCount; i++ )
+	        {
+	        CVirtualKey* vk = iNumKeypad->KeyArray()[i];
+	        
+	        if(i < charTalbeCount && (*charTable)[i] != KInvalidChar)
+	            {
+	            TBuf<1> keydata;
+                TUint16 keyCode = (*charTable)[i];	            
+	            keydata.Append(keyCode);
+	            vk->SetKeyData(keydata);
+	            vk->SetKeyScancode(keyCode);
+	            vk->SetDimmed( EFalse );
+	            }
+	        else
+	            {
+	            vk->SetKeyData( KNullDesC );
+	            vk->SetKeyScancode( KInvalidChar );
+	            vk->SetDimmed( EFalse );
+	            }
+	        }
+	    
+	    delete charTable;
+	    
+	    //sync feedback
+	    UpdateAllVirtualKeysFeedback();
+    	}
+    }
+
+// ---------------------------------------------------------------------------
+// Get reordered char table for key pad to render them
+// ---------------------------------------------------------------------------
+//
+HBufC* CPeninputArabicFingerHwrNumSymbolTable::GenerateCharTable(const TDesC& aNumMapping)
+	{
+	//format of aNumMapping is "0123456789******"
     
     //char offset in aNumMapping
     //cell 0 using aNumMapping[KNumOffsets[0]]
@@ -523,49 +433,36 @@ void CPeninputArabicFingerHwrNumSymbolTable::SetNumericMapping( const TDesC& aNu
          14,  7,  8, 9,
          15,  10, 0, 11
         };
-    
-    TInt maxMappingItemCount = sizeof(KNumOffsets)/sizeof(TInt);
+    TInt tableSize = sizeof(KNumOffsets)/sizeof(TInt);
     TInt mappingItemCount = aNumMapping.Length();
     
-    //numberpad
-    TInt keyCount = iNumKeypad->KeyArray().Count();
-    for ( TInt i = 0; i < keyCount; i++ )
-        {
-        CVirtualKey* vk = iNumKeypad->KeyArray()[i];
-        
-        TInt offset = ( i < maxMappingItemCount ) ? KNumOffsets[i] : -1;
-        
-        if ( offset > -1  && offset < mappingItemCount )
-            {
-            TUint16 unicode = aNumMapping[offset];
-            TUint16 mappedCode = MapLatinNumAccordingToNumMode(unicode);
-            TBuf<1> keydata;
-            keydata.Append(mappedCode);
-            vk->SetKeyData(keydata);
-            vk->SetKeyScancode( mappedCode);
-            vk->SetDimmed( EFalse );
-            }
-        else
-            {
-            vk->SetKeyData( KNullDesC );
-            vk->SetKeyScancode( 0xFFFF );
-            vk->SetDimmed( EFalse );
-            }
-        }
+    HBufC* reorderedCharTable = HBufC::New(mappingItemCount +1);
+    if(reorderedCharTable)
+    	{
+    	for(TInt i = 0; i < tableSize; i++)
+    	    {    	    
+    	    if(KNumOffsets[i] < mappingItemCount)
+    	    	{
+    	    	TUint16 unicode = aNumMapping[KNumOffsets[i]];
+                TUint16 mappedCode = MapLatinNumAccordingToNumMode(unicode);	
+                reorderedCharTable->Des().Append(mappedCode); 
+    	    	}
+    	    else
+    	    	{
+    	        reorderedCharTable->Des().Append(KInvalidChar);
+    	    	}	
+    	    }
+    	}
     
-    
-    //sync feedback
-    UpdateAllVirtualKeysFeedback();
-    }
-
+    return reorderedCharTable;	    
+	}
+	
 // ---------------------------------------------------------------------------
 // Navigate the symbol page
 // ---------------------------------------------------------------------------
 //
-void CPeninputArabicFingerHwrNumSymbolTable::UpdateNumSymbolTable( TInt aNumSctType)
-    {	
-
-    iCurrentNumSCTType = aNumSctType;
+void CPeninputArabicFingerHwrNumSymbolTable::RefreshNumSymbolTable()
+    {
 	// Draw the symbol table 
     Draw();
 	
@@ -582,7 +479,7 @@ void CPeninputArabicFingerHwrNumSymbolTable::UpdateNumSymbolTable( TInt aNumSctT
 //
 void CPeninputArabicFingerHwrNumSymbolTable::UpdateAllVirtualKeysFeedback()
     {
-    //update sctpad keys
+    //update numpad keys
     TInt keyCount = iNumKeypad->KeyArray().Count();
     for ( TInt i = 0; i < keyCount; i++ )
         {
@@ -590,6 +487,30 @@ void CPeninputArabicFingerHwrNumSymbolTable::UpdateAllVirtualKeysFeedback()
         TBool enable = !vk->Dimmed();
         iNumKeypad->EnableKeyFeedback( vk, enable );
         }
+    }
+
+// ---------------------------------------------------------------------------
+//  update rect of all virtual keys.
+// ---------------------------------------------------------------------------
+//
+void CPeninputArabicFingerHwrNumSymbolTable::UpdateAllVirtualKeysRect(const RArray<TRect> & aCellRects)
+    {
+    //update numpad keys rect
+    TInt keyCount = iNumKeypad->KeyArray().Count();
+    TInt rectCount = aCellRects.Count();
+    if(keyCount != rectCount)
+        {
+        return;
+        }
+    for ( TInt i = 0; i < keyCount; i++ )
+        {
+        CVirtualKey* vk = iNumKeypad->KeyArray()[i];
+        TRect rect = aCellRects[i%rectCount];        
+        vk->SetRect(aCellRects[i%rectCount]);
+        TRect innerrect = rect;
+        innerrect.Shrink( TSize(10,10) );
+        vk->SetInnerRect( innerrect );
+        }    
     }
 
 // ---------------------------------------------------------------------------

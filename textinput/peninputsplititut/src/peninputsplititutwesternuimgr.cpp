@@ -133,14 +133,23 @@ void CWesternSplitItutUiMgr::SetCurrentStateL(TUiState aNewState)
         }
 
     iCurrentState = newstate;    
-    if(DataMgr()->IsUpdate())  
-    	{
-    	DataMgr()->SetUpdate(EFalse);
-    	CSplitItutUiLayout* itutLayout = 
-			static_cast<CSplitItutUiLayout*>( LayoutContext()->UiLayout() );
-		itutLayout->SizeChanged( NULL );
-    	}
-    iCurrentState->OnEntryL();
+    if ( DataMgr()->IsUpdate() )  
+        {
+        DataMgr()->SetUpdate( EFalse );
+        CSplitItutUiLayout* itutLayout = 
+            static_cast<CSplitItutUiLayout*>( LayoutContext()->UiLayout() );
+        itutLayout->SizeChanged( NULL );
+
+        iCurrentState->OnEntryL();
+        
+        //redraw layout immediately to minimize flicker
+        itutLayout->DisableLayoutDrawing( EFalse );
+        itutLayout->Draw();
+        }
+    else
+        {
+        iCurrentState->OnEntryL();
+        }
     }
 
 // ---------------------------------------------------------------------------

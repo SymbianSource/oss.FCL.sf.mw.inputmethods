@@ -153,6 +153,7 @@ enum TSignalEvent
     ESignalDeleteLastInput,
     ESignalArabicSCTChar,
     ESignalDeactivateSprite,
+    ESignalChangeAmPm,//notify  mfne editor to toggle AM or PM
     ESignalUserEventBase = 2000
     };
 

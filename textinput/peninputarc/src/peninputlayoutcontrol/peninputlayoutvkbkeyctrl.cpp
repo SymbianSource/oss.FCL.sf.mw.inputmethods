@@ -1081,10 +1081,13 @@ void CVirtualKeyCtrl::UpdateChangedArea(TBool aFlag)
     {
     struct SData
         {
+    	TUint32 ctrl;
         TBool flag;
         CFbsBitmap* bmp;
         TRect pos;
         } data;
+        
+    data.ctrl = (TUint32)this;
     data.flag = aFlag;
     data.bmp = Keyboard()->Bitmap();//aFlag ? Keyboard()->iBitmap : 0;
     data.pos = Rect();

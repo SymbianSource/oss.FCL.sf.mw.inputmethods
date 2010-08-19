@@ -134,3 +134,4 @@ LIBRARY         peninputcommonlayout.lib
 LIBRARY         aknskins.lib
 LIBRARY         fbscli.lib 
 LIBRARY         estor.lib 
+LIBRARY         featdiscovery.lib

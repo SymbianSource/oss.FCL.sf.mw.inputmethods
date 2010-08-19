@@ -57,6 +57,11 @@ const TInt KMsgResponseQueueLen = 10;
 
 const TInt KWsSessionFlushPerioid = 50000;//50ms
 const TInt KInvalidValue = -1;
+// Layout UID for portrait FSQ.  Used for distinguish between 
+// landscape and portrait FSQ for EPluginInputModeFSQ, which 
+// is used for both orientation in Pen Input server side code.
+const TInt KPenInputSrvPrtFsqUiId = 0x20026837;
+
 
 enum TActivationFlag
 	{
@@ -443,7 +448,13 @@ void CPeninputServer::ActivateSpriteInGlobalNotesL()
     	}
     
     // we should not be able to activate and show pen ui if this mode is disabled currently
-    if(iUiLayout->PenInputType() & DisabledByOrientation())
+    TInt inputType = iUiLayout->PenInputType();
+    if( inputType == EPluginInputModeFSQ && iLayoutId.iUid == KPenInputSrvPrtFsqUiId )
+        {
+        inputType = EPluginInputModePortraitFSQ;
+        }
+    if( inputType & DisabledByOrientation() )
+
         {
         // we have activate the animation otherwise we will see the penui but not reponse
         // when clicking on it in the case we rotating the screen quickly and continously
@@ -559,7 +570,12 @@ void CPeninputServer::ActivateSprite()
     
     // [[[ temporary solution for Virtual keyboard becomes corrupted after several rotations
     // we should not be able to activate and show pen ui if this mode is disabled currently
-    if(iUiLayout->PenInputType() & DisabledByOrientation())
+    TInt inputType = iUiLayout->PenInputType();
+    if( inputType == EPluginInputModeFSQ && iLayoutId.iUid == KPenInputSrvPrtFsqUiId )
+        {
+        inputType = EPluginInputModePortraitFSQ;
+        }
+    if( inputType & DisabledByOrientation() )
         {
         // we have activate the animation otherwise we will see the penui but not reponse 
         // when clicking on it in the case we rotating the screen quickly and continously
@@ -2108,6 +2124,9 @@ void CPeninputServer::DoIdleConstructL()
 //    
 void CPeninputServer::HandleResourceChange(TInt aType)
     {
+	// Update the cursor color when resource is changed
+	iPenUiCtrl->SetCursorColor();
+	
 	#ifdef FIX_FOR_NGA 
 	// iEnablePriorityChangeOnOriChange will be set to be EFalse, if some dialog in FEP end were opened and 
 	// not close after rotation for example: Symbol Table, Writing Language list and Match Dialog on ITI
@@ -2121,7 +2140,13 @@ void CPeninputServer::HandleResourceChange(TInt aType)
         TBool needToLiftUp = EFalse;
         TInt inputMode = 0; 
         inputMode = iUiLayout->PenInputType();
-        if(inputMode == EPluginInputModeItut)
+        
+        // If input mode is either ITU-T or portrait FSQ, and if orientation 
+        // is changed to landscape, highest priority is given to Pen UI to avoid 
+        // flickering problem while drawing landscape FSQ layout.        
+        if( inputMode == EPluginInputModeItut ||
+          ( inputMode == EPluginInputModeFSQ && 
+            iLayoutId.iUid == KPenInputSrvPrtFsqUiId ) )
             {
             if(!isPortrait)
                 {
@@ -2155,20 +2180,28 @@ void CPeninputServer::HandleResourceChange(TInt aType)
             }
         }
 	#endif	
-    if(iUiLayout && !(iUiLayout->PenInputType() & DisabledByOrientation()) )
+    if( iUiLayout )
         {
-        //hide the layout if it's already shown
-        
-        if ( iActive )
+        TInt inputType = iUiLayout->PenInputType();
+        if( inputType == EPluginInputModeFSQ && iLayoutId.iUid == KPenInputSrvPrtFsqUiId )
             {
-            iUiLayout->OnActivate();  
-            }  
-        
-        iUiLayout->OnResourceChange(aType);
-        
-        if(iUseWindowCtrl)
+            inputType = EPluginInputModePortraitFSQ;
+            }
+        if( !( inputType & DisabledByOrientation() ) )
             {
-            iPenUiCtrl->DrawNow();
+            //hide the layout if it's already shown
+        
+            if ( iActive )
+                {
+                iUiLayout->OnActivate();  
+                }  
+        
+            iUiLayout->OnResourceChange(aType);
+        
+            if(iUseWindowCtrl)
+                {
+                iPenUiCtrl->DrawNow();
+                }
             }
             
         //show the layout if it's active
@@ -2280,7 +2313,16 @@ void CPeninputServer::HideLayoutTemporaryL()
         return;
         }
     
-	if(iActive && !iPrevActive && inputMode != EPluginInputModeFSQ && iBackgroudDefaultOri == CAknAppUiBase::EAppUiOrientationUnspecified )
+    // Both landscape and portrait FSQs are handled as EPluginInputModeFSQ
+    // in Pen Input server. iLayoutId can be used to check it's landscape or
+    // portrait.
+    TBool isLandscapeFSQ = 
+        ( inputMode == EPluginInputModeFSQ && 
+          iLayoutId.iUid != KPenInputSrvPrtFsqUiId )
+         ? ETrue : EFalse;
+    
+    if ( iActive && !iPrevActive && !isLandscapeFSQ && 
+         iBackgroudDefaultOri == CAknAppUiBase::EAppUiOrientationUnspecified )
         {
         #ifdef FIX_FOR_NGA
         if(inputMode == EPluginInputModeFingerHwr)
@@ -2893,7 +2935,14 @@ TInt CPeninputServer::DisabledByOrientation()
                     }
                 if( size.iPixelSize.iWidth > size.iPixelSize.iHeight )
                     {
-                    return disabled |= EPluginInputModeItut;
+                    // Portrait input modes which are ITU-T and Portrait FSQ
+                    // should be disabled in portrait orientation. 
+                    // Note: no need to check feature flag because if it is not
+                    // turned on, EPluginInputModePortraitFSQ will not be handled 
+                    // at all so adding it to "disabled" will take no effect.
+                    disabled |= EPluginInputModeItut | EPluginInputModePortraitFSQ;
+
+                    return disabled;
                     }
                 }
             }

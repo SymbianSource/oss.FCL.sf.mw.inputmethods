@@ -233,6 +233,7 @@ public:
      */
     static CPeninputGenericVkbLayoutImp* NewL( TAny* aInitParams );
     static CPeninputGenericVkbLayoutImp* NewFsqL( TAny* aInitParams );
+    static CPeninputGenericVkbLayoutImp* NewPrtFsqL( TAny* aInitParams );
 
     /**
      * Destructor

@@ -368,6 +368,19 @@ const TUint32 KAknFepKoreanCombineWordFlag = 0x00000024;
  * 0 is for latin number and 1 is for native number.
  */
 const TUint32 KAknFepDefaultArabicNumberMode = 0x00000025;
+
+/**
+ * This key is used for storing the last used input mode in portrait orientation.
+ * With adding portrait FSQ, users have two choices for portrait input mode,
+ * ITU-T and portrait FSQ.  The last used input mode in portrait orientation is
+ * kept to have the input mode if the phone changes the orientation to landscape
+ * and back to portrait.
+ * 
+ * Only EPluginInputModeItut(8) and EPluginInputModePortraitFSQ(128) are valid,
+ * and the default value is EPluginInputModeItut.
+ */
+const TUint32 KAknFepLastUsedPortraitInput = 0x00000026;
+
 #endif
 
 // End of file

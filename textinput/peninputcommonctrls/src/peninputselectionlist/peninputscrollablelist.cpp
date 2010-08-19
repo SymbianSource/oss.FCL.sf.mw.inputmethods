@@ -37,6 +37,8 @@ const TInt KInvalidBmp = -1;
 
 const TInt KDisplayTextLen = KMaxItemTextLength + KAknBidiExtraSpacePerLine;
 
+const TInt KTextRectMargin = 4;
+
 EXPORT_C CFepLayoutScrollableList* CFepLayoutScrollableList::NewL(CFepUiLayout* aUiLayout,
                                                                   TInt aControlId,
                                                                   TSize aItemSize,
@@ -500,6 +502,14 @@ EXPORT_C void CFepLayoutScrollableList::DrawItem(TInt aItemIndex, TBool aItemAct
         AknBidiTextUtils::ConvertToVisualAndClip(item->iText, buf, *iFont,
                                          itemRect.Width(), itemRect.Width());
 	    }
+    
+	if ( itemRect.Height() - font->FontMaxHeight() < KTextRectMargin )
+    	{
+	    // Make sure the height of the area for drawing text is larger than 
+	    // the max height of font by 4 pixels at least.
+	    // The piece of code is used to avoid clipping some characters, like 'g'.
+        itemRect.SetHeight( font->FontMaxHeight() + KTextRectMargin );
+    	}
 	gc->DrawText(buf, itemRect, baseLine, iAlign);
 	gc->DiscardFont();
     }
@@ -608,7 +618,7 @@ EXPORT_C void CFepLayoutScrollableList::ReCalcLayout()
 
 EXPORT_C void CFepLayoutScrollableList::HandleControlEvent(TInt aEventType, 
                                                   CFepUiBaseCtrl* aCtrl,
-                                                  const TDesC& aEventData)
+                                                  const TDesC& /*aEventData*/)
     {
     if( aEventType ==  EEventButtonUp )
         {

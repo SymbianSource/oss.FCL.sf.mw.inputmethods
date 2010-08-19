@@ -325,6 +325,14 @@ TInt CGenericItutUiLayout::PenInputType()
 
 TInt CGenericItutUiLayout::SizeChanged(const TAny* /*pData*/)
     {
+
+    // For avoiding that NULL pointer is called
+    // add UiMgr() and CurrentState() condition
+    if( !( UiMgr() && UiMgr()->CurrentState()))
+        {
+        return KErrBadHandle;
+        }
+
     TBool overLap = UiMgr()->CurrentState()->StateType() 
         == CGenericItutUiMgrBase::EStateMatchSelection ? ETrue: EFalse;
         

@@ -522,7 +522,7 @@ void CAknFepManager::ConstructFullyL()
         }    
 #endif
     iCaseMan = CAknFepCaseManager::NewL(*this);
-    iLangMan = CAknFepLanguageManager::NewL(this, iCaseMan);
+    iLangMan = CAknFepLanguageManager::NewL( this, iCaseMan, iSharedDataInterface );
     iPtiEngine->ActivateLanguageL(inputLanguage);
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 #ifdef FF_DUAL_LANGUAGE_SUPPORT
@@ -575,6 +575,8 @@ void CAknFepManager::ConstructFullyL()
     iIsFnKeyMapped = IsFnKeyMappedL();
     iKeyboardType = (TPtiKeyboardType)iSharedDataInterface->KeyboardLayout();
 #endif
+    
+    iFnKeypressMonitor = CPeriodic::NewL(CActive::EPriorityStandard);
     }
 
 CAknFepManager::~CAknFepManager()
@@ -703,6 +705,8 @@ void CAknFepManager::CommonDestroyFep()
         iNumericResourceTimer = NULL;    
         }
 #endif
+    delete iFnKeypressMonitor;
+    iFnKeypressMonitor = NULL;
     }
 
 #ifdef RD_INTELLIGENT_TEXT_INPUT
@@ -3126,6 +3130,24 @@ TKeyResponse CAknFepManager::HandleQwertyControlKeyEventL(const TKeyEvent& aKeyE
     	FepUI()->HandleKeyL(EKeyLeftCtrl, EShortKeyPress);    
    	}*/
 
+    //The default value of response is EKeyWasConsumed. So in some case, fep don¡¯t 
+    //do anything, but it return Consumed.
+    //This make app miss the event EEventKeyUp. 
+    //As per the logic of the function, the combine about ctrl key including:
+    //       Ctrl key + C; Ctrl key + V; Ctrl + X
+    //       Ctrl key + Shift key
+    //       Ctrl key + space
+    //       Ctrl key + Function key
+    //In above cases, it return EKeyWasConsumed, it is correct.
+    //The function for Ctrl Key as pressing the only one key ctrl at one time is to 
+    //do something if the flag EFlagQwertyShiftMode is set
+    //In this case, it return EKeyWasConsumed, it is correct.
+    //In other case, it should return EKeyWasNotConsumed
+    if( ( aKeyEvent.iScanCode == EStdKeyRightCtrl || aKeyEvent.iScanCode==EStdKeyLeftCtrl )
+        && !IsFlagSet(EFlagQwertyShiftMode) )
+        {
+        response = EKeyWasNotConsumed;
+        }
 
     return response;
     }
@@ -3601,6 +3623,17 @@ void CAknFepManager::HandleAknEdwinStateEventL(CAknEdwinState* aAknEdwinState,
                 }        
             // Delete anu UI components launched by Fep.
             iUiInterface->DeleteDialogs();
+        	}
+        
+        if ( iFepPluginManager )
+        	{
+			// Check whether the destroyed editor is the editor that stored in fep
+			// according to the editor state
+			if ( aAknEdwinState == iFepPluginManager->EdwinState())
+				{
+				// Set the editor pointer to NULL to avoid wild pointer exist
+				iFepPluginManager->ClearDestroyedEditorPointer();
+				}
         	}
     	}
     if ( IsFepAwareTextEditor() )
@@ -4622,7 +4655,8 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
      if (iFepPluginManager && 
         (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
          iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
-         iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)) 
+         iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr || 
+         iFepPluginManager->PluginInputMode() == EPluginInputModePortraitFSQ ) )
         {
         iFepPluginManager->SetMenuState();     
         }
@@ -4806,7 +4840,8 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
      if (iFepPluginManager && 
         (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
          iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
-         iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)) 
+         iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr || 
+         iFepPluginManager->PluginInputMode() == EPluginInputModePortraitFSQ ) )
         {
         iFepPluginManager->SetMenuState(EFalse);     
         }
@@ -5518,10 +5553,17 @@ void CAknFepManager::AddInputOptionsMenuItemL( CAknFepUiInterfaceMenuPane* aMenu
             }
         }
     TInt inputOptionsPos = 0;
-    if ( aMenuPane->MenuItemExists( EEikCmdEditPaste, inputOptionsPos ) )
+    TInt pastePos = 0;
+    
+    if ( aMenuPane->MenuItemExists( EEikCmdEditPaste, pastePos ) )
         {
-        inputOptionsPos++; 
+        CEikMenuPaneItem::SData& itemData = aMenuPane->GetMenuPane()->ItemDataByIndexL( pastePos );
+        if ( !( itemData.iFlags & EEikMenuItemDimmed ) )
+        	{
+            inputOptionsPos = pastePos + 1; 
+        	}
         }
+   
     //Now we have the position at which we need to insert the menu item. 
     if (
 #ifdef __ITI_VIRTUAL_TOUCH_FIRST_GENERATION_SUPPORT__
@@ -6383,14 +6425,6 @@ void CAknFepManager::DoWesternTouchMenu(CAknFepUiInterfaceMenuPane* aMenuPane)
         aMenuPane->SetItemDimmed(EAknCmdEditModeLatinText, ETrue);
         aMenuPane->SetItemDimmed(EChinFepCmdModeLatinUpper, ETrue);
         aMenuPane->SetItemDimmed(EChinFepCmdModeLatinLower, ETrue);
-        if( iMode == EHangul || inputLanguage == ELangKorean)
-            {
-            TInt index;
-            if ( aMenuPane->MenuItemExists( EAknCmdEditModeKorean, index ) )
-                {
-                aMenuPane->SetItemDimmed(EAknCmdEditModeKorean, EFalse);
-                }
-            }
         }
 
     if ( IsModePermitted(ENumber) )
@@ -7545,6 +7579,7 @@ void CAknFepManager::CancelAllTimerActivity()
         TRAP_IGNORE( NumericResourceMultiTapTimerTimeoutL());
         }
 #endif
+    DeactivateFnkeyPressMonitor();
     }
 
 TBool CAknFepManager::IsModePermitted(TInt aMode, TWidthChar aWidth) const
@@ -8767,15 +8802,7 @@ void  CAknFepManager:: LaunchDualLanguageSettingDialogL()
 void CAknFepManager::LaunchInsertWordQueryL(const TDesC& aInitialText, 
                                             TCursorSelection aTextSpanToReplace)
     {
-    TInt recourceId;
-    if(EditorState()->Flags() & EAknEditorFlagEnablePartialScreen)
-        {
-        recourceId = R_AVKON_INSERT_WORD_FS_QUERY;
-        }
-    else
-        {
-        recourceId = R_AVKON_INSERT_WORD_QUERY;
-        }
+    TInt recourceId = R_AVKON_INSERT_WORD_QUERY;
     LaunchFepQueryDialogL(recourceId, aInitialText, aTextSpanToReplace);
     }
 
@@ -8793,15 +8820,7 @@ void CAknFepManager::LaunchEditWordQueryL()
                                                                     iUncommittedText.iAnchorPos, 
                                                                     iUncommittedText.Length());
 
-    TInt recourceId;
-    if(EditorState()->Flags() & EAknEditorFlagEnablePartialScreen)
-        {
-        recourceId = R_AVKON_INSERT_WORD_FS_QUERY;
-        }
-    else
-        {
-        recourceId = R_AVKON_INSERT_WORD_QUERY;
-        }
+    TInt recourceId = R_AVKON_INSERT_WORD_QUERY;
     LaunchFepQueryDialogL(recourceId, newText, iUncommittedText);
     }
 
@@ -9985,7 +10004,8 @@ void CAknFepManager::CommitInlineEditL()
 	                }
                 else
                     {
-                    if(IsKoreanInputLanguage( ) && IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction))
+                    if(IsKoreanInputLanguage( ) && !IsQwerty() &&
+                    		IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction))
                         {
                         showCursor = EFalse;
                         }
@@ -10360,7 +10380,6 @@ TInt CAknFepManager::EditorFreeSpace(TBool& aUnlimit,
 
     //maxLength of 0 means the editor has no limit
     TInt maxEdSize = iInputCapabilities.FepAwareTextEditor()->DocumentMaximumLengthForFep();
-    TInt edSize = iInputCapabilities.FepAwareTextEditor()->DocumentLengthForFep();
     TCursorSelection currentSelection;
     iInputCapabilities.FepAwareTextEditor()->GetCursorSelectionForFep(currentSelection);
 
@@ -10371,16 +10390,19 @@ TInt CAknFepManager::EditorFreeSpace(TBool& aUnlimit,
         {
         return 0;
         }
-    else
+
+    TInt edSize = iInputCapabilities.FepAwareTextEditor()->DocumentLengthForFep();
+
+    if( isToCountUncommittedTextLength )
         {
-        if( isToCountUncommittedTextLength )
-            {
-            return ( maxEdSize - edSize + 
-                currentSelection.Length() + UncommittedText().Length() );
-            }
-        return (maxEdSize - edSize + currentSelection.Length());
+        return ( maxEdSize - edSize + 
+            currentSelection.Length() + UncommittedText().Length() );
         }
+    
+    return (maxEdSize - edSize + currentSelection.Length());
+
     }
+
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 TInt CAknFepManager::EditorFreeSpaceForAutoWordCompletion(TBool& aUnlimit, 
     TBool /* isToCountUncommittedTextLength = EFalse*/ ) const
@@ -10657,12 +10679,13 @@ void CAknFepManager::ConfigureFEPFromEditorStateL()
             // Any latin input mode is not permitted by the editor.
             // For compatibility permitted japanese input modes are checked and
             // corresponding latin input modes are allowed.
-            if ( iPermittedInputModes & (EAknEditorKatakanaInputMode |
+            if ( iPermittedInputModes & ( EAknEditorKatakanaInputMode |
                                     EAknEditorHalfWidthTextInputMode |
                                     EAknEditorFullWidthTextInputMode |
                                     EAknEditorFullWidthKatakanaInputMode |
                                     EAknEditorHiraganaKanjiInputMode |
-                                    EAknEditorHiraganaInputMode))
+                                    EAknEditorHiraganaInputMode
+                                    | EAknEditorHangulInputMode ) )
                 {
                 iPermittedInputModes |= EAknEditorTextInputMode;
                 }
@@ -10673,12 +10696,13 @@ void CAknFepManager::ConfigureFEPFromEditorStateL()
 
             if ( !(defaultInputMode & (EAknEditorTextInputMode | EAknEditorNumericInputMode)))
                 {
-                if (defaultInputMode & (EAknEditorKatakanaInputMode |
+                if ( defaultInputMode & ( EAknEditorKatakanaInputMode |
                                     EAknEditorHalfWidthTextInputMode|
                                     EAknEditorFullWidthTextInputMode |
                                     EAknEditorFullWidthKatakanaInputMode |
                                     EAknEditorHiraganaKanjiInputMode |
-                                    EAknEditorHiraganaInputMode))
+                                    EAknEditorHiraganaInputMode
+                                    | EAknEditorHangulInputMode ) )
                     {
                     defaultInputMode = EAknEditorTextInputMode;
                     }
@@ -10766,7 +10790,7 @@ void CAknFepManager::ConfigureFEPFromEditorStateL()
             {        
             if (IsKoreanInputLanguage())
             	{
-                if(iMode == EHangul || iMode == ENumber || iMode == EAknEditorNullInputMode )
+                if( iMode == EAknEditorNullInputMode )
             		{
             		SetWesternPredictive(EFalse);
          			TryChangeModeL(EHangul);
@@ -10782,6 +10806,12 @@ void CAknFepManager::ConfigureFEPFromEditorStateL()
             	TryChangeModeL(ELatin); 
             	}
             }
+        else if ( editorMode == EAknEditorHangulInputMode )
+        	{
+            // Choose EHangul as the current fep mode 
+            // if the editor mode stored in editor state is EAknEditorHangulInputMode. 
+            TryChangeModeL(EHangul);        
+        	}        
         else if (!iStrokeUsedInQWERTY)
         	{
         	if (editorMode == EStroke && sharedDataMode == ECangJie)
@@ -11392,7 +11422,7 @@ TUint CAknFepManager::EditorModeFromFepMode(TInt aFepMode)
                 }
             break;
     	case EHangul: 
-       		editorMode = EAknEditorTextInputMode;       	
+       		editorMode = EAknEditorHangulInputMode;       	
        		break;
         default:
             if (IsFeatureSupportedJapanese())
@@ -12802,8 +12832,10 @@ void CAknFepManager::UpdateIndicators()
 #ifdef RD_SCALABLE_UI_V2
     TBool fingerItutIndicator = ( iFepPluginManager && 
                                   iFepPluginManager->PluginInputMode() == EPluginInputModeItut );
+    // Portrait FSQ is added.
     TBool fingerFSQIndicator = ( iFepPluginManager && 
-            iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ );
+            ( iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
+              iFepPluginManager->PluginInputMode() == EPluginInputModePortraitFSQ ) );
 #else
     TBool fingerItutIndicator = EFalse;
     TBool fingerFSQIndicator = EFalse;
@@ -13043,9 +13075,12 @@ void CAknFepManager::UpdateIndicators()
                 }
            // Add This condition for  Phonebook, ReTe, PF52.50_2008_wk32: 
            // Navigation bar disappears after tapping find pane and then returning back to Names list view.
+           // Portrait FSQ is added.
            if (!(editingStateIndicator == (MAknEditingStateIndicator*)iIndicator &&
-               ( iFepPluginManager && ( iFepPluginManager->PluginInputMode() == EPluginInputModeItut 
-            		                    || iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ) ) &&
+               ( iFepPluginManager && 
+                    ( iFepPluginManager->PluginInputMode() == EPluginInputModeItut 
+                    || iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ 
+                    || iFepPluginManager->PluginInputMode() == EPluginInputModePortraitFSQ ) ) &&
                IsFindPaneEditor()))
                {
                editingStateIndicator->SetState(newState);
@@ -13829,6 +13864,16 @@ TInt CAknFepManager::GetCurrentEditorSCTResId() const
         	    }        
             }
         }
+
+    if ( FeatureManager::FeatureSupported(KFeatureIdKorean) )
+        {
+        // Use the special sct resource file for Korean variant.
+        if (currentEditorSCTResId == R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG)
+            {
+            currentEditorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_KOREAN;
+            }
+        }
+    
     if (currentEditorSCTResId == EDefaultSCTResourceId) // -1 forces the default in SCT resource definition
         {
         if (iAknEditorFlags & EAknEditorFlagLatinInputModesOnly)
@@ -13863,7 +13908,12 @@ TInt CAknFepManager::GetCurrentEditorSCTResId() const
                 if ( FeatureManager::FeatureSupported(KFeatureIdChinese) )
                     {    
                     currentEditorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_CHINESE;
-                    }
+                    }                
+                else if( FeatureManager::FeatureSupported(KFeatureIdKorean) )
+                    {    
+                    // Use the special sct resource file for Korean variant.
+                    currentEditorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_KOREAN;
+                    }               
                 else
                     {                    
                     currentEditorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG;
@@ -15178,6 +15228,26 @@ TKeyResponse CAknFepManager::HandleNaviEventOutsideInlineEditL(TUint aCode,
         {
         return response;
         }
+    
+    // You will not understand the flowing lines, 
+    // for it is just a "hole stem" than normal logic.
+    //
+    // Let me explain: 
+    // In HWR, 4x12 keyboard is used, and predictive should be disabled for it.
+    // unfortunately, the existed codes enable predictive in some special case.
+    // when you switch from FSQ to HWR, with ITI on, you will get that.
+    // then if you press arrow key, 
+    // the code blow of "HandlePredictiveNaviEventOutsideInlineEditL" will be called.
+    // which is writen for FSQ, not HWR, that finally cause navi-event being consumed.
+    // No navigation action being performed.
+    //
+    // It is not a complete fix, just for simplicity. 
+    if (iFepPluginManager && 
+        iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
+        {
+        return EKeyWasNotConsumed;
+        }
+
     if (WesternPredictive())
         {
         response = HandlePredictiveNaviEventOutsideInlineEditL(aCode, aLength);
@@ -15531,7 +15601,24 @@ TBool CAknFepManager::TryHandleCommonArrowAndBackspaceFunctionalityL(TInt aCode,
             // we have text selected - set cursor to start/end of current selection
             TTmDocPosSpec newPos;
             aResponse = NavigateFromSelectionL( currentEditorSelection, naviEvent, newPos );
-            if ( aCode != EKeyBackspace && WesternPredictive() )
+            
+            // You will not understand the following lines, 
+            // for it is just a "hole stem" than normal logic.
+            //
+            // Let me explain: 
+            // In HWR, 4x12 keyboard is used, and predictive should be disabled for it.
+            // unfortunately, the existing codes enable predictive in some special case.
+            // when you switch from FSQ to HWR, with ITI on, you will get that.
+            // then if you select some words and press arrow key, 
+            // the if bratch of the code blow will be excuted.
+            // which is writen for FSQ, not HWR, 
+            // MoveCursorToEndOfWordL or MoveCursorToStartOfWordL is called unexpected
+            //
+            // It is not a complete fix, just for simplicity.
+            TBool isFingerHwr = ( iFepPluginManager != NULL ) && 
+								( iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr );
+
+            if ( aCode != EKeyBackspace && !isFingerHwr && WesternPredictive() )
                 {
                 if (CursorInsideWord())
                     {
@@ -15765,7 +15852,8 @@ void CAknFepManager::LaunchLanguagesPopupListL(TBool aLaunchedByTouchWin)
     if( iFepPluginManager->PluginInputMode() != EPluginInputModeNone &&
         iFepPluginManager->PluginInputMode() != EPluginInputModeItut
         // Add this condition for correction of dim features on FSQ
-        && iFepPluginManager->PluginInputMode() != EPluginInputModeFSQ )
+        && iFepPluginManager->PluginInputMode() != EPluginInputModeFSQ
+        && iFepPluginManager->PluginInputMode() != EPluginInputModePortraitFSQ )
         {
         iFepPluginManager->LaunchPenInputLanguageSelectionL(aLaunchedByTouchWin);
         return;
@@ -17414,6 +17502,14 @@ TBool CAknFepManager::DeviceSupportsRTLLanguageL()
 
 void CAknFepManager::CalculateEditorDigitType(TDigitType& aDestination)
     {
+    // When current range is latin number mode
+    if ( iMode == ENumber )
+        {
+        // Set the Local Digit Type flag to EDigitTypeWestern
+        aDestination = EDigitTypeWestern;
+        return;
+        }
+
     TBool ASCIIDigits = EFalse;
     MObjectProvider* mop = iInputCapabilities.ObjectProvider();
 
@@ -18294,6 +18390,14 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
             charMap = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_CHINESE;
             }
         }
+    else if ( FeatureManager::FeatureSupported(KFeatureIdKorean) )
+        {     
+        // Use the special sct resource file for Korean variant.
+        if (charMap == R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG)
+            {
+            charMap = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_KOREAN;
+            }
+        }
     if (!charMap)
         {
         // override numeric keymap if necessary. flag is for non standard charmaps
@@ -18313,10 +18417,7 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
         {
     	currentEditorSCTResId = charMap;
         }
-    if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == charMap && 
-       ( R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_LATIN_ONLY == currentEditorSCTResId || 
-         R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG == currentEditorSCTResId || 
-         R_AVKON_URL_SPECIAL_CHARACTER_TABLE_DIALOG == currentEditorSCTResId) )
+    if(R_AKNFEP_SCT_NUMERIC_MODE_CHARS_PLAIN == charMap)
         {
         TBool isEmpty = ETrue;
         TRAP_IGNORE(isEmpty = GetSctLengthL(charMap));
@@ -18424,11 +18525,13 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
             {
              if (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
                  iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
-                 iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
+                 iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr ||
+                 iFepPluginManager->PluginInputMode() == EPluginInputModePortraitFSQ )
+
                 {
                 SetStopProcessFocus(ETrue, EFalse);
                 iFepPluginManager->SetMenuState();            
-                }            
+                }                      
              else if (!iFepPluginManager->IsGlobleNotes())
                 {
                 iFepPluginManager->ClosePluginInputUiL( ETrue );
@@ -18484,10 +18587,11 @@ void CAknFepManager::DoLaunchSctAndPctL(TInt aResourceId, TShowSctMode aShowSctM
                 {
                  if (iFepPluginManager->PluginInputMode() == EPluginInputModeItut ||
                      iFepPluginManager->PluginInputMode() == EPluginInputModeFSQ ||
-                     iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr)
+                     iFepPluginManager->PluginInputMode() == EPluginInputModeFingerHwr ||
+                     iFepPluginManager->PluginInputMode() == EPluginInputModePortraitFSQ )
                     {
                     SetStopProcessFocus(EFalse);
-                    }            
+                    }                      
                  else
                     {
                     HandleChangeInFocus();
@@ -18894,42 +18998,42 @@ TBool CAknFepManager::HandleSelModeArrowKeyEventL(const TKeyEvent& aKeyEvent,
                                                   TEventCode aEventCode,
                                                   TKeyResponse& aRetCode)
     {
-    TCursorSelection currentEditorSelection(0,0);
-	if(iInputCapabilities.FepAwareTextEditor())
-    	{
-    	iInputCapabilities.FepAwareTextEditor()->
-    		GetCursorSelectionForFep(currentEditorSelection);
-    	}    
-    
-    TInt inputMode = PluginInputMode();
-    TBool isArabicFingerHwr = (inputMode == EPluginInputModeFingerHwr &&
-	                           GetInputLanguageFromSharedDataInterface() == ELangArabic);	
-	if(!IsMfneEditor() && (inputMode == EPluginInputModeItut || 
-		                   inputMode == EPluginInputModeFSQ  || isArabicFingerHwr)  
-		               && currentEditorSelection.Length() != 0)
-    	{
-    	
-        if ((aKeyEvent.iScanCode == EStdKeyLeftArrow) || (aKeyEvent.iScanCode == EStdKeyRightArrow)) 
-            {   
-            if (!(aKeyEvent.iModifiers & EModifierShift))
+    aRetCode = EKeyWasNotConsumed;
+    TBool used = EFalse;
+
+    // only arrow keys are potentially handled
+    if ( ( aKeyEvent.iScanCode == EStdKeyLeftArrow 
+            || aKeyEvent.iScanCode == EStdKeyRightArrow )
+            && iInputCapabilities.FepAwareTextEditor() )
+        {
+        TInt inputMode = PluginInputMode();
+        TBool isArabicFingerHwr = ( inputMode == EPluginInputModeFingerHwr &&
+                GetInputLanguageFromSharedDataInterface() == ELangArabic );
+        TCursorSelection currentEditorSelection( 0, 0 );
+
+        iInputCapabilities.FepAwareTextEditor()->
+                GetCursorSelectionForFep( currentEditorSelection );
+        
+        if ( !IsMfneEditor() && ( inputMode == EPluginInputModeItut ||
+                inputMode == EPluginInputModeFSQ  || 
+                inputMode == EPluginInputModePortraitFSQ  || 
+                isArabicFingerHwr )
+                && currentEditorSelection.Length() != 0 )
+            {
+            used = ETrue;
+
+            if ( !( aKeyEvent.iModifiers & EModifierShift ) )
                 {
                 TKeyEvent ccpuStart = aKeyEvent;
                 ccpuStart.iModifiers |= EModifierShift;
                 ccpuStart.iModifiers |= EModifierRightShift;
-                CCoeEnv::Static()->SimulateKeyEventL(ccpuStart, aEventCode);        
-                
+                CCoeEnv::Static()->SimulateKeyEventL( ccpuStart, aEventCode );        
                 aRetCode = EKeyWasConsumed;
-                return ETrue;
-                }  
-            else
-                {
-                aRetCode = EKeyWasNotConsumed;
-                return ETrue;              
                 }               
-            }	
-    	}
-    aRetCode = EKeyWasNotConsumed;
-    return EFalse;    
+            }
+        }
+    
+    return used;
     }
 
 #else // !RD_SCALABLE_UI_V2
@@ -19897,7 +20001,31 @@ TKeyResponse CAknFepManager::HandleFnKeyEventL( const TKeyEvent& aKeyEvent, TEve
      	}
      else
      	{
-     	
+		//Handle Fn key and consider long press case
+		if( EStdKeyRightFunc == aKeyEvent.iScanCode )
+			{
+			switch(aEventCode)
+				{
+				case EEventKeyDown:
+					ActivateFnkeyPressMonitor();
+					break;
+				case EEventKeyUp:
+					{
+					if(!iFnKeypressMonitor->IsActive())
+					   {
+					    //when long pressing event occurrs,
+                        //event has been already handled in HandleFnKeyPressMonitorCallback()
+						return EKeyWasConsumed;
+					   }
+					//when short pressing event occurs, 
+                    //only deactive fn Key press monitor and normal event handle flow will work
+					DeactivateFnkeyPressMonitor();
+					}
+					break;
+				default:
+					break;	
+				}			  
+			}
      	ret = iFnKeyManager->HandleFnKeyEventL( aKeyEvent, aEventCode, 
                                             	iInputCapabilities ) ;     	
      	}
@@ -20679,7 +20807,25 @@ TBool CAknFepManager::NumericResourceMultiTapTimerTimeoutL()
     	}       
     return EFalse;    
     }    
-    
+void CAknFepManager::ChangeMfneAmPm()
+    {
+	//trigger when touch at "AM" or "PM" in ICF
+    if (iInputCapabilities.FepAwareTextEditor() && IsMfneEditor() )
+        {
+        MObjectProvider* mop = iInputCapabilities.ObjectProvider();
+        if ( mop && iInputCapabilities.FepAwareTextEditor() )
+            {
+            CAknExtendedInputCapabilities* extendedInputCapabilities = 
+                mop->MopGetObject( extendedInputCapabilities );
+            if ( extendedInputCapabilities->Capabilities() && CAknExtendedInputCapabilities::EInputEditorAmPm )// if support AM/PM toggle
+                 {
+                extendedInputCapabilities->ReportEventL(
+                    CAknExtendedInputCapabilities::MAknEventObserver::EChangeAmPm, NULL);
+                 }
+            }
+        }
+    }
+
 //-------------------------------------------------------------------
 
 //
@@ -20853,7 +20999,8 @@ void CAknFepManager::StopDisplayingMenuBar()
     // temporary solution for Entering key on virtual QWERTY not working 
     // like enter on virtual ITU-T or on external keyboard
     if ( iOptionsMenuBar && !( iFepPluginManager && 
-    		iFepPluginManager->CurrentPluginInputMode() == EPluginInputModeFSQ ) )
+        ( iFepPluginManager->CurrentPluginInputMode() == EPluginInputModeFSQ || 
+          iFepPluginManager->CurrentPluginInputMode() == EPluginInputModePortraitFSQ ) ) )
         {
         iOptionsMenuBar->StopDisplayingMenuBar();
         iOptionsMenuBar = NULL;
@@ -21076,6 +21223,75 @@ void CAknFepManager::UpdateEditorStateFlags( TInt aFlag, TBool aAdd ) const
         }
     }
 
+
+// ---------------------------------------------------------------------------
+// CAknFepManager::HandleFnKeyPressMonitorCallback
+// Handle fnkey press monitor callback
+// static function
+// ---------------------------------------------------------------------------
+//
+TInt CAknFepManager::HandleFnKeyPressMonitorCallback(TAny* aObj)
+	{
+    TRAPD(err, static_cast<CAknFepManager*>(aObj)->HandleFnKeyPressMonitor());
+    if (err)
+        {
+        static_cast<CAknFepManager*>(aObj)->CleanUpFep();
+        return KErrDied;
+        }
+    return KErrNone;
+	}
+
+// ---------------------------------------------------------------------------
+// CAknFepManager::HandleFnKeyPressMonitor
+// Handle fnkey press monitor callback
+// ---------------------------------------------------------------------------
+//
+void CAknFepManager::HandleFnKeyPressMonitor()
+	{
+	DeactivateFnkeyPressMonitor();
+	
+	//if previous state of fn key is EFnKeyNone or EFnKeyNext, EFnKeyLock will be set;
+	//otherwise, if previous state is EFnKeyLock, EFnKeyNone will be set.
+	switch(iFnKeyManager->FnKeyState())
+		{
+		case CAknFepFnKeyManager::EFnKeyPressed:
+		case CAknFepFnKeyManager::EFnKeyPressedAgain:
+			 iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyLock);
+			break;
+		case CAknFepFnKeyManager::EFnKeyDown:
+			 iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyNone);
+			 break;
+		default:
+			break;
+		}
+	}
+
+// ---------------------------------------------------------------------------
+// CAknFepManager::ActivateFnkeyPressMonitor
+// Activate Fnkey press Monitor
+// ---------------------------------------------------------------------------
+//
+void CAknFepManager::ActivateFnkeyPressMonitor()
+	{
+	 if( iFnKeypressMonitor )
+		 {
+		  iFnKeypressMonitor->Start(KFnKeyLongPressTimeout, KFnKeyLongPressTimeout, 
+							   TCallBack(HandleFnKeyPressMonitorCallback, this));
+		 }
+	}
+
+// ---------------------------------------------------------------------------
+// CAknFepManager::DeactivateFnkeyPressMonitor
+// Deactivate Fnkey press Monitor
+// ---------------------------------------------------------------------------
+//
+void CAknFepManager::DeactivateFnkeyPressMonitor()
+	{
+	 if( iFnKeypressMonitor && iFnKeypressMonitor->IsActive())
+		 {
+		   iFnKeypressMonitor->Cancel();
+		 }
+	}
 
 // ---------------------------------------------------------------------------
 // LOCAL METHODS

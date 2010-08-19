@@ -72,10 +72,10 @@ CPenUiWndCtrl::~CPenUiWndCtrl()
         iAutoRefreshTimer->Cancel();
         }
     delete iAutoRefreshTimer; 
-	iPopRegion.Close();
-	iBubblesArea.Close();
-    iBubblesMaskArea.Close();
-	iBubblesPos.Close();
+    
+
+	Clean();
+
     
 	delete iCursorWnd;   
 }
@@ -104,6 +104,9 @@ void CPenUiWndCtrl::ConstructL()
     //iCursorWnd->ConstructL(this);
     iCursorWnd->SetContainerWindowL(*this);
     
+    // Update the cursor color
+    SetCursorColor();
+    
     MakeVisible( EFalse );
 }
 
@@ -123,7 +126,7 @@ void CPenUiWndCtrl::Draw(const TRect& aRect) const
         gc.BitBlt(pos, iBitmap, rect);
 #ifdef FIX_FOR_NGA
         //draw bubble
-        for (TInt i = 0; i < iBubblesArea.Count(); ++i)
+        for ( TInt i = 0; i < iBubblesCtrl.Count(); ++i )
             {
             gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
             }
@@ -135,7 +138,7 @@ void CPenUiWndCtrl::Draw(const TRect& aRect) const
 #ifdef FIX_FOR_NGA
     gc.BitBlt(TPoint(0, 0), iBitmap, Rect());
     //draw bubble
-    for (TInt i = 0; i < iBubblesArea.Count(); ++i)
+    for ( TInt i = 0; i < iBubblesCtrl.Count(); ++i )
         {
         gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
         }
@@ -165,8 +168,9 @@ void CPenUiWndCtrl::RefreshUI()
 void CPenUiWndCtrl::Clean()
     {
     iCursorBmp = NULL;
-    iBubblesArea.Reset();
-    iBubblesPos.Reset();
+    iBubblesArea.Close();
+    iBubblesCtrl.Close();
+    iBubblesPos.Close();
 	iBubblesMaskArea.Close();
 	iPopRegion.Close();
     iChangedBmp= NULL;
@@ -193,11 +197,33 @@ void CCursorWindow::Draw(const TRect &aRect ) const
     iParent->DrawCursor(gc);  
     }
 
+// ---------------------------------------------------------------------------
+// CPenUiWndCtrl::SetCursorColor
+// ---------------------------------------------------------------------------
+//
+void CPenUiWndCtrl::SetCursorColor()
+	{
+	// Set default cursor color to black
+	TRgb color( KRgbBlack );
+	// if the skin is enabled
+    if ( AknsUtils::AvkonSkinEnabled())
+        {
+        // Get the text color under current theme
+        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+	                               color, 
+	                               KAknsIIDQsnTextColors, 
+	                               EAknsCIQsnTextColorsCG60 );
+        }
+    
+    // Set the cursor color
+    iCursorColor = color;
+	}
+
 void CPenUiWndCtrl::DrawCursor(CWindowGc& aGc) const
     {
-    aGc.SetPenColor(KRgbBlack);
+    aGc.SetPenColor( iCursorColor );
     aGc.SetBrushStyle(CGraphicsContext::ESolidBrush);
-    aGc.SetBrushColor(KRgbBlack);
+    aGc.SetBrushColor( iCursorColor );
     aGc.SetDrawMode(CGraphicsContext::EDrawModeNOTSCREEN);
     aGc.SetPenStyle(CGraphicsContext::ESolidPen);
     aGc.SetPenSize( TSize(1,1));
@@ -250,16 +276,29 @@ void CPenUiWndCtrl::UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,cons
         }
     iCursorWnd->SetCursorVisible(aOnFlag);
     }
-	
-void CPenUiWndCtrl::UpdateBubble(const CFbsBitmap* aBmp,const CFbsBitmap* aMask,
-                                                const TRect& aPos,TBool aFlag)
+
+// ---------------------------------------------------------------------------
+// CPenUiWndCtrl::UpdateBubble
+// ---------------------------------------------------------------------------
+//
+void CPenUiWndCtrl::UpdateBubble( const TUint32 aCtrl, 
+		                          const CFbsBitmap* aBmp,
+		                          const CFbsBitmap* aMask,
+                                  const TRect& aPos,
+                                  TBool aFlag )
     {
-    TInt idx = iBubblesArea.Find(aBmp);
+
+	// Check whether the Ctrl address is exist
+	TInt idx = iBubblesCtrl.Find( aCtrl );
+
     
     if(aFlag)
         {
         if(KErrNotFound == idx)
             {
+
+            iBubblesCtrl.Append( aCtrl );
+
             iBubblesArea.Append(aBmp);
             iBubblesMaskArea.Append(aMask);
             iBubblesPos.Append(aPos);
@@ -275,6 +314,9 @@ void CPenUiWndCtrl::UpdateBubble(const CFbsBitmap* aBmp,const CFbsBitmap* aMask,
         //remove
         if(idx != KErrNotFound)
             {
+
+            iBubblesCtrl.Remove( idx );
+
             iBubblesArea.Remove(idx);
             iBubblesMaskArea.Remove(idx);
             iBubblesPos.Remove(idx);            
@@ -288,13 +330,20 @@ void CPenUiWndCtrl::UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos)
     iIcfPos = aPos;
     Invalidate(Rect(), ETrue);   
     }
-void CPenUiWndCtrl::UpdateChangedArea(const CFbsBitmap* aBmp,const TRect& aPos,TBool aFlag)
-    {
-    UpdateBubble(aBmp,0,aPos,aFlag);
-    return;
 
-    
+
+// ---------------------------------------------------------------------------
+// CPenUiWndCtrl::UpdateChangedArea
+// ---------------------------------------------------------------------------
+//
+void CPenUiWndCtrl::UpdateChangedArea( const TUint32 aCtrl, 
+		const CFbsBitmap* aBmp,const TRect& aPos,TBool aFlag)
+    {
+    UpdateBubble( aCtrl, aBmp, 0, aPos, aFlag );
+    return;    
     }
+
+
 void CPenUiWndCtrl::SetPopupArea(const TRect& aRect, TBool aFlag)
     {
     if(aFlag) //add pop area
@@ -694,25 +743,27 @@ void CPenUiWndCtrl::HandleNGASpecificSignal(TInt aEventType, const TDesC& aEvent
             {
             struct SData
                 {
+            	TUint32 ctrl;
                 TBool flag;
                 TRect pos;
                 CFbsBitmap* bmp;
                 CFbsBitmap* mask;
                 } data;
             data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateBubble(data.bmp,data.mask,data.pos,data.flag);
+            UpdateBubble( data.ctrl, data.bmp, data.mask, data.pos, data.flag );
             }
             break;
         case ESignalUpdateChangedArea:
             {
             struct SData
                 {
+            	TUint32 ctrl;
                 TBool flag;
                 CFbsBitmap* bmp;
                 TRect pos;
                 } data;
             data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateChangedArea(data.bmp,data.pos,data.flag);
+            UpdateChangedArea( data.ctrl, data.bmp, data.pos, data.flag );
             }
             break;
         case ESignalRegisterBkControl:

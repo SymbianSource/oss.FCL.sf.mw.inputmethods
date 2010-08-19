@@ -130,6 +130,21 @@ void CAknFepFnKeyManager::SetFnKeyState(CAknFepFnKeyManager::TFnKeyState aState)
         iFepMan.SetCase(EFnKeyLowerCase);
         iFepMan.UpdateIndicators();
         }
+    else if( keyboardType == EPtiKeyboardQwerty4x10 && (EFnKeyPressed  == iFnKeyState || EFnKeyPressedAgain  == iFnKeyState) 
+			&& aState == EFnKeyLock )
+    	{
+		UpdatePreviousCase();
+		iFepMan.SetCase(EFnKeyLowerCase);
+		iFnKeyState = aState;
+		iFepMan.UpdateIndicators();
+    	}
+	else if( keyboardType == EPtiKeyboardQwerty4x10 && EFnKeyDown  == iFnKeyState 
+			&& aState == EFnKeyNone )
+		{
+		iFepMan.SetCase( (TCase)iPreviousCase );
+		iFnKeyState = aState;
+		iFepMan.UpdateIndicators();
+		}
 #endif // RD_INTELLIGENT_TEXT_INPUT 		
 #ifdef __ITI_LONGPRESS_NUM_SHIFT_COPYPASTE__  
 #ifdef RD_INTELLIGENT_TEXT_INPUT  

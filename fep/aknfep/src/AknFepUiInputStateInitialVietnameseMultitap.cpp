@@ -128,22 +128,25 @@ TBool TAknFepInputStateInitialVietnameseMultitap::HandleKeyL(TInt aKey, TKeyPres
                 fepMan->NewCharacterL(aChr);
                 fepMan->CommitInlineEditL();
                 
-               	if (fepMan->EditSubmenuInUse() && fepMan->IsAbleToLaunchSCT())
-        		    {
-        		    fepMan->LaunchSpecialCharacterTableL();
-        		    return ETrue;
-        		    }                         
+                if (fepMan->EditSubmenuInUse() && fepMan->IsAbleToLaunchSCT())
+                    {
+                    fepMan->LaunchSpecialCharacterTableL();
+                    return ETrue;
+                    }                         
                 }
-			else if (fepMan->EditSubmenuInUse())
-				{
-				aLength = ELongKeyPress;
-				}
+            else if (fepMan->EditSubmenuInUse())
+                {
+                aLength = ELongKeyPress;
+                }
             }
         }
     
     // Implementation for the Vietnamese back deletion
     if (aKey == EKeyBackspace)
         {
+        // Key looping should be cancelled as pressing backspace key
+        toneMgr->StopKeyLooping();
+    
         TBuf<2> newText;
         // Get the last character from the current editor
         TText prevChar = fepMan->PreviousChar();
@@ -155,11 +158,11 @@ TBool TAknFepInputStateInitialVietnameseMultitap::HandleKeyL(TInt aKey, TKeyPres
             ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
             fepMan->NewCharacterL(newText);
             fepMan->CommitInlineEditL();
-			// Stop looping for backspace operation
-			if( toneMgr->IsLooping() )
-			    {
-				toneMgr->StopToneMarkLooping();
-				}
+            // Stop looping for backspace operation
+            if( toneMgr->IsLooping() )
+                {
+                toneMgr->StopToneMarkLooping();
+                }
             return ETrue;
             }
         else
@@ -177,65 +180,79 @@ TBool TAknFepInputStateInitialVietnameseMultitap::HandleKeyL(TInt aKey, TKeyPres
             }
         }
     
-    if( toneMgr->IsKeyLooping( aKey ) )
+    if( aLength == EShortKeyPress )
         {
-        if( toneMgr->ToneMarkIndex() !=  KErrNotFound )
+        if( toneMgr->IsKeyLooping( aKey ) )
             {
-            // Get current tone mark
-            TText toneVowel;
-            if( toneMgr->GetLoopingToneMarkVowel( toneVowel ) )
+            if( toneMgr->ToneMarkIndex() !=  KErrNotFound )
                 {
-                // remove two previous chars
-                ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
-                ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
-    
-                TBuf<CAknFepManager::ESingleCharacter> aChr;
-                aChr.Append(toneVowel);
+                // Get current tone mark
+                TText toneVowel;
+                if( toneMgr->GetLoopingToneMarkVowel( toneVowel ) )
+                    {
+                    // remove two previous chars
+                    ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
+                    ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
+        
+                    TBuf<CAknFepManager::ESingleCharacter> aChr;
+                    aChr.Append(toneVowel);
+                    
+                    // Update inline character(s)
+                    fepMan->CancelInlineEdit();
+                    fepMan->NewCharacterL(aChr);
+                    
+                    toneMgr->SetLoopingCombined( ETrue );
+                    bHandled = ETrue;
+                    }
                 
-                // Update inline character(s)
-                fepMan->CancelInlineEdit();
-                fepMan->NewCharacterL(aChr);
-                
-                toneMgr->SetLoopingCombined( ETrue );
-                bHandled = ETrue;
+                // Reset the engine timer so that we can get timer expired message
+                // We send the * key, and clear it in the next loop
+                ptiEng->ClearCurrentWord();
+                ptiEng->AppendKeyPress((TPtiKey)EPtiKeyStar);
                 }
-            
-            // Reset the engine timer so that we can get timer expired message
-            // We send the * key, and clear it in the next loop
-            ptiEng->ClearCurrentWord();
-            ptiEng->AppendKeyPress((TPtiKey)EPtiKeyStar);
+            else
+                {
+                if( toneMgr->IsLoopingCombined() )
+                    {
+                    // remove tone mark
+                    TBuf<2> newText;
+                    // Get the last character from the current editor
+                    TText prevChar = fepMan->PreviousChar();
+                    
+                    // Judge if the last character needs to be converted
+                    if ( NeedsVietnameseBkDelSupport(prevChar, newText) )
+                        {
+                        // Delete the prev character and send the new character to editor
+                        ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
+                        fepMan->NewCharacterL(newText);
+                        fepMan->CommitInlineEditL();
+                        }
+                
+                    toneMgr->SetLoopingCombined( EFalse );
+                    }
+                }
             }
         else
             {
-            if( toneMgr->IsLoopingCombined() )
+            // Key looping is not supported with Backspace key
+            // Otherwise the process of deleting a2222 is wrong
+            if ( aKey != EKeyBackspace )
                 {
-                // remove tone mark
-                TBuf<2> newText;
-                // Get the last character from the current editor
-                TText prevChar = fepMan->PreviousChar();
-                
-                // Judge if the last character needs to be converted
-                if ( NeedsVietnameseBkDelSupport(prevChar, newText) )
-                    {
-                    // Delete the prev character and send the new character to editor
-                    ((CAknFepManager*)fepMan)->RemovePreviousCharacterL();
-                    fepMan->NewCharacterL(newText);
-                    fepMan->CommitInlineEditL();
-                    }
-            
-                toneMgr->SetLoopingCombined( EFalse );
+                toneMgr->StartKeyLooping( aKey );
                 }
             }
         }
     else
         {
-        toneMgr->StartKeyLooping( aKey );
+        // Key looping should be cancelled as long pressing key  
+        // Otherwise a22 can not be inputted by press a, long press 2 and long press 2.
+        toneMgr->StopKeyLooping();
         }
     
     if(!bHandled && toneMgr->IsLooping())
-    	{
-    	toneMgr->StopToneMarkLooping();
-    	}
+        {
+        toneMgr->StopToneMarkLooping();
+        }
     
     return bHandled ? ETrue : TAknFepInputStateInitialMultitapBase::HandleKeyL(aKey, aLength);
     }

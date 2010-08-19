@@ -33,6 +33,7 @@ const TInt KHwrArabicUiId = 0x20019599;
 const TInt KVkbUiId = 0x10282359;
 const TInt KFsqUiId = 0x2001114D;
 const TInt KSsqUiId = 0x2001E2BB;
+const TInt KPrtFsqUiId = 0x20026837;
 const TInt KFingerHwrUiId = 0x2001E2C4;
 inline CPluginFepManagerBase* CPenInputImePluginGeneric::GetCurrentUi()
     {
@@ -42,6 +43,8 @@ inline CPluginFepManagerBase* CPenInputImePluginGeneric::GetCurrentUi()
         case EPluginInputModeVkb:
         case EPluginInputModeFingerHwr:            
         case EPluginInputModeFSQ:
+        // Portrait FSQ is added as a new mode
+        case EPluginInputModePortraitFSQ:
             return iPluginUiManager;
         default:
             return NULL;

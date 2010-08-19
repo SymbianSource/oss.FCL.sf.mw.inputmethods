@@ -66,6 +66,8 @@ EXPORT_C CBubbleCtrl::CBubbleCtrl(const TRect& aRect,
         
 EXPORT_C CBubbleCtrl::~CBubbleCtrl()
     {
+	Close();
+	
     if ( iText )
         delete iText;
     
@@ -228,12 +230,14 @@ EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
             {
             struct SData
                 {
+            	TUint32 ctrl;
                 TBool flag;
                 TRect pos;
                 CFbsBitmap* bmp;
                 CFbsBitmap* mask;
                 } data;
                 
+            data.ctrl = (TUint32)this;
             data.flag = ETrue;
             data.pos = Rect();
             data.bmp = iBitmap;
@@ -313,11 +317,13 @@ EXPORT_C void CBubbleCtrl::Close()
             {
             struct SData
                 {
+            	TUint32 ctrl;
                 TBool flag;
                 TRect pos;
                 CFbsBitmap* bmp;
                 } data;
                 
+            data.ctrl = (TUint32)this;
             data.flag = EFalse;
             data.pos = Rect();
             data.bmp = iBitmap;

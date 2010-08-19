@@ -219,14 +219,17 @@ TUIState CAknFepUIManagerKorean::ChangeState(TUIState aState)
             {
             switch(iMode)
                 {
-                case ELatin:
-                    {
+                case EHangul:
                     iFepUiState = TAknFepInputStateQwertyKorean(this);
-                    break;               
-                    }
+                    break;                
+                case ELatin:
+                case ENumber:
+                case ENativeNumber:
+                	iFepUiState = TAknFepInputStateQwerty(this);
+                	break;
                 default:
-			AknFepPanic(EAknFepPanicBadInputState);	
-           	break;
+					AknFepPanic(EAknFepPanicBadInputState);	
+					break;
                 }
                break;
             }

@@ -122,5 +122,6 @@ LIBRARY         fbscli.lib
 LIBRARY 		bitgdi.lib 
 LIBRARY         commonengine.lib
 LIBRARY         centralrepository.lib
+LIBRARY         featmgr.lib
 
 // End Of File

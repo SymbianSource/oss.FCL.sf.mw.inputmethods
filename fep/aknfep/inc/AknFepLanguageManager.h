@@ -55,6 +55,7 @@ class CAknFepCaseManager;
 class RPeninputServer;
 class TImePlguinImplDetail;
 class CAknFepPluginManager;
+class CAknFepSharedDataInterface;
 
 /**
  * CAknFepLanguageManager is a part of Japanese FEP.
@@ -84,8 +85,10 @@ public: // Constructer and Destructor
      * @param aCaseMan
      * @param aLanguage
      */
-    static CAknFepLanguageManager* NewL(MAknFepManagerUIInterface* aFepMan, 
-                                        CAknFepCaseManager* aCaseMan);
+    static CAknFepLanguageManager* NewL( MAknFepManagerUIInterface* aFepMan, 
+                                         CAknFepCaseManager* aCaseMan,
+                                         CAknFepSharedDataInterface* aSharedData = NULL );
+
 
     /**
      * Destructor.
@@ -187,8 +190,9 @@ private: // New Functions
      *
      * @since 2.6
      */
-    CAknFepLanguageManager(MAknFepManagerUIInterface* aFepManager, 
-                           CAknFepCaseManager* aCaseManager);
+    CAknFepLanguageManager( MAknFepManagerUIInterface* aFepManager, 
+                            CAknFepCaseManager* aCaseManager,
+                            CAknFepSharedDataInterface* aSharedData = NULL );
 
     /**
      * Second phase construction
@@ -258,6 +262,12 @@ private: // Data
      * @since S60 v3.2
      */	
     TBool iIsSplitView;
+   
+    /**
+     * Shared data manager
+     */
+    CAknFepSharedDataInterface* iSharedData;
+
     };
 
 inline CAknFepPenInputImePlugin* CAknFepLanguageManager::CurrentImePlugin()

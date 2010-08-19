@@ -34,6 +34,7 @@
 #include <AknSettingCache.h>
 #include <AknFepInternalCRKeys.h>
 #include <centralrepository.h>
+#include <featmgr.h> 
 
 #include "peninputgenericitutdatamgr.h"
 #include "peninputgenericitutlayoutcontext.h"
@@ -100,13 +101,18 @@ CGenericItutDataMgr::~CGenericItutDataMgr()
     CCoeEnv::Static()->DeleteResourceFile(iAvkonResId);
         
     CCoeEnv::Static()->DeleteResourceFile(iCommonResId);
-
-    // Remove all resource files from control environment
-    for (TInt i=0; i< iConfigResIds.Count(); i++)
+    
+    // Remove the resource file of current input language
+    if ( iConfigResId )
         {
-        CCoeEnv::Static()->DeleteResourceFile(iConfigResIds[i]);
+        CCoeEnv::Static()->DeleteResourceFile( iConfigResId );
         }
-    iConfigResIds.Close();
+    
+    // Remove the resource file of some special controls
+    if ( iSpecialResId )
+        {
+        CCoeEnv::Static()->DeleteResourceFile( iSpecialResId );
+        }
 
     ClearChnCandidates(EItutCandidates);
     ClearChnCandidates(EItutPuncCandidates);
@@ -120,7 +126,6 @@ CGenericItutDataMgr::~CGenericItutDataMgr()
 
 void CGenericItutDataMgr::ConstructL()
     {
-
     // initialize layout info of controls and layout
     ReadLafInfo();
 
@@ -153,7 +158,33 @@ void CGenericItutDataMgr::ConstructL()
         iMenuItemList.Append( item );
         reader.ReadInt32(); // extension link
         }        
-    CleanupStack::PopAndDestroy(); //reader         
+    CleanupStack::PopAndDestroy(); //reader
+
+    // There are some special controls in Chinese and Korean VITUT,
+    // and these controls are hidden when changing to other input language, 
+    // so related resource file should be in control environment at all times.
+    // Otherwise crash happens when reading resource for them sometime. 
+    // For example: If writing language is Chinese, enters spell mode,
+    // then switches theme, crash happens. 
+    if ( FeatureManager::FeatureSupported( KFeatureIdChinese ) ||
+            FeatureManager::FeatureSupported( KFeatureIdKorean ) )
+        {
+        TFileName  resourceFilename( KConfigResourceFile ) ;
+        if ( FeatureManager::FeatureSupported( KFeatureIdChinese ) )
+            {
+            // Chinese variant
+            resourceFilename.Append( ResFileExtByScriptIdx( EChnExt ) );
+            }
+        else
+            {
+            // Korean variant
+            resourceFilename.Append( ResFileExtByScriptIdx( EHangulExt ) );
+            }
+        resourceFilename.Append(KResourceFileExtName);
+        
+        BaflUtils::NearestLanguageFile( coeEnv->FsSession(), resourceFilename );
+        iSpecialResId = coeEnv->AddResourceFileL( resourceFilename );        
+        }
     }
 
 CGenericItutDataMgr::TMenuItem* CGenericItutDataMgr::GetMenuItem(TInt aCommand)
@@ -1167,21 +1198,19 @@ void CGenericItutDataMgr::SetLanguageL(TInt aLanguage)
 
             CCoeEnv* coeEnv = CCoeEnv::Static();
             
-            TFileName resourceConfigName(iResourceFilename);
-            BaflUtils::NearestLanguageFile(coeEnv->FsSession(), resourceConfigName);
-            // Do not delete resource file from control environment if changing language.
-            // Otherwise crash happens if switching theme. For example:If writing language
-            // is Chinese, enters spell mode, then switches theme, crash happens. 
-            TInt configResId = coeEnv->AddResourceFileL(resourceConfigName);
-            if ( iConfigResIds.Find(configResId) ==  KErrNotFound)
+            // Remove the resource file of previous input language.
+            // The previous resource file should be removed first,
+            // Because there are some same keypad ids in the resource file
+            // of latin, Cyrillic, and etc.
+            if ( iConfigResId )
                 {
-                iConfigResIds.Append( configResId );
+                coeEnv->DeleteResourceFile( iConfigResId );
                 }
-            else
-                {
-                // Remove resource file to ensure the resource file is added only one time.
-                coeEnv->DeleteResourceFile( configResId );
-                }
+
+            // Add the resource file of current input language
+            TFileName resourceConfigName( iResourceFilename );
+            BaflUtils::NearestLanguageFile( coeEnv->FsSession(), resourceConfigName );
+            iConfigResId = coeEnv->AddResourceFileL( resourceConfigName );
             
             if (IsChinese())
                 {

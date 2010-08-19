@@ -113,6 +113,13 @@ public:
      */
     virtual ~CPeninputSplitQwertyLayout();
 
+    /**
+     * Check if  ITI is enabled.
+     *
+     * @return ETrue if ITI is enabled.
+     */
+    inline TBool IsEnableITI() const;
+    
 public: // From base class CPeninputCommonLayout
 
     /**
@@ -277,5 +284,12 @@ private:
     TBool iITIEnabled;
     };
 
+/**
+* Check if  ITI is enabled.
+*/ 
+inline TBool CPeninputSplitQwertyLayout::IsEnableITI() const
+    {
+    return iITIEnabled;
+    }
 
 #endif // C_PENINPUTSPLITQWERTYLAYOUT_H

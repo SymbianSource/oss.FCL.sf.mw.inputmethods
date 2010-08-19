@@ -32,7 +32,9 @@ const TImplementationProxy ImplementationTable[] =
     IMPLEMENTATION_PROXY_ENTRY( 0x10282359, 
                                 CPeninputGenericVkbLayoutImp::NewL ),
     IMPLEMENTATION_PROXY_ENTRY( 0x2001114D, 
-                                CPeninputGenericVkbLayoutImp::NewFsqL )
+                                CPeninputGenericVkbLayoutImp::NewFsqL ),
+    IMPLEMENTATION_PROXY_ENTRY( 0x20026837,
+                                CPeninputGenericVkbLayoutImp::NewPrtFsqL )
     };
 
 // --------------------------------------------------------------------------

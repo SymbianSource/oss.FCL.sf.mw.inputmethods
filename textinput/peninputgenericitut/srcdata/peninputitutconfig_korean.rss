@@ -16,7 +16,10 @@
 */
 
 //  RESOURCE IDENTIFIER
-NAME ITUW
+// The name should not be the same as ITUW, Otherwise the keypad id of 
+// r_finger_input_keypad_korean is the same as the keypad id in latin, 
+// then crash occurs if switching writing language.
+NAME ITUK
 
 #include <eikon.hrh>
 

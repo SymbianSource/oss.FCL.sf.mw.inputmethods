@@ -153,6 +153,13 @@ public: // icf
      */       
     TInt IcfTextHeight();
     
+    /**
+     * get indicator bubble rect.
+     * 
+     * @since Symbian TB9.2
+     * @return bubble rect.
+     */
+    TRect IndicatorBubbleRect();
 public: //buttons
     
     /**
@@ -491,6 +498,11 @@ private: //datas
 	TInt iIcfTextHeight;
     TInt iIcfTextAlignment;
     CFont* iIcfFont;
+    
+    /**
+     * Msg indicator bubble.
+     */
+    TRect iRectIndicatorBubble;
     
 	/**
 	 * Candidate laf

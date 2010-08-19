@@ -34,6 +34,7 @@
 #include <e32property.h>
 #include <cenrepnotifyhandler.h>
 #include <pslninternalcrkeys.h>
+#include <AknFepGlobalEnums.h>  // for TPluginInputMode
 
 class CRepository;
 
@@ -567,6 +568,22 @@ public:
      *               1 is arabic native number.
      */
     void SetDefaultArabicNumberMode(TInt aValue);
+
+    /**
+     * Get the last used plugin input mode for portrait orientation
+     *
+     * @since 5.2
+     * @return value of KAknFepLastUsedPortraitInput value.
+     */
+    TPluginInputMode PluginPortraitInputMode() const;
+
+    /**
+     * Replaces the last used plugin input mode for portrait orientation
+     *
+     * @since 5.2
+     * @param Replace value of KAknFepLastUsedPortraitInput value.
+     */
+    void SetPluginPortraitInputMode( TPluginInputMode aLastUsedPortraitInputMode );
 private:
     /**
      * C++ Constructor

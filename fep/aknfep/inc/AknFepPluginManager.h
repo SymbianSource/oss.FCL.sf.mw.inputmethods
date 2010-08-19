@@ -448,6 +448,24 @@ public:
      */
     void RemoveLastFocusedWinFromOpenList();
     
+    /**
+     * Set the editor pointer to NULL
+     *
+     * @since v5.0
+     * @param none
+     * @return void
+     */
+    void ClearDestroyedEditorPointer();
+    
+    /**
+     * Get the editor state
+     *
+     * @since v5.0
+     * @param none
+     * @return the pointer of editor state
+     */
+    CAknEdwinState* EdwinState();
+    
 public: // inline    
     
     /**
@@ -758,6 +776,24 @@ private:
 
     void InformMfneUiStatusL( TBool aOpened );
     
+    /** 
+     * Update editor state according to current ui state
+     * 
+     * @since Symbian^3 
+     * @param aOpened specifies current ui is opened or closed
+     */
+    void SetEdwinFlagsByUiStatus( TBool aOpened );
+    
+    /** 
+     * Update state flags of specified editor
+     * 
+     * @since Symbian^3 
+     * @param aEdwin  specifies the editor to be updated
+     * @param aFlags  editor state flags
+     * @param aSet    ETrue to add flags, or EFalse to remove flags.
+     */
+    void SetAknEdwinFlags( MCoeFepAwareTextEditor* aEdwin, TInt aFlags, TBool aSet );
+    
     void UpdatePredicState();
                             
     TBool NotifyInGlobalNoteEditorL();
@@ -856,6 +892,14 @@ private:
 	 * @CAknFepUiInterfaceMenuPane* aMenuPane The menu pane used to add more menu items
 	 */
 	void InitMenuItemForArabicFingerHwrL(CAknFepUiInterfaceMenuPane* aMenuPane);
+
+    /**
+     * andling the menu cmd for changing the input mode
+     *     
+     * @param aInputMode: the inputmode should be activate
+     * @return None
+     */
+    void ProcessChangingInputModeCmdL(TInt aInputMode);
 	
 private:    // Data
     
@@ -1030,6 +1074,13 @@ private:    // Data
     TBool iLaunchHelp;
     TInt iCurPermittedModes;
     MCoeFepAwareTextEditor* iMfne;
+    
+    /**
+     * current focused editor
+     * not own 
+     */
+    MCoeFepAwareTextEditor* iEdwin;
+    
     TBool iMfneChanged;
     TBool iIsInEditWordQueryDlg;
     
@@ -1083,6 +1134,11 @@ private:    // Data
     TBool iLaunchSCTInSpell;
 	
     TBool iFocuschangedForSpellEditor;
+    
+    /**
+     * Indicate whether portrait FSQ feature is enabled
+     */    
+    TBool iPortraitFSQEnabled;
     };
 
 class CConnectAo : public CActive

@@ -24,6 +24,7 @@
 #include <aknfeppeninputenums.h>
 #include <AknFepGlobalEnums.h>
 #include <AknFepInternalCRKeys.h>
+#include <peninputcommonlayoutglobalenum.h>
 
 //USER INCLUDE
 #include "peninputfingerhwrarlayout.h"
@@ -72,7 +73,6 @@ CPeninputFingerHwrArDataStore::~CPeninputFingerHwrArDataStore()
 
     delete iRepositoryFep;
     delete iCommonEngineRepository;
-//    delete iTriggerStr;   
     delete iHwrEngine;
     delete iUserDefinedResource;
     
@@ -157,6 +157,10 @@ void CPeninputFingerHwrArDataStore::SetPermittedRanges( TInt aPermittedRanges )
         {
         iPermittedRanges.Append( ERangeNative );
         }
+    if ( aPermittedRanges & ERangeNativeNumber )
+        {
+        iPermittedRanges.Append( ERangeNativeNumber );
+        }
     if ( aPermittedRanges & ERangeEnglish )
         {
         iPermittedRanges.Append( ERangeEnglish );
@@ -198,15 +202,6 @@ TInt CPeninputFingerHwrArDataStore::PrimaryRange()
 	return -1;
 	}
 	
-// ----------------------------------------------------------------------------
-// get current range
-// ----------------------------------------------------------------------------
-//
-TFingerHwrRange CPeninputFingerHwrArDataStore::CurrentRange()
-	{
-	return iCurrentRange;
-	}
-
 // ----------------------------------------------------------------------------
 // Set case
 // ----------------------------------------------------------------------------
@@ -705,7 +700,7 @@ TBool CPeninputFingerHwrArDataStore::IsArabicNumber(TUint16 aChar)
 //  
 TBool CPeninputFingerHwrArDataStore::IsNumberOnlyMode()
     {
-    if(PrimaryRange() == ERangeNumber)
+    if(PrimaryRange() == ERangeNumber || PrimaryRange() == ERangeNativeNumber)
         {
         return ETrue;
         }

@@ -265,14 +265,20 @@ void TAknFepInputStateEntryQwertyWesternPredictive::HandleShiftState( TInt aKey 
  		{
  		shiftedCase= EPtiCaseLower;	
  		}
-    
+
+    TBool portraitFSQ = FeatureManager::FeatureSupported( 
+        KFeatureIdFfVirtualFullscrPortraitQwertyInput )
+        && fepMan->PluginUIManager() 
+        && fepMan->PluginUIManager()->PluginInputMode() == EPluginInputModePortraitFSQ;
+
     // For addition of ITI features. 
     // When FSQ is opened wiht ITI features enabled,
     // after pressing keys, don't need to re-set current text case by editor's text or FN key state.
     // Because FSQ's case doesn't obey editor's case and there is no fn key on FSQ.
     if ( fepMan->PluginUIManager() 
-         && fepMan->PluginUIManager()->PluginInputMode() == EPluginInputModeFSQ
-         && fepMan->WesternPredictive() )
+        && ( fepMan->PluginUIManager()->PluginInputMode() == EPluginInputModeFSQ 
+                || portraitFSQ )
+        && fepMan->WesternPredictive() )
         {
         return;
         }

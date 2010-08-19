@@ -38,6 +38,7 @@
 #include "AknFepUiManagerWestern.h"         // CAknFepUIManagerWestern
 #include "AknFepUiManagerChinese.h"         // CAknFepUIManagerChinese
 #include "AknFepLanguageManager.h"          // this class
+#include "AknFepSharedDataInterface.h"      // CAknFepSharedDataInterface
 
 #include "AknFepUiManagerKorean.h"        	// CAknFepUIManagerKorean
 #include <uikon.hrh>                        // TAknEditorNumericKeymap
@@ -47,6 +48,7 @@
 #include  "AknFepPluginManager.h"
 #include <peninputcmd.h>
 #include <peninputclient.h>
+#include <featmgr.h>
 
 void Cleanup( TAny* aAny )
 	{
@@ -67,10 +69,11 @@ void Cleanup( TAny* aAny )
 // first phase construction.
 // -----------------------------------------------------------------------------
 //
-CAknFepLanguageManager* CAknFepLanguageManager::NewL(MAknFepManagerUIInterface* aFepMan, 
-                                                     CAknFepCaseManager* aCaseMan)
+CAknFepLanguageManager* CAknFepLanguageManager::NewL( MAknFepManagerUIInterface* aFepMan, 
+                                                      CAknFepCaseManager* aCaseMan, 
+                                                      CAknFepSharedDataInterface* aSharedData )
     {
-    CAknFepLanguageManager* self = new(ELeave) CAknFepLanguageManager(aFepMan, aCaseMan);
+    CAknFepLanguageManager* self = new(ELeave) CAknFepLanguageManager(aFepMan, aCaseMan, aSharedData);
     CleanupStack::PushL(self);
     self->ConstructL();
     CleanupStack::Pop(); // self
@@ -199,12 +202,14 @@ void CAknFepLanguageManager::SetInputLanguageL(TInt aInputLanguage)
 // -----------------------------------------------------------------------------
 //
 CAknFepLanguageManager::CAknFepLanguageManager(MAknFepManagerUIInterface* aFepManager, 
-                                               CAknFepCaseManager* aCaseManager) 
+                                               CAknFepCaseManager* aCaseManager,
+                                               CAknFepSharedDataInterface* aSharedData ) 
 
 :iInputLanguage(ELangEnglish), 
  iFepManager(aFepManager), 
  iCaseManager(aCaseManager),
- iPluginManager(NULL)
+ iPluginManager(NULL),
+ iSharedData(aSharedData)
     {
     }
 
@@ -310,7 +315,8 @@ MAknFepManagerInterface* CAknFepLanguageManager::GetPluginInputFepUiL(
         }
     else // Portrait
         {
-        secondMode = EPluginInputModeItut;
+        secondMode = ( iSharedData ) 
+            ? iSharedData->PluginPortraitInputMode() : EPluginInputModeItut;
         } 
     TPluginInputMode curMode = aPreferedMode;
     TInt language = aPenInputLang;

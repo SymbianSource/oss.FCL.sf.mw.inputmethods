@@ -196,12 +196,51 @@ public: // New functions
     void UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,const TRect& aPos);
     void SetPopupArea(const TRect& aRect, TBool aFlag);
     void UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos);
-    void UpdateChangedArea(const CFbsBitmap* aBmp,const TRect& aRect,TBool aFlag);
-    void UpdateBubble(const CFbsBitmap* aBmp,const CFbsBitmap* aMaskBmp,const TRect& aPos,TBool aFlag);
+    
+    /**
+     * Update the bubble area list
+     *
+     * @since S60 v5.0
+     * @param aCtrl the Ctrl's address
+     * @param aBmp the bubble bitmap's address
+     * @param aRect the bubble rect
+     * @param aFlag ETrue means add bubble area and 
+     *              EFalse means remove bubble area
+     * @return void
+     */
+    void UpdateChangedArea( const TUint32 aCtrl, 
+    	const CFbsBitmap* aBmp, const TRect& aRect, TBool aFlag );
+    
+    /**
+     * Update the bubble area list
+     *
+     * @since S60 v5.0
+     * @param aCtrl the Ctrl's address
+     * @param aBmp the bubble bitmap's address
+     * @param aMaskBmp the bubble mask bitmap's address
+     * @param aPos the bubble rect
+     * @param aFlag ETrue means add bubble area and 
+     *              EFalse means remove bubble area
+     * @return void
+     */
+    void UpdateBubble( const TUint32 aCtrl, 
+    	const CFbsBitmap* aBmp, const CFbsBitmap* aMaskBmp, 
+    	const TRect& aPos, TBool aFlag );
+    
     void Clean();
     
     void HandleNGASpecificSignal(TInt aEventType, const TDesC& aEventData);
     void LiftUpPriority();
+    
+    /**
+     * Update the cursor color
+     *
+     * @since S60 v5.0
+     * @param none
+     * @return void
+     */
+    void SetCursorColor();
+    
 public: // Functions from base classes.
 
     /**
@@ -302,6 +341,12 @@ private: // Data
     CFbsBitmap* iChangedBmp;
     RPointerArray<CFbsBitmap> iBubblesArea;
     RPointerArray<CFbsBitmap> iBubblesMaskArea;
+    
+    /**
+     * An array of the Controls' addresses 
+     */
+    RArray<TUint32> iBubblesCtrl;
+    
     RArray<TRect> iBubblesPos;
     
     TPoint iCursorPos;
@@ -334,6 +379,11 @@ private: // Data
     
     TBool iNotUpdating;
     CCursorWindow* iCursorWnd;
+    
+    /**
+     * The cursor's color 
+     */
+    TRgb iCursorColor;
     
 friend class CCursorWindow;
     };

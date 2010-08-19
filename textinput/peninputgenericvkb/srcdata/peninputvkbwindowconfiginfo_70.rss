@@ -431,8 +431,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x003F>;
-                    scancode=0x003F;
+                    unicode=<0x0040>;
+                    scancode=0x0040;
                     beginrow=2;
                     begincolumn=9;
                     highlightbmpindex=0;
@@ -650,8 +650,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },     
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x002F>;
-                    scancode=0x002F;
+                    unicode=<0x0022>;
+                    scancode=0x0022;
                     beginrow=1;
                     begincolumn=9;
                     highlightbmpindex=0;
@@ -722,8 +722,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x002B>;
-                    scancode=0x002B;
+                    unicode=<0x003F>;
+                    scancode=0x003F;
                     beginrow=2;
                     begincolumn=7;
                     highlightbmpindex=0;
@@ -731,8 +731,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x002D>;
-                    scancode=0x002D;
+                    unicode=<0x0021>;
+                    scancode=0x0021;
                     beginrow=2;
                     begincolumn=8;
                     highlightbmpindex=0;
@@ -740,8 +740,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x0021>;
-                    scancode=0x0021;
+                    unicode=<0x002F>;
+                    scancode=0x002F;
                     beginrow=2;
                     begincolumn=9;
                     highlightbmpindex=0;

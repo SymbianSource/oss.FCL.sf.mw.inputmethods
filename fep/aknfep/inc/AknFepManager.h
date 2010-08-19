@@ -131,6 +131,7 @@ enum TSpecialTextField
  		};    
 
 const TInt KChrKeyMultitapTimeout = 1000000;
+const TInt KFnKeyLongPressTimeout = 600000;
 /**
  * Translates ET9Eng language codes into localised descriptors and command Id's
  */
@@ -1364,6 +1365,32 @@ private:
        * @return none
        */
      void SetChangeModeByShiftAndSpace( TBool aFlag );
+     
+     /**
+      * Handle the Fn Key Monitor
+      *
+      * @since 3.0
+      * @return KErrNone if succeed, KErrDied if failed
+      */
+     static TInt HandleFnKeyPressMonitorCallback(TAny* aObj);
+     
+     /**
+      * Handle the Fn Key Monitor
+      * for Qwerty only.
+      *
+      * @since 3.0
+      */
+     void HandleFnKeyPressMonitor();
+     
+     /**
+     * Activate fn key press monitor to detect long pressing event
+     */
+     void ActivateFnkeyPressMonitor();
+     
+     /**
+     * Deactivate fn key press monitor
+     */
+     void DeactivateFnkeyPressMonitor();
 
 public:
     //Hash Key Manager Interface
@@ -2836,7 +2863,12 @@ private:
      * when rotating the screen, we need to consider it, e.g V-ITUT  to FSQ
      */
     TBool iMatchesListLaunched;
-
+    
+    /**
+     * monitor the long press event from Fn key
+     * when long press event occurs, Fn key will be set to Lock state
+     */
+    CPeriodic* iFnKeypressMonitor;
 
 public:
 
@@ -2895,6 +2927,10 @@ public:
     * @param aCallback, the callback when the timer expires
     */
     void MultitapThroughSCTCharL(TCallBack aCallBack);       	 
+    /**
+    * Notify mfne editor to toggle AM or PM for 12-hour time
+    */
+    void ChangeMfneAmPm();
 private:        
     TBool NumericResourceMultiTapTimerTimeoutL();    
     

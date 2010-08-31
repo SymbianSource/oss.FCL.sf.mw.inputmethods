@@ -15,7 +15,6 @@
 *
 */
 #include <AknSgcc.h>
-#include <AknIncallBubbleNotify.h>
 #include <avkon.hrh>
 #include <eikappui.h>
 #include <apgwgnam.h>
@@ -29,22 +28,11 @@
 #include <e32property.h>
 #include <avkondomainpskeys.h>
 #endif
-#include "peninputcmd.h"
+
 
 const TInt KAknCapServerUid = 0x10207218;
 const TInt KAknNotifySrvUid = 0x10281EF2;  
-
-const TInt KAutoRefreshTimer = 10; //ms
-const TInt KAutoRefreshLongTimer = 1000; //ms
-
-TInt AutoRefreshTimerCallback( TAny* aObject )
-    {
-    CPenUiWndCtrl* wnd = static_cast<CPenUiWndCtrl*>( aObject );
-    wnd->RefreshUI();
-
-    return 0;
-    }
-
+    
 CPenUiWndCtrl::CPenUiWndCtrl(RWindowGroup& aWndGroup,CFbsBitmap * aBitmap)
     :iWndGroup(aWndGroup),
      iBitmap(aBitmap),
@@ -56,7 +44,6 @@ CPenUiWndCtrl::~CPenUiWndCtrl()
 {
     delete iPopupWnd;
 
-	delete iIncallBubble;  
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS
 
     if ( GfxTransEffect::IsRegistered( this ) )
@@ -65,19 +52,8 @@ CPenUiWndCtrl::~CPenUiWndCtrl()
         // if aknnote gets destroyed without user interaction or timers
         GfxTransEffect::NotifyExternalState( ENotifyGlobalAbort );
         GfxTransEffect::Deregister(this); //Always deregister in destructor.
-        }    
-#endif   
-    if ( iAutoRefreshTimer && iAutoRefreshTimer->IsActive() )
-        {
-        iAutoRefreshTimer->Cancel();
         }
-    delete iAutoRefreshTimer; 
-    
-
-	Clean();
-
-    
-	delete iCursorWnd;   
+#endif    	
 }
 
 void CPenUiWndCtrl::ConstructL()
@@ -86,8 +62,7 @@ void CPenUiWndCtrl::ConstructL()
     SetComponentsToInheritVisibility();
 
     Window().SetRequiredDisplayMode( EColor16MA );
-    iIncallBubble = CAknIncallBubble::NewL();        
-
+    MakeVisible( EFalse );
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS    
     // only change registration, if not registered, don't register
     if (!GfxTransEffect::IsRegistered( this ) ) 
@@ -97,263 +72,28 @@ void CPenUiWndCtrl::ConstructL()
 #endif    
   //  ActivateL();
     iPopupWnd = CPenUiPopWnd::NewL(iWndGroup,iBitmap,this);
-    
-    iAutoRefreshTimer = CPeriodic::NewL( CActive::EPriorityStandard );
-
-    iCursorWnd = new (ELeave) CCursorWindow(this);
-    //iCursorWnd->ConstructL(this);
-    iCursorWnd->SetContainerWindowL(*this);
-    
-    // Update the cursor color
-    SetCursorColor();
-    
-    MakeVisible( EFalse );
 }
 
 
 void CPenUiWndCtrl::Draw(const TRect& aRect) const
     {
-    if (iNotUpdating)
-        return;
-
     CWindowGc& gc = SystemGc();
-    if (iShowPopup)
+        
+    if ( iShowPopup ) 
         {
         //layout is extended by popup
-        TRect rect = aRect;
-        rect.Intersection(iLayoutClipRect);
-        TPoint pos = rect.iTl - iLayoutClipRect.iTl;
-        gc.BitBlt(pos, iBitmap, rect);
-#ifdef FIX_FOR_NGA
-        //draw bubble
-        for ( TInt i = 0; i < iBubblesCtrl.Count(); ++i )
-            {
-            gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
-            }
-#endif   
+        gc.SetClippingRect( iLayoutClipRect );
+        gc.BitBlt( aRect.iTl, iBitmap, aRect );
+        // Add to fix NGA refresh problem
+        CCoeEnv::Static()->WsSession().Flush();
+        CCoeEnv::Static()->WsSession().Finish(); 
         return;
-        //layout is extended by popup
-        //gc.SetClippingRect( iLayoutClipRect );
         }
-#ifdef FIX_FOR_NGA
-    gc.BitBlt(TPoint(0, 0), iBitmap, Rect());
-    //draw bubble
-    for ( TInt i = 0; i < iBubblesCtrl.Count(); ++i )
-        {
-        gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
-        }
-#else    
+    
     gc.BitBlt(aRect.iTl,iBitmap,aRect);
-#endif     
-
-    }
-
-void CPenUiWndCtrl::RefreshUI()
-    {
-    StopRefreshTimer();
-    
-    if ( iShowPopup )
-        {
-        iPopupWnd->DrawNow();
-        }
-    else
-        {
-        DrawNow();
-        }
+    // Add to fix NGA refresh problem
     CCoeEnv::Static()->WsSession().Flush();
-    CCoeEnv::Static()->WsSession().Finish();
-    
-    }
-
-void CPenUiWndCtrl::Clean()
-    {
-    iCursorBmp = NULL;
-    iBubblesArea.Close();
-    iBubblesCtrl.Close();
-    iBubblesPos.Close();
-	iBubblesMaskArea.Close();
-	iPopRegion.Close();
-    iChangedBmp= NULL;
-    iBackground = EFalse;
-    iNotUpdating = EFalse;
-    }
-
-CCursorWindow::CCursorWindow(CPenUiWndCtrl* aParent)
-                            :iParent(aParent) 
-    {
-    }
-
-void CCursorWindow::SetCursorVisible(TBool aFlag)
-    {
-    iCursorVisible = aFlag;
-    DrawNow();
-    }
-void CCursorWindow::Draw(const TRect &aRect ) const
-    {
-    if(!iCursorVisible)
-        return;
-   
-    CWindowGc& gc = SystemGc();
-    iParent->DrawCursor(gc);  
-    }
-
-// ---------------------------------------------------------------------------
-// CPenUiWndCtrl::SetCursorColor
-// ---------------------------------------------------------------------------
-//
-void CPenUiWndCtrl::SetCursorColor()
-	{
-	// Set default cursor color to black
-	TRgb color( KRgbBlack );
-	// if the skin is enabled
-    if ( AknsUtils::AvkonSkinEnabled())
-        {
-        // Get the text color under current theme
-        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
-	                               color, 
-	                               KAknsIIDQsnTextColors, 
-	                               EAknsCIQsnTextColorsCG60 );
-        }
-    
-    // Set the cursor color
-    iCursorColor = color;
-	}
-
-void CPenUiWndCtrl::DrawCursor(CWindowGc& aGc) const
-    {
-    aGc.SetPenColor( iCursorColor );
-    aGc.SetBrushStyle(CGraphicsContext::ESolidBrush);
-    aGc.SetBrushColor( iCursorColor );
-    aGc.SetDrawMode(CGraphicsContext::EDrawModeNOTSCREEN);
-    aGc.SetPenStyle(CGraphicsContext::ESolidPen);
-    aGc.SetPenSize( TSize(1,1));
-    
-    TRect drawRect = iCursorRect;
-    if(!iPopRegion.IsEmpty() && iPopRegion.Intersects(iCursorRect))
-        {
-        RRegion r;
-        r.AddRect(iCursorRect);
-        const TRect* rl = iPopRegion.RectangleList();
-        
-        for(TInt i = 0 ; i < iPopRegion.Count(); ++i)
-            {
-            drawRect = iCursorRect;
-            drawRect.Intersection(rl[i]);
-            if(!drawRect.IsEmpty())
-                r.SubRect(drawRect);
-            }
-        
-        for(TInt ii = 0; ii < r.Count(); ++ii)
-            {
-        aGc.DrawRect(r.RectangleList()[ii]);
-            }
-        r.Close();
-        }
-    else
-        aGc.DrawRect(iCursorRect);
-
-    // restore normal draw mode
-    aGc.SetDrawMode(CGraphicsContext::EDrawModePEN);
-    aGc.SetBrushStyle(CGraphicsContext::ENullBrush);
-    
-    }
-void CPenUiWndCtrl::UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,const TRect& aRect)
-    {
-    if(iNotUpdating || !IsReadyToDraw())
-        {
-        //some times when layout is diabled, the cursor is still change its pos, and draw to the last place
-        //when layout enabled. So we set the cursor invisible, and wait for next cursor updating event.
-		iCursorWnd->SetCursorVisible(EFalse);
-        return;
-        }
-    
-    iCursorPos = aRect.iTl;
-	
-    if(iCursorRect != aRect)
-        {
-        iCursorRect = aRect;
-        iCursorWnd->SetRect(iCursorRect);
-        }
-    iCursorWnd->SetCursorVisible(aOnFlag);
-    }
-
-// ---------------------------------------------------------------------------
-// CPenUiWndCtrl::UpdateBubble
-// ---------------------------------------------------------------------------
-//
-void CPenUiWndCtrl::UpdateBubble( const TUint32 aCtrl, 
-		                          const CFbsBitmap* aBmp,
-		                          const CFbsBitmap* aMask,
-                                  const TRect& aPos,
-                                  TBool aFlag )
-    {
-
-	// Check whether the Ctrl address is exist
-	TInt idx = iBubblesCtrl.Find( aCtrl );
-
-    
-    if(aFlag)
-        {
-        if(KErrNotFound == idx)
-            {
-
-            iBubblesCtrl.Append( aCtrl );
-
-            iBubblesArea.Append(aBmp);
-            iBubblesMaskArea.Append(aMask);
-            iBubblesPos.Append(aPos);
-            }
-        else
-            {
-            iBubblesPos[idx] = aPos;
-            }
-
-        }
-    else
-        {
-        //remove
-        if(idx != KErrNotFound)
-            {
-
-            iBubblesCtrl.Remove( idx );
-
-            iBubblesArea.Remove(idx);
-            iBubblesMaskArea.Remove(idx);
-            iBubblesPos.Remove(idx);            
-            }        
-        }
-    Invalidate(Rect(), ETrue);
-    }
-void CPenUiWndCtrl::UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos)
-    {
-    iICFBmp = const_cast<CFbsBitmap*>(aBmp);
-    iIcfPos = aPos;
-    Invalidate(Rect(), ETrue);   
-    }
-
-
-// ---------------------------------------------------------------------------
-// CPenUiWndCtrl::UpdateChangedArea
-// ---------------------------------------------------------------------------
-//
-void CPenUiWndCtrl::UpdateChangedArea( const TUint32 aCtrl, 
-		const CFbsBitmap* aBmp,const TRect& aPos,TBool aFlag)
-    {
-    UpdateBubble( aCtrl, aBmp, 0, aPos, aFlag );
-    return;    
-    }
-
-
-void CPenUiWndCtrl::SetPopupArea(const TRect& aRect, TBool aFlag)
-    {
-    if(aFlag) //add pop area
-        {
-        iPopRegion.AddRect(aRect);
-        }
-    else
-        {
-        iPopRegion.SubRect(aRect);
-        }
+    CCoeEnv::Static()->WsSession().Finish(); 
     }
 
 TInt CPenUiWndCtrl::WndPriority()
@@ -394,11 +134,9 @@ TInt CPenUiWndCtrl::GetWndPriority()
     
 void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
     {
-    iCursorWnd->SetCursorVisible(EFalse);
     if (iResourceChange)
         {
         ActivateL();
-        iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputShow );
         MakeVisible( ETrue );
     	ClaimPointerGrab( ETrue );
         return;
@@ -412,7 +150,6 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
     iWndGroup.SetNonFading(ETrue);
     //ChangeSysteFadeStatus();
     ActivateL();
-    iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputShow );
    // MakeVisible( ETrue );
 	ClaimPointerGrab( ETrue );
 	
@@ -433,10 +170,6 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
         CAknTransitionUtils::GetDemarcation(CAknTransitionUtils::EPopup, 
                                             demarcation);
         GfxTransEffect::SetDemarcation(this, demarcation);
-
-        //todo fix NGA effects error
-        CCoeEnv::Static()->WsSession().Finish();
-        User::After( 1 );
         
         this->MakeVisible(ETrue);
         
@@ -458,7 +191,6 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
     {
     if (aResChanging)
         {
-        TRAP_IGNORE(iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputHide ));
         MakeVisible( EFalse );
         return;
         }
@@ -477,10 +209,6 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
         CAknTransitionUtils::GetDemarcation(CAknTransitionUtils::EPopup, 
                                             demarcation);
         GfxTransEffect::SetDemarcation(this, demarcation);
-
-        //todo fix NGA effects error
-        CCoeEnv::Static()->WsSession().Finish();
-        User::After( 1 );
         
         this->MakeVisible(EFalse);
         
@@ -495,20 +223,17 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
         }
 #endif // RD_UI_TRANSITION_EFFECTS_POPUPS
 
+    //iResourceChange = EFalse;
     iShowPopup = EFalse;
     iWndGroup.SetOrdinalPosition( -1, ECoeWinPriorityNormal-1 );
     DrawableWindow()->SetOrdinalPosition(-1, ECoeWinPriorityNormal-1 );
-    TRAP_IGNORE(iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputHide ));
+    //MakeVisible( EFalse );
+      
 }
 
 
 void CPenUiWndCtrl::ShowPopup( const TRect& aRectInScreen, const TRect& aRectInLayout, const TRect& aLayoutTrimRect )
     {
-    TPoint offset = aLayoutTrimRect.iTl;
-    offset += Position();
-    this->SetPosition( offset );
-    this->SetSize( aLayoutTrimRect.Size() );
-    
     iPopupWnd->PopUp( aRectInScreen, aRectInLayout );
     iLayoutClipRect = aLayoutTrimRect;
     iShowPopup = ETrue;
@@ -539,29 +264,22 @@ void CPenUiWndCtrl::Invalidate(const TRect& aRect,TBool /*aFullUpdate*/)
         iPopupWnd->Invalidate(aRect);
         iPopupWnd->MakeVisible(ETrue);//This is a temproary fix due to pop up UI not updated.
         iPopupWnd->Invalidate(aRect);
+        iPopupWnd->DrawNow();
         }
     else
+        //DrawNow(aRect);
         {
         iInvalidateRect = aRect;
         Window().Invalidate(aRect);
         }
-#ifdef FIX_FOR_NGA
-    RestartRefreshTimer();
-#endif
     }
 
 void CPenUiWndCtrl::OnActivate(EditorType aType)
     {
     //TBool dim = IsDimmed();
     RestoreSystemFadeStatus();
-	
-	// if we were opened under a global note
-	// we need to dim pen ui
-	if(aType != EGlobleNotesWithEditor && aType != EGlobleNotes)
-	   {
-	   //have to call this, otherwise pen UI is faded
-       iWndGroup.SetNonFading(ETrue);
-	   }
+    //have to call this, otherwise pen UI is faded
+    iWndGroup.SetNonFading(ETrue);
     
     if (iResourceChange)
         {
@@ -692,213 +410,6 @@ void CPenUiWndCtrl::SetResourceChange(TBool aResourceChange)
     iResourceChange = aResourceChange;
     }
     
-void CPenUiWndCtrl::HandleNGASpecificSignal(TInt aEventType, const TDesC& aEventData)
-    {
-    switch(aEventType)
-        {
-        case ESignalPopupWndClosed:
-            {               
-            ClosePopup();
-            }               
-            break;
-        case ESignalUpdateCursor :
-            {
-            struct SData
-                {
-                TBool onOff;
-                CFbsBitmap* bmp;
-                TRect rect;
-                } data;
-            
-            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateCursor(data.onOff,data.bmp,data.rect);
-              
-            }
-            break;
-        case ESignalPopupArea:
-            {
-            struct SData
-                {
-                TRect rr;
-                TBool flag;
-                } data;
-            
-            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            SetPopupArea(data.rr,data.flag);
-            }
-            break;
-        case ESignalUpdateICFArea:            
-            {
-            struct SData
-                {
-                CFbsBitmap* bmp;                        
-                TPoint pos;
-                } data;
-            
-            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateICFArea(data.bmp,data.pos);
-            }
-            break;
-        case ESignalUpdateBubble:
-            {
-            struct SData
-                {
-            	TUint32 ctrl;
-                TBool flag;
-                TRect pos;
-                CFbsBitmap* bmp;
-                CFbsBitmap* mask;
-                } data;
-            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateBubble( data.ctrl, data.bmp, data.mask, data.pos, data.flag );
-            }
-            break;
-        case ESignalUpdateChangedArea:
-            {
-            struct SData
-                {
-            	TUint32 ctrl;
-                TBool flag;
-                CFbsBitmap* bmp;
-                TRect pos;
-                } data;
-            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateChangedArea( data.ctrl, data.bmp, data.pos, data.flag );
-            }
-            break;
-        case ESignalRegisterBkControl:
-            {
-            
-            struct SData
-                {
-                //TBool bChangeFrameId;
-        
-                TAknsItemID frameID;
-                TAknsItemID centerID;        
-                RArray<TCommonBgCtrlSubItem> *subItems;
-                } data;
-            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            iSubItems = data.subItems;
-            iFrameID = data.frameID;
-            iCenterID = data.centerID;
-            iBackground = ETrue;
-            }
-            break;
-        case ESignalDisableUpdating:
-            {
-            iNotUpdating = * (reinterpret_cast<TBool*>( const_cast<TUint16*>( aEventData.Ptr() )));
-			if(iNotUpdating)
-			    {
-				UpdateCursor(EFalse,NULL,iCursorWnd?iCursorWnd->Rect():TRect(TPoint(0,0),TSize(0,0)));
-				}
-            }
-			break;
-        case ESignalDrawBackground:
-            {
-            struct SData
-                {
-                CFbsBitGc* gc;
-                CFbsBitmap* bmp;
-                TRect rect;
-                } data;
-            data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            DrawBubbleAsBackground(data.gc,data.bmp,data.rect);
-            }
-            break;
-        default:
-            break;
-        }
-    
-    }
-
-void CPenUiWndCtrl::DrawBkground(CWindowGc& aGc,const TRect& aRect)  const
-    {
-    
-    DrawFrame(aGc,aRect, iFrameID, iCenterID);
-    
-    for( TInt i = 0; i < (*iSubItems).Count(); i++ )
-        {
-        if( (*iSubItems)[i].iIsShow )
-            {
-            DrawFrame(aGc, (*iSubItems)[i].iRect, 
-                       (*iSubItems)[i].iFrameID, 
-                       (*iSubItems)[i].iCenterID );                
-            }
-        }       
-    
-    }
-
-void CPenUiWndCtrl::DrawBubbleAsBackground(CFbsBitGc* aGc, CFbsBitmap* aBmp, const TRect& aRect)
-    {
-    for(TInt i = 0 ; i < iBubblesArea.Count(); ++i)
-        {
-        if(iBubblesArea[i] != aBmp) //not draw same bitmap
-            {
-            //gc.BitBlt(iBubblesPos[i],iBubblesArea[i]);
-            TRect r = aRect;
-            TRect rect2 = iBubblesPos[i];
-            r.Intersection(rect2);
-            if(!r.IsEmpty())
-                {
-                TRect src = r;
-                r.Move(TPoint(-aRect.iTl.iX,-aRect.iTl.iY));
-                src.Move(TPoint(-rect2.iTl.iX,-rect2.iTl.iY));
-                aGc->BitBlt(r.iTl, iBubblesArea[i], src);
-                }
-            }
-        }
-    
-    }
-
-
-CCoeControl* CPenUiWndCtrl::ComponentControl(TInt) const
-    {
-    return iCursorWnd;
-    }
-TInt CPenUiWndCtrl::CountComponentControls() const
-    {
-    return 1;
-    }
-
-
-void CPenUiWndCtrl::DrawFrame(CWindowGc& aGc, const TRect& aRect,TAknsItemID aFrameID,
-                                                TAknsItemID aCenterID )  const
-    {    
-    MAknsSkinInstance* skin = AknsUtils::SkinInstance();
-    TRect innerRect = aRect;
-    innerRect.Shrink( 4, 4 );
-    
-    AknsDrawUtils::DrawFrame(
-                            skin, aGc, 
-                            aRect, innerRect, 
-                            aFrameID, aCenterID);
-    }
-
-void CPenUiWndCtrl::RestartRefreshTimer()
-    {
-    StopRefreshTimer();
-
-    TTimeIntervalMicroSeconds32 t1 = KAutoRefreshTimer * 1000;
-    TTimeIntervalMicroSeconds32 t2 = KAutoRefreshLongTimer * 1000;
-    iAutoRefreshTimer->Start( t1, t2, TCallBack(AutoRefreshTimerCallback, this) );
-    }
-
-void CPenUiWndCtrl::StopRefreshTimer()
-    {
-    if ( iAutoRefreshTimer->IsActive() )
-        {
-        iAutoRefreshTimer->Cancel();
-        }
-    }
-	
-void CPenUiWndCtrl::LiftUpPriority()
-    {
-	TInt priority = GetWndPriority();
-    iPriority =  priority;
-    iWndGroup.SetOrdinalPosition( 0, iPriority);
-    DrawableWindow()->SetOrdinalPosition( 0, iPriority);
-	}
-	
 //End Of File
 // class CInternalBkCtrl
 CInternalBkCtrl::CInternalBkCtrl(RWindowGroup& aWndGroup)    
@@ -984,5 +495,8 @@ void CPenUiPopWnd::Draw(const TRect& /*aRect*/) const
     {
     CWindowGc& gc = SystemGc();
     gc.BitBlt( TPoint(0,0), iBitmap, iRectInLayout ); 
+    // Add to fix NGA refresh problem
+    CCoeEnv::Static()->WsSession().Flush();
+    CCoeEnv::Static()->WsSession().Finish(); 
     }
 

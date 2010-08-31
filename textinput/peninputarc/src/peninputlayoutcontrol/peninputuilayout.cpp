@@ -28,8 +28,6 @@
 #include <AknDef.h>
 #include <AknsConstants.h>
 #include <coemain.h>
-#include <AknsUtils.h> 
-#include <AknsSkinInstance.h> 
 
 #ifdef RD_TACTILE_FEEDBACK
 #include <touchfeedback.h>
@@ -52,6 +50,9 @@ EXPORT_C CFepUiLayout::CFepUiLayout(MLayoutOwner* aLayoutOwner)
                             GetDefaultScreenSizeAndRotation(ptSize);
     //set the screen size in case any one need use it.                            
     iScreenSize = ptSize.iPixelSize;  
+#ifdef RD_TACTILE_FEEDBACK
+    iTactileSupported = EFalse;
+#endif // RD_TACTILE_FEEDBACK
     }
 
 // ---------------------------------------------------------------------------
@@ -65,8 +66,7 @@ EXPORT_C CFepUiLayout::~CFepUiLayout()
     //remove all registered area
     SignalOwner(ESignalDeRegisterAllFeedbackArea);
 #endif // RD_TACTILE_FEEDBACK 
-    delete iRootCtrl;   
-    delete iExtension;
+    delete iRootCtrl;        
     } 
 
 // ---------------------------------------------------------------------------
@@ -77,14 +77,7 @@ EXPORT_C CFepUiLayout::~CFepUiLayout()
 EXPORT_C void CFepUiLayout::BaseConstructL()
     {
     iRootCtrl = CFepUiLayoutRootCtrl::NewL(this);
-    __ASSERT_DEBUG(iLayoutOwner,User::Leave(EUiLayoutNotReady));  
-    iExtension = new(ELeave) CFepUiLayoutExt;
-#ifdef RD_TACTILE_FEEDBACK
-    iExtension->iTactileSupported = EFalse;
-#endif // RD_TACTILE_FEEDBACK
-    iExtension->iSkinInstance = AknsUtils::SkinInstance();
-    iExtension->iTouchFeedbackInstance = MTouchFeedback::Instance();
-	iExtension->iDisableDrawing = EFalse;
+    __ASSERT_DEBUG(iLayoutOwner,User::Leave(EUiLayoutNotReady));     
     }
 
 // ---------------------------------------------------------------------------
@@ -174,24 +167,6 @@ EXPORT_C TInt CFepUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputSendEditorTextAndCurPos:
             {
             TRAP_IGNORE(SendEditorTextAndCursorPosL(aData));
-            }
-            break;
-        case ECmdPeninputEnableOwnBitmap:
-            {
-            SetSelfBmpDeviceFlag(*(reinterpret_cast<TBool*>(aData)));
-            OnResourceChange(KPenInputOwnDeviceChange);
-            }
-            break;
-        case ECmdPeninputDisableLayoutDrawing:
-            {
-            DisableLayoutDrawing(*(reinterpret_cast<TBool*>(aData)));
-            }
-            break;
-        case ECmdPeninputEnalbeLayoutReDrawWhenActive:
-            {
-            TBool enableLayoutRedraw = ETrue;
-            TPtrC data(reinterpret_cast<TUint16*>(&enableLayoutRedraw),sizeof(TBool)/2);
-            SignalOwner(ESignalEnableLayoutRedrawWhenActive,data);
             }
             break;
         default: 
@@ -473,7 +448,7 @@ EXPORT_C void CFepUiLayout::OnActivate()
     iLayoutReady = ETrue;
     iRootCtrl->OnActivate();
 #ifdef RD_TACTILE_FEEDBACK  
-    iExtension->iTactileSupported = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
+    iTactileSupported = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
 #endif // RD_TACTILE_FEEDBACK      
     }
     
@@ -487,9 +462,6 @@ EXPORT_C void CFepUiLayout::OnDeActivate()
     {
     iLayoutReady = EFalse;
     iRootCtrl->OnDeActivate();
-    TBool enableLayoutRedraw = ETrue;
-    TPtrC data(reinterpret_cast<TUint16*>(&enableLayoutRedraw),sizeof(TBool)/2);
-    SignalOwner(ESignalEnableLayoutRedrawWhenActive,data);
     }    
 // ---------------------------------------------------------------------------
 // CFepUiLayout::SetLayoutPos
@@ -594,8 +566,6 @@ EXPORT_C void CFepUiLayout::UpdateArea(const CFepUiBaseCtrl* aCtrl,
                         const TRect& aRect,TBool aUpdateFlag,TBool aImmedFlag)
     {
     //do nothing if it's locked and aCtrl is not the owner.
-    if(!iLayoutReady || iExtension->iDisableDrawing)
-        return;
     TBool bUpdate = ETrue;
     if(!iLockedArea.IsEmpty() )
         {
@@ -821,7 +791,7 @@ EXPORT_C TBool CFepUiLayout::SupportTactileFeedback()
     {
     TBool tactileSupported;
 #ifdef RD_TACTILE_FEEDBACK
-    tactileSupported = iExtension->iTactileSupported;
+    tactileSupported = iTactileSupported;
 #endif // RD_TACTILE_FEEDBACK
 	return tactileSupported;
     }
@@ -834,7 +804,7 @@ EXPORT_C TBool CFepUiLayout::SupportTactileFeedback()
 EXPORT_C void CFepUiLayout::DoTactileFeedback(TInt aType)
     {
 #ifdef RD_TACTILE_FEEDBACK
-	iExtension->iTouchFeedbackInstance->InstantFeedback((TTouchLogicalFeedback)aType);
+    MTouchFeedback::Instance()->InstantFeedback((TTouchLogicalFeedback)aType);
 #endif // RD_TACTILE_FEEDBACK    
     }
 
@@ -848,16 +818,16 @@ EXPORT_C void CFepUiLayout::DoTactileFeedback(TInt aType, TBool aVibraEnable, TB
 #ifdef RD_TACTILE_FEEDBACK
 	if (aAudioEnable && aVibraEnable)
 		{
-	    iExtension->iTouchFeedbackInstance->InstantFeedback((TTouchLogicalFeedback)aType);
+		MTouchFeedback::Instance()->InstantFeedback((TTouchLogicalFeedback)aType);
 		}
 	else
 		{
-		TBool vibraEnabled = iExtension->iTouchFeedbackInstance->FeedbackEnabledForThisApp( ETouchFeedbackVibra );
-		TBool audioEnabled = iExtension->iTouchFeedbackInstance->FeedbackEnabledForThisApp( ETouchFeedbackAudio );
+		TBool vibraEnabled = MTouchFeedback::Instance()->FeedbackEnabledForThisApp( ETouchFeedbackVibra );
+		TBool audioEnabled = MTouchFeedback::Instance()->FeedbackEnabledForThisApp( ETouchFeedbackAudio );
 		
-		iExtension->iTouchFeedbackInstance->SetFeedbackEnabledForThisApp(aVibraEnable, aAudioEnable);
-		iExtension->iTouchFeedbackInstance->InstantFeedback((TTouchLogicalFeedback)aType);
-		iExtension->iTouchFeedbackInstance->SetFeedbackEnabledForThisApp(vibraEnabled, audioEnabled);
+		MTouchFeedback::Instance()->SetFeedbackEnabledForThisApp(aVibraEnable, aAudioEnable);
+		MTouchFeedback::Instance()->InstantFeedback((TTouchLogicalFeedback)aType);
+		MTouchFeedback::Instance()->SetFeedbackEnabledForThisApp(vibraEnabled, audioEnabled);
 		}
 #endif // RD_TACTILE_FEEDBACK  
 	}
@@ -900,27 +870,4 @@ EXPORT_C CFepUiCursor* CFepUiLayout::CreateCursor()
     {
     return iRootCtrl->CreateCursor();
     }
-
-EXPORT_C TBool CFepUiLayout::NotDrawToLayoutDevice()
-    {
-    return iExtension->iSelfBmpDeviceFlag;
-    }
-
-void CFepUiLayout::SetSelfBmpDeviceFlag(TBool aFlag)
-    {
-    iExtension->iSelfBmpDeviceFlag = aFlag;
-    }
-
-
-EXPORT_C void CFepUiLayout::DisableLayoutDrawing(TBool aFlag)
-    {
-    if(iExtension->iDisableDrawing == aFlag)
-        return;
-    iExtension->iDisableDrawing = aFlag;
-    TPtrC ptr;
-    ptr.Set(reinterpret_cast<const TUint16*>(&aFlag),sizeof(aFlag)/sizeof(TUint16));
-    
-    SignalOwner(ESignalDisableUpdating,ptr);
-    }
-
 //end of file

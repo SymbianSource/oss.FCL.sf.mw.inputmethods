@@ -61,8 +61,8 @@ EXPORT_C CFepLayoutEditAreaBase::CFepLayoutEditAreaBase(TRect aRect,
     	//Advanced Tactile feedback REQ417-47932
     	if(IsKindOfControl(ECtrlTactileFeedback))
     		{
-    		SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-    		aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveInput);
+    		SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+    		aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveKeypad);
     		}
     	}
             
@@ -553,7 +553,7 @@ EXPORT_C void CFepLayoutEditAreaBase::DrawContent(CBitmapContext* aGc, const TRe
 
     	    if ( AknsUtils::AvkonSkinEnabled() )
     	        {
-    	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
+    	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
     	                 color, KAknsIIDQsnTextColors, EAknsCIQsnTextColorsCG60 );
     	        }
             }

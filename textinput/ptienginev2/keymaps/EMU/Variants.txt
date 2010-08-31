@@ -188,12 +188,6 @@ Slovenian       ELangSlovenian.txt
 [PACKAGE ITUT 04 1028189a 102818A8 WINSONLY]
 Spanish         ELangSpanish.txt
 
-# PtiKeymappings_83.dll    
-[PACKAGE ITUT 83 2002BC84 2002BC85 WINSONLY]
-Spanish         ELangLatinAmericanSpanish.txt
-# PtiKeymappings_76.dll    
-[PACKAGE ITUT 76 2002BC82 2002BC83 WINSONLY]
-Portuguese      ELangBrazilianPortuguese.txt
 # PtiKeymappings_06.dll    
 [PACKAGE ITUT 06 1028189c 102818AA WINSONLY]
 Swedish         ELangSwedish.txt
@@ -237,16 +231,6 @@ Korean          KLangKorean.txt
 [PACKAGE ITUT 103 10282548 10282547 WINSONLY]   
 Galician        KLangGalician.txt
 
-# PtiKeymappings_157.dll    
-[PACKAGE ITUT 157 10282569 10282568 WINSONLY]
-English_Taiwan         ELangChineseLatin.txt
-# TODO: Add two other chinese englishes too
-# PtiKeymappings_51.dll    
-[PACKAGE ITUT 51 1028255B 1028255C WINSONLY]
-French          ELangCanadianFrench.txt
-#PtiKeymappings_161.dll    
-[PACKAGE ITUT 161 10281897 10282562 WINSONLY]
-English         ELangThaiLatin.txt
 # End of file.
 
 

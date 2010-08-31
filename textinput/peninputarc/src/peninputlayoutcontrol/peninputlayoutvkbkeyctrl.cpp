@@ -22,16 +22,13 @@
 #include <eikenv.h>
 #include <AknsConstants.h>
 #include <AknUtils.h>
-#include <featmgr.h>
 
 #include "peninputlayoutvirtualkeyctrl.h"
 #include "peninputlayoutvkb.h"
 #include "peninputlayout.h"
 #include "peninputpluginutils.h"
-#include "peninputcmd.h"
 
 _LIT( KKeyShiftCharacter, "\x2191");
-_LIT( KKeyStarCharacter, "\x002a");
 
 const TInt KDefaultKeyMargin = 10;
 
@@ -104,12 +101,6 @@ CVirtualKeyCtrl::~CVirtualKeyCtrl()
 void CVirtualKeyCtrl::ConstructL()
     {
     BaseConstructL();
-    
-    //tap accuracy enhancement
-    if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
-        {
-        EnableExtResponseArea( ETrue, TRect(TPoint(10,10),TSize(10,10)) );
-        }
     }
 
 // ---------------------------------------------------------------------------
@@ -118,7 +109,7 @@ void CVirtualKeyCtrl::ConstructL()
 // (other items were commented in a header).
 // ---------------------------------------------------------------------------
 //        
-void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)  
+void CVirtualKeyCtrl::DrawKeyText()    
     {
     TBool textlineset = EFalse;
 
@@ -132,12 +123,12 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
             if (iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) != KNullDesC)
                 {
                 TAknLayoutText textLayout;
-                textLayout.LayoutText(GetRect(), 
+                textLayout.LayoutText(Rect(), 
                                       iKeyboard->TextLineLayout(TVirtualKeyTextPos(i)));
 				TRgb color( KRgbBlack );  // sane default for nonskinned case			    
 			    if ( AknsUtils::AvkonSkinEnabled() )
 			        {
-			        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
+			        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
 				                               color, 
 				                               KAknsIIDQsnTextColors, 
 				                               iKeyboard->KeyTextColorGroup() );
@@ -147,22 +138,14 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
 				if( iKeyboard->ShiftIcon() &&
 					iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyShiftCharacter )
 					{
-					//CFbsBitGc* gc = GetGc();//static_cast<CFbsBitGc*>(BitGc());
+					CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
 					AknPenInputDrawUtils::DrawColorIcon( iKeyboard->ShiftIcon(),
-														 *aGc,
+														 *gc,
 														 textLayout.TextRect() );	
-					}
-				else if(iKeyboard->StarIcon() &&
-						iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyStarCharacter )
-					{
-					//CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
-					AknPenInputDrawUtils::DrawColorIcon( iKeyboard->StarIcon(),
-														 *aGc,
-														 textLayout.TextRect() );		
 					}
 				else				    
 				    {
-				    textLayout.DrawText(*aGc, iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)), 
+				    textLayout.DrawText(*BitGc(), iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)), 
                                     EFalse, color);
 				    }
                 }
@@ -172,9 +155,9 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
     if (!textlineset)
         {
 		TAknLayoutText textLayout;
-		textLayout.LayoutText(GetRect(), iKeyboard->iVKBTextLineLayout);
+		textLayout.LayoutText(Rect(), iKeyboard->iVKBTextLineLayout);
 	    
-	    //CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());    
+	    CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());    
 	    
 	    //charRect.Move(keyboardRect.iTl);
 	    //if(iKeyInfo->Dimmed())
@@ -186,7 +169,7 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
 	    if ( AknsUtils::AvkonSkinEnabled() || 
 	    	 iKeyboard->KeyTextColorGroup() != INVALID_COLOR_GROUP )
 	        {
-	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
+	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
 		                               color, 
 		                               KAknsIIDQsnTextColors, 
 		                               iKeyboard->KeyTextColorGroup() );
@@ -202,11 +185,11 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
 			}	
     	if( iKeyInfo->DisplayUnicode() && iKeyInfo->DisplayUnicode()->Length() != 0)
     		{
-    		textLayout.DrawText(*aGc, *iKeyInfo->DisplayUnicode(), EFalse, color);		
+    		textLayout.DrawText(*BitGc(), *iKeyInfo->DisplayUnicode(), EFalse, color);		
     		}
     	else
     		{
-    		textLayout.DrawText(*aGc, iKeyInfo->KeyUnicodes(), EFalse, color);		
+    		textLayout.DrawText(*BitGc(), iKeyInfo->KeyUnicodes(), EFalse, color);		
     		}		
     		
 	    //if(iKeyInfo->Dimmed())
@@ -236,7 +219,7 @@ void CVirtualKeyCtrl::DrawDimKey()
         TRect innerRect = Rect();
 		innerRect.Shrink( 4, 0 );
 		    
-		AknPenInputDrawUtils::Draw3PiecesFrame(UiLayout()->SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame(AknsUtils::SkinInstance(),
 								   *gc,
 								   Rect(),
 								   innerRect,
@@ -253,7 +236,7 @@ void CVirtualKeyCtrl::DrawDimKey()
         TRect innerrect = rect;
         innerrect.Shrink( KDefaultKeyMargin, KDefaultKeyMargin );
         
-        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(),
+        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(),
                                  *gc,
                                  rect,
                                  innerrect,
@@ -300,7 +283,7 @@ void CVirtualKeyCtrl::DrawDimKey()
     gc->SetPenColor(KRgbBlack);
     gc->SetBrushStyle( CGraphicsContext::ENullBrush );    
     //Draw text again.
-    DrawKeyText(gc); 
+    DrawKeyText(); 
     }
 
 // ---------------------------------------------------------------------------
@@ -314,28 +297,15 @@ void CVirtualKeyCtrl::DrawBmp(const TRect& aDestRect,const TRect& aSourceRect,
                                   TBool aInvertFlag)
     {
     CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
-    DrawBmp(gc,aDestRect,aSourceRect,aBmp,aMask,aInvertFlag);					     
-    }
-
-// ---------------------------------------------------------------------------
-// CVirtualKeyCtrl::DrawBmp
-// Draw bitmap
-// (other items were commented in a header).
-// ---------------------------------------------------------------------------
-//        
-void CVirtualKeyCtrl::DrawBmp(CFbsBitGc* aGc, const TRect& aDestRect,const TRect& aSourceRect,
-                                  const CFbsBitmap* aBmp,CFbsBitmap* aMask,
-                                  TBool aInvertFlag)
-    {
     if(aMask)
         {
         //TRect bmpRect(TPoint(0,0),aMask->SizeInPixels());
-        aGc->DrawBitmapMasked(aDestRect,aBmp,aSourceRect,aMask,aInvertFlag);        
+        gc->DrawBitmapMasked(aDestRect,aBmp,aSourceRect,aMask,aInvertFlag);        
         }
     else
         {
-        aGc->DrawBitmap(aDestRect,aBmp,aSourceRect);
-        }                            
+        gc->DrawBitmap(aDestRect,aBmp,aSourceRect);
+        }						     
     }
     
 // ---------------------------------------------------------------------------
@@ -358,7 +328,7 @@ void CVirtualKeyCtrl::DrawNormalStateKey()
         TRect innerRect = Rect();
 		innerRect.Shrink( 4, 0 );
 		    
-		AknPenInputDrawUtils::Draw3PiecesFrame(UiLayout()->SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame(AknsUtils::SkinInstance(),
 								   *gc,
 								   Rect(),
 								   innerRect,
@@ -374,31 +344,13 @@ void CVirtualKeyCtrl::DrawNormalStateKey()
         {
         TRect innerrect = rect;
         innerrect.Shrink( KDefaultKeyMargin, KDefaultKeyMargin );
-        TBool bHasDrawn = EFalse;
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            /*TBool ret = iKeyboard->PrepareKeyBmp(iKeyboard->NormalKeyBmp(),
-                                    iKeyboard->NormalKeyDev(),
-                                    rect,innerrect,
-                                    iKeyboard->KeySkinId(EKeyBmpNormal), 
-                                    KAknsIIDDefault,Rect());*/
-            TBool ret = iKeyboard->PrepareNormalKeyBmp(rect,innerrect,Rect());                                    
-            if(ret)
-                {
-                gc->BitBlt(rect.iTl,iKeyboard->NormalKeyBmp());
-                bHasDrawn = ETrue;
-                }
-            }
-        
-        if(!bHasDrawn)
-            {
-	        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
-	                                 *gc, 
-	                                 rect, 
-	                                 innerrect,
-	                                 iKeyboard->KeySkinId(EKeyBmpNormal), 
-	                                 KAknsIIDDefault); 
-            }
+
+        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+                                 *gc, 
+                                 rect, 
+                                 innerrect,
+                                 iKeyboard->KeySkinId(EKeyBmpNormal), 
+                                 KAknsIIDDefault); 
         }
     else if( iKeyboard->NonIrregularKeyBitmap( EKeyBmpNormal ) )
     	{
@@ -435,28 +387,9 @@ void CVirtualKeyCtrl::DrawNormalStateKey()
     gc->SetPenColor( KRgbBlack );
     gc->SetBrushStyle( CGraphicsContext::ENullBrush );    
     gc->SetFaded(EFalse);            
-    DrawKeyText(gc);        
+    DrawKeyText();        
     }
-
-CFbsBitGc* CVirtualKeyCtrl::GetGc()
-    {
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        //draw to highligh bitmap
-        if(Keyboard()->Bitmap()->SizeInPixels() != Rect().Size())
-            {
-            Keyboard()->Bitmap()->Resize(Rect().Size());
-            Keyboard()->HighlightDev()->Resize( Rect().Size());
-                //gc must be adjusted
-            Keyboard()->HighlightGc()->Activate(Keyboard()->HighlightDev());
-            Keyboard()->HighlightGc()->Resized();
-            }
-        return Keyboard()->HighlightGc();
-        }
-    else
-        return static_cast<CFbsBitGc*>(BitGc());
-    }
-
+    
 // ---------------------------------------------------------------------------
 // CVirtualKeyCtrl::DrawHighlightKey
 // Draw key in highlight state
@@ -465,11 +398,8 @@ CFbsBitGc* CVirtualKeyCtrl::GetGc()
 //                
 void CVirtualKeyCtrl::DrawHighlightKey()
     {    
-    CFbsBitGc* gc = GetGc();
-    if(UiLayout()->NotDrawToLayoutDevice())
-        gc->Activate( Keyboard()->HighlightDev() );
-    TRect rect = GetRect();
-
+    CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
+    TRect rect = Rect();
     TPoint bmpPos = rect.iTl;
     TRect bmpRect(TPoint(0,0),rect.Size());
    
@@ -477,12 +407,12 @@ void CVirtualKeyCtrl::DrawHighlightKey()
        iVirtualKeyDrawInfo.iVKPressedMiddleImgID.iMajor &&
        iVirtualKeyDrawInfo.iVKPressedRightImgID.iMajor)
         {
-        TRect innerRect = GetRect();
+        TRect innerRect = Rect();
 		innerRect.Shrink( 4, 0 );
 		    
-		AknPenInputDrawUtils::Draw3PiecesFrame(UiLayout()->SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame(AknsUtils::SkinInstance(),
 								   *gc,
-								   GetRect(),
+								   Rect(),
 								   innerRect,
 								   iVirtualKeyDrawInfo.iVKPressedLeftImgID,
 								   iVirtualKeyDrawInfo.iVKPressedMiddleImgID,
@@ -498,39 +428,20 @@ void CVirtualKeyCtrl::DrawHighlightKey()
     else if (iKeyboard->KeySkinId(EKeyBmpHighlight) != KAknsIIDNone)
         {
         TRect innerrect = rect;
-
         innerrect.Shrink( KDefaultKeyMargin, KDefaultKeyMargin );
-        TBool bHasDrawn = EFalse;
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            /*TBool ret = iKeyboard->PrepareKeyBmp(iKeyboard->HighightKeyBmp(),
-                                    iKeyboard->HighlightKeyDev(),
-                                    rect,innerrect,
-                                    iKeyboard->KeySkinId(EKeyBmpHighlight), 
-                                    KAknsIIDDefault,Rect());*/
-            TBool ret = iKeyboard->PrepareHighlightKeyBmp(rect,innerrect,Rect());                                    
-            if(ret)
-                {
-                gc->BitBlt(rect.iTl,iKeyboard->HighightKeyBmp());
-                bHasDrawn = ETrue;
-                }
-            }
-        
-        if(!bHasDrawn)
-            {        
-	        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
-	                                 *gc, 
-	                                 rect, 
-	                                 innerrect,
-	                                 iKeyboard->KeySkinId(EKeyBmpHighlight), 
-	                                 KAknsIIDDefault); 
-            }
+
+        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+                                 *gc, 
+                                 rect, 
+                                 innerrect,
+                                 iKeyboard->KeySkinId(EKeyBmpHighlight), 
+                                 KAknsIIDDefault); 
         }
     else if( iKeyboard->NonIrregularKeyBitmap( EKeyBmpHighlight ) )
     	{
         TRect srcRect(TPoint(0,0), 
                       iKeyboard->NonIrregularKeyBitmap( EKeyBmpHighlight )->SizeInPixels());
-        DrawBmp(gc, rect,
+        DrawBmp(rect,
                 srcRect,
                 iKeyboard->NonIrregularKeyBitmap( EKeyBmpHighlight ),
                 iKeyboard->NonIrregularKeyBitmap( EKeyBmpHighlightMask ),
@@ -563,15 +474,7 @@ void CVirtualKeyCtrl::DrawHighlightKey()
 
     gc->SetBrushStyle( CGraphicsContext::ENullBrush );    
     gc->SetFaded(EFalse);       
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-		DrawKeyText(Keyboard()->HighlightGc());
-        UpdateChangedArea(ETrue);
-		}
-    else
-        {
-		DrawKeyText(gc);
-		}   
+    DrawKeyText();    
 
     }
     
@@ -635,22 +538,7 @@ CFepUiBaseCtrl* CVirtualKeyCtrl::HandlePointerDownEventL(const TPoint& aPoint)
     
     //draw key new state
     iKeyboard->DrawBubble(iKeyInfo);
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        if( !(iKeyInfo->Dimmed()) && (iKeyInfo->Latched() || (PointerDown()&&!iKeyInfo->IsLatchKey())) )
-            {        
-            DrawHighlightKey();
-            }
-		else
-		    {
-			ReDraw();
-			}	
-        }
-    else
-        {
-        ReDraw();
-        UpdateArea( Rect() );
-        }         	
+    ReDraw();            	
     UpdateArea( Rect() );
 
     if(iKeyInfo->IsLatchKey())
@@ -689,17 +577,8 @@ CFepUiBaseCtrl* CVirtualKeyCtrl::HandlePointerUpEventL(const TPoint& aPoint)
         // When key down, latch key won't generate event.
         eventType = iKeyInfo->Latched() ? EEventVirtualKeyLatched : EEventVirtualKeyUnLatched;
         }     
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        //no need to draw again, just remove the highlight bitmap
-        UpdateChangedArea(EFalse);
-		Draw();
-        }
-    else
-        {
-        ReDraw();
-        UpdateAreaImmed( Rect() );
-        }
+    ReDraw();            
+    UpdateAreaImmed( Rect() );
     ReportKeyEvent(eventType); 
     
     
@@ -707,7 +586,7 @@ CFepUiBaseCtrl* CVirtualKeyCtrl::HandlePointerUpEventL(const TPoint& aPoint)
 	#ifdef RD_TACTILE_FEEDBACK
     if (UiLayout()->SupportTactileFeedback())
     	{
-   		UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
+   		UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
         }
 	#endif // RD_TACTILE_FEEDBACK 
     return this;
@@ -733,12 +612,7 @@ void CVirtualKeyCtrl::HandlePointerEnter(const TPoint& aPoint)
         
     iKeyboard->DrawBubble(iKeyInfo);    
     ReDraw();
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        UpdateChangedArea(ETrue);
-        }
-    else
-        UpdateArea( Rect() );
+    UpdateArea( Rect() );
       
     }
 
@@ -761,15 +635,8 @@ void CVirtualKeyCtrl::HandlePointerLeave(const TPoint& aPoint)
         }
         
     iKeyboard->ClearBubble(ETrue);
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        UpdateChangedArea(EFalse);
-        }
-    else
-        {
-        ReDraw();
-        UpdateArea( Rect() );
-        }
+	ReDraw();
+    UpdateArea( Rect() );
 	
 #ifdef RD_TACTILE_FEEDBACK
     if ( iKeyboard->GowithPointerDown() )
@@ -779,7 +646,7 @@ void CVirtualKeyCtrl::HandlePointerLeave(const TPoint& aPoint)
 			{
 			if (!Hiden())
 				{				
-				UiLayout()->DoTactileFeedback(ETouchFeedbackCharacterInputButton, ETrue, EFalse);				
+				UiLayout()->DoTactileFeedback(ETouchFeedbackBasicKeypad, ETrue, EFalse);				
 				}
 			}
 		}
@@ -790,15 +657,8 @@ void CVirtualKeyCtrl::CancelPointerDownL()
 	{
 	CFepUiBaseCtrl::CancelPointerDownL();
 	iKeyboard->ClearBubble(ETrue);
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        UpdateChangedArea(EFalse);
-        }
-    else
-        {	
-        ReDraw();
-        UpdateArea( Rect() );
-        }
+	ReDraw();
+    UpdateArea( Rect() );
 	}
 // ---------------------------------------------------------------------------
 // CVirtualKeyCtrl::ReDraw
@@ -808,24 +668,8 @@ void CVirtualKeyCtrl::CancelPointerDownL()
 //    
 void CVirtualKeyCtrl::ReDraw()
     {
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        if(iKeyInfo->Latched()||(PointerDown()&&!iKeyInfo->IsLatchKey()))
-            {        
-            DrawHighlightKey();
-            UpdateChangedArea(ETrue);
-            }
-		else
-            {
-			Draw();
-			UpdateArea(Rect(), EFalse);
-			}		
-        }
-    else
-        {
-        Draw();        
-        UpdateArea(Rect(), EFalse);
-        }    
+    Draw();    
+    UpdateArea(Rect(), EFalse);            
     }
     
 // ---------------------------------------------------------------------------
@@ -1043,10 +887,6 @@ void CVirtualRawKeyCtrl::CancelPointerDownL()
 //
 void CVirtualRawKeyCtrl::HandlePointerLeave(const TPoint& aPoint)
     {    
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        UpdateChangedArea(EFalse);
-        }
     TRawEvent event;
     event.Set(TRawEvent::EButton1Up,aPoint.iX,aPoint.iY);
     
@@ -1058,42 +898,9 @@ void CVirtualRawKeyCtrl::HandlePointerLeave(const TPoint& aPoint)
 		{		
 		if (!VirtualKey()->Dimmed() && !Hiden())
 			{
-			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
+			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
 			}
         }
 #endif //RD_TACTILE_FEEDBACK     
 	}
-
-TRect CVirtualKeyCtrl::GetRect()
-    {
-    TRect r(Rect());
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-		if(iKeyInfo->Latched()||(PointerDown()&&!iKeyInfo->IsLatchKey()))
-		    {
-			r.Move(-r.iTl.iX, -r.iTl.iY);
-			}
-        }
-    return r;
-    }
-	
-void CVirtualKeyCtrl::UpdateChangedArea(TBool aFlag)
-    {
-    struct SData
-        {
-    	TUint32 ctrl;
-        TBool flag;
-        CFbsBitmap* bmp;
-        TRect pos;
-        } data;
-        
-    data.ctrl = (TUint32)this;
-    data.flag = aFlag;
-    data.bmp = Keyboard()->Bitmap();//aFlag ? Keyboard()->iBitmap : 0;
-    data.pos = Rect();
-    TPtrC ptr;
-    ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-    
-    UiLayout()->SignalOwner(ESignalUpdateChangedArea,ptr);
-    }
 //end of file

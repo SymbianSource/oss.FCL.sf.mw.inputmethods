@@ -180,17 +180,12 @@ inline TBool CVirtualKeyboard::TextLineLayoutSet(TVirtualKeyTextPos aPos)
     
 inline void CVirtualKeyboard::SetDrawOpaqueBackground(TBool aNeedDraw)
     {
-	SetNeedRedrawBg(aNeedDraw);
+    iNeedDrawBackground = aNeedDraw;
     }
 
 inline CPenInputColorIcon* CVirtualKeyboard::ShiftIcon()
 	{
 	return iShiftIcon;	
-	}
-
-inline CPenInputColorIcon* CVirtualKeyboard::StarIcon()
-	{
-	return iStarIcon;	
 	}
 
 //class CVirtualKey

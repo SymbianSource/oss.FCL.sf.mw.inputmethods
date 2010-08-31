@@ -237,9 +237,6 @@ private: //Methods
     void UpdateCursorArea(const TRect& aRect, TBool aFlag);
     
     TInt OrderPosL();
-    void DrawCursor(CFbsBitGc* aGc,CFbsBitmapDevice* aDevice);    
-    void CreateCursorBmpL();
-    void ResizeCursorBmp();
 private:    // Data
 
     /** 
@@ -288,7 +285,7 @@ private:    // Data
      * graphic context
      * Not own
      */    
-    CFbsBitGc* iGc;
+    CBitmapContext* iGc;
     
     /**
      * The timer to restore the cursor while pen is dragging.
@@ -297,7 +294,6 @@ private:    // Data
     
     //flag tells whether the cursor is temprary disabled
     TBool iCursorTempDisabled;
-    CFbsBitmap* iBitmap; 
 friend class CFepUiLayoutRootCtrl;
     
     };

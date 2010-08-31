@@ -92,22 +92,4 @@ const CFepUiBaseCtrl* CFepUiLayout::LockareaOwner() const
     {
     return iLockedAreaOwner;
     }
-
-// ---------------------------------------------------------------------------
-// get skins instance
-// ---------------------------------------------------------------------------
-//
-inline MAknsSkinInstance* CFepUiLayout::SkinInstance()
-	{
-	return iExtension->iSkinInstance;
-	}
-
-// ---------------------------------------------------------------------------
-// get skins TouchFeedback instance
-// ---------------------------------------------------------------------------
-//
-inline MTouchFeedback* CFepUiLayout::TouchFeedbackInstance()
-	{
-	return iExtension->iTouchFeedbackInstance;
-	}
 //end of file    

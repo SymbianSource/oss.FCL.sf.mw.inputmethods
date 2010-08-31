@@ -31,8 +31,6 @@
 
 #include "peninputcmdparamext.h"
 
-#include <AknCapServerClient.h>
-
 // the maximum count of TUpdateArea that area pool can hold
 const TInt KMaxRectNumInBuf = 100;
 class CCoeControl;
@@ -77,7 +75,6 @@ class RMessage;
 class CEventQueue;
 class CPtiEngine;
 class CAknLayoutChangeWatcher;
-class CSubscriber;
 // DESCRIPTION
 /**
  * Class MRawEventHandler
@@ -385,9 +382,6 @@ public: // handle layoutowner event
 
     TInt HandleAppInfoChange(CPeninputServerSession* aSession,
                             const TDesC& aAppInfo, TPeninputAppInfo aType) const;
-    static TInt DiscreetPopChangeNotification(TAny* aObj);
-    
-    void HandleDiscreetPopNotification();
 protected:  // New functions
 
     /**
@@ -565,8 +559,6 @@ private:    // New functions
      * @since S60 v4.0
      */
     TInt GetSupportModeL();
-    
-    TInt GetSupportModeByLanguageL( TInt aInputLanguage );
 
 #ifdef RD_TACTILE_FEEDBACK    
     /**
@@ -972,16 +964,6 @@ private:    // Data
     CPenInputCrpServiceClient* iCrpService;
     //TBool iUiLayoutChange;
     CRepository* iSensorRepository;
-    
-    TInt iInputLanguage;
-	
-	// Add for notify discreept pop
-    CSubscriber*    iDiscreetPopSubscriber;
-    RProperty       iDiscreetPopProperty;
-    RAknUiServer    iAknUiSrv; 
-    TRect iDiscreetPopArea;
-	TBool iEnablePriorityChangeOnOriChange;
-    TBool iIsLayoutReDrawAllowWhenActive;
     };
 
 /**
@@ -1164,28 +1146,4 @@ private:
     
 #endif //C_CPENINPUTSERVER_H
 
-/**
- * CSubscriber
- * Subscribe discreept state.
- *
- * @since S60 v4.0
- */ 
-class CSubscriber : public CActive
-    {
-public:
-    CSubscriber(TCallBack aCallBack, RProperty& aProperty);
-    ~CSubscriber();
-
-public: // New functions
-    void SubscribeL();
-    void StopSubscribe();
-
-private: // from CActive
-    void RunL();
-    void DoCancel();
-
-private:
-    TCallBack   iCallBack;
-    RProperty&  iProperty;
-    };
 // End of File

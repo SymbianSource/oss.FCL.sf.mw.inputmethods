@@ -20,13 +20,10 @@
 #include <AknsUtils.h>
 #include <AknUtils.h>
 #include <AknsDrawUtils.h> 
-#include <AknBidiTextUtils.h>
 
 #include "peninputlayoutbubblectrl.h"
 #include "peninputlayout.h"
 #include <peninputpluginutils.h>
-#include <imageconversion.h> 
-#include "peninputcmd.h"
 
 const TInt KShrinkSize = 10;
 const TInt KDefaultTextColorIndex = EAknsCIQsnTextColorsCG60;
@@ -66,8 +63,6 @@ EXPORT_C CBubbleCtrl::CBubbleCtrl(const TRect& aRect,
         
 EXPORT_C CBubbleCtrl::~CBubbleCtrl()
     {
-	Close();
-	
     if ( iText )
         delete iText;
     
@@ -80,9 +75,7 @@ EXPORT_C CBubbleCtrl::~CBubbleCtrl()
 		{
 		delete iForgroundBmpMask;
 		iForgroundBmpMask = NULL;
-		}   
-	delete iBitmap;
-	delete iMaskBitmap; 
+		}    
     }
 
 EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
@@ -107,150 +100,29 @@ EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
 
 EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
     {
-    //SetRect(aRect);
+    SetRect(aRect);
 
     if(iFreeze)
         {
-        iShowing = ETrue; 
-        SetRect(aRect);
-        
-        SetHidenFlag(EFalse);   
-        /*
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            struct SData
-                {
-                TRect rr;
-                TBool flag;
-                } data;
-            data.rr = aRect;
-            data.flag = ETrue;
-            TPtrC ptr;
-            ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-        
-            UiLayout()->SignalOwner(ESignalPopupArea,ptr);
-            }  
-        */
+        iShowing = ETrue;              
+        SetHidenFlag(EFalse);        
         return;
         }
-    if( !iShowing || iNeedRedraw )
+    if(!iShowing || aRect != Rect() || iNeedRedraw)
         {
-        iShowing = ETrue;
-        SetRect(aRect);
-        
+        iShowing = ETrue;  
         TRect rect = Rect();
-        //SetRect(aRect);
+        SetRect(aRect);
         SetHidenFlag(EFalse);        
         BringToTop();
-        
-        /*
         //redraw the control under bubble control
         if(aRect != rect)        
-            {
-            // signal the server to remove the pop area added before since the rect 
-			// has been changed
-		    if(UiLayout()->NotDrawToLayoutDevice())
-		        {
-		        struct SData
-		            {
-		            TRect rr;
-		            TBool flag;
-		            } data;
-            
-		        data.rr = rect;
-		        data.flag = EFalse;
-		        TPtrC ptr;
-        
-		        ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-		        UiLayout()->SignalOwner(ESignalPopupArea,ptr);
-		        }
-		    else
-			    {
-				//redraw the control under bubble control
-				RootControl()->ReDrawRect(rect); 
-				}
-            }
-            */
-		/*
-        // signal server to add the pop area		
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            struct SData
-                {
-                TRect rr;
-                TBool flag;
-                } data;
-                
-            data.rr = aRect;
-            data.flag = ETrue;
-            TPtrC ptr;
-            ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-    
-            UiLayout()->SignalOwner(ESignalPopupArea,ptr);
-            }
-            */
-        
-		// signal server to copy the background as background bitmap for its own bitmap
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            //copy backgroud to bitmap. DrawFrame seems to have transparent effect, 
-            //so we need copy the background first.  
-            if(!iBitmap)
-                {
-                TRAP_IGNORE(CreateBmpDevL());
-                }
-        
-            CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
-            gc->Activate( BitmapDevice() ); 
-            CFbsBitGc* layoutGc = static_cast<CFbsBitGc*>(
-                                UiLayout()->LayoutOwner()->BitmapContext()); 
-            gc->BitBlt(TPoint(0,0),*layoutGc,Rect());
-            
-            //ensure other pop up draws correctly on the background
-            struct SData
-                {
-                CFbsBitGc* gc;
-                CFbsBitmap* bmp;
-                TRect rect;
-                } data;
-            
-            data.gc = gc;
-            data.bmp = iBitmap;
-            data.rect = Rect();
-            TPtrC ptr;
-            ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-            
-            UiLayout()->SignalOwner(ESignalDrawBackground,ptr);
-            }
+            RootControl()->ReDrawRect(rect);    
 
         Draw();
         
-		// notify sever to draw the bubble bitmap on the screen
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            struct SData
-                {
-            	TUint32 ctrl;
-                TBool flag;
-                TRect pos;
-                CFbsBitmap* bmp;
-                CFbsBitmap* mask;
-                } data;
-                
-            data.ctrl = (TUint32)this;
-            data.flag = ETrue;
-            data.pos = Rect();
-            data.bmp = iBitmap;
-            data.mask = iMaskBitmap;
-            TPtrC ptr;
-            ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));            
-            UiLayout()->SignalOwner(ESignalUpdateBubble,ptr);
-            }
-        else
-            {
-            rect.BoundingRect(aRect);
-            UpdateAreaImmed(rect,ETrue);     
-            }   
+        rect.BoundingRect(aRect);
+        UpdateAreaImmed(rect,ETrue);     
         
         iNeedRedraw = EFalse;
         }
@@ -282,23 +154,8 @@ EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
 EXPORT_C void CBubbleCtrl::Close()
     {
     TRect rect = Rect();
-    if(UiLayout()->NotDrawToLayoutDevice())
-	{
-	SetHidenFlag(ETrue);
-    struct SData
-        {
-        TRect rr;
-        TBool flag;
-        } data;
-    data.rr = rect;
-    data.flag = EFalse;
-    TPtrC ptr;
-    ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-
-    UiLayout()->SignalOwner(ESignalPopupArea,ptr);
-	}
-
-    iShowing = EFalse;   
+    
+    iShowing = EFalse;  
     
     if( iFreeze )
         {
@@ -313,36 +170,12 @@ EXPORT_C void CBubbleCtrl::Close()
         }
     else
         {
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            struct SData
-                {
-            	TUint32 ctrl;
-                TBool flag;
-                TRect pos;
-                CFbsBitmap* bmp;
-                } data;
-                
-            data.ctrl = (TUint32)this;
-            data.flag = EFalse;
-            data.pos = Rect();
-            data.bmp = iBitmap;
-            
-            TPtrC ptr;
-            ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-            UiLayout()->SignalOwner(ESignalUpdateBubble,ptr);
-            
-            }
-        else
-            {
-        
-            Clear();
-            SetHidenFlag(ETrue);    
-            BringToBack();
-    
-            RootControl()->ReDrawRect(rect);
-            UpdateAreaImmed(rect);
-            }        
+        Clear();
+        SetHidenFlag(ETrue);    
+        BringToBack();
+
+        RootControl()->ReDrawRect(rect);
+        UpdateAreaImmed(rect); 
         }
     }
 
@@ -371,17 +204,13 @@ EXPORT_C void CBubbleCtrl::Draw()
 	    {
 	    return;
 	    }
-    if(UiLayout()->NotDrawToLayoutDevice() && !iBitmap)
-        {
-        TRAP_IGNORE(CreateBmpDevL());
-        }
-		
+    
     CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
     
     //mask bitmaps
   	DrawOpaqueMaskBackground();  
   	
-    TRect rect = GetRect();          
+    TRect rect = Rect();        
     TRect innerRect = rect;
     
     if ( ( iLeftDiff == 0 ) && ( iTopDiff == 0 )
@@ -405,8 +234,7 @@ EXPORT_C void CBubbleCtrl::Draw()
 	// Draw background
 	if ( iBgSkinId.iMajor )
 	    {
-	
-    	AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), //UiLayout()->SkinInstace()
+    	AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
                          *gc,
                          rect,
                          innerRect,
@@ -415,7 +243,7 @@ EXPORT_C void CBubbleCtrl::Draw()
 	    }
 	else if( iFirstBmpId.iMajor && iMiddleBmpId.iMajor && iLastBmpId.iMajor )
 		{
-		AknPenInputDrawUtils::Draw3PiecesFrame( UiLayout()->SkinInstance(),
+		AknPenInputDrawUtils::Draw3PiecesFrame( AknsUtils::SkinInstance(),
 						 *gc,
 						 rect,
 						 innerRect,
@@ -430,28 +258,22 @@ EXPORT_C void CBubbleCtrl::Draw()
                      
     if ( iForgroundBmp )
         {
-        TRect iconRect;
-        iconRect.iTl = TPoint( innerRect.iTl.iX + iIconOffset.iWidth, 
-                innerRect.iTl.iY + iIconOffset.iHeight );
-        iconRect.SetWidth( iIconSize.iWidth );
-        iconRect.SetHeight( iIconSize.iHeight );
-        
-        if( iForgroundBmp->SizeInPixels() != iconRect.Size() )
+        if( iForgroundBmp->SizeInPixels() != innerRect.Size() )
         	{
-        	AknIconUtils::SetSize( iForgroundBmp, iconRect.Size(), EAspectRatioNotPreserved );
+        	AknIconUtils::SetSize( iForgroundBmp, innerRect.Size(), EAspectRatioNotPreserved );
         	}
         	
     	TRect srcRect( TPoint( 0, 0 ), iForgroundBmp->SizeInPixels() );
     	
     	if( iForgroundBmpMask )
     		{
-            if( iForgroundBmpMask->SizeInPixels() != iconRect.Size() )
+            if( iForgroundBmpMask->SizeInPixels() != innerRect.Size() )
             	{
-            	AknIconUtils::SetSize( iForgroundBmpMask, iconRect.Size(), EAspectRatioNotPreserved);
+            	AknIconUtils::SetSize( iForgroundBmpMask, innerRect.Size(), EAspectRatioNotPreserved);
             	}
             	        
-            gc->SetBrushStyle( CGraphicsContext::ENullBrush );
-    		gc->BitBltMasked( iconRect.iTl, 
+
+    		gc->BitBltMasked( innerRect.iTl, 
     						  iForgroundBmp, 
     						  srcRect,
     						  iForgroundBmpMask,
@@ -459,45 +281,24 @@ EXPORT_C void CBubbleCtrl::Draw()
     		}
         else
             {
-    		gc->BitBlt( iconRect.iTl,
+    		gc->BitBlt( innerRect.iTl,
     					iForgroundBmp,
     					srcRect );
             }            
         }
         
-    if ( iText && iText->Length() > 0 )
+    if ( iText )
         {
         gc->SetBrushStyle( CGraphicsContext::ENullBrush );
         TAknLayoutText textLayout;
-        textLayout.LayoutText(GetRect(), iTextFormat);
+        textLayout.LayoutText(Rect(), iTextFormat);
         TRgb color( KRgbBlack );  // sane default for nonskinned case
 	    if ( AknsUtils::AvkonSkinEnabled() )
 	        {
-	        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
+	        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
 	                               color, KAknsIIDQsnTextColors, iTextColorIndex );
 	        }
-         if ( iLangCode == ELangArabic ||
-              iLangCode == ELangHebrew ||
-              iLangCode == ELangFarsi  ||
-              iLangCode == ELangUrdu )
-             {
-              const CFont* font = textLayout.Font();
-              HBufC* visualBuf = HBufC::New( iText->Length() + KAknBidiExtraSpacePerLine );
-              *visualBuf = *iText;
-              TPtr buf = visualBuf->Des();
-
-              AknBidiTextUtils::ConvertToVisualAndClip(*iText, buf, *font,
-                                          textLayout.TextRect().Size().iWidth,
-                                          textLayout.TextRect().Size().iWidth,
-                                          AknBidiTextUtils::ERightToLeft );
-              textLayout.DrawText(*gc, buf, EFalse, color);
-              delete visualBuf;
-              visualBuf = NULL;
-             }
-         else
-             {
-             textLayout.DrawText(*gc, *iText, EFalse, color);
-             }
+	     textLayout.DrawText(*gc, *iText, EFalse, color);
         }
     }
            	
@@ -555,91 +356,6 @@ void CBubbleCtrl::UnFreeze( TBool aUpdate )
     iInvalidRect = TRect();
     }
 
-TRect CBubbleCtrl::GetRect()
-    {
-    TRect r(Rect());
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        r.Move(-Rect().iTl.iX, -Rect().iTl.iY);
-        }
-    return r;
-    }
-
-
-void CBubbleCtrl::SetBmpDevice(CFbsBitGc* aGc,CFbsBitmapDevice* aDevice)
-    {
-    TAny* extension;
-   
-    if(KErrNone == Extension_(KFepCtrlExtId,extension,0))
-        {
-        static_cast<CFepUiBaseCtrl::CFepUiBaseCtrlExtension*>(extension)->SetGc(aGc);
-        static_cast<CFepUiBaseCtrl::CFepUiBaseCtrlExtension*>(extension)->SetBmpDevice(aDevice);
-        }
-    }
-void CBubbleCtrl::CreateBmpDevL()
-    {
-    iBitmap = new ( ELeave ) CFbsBitmap;   
-    //iMaskBitmap = new ( ELeave ) CFbsBitmap;
-    CreateOwnDeviceL(iBitmap,0);
-    }
-
-EXPORT_C void CBubbleCtrl::HandleResourceChange(TInt aType)
-    {
-    if(aType == KPenInputOwnDeviceChange)
-        {
-        if(UiLayout()->NotDrawToLayoutDevice() && !iBitmap)
-            {
-            TRAP_IGNORE(CreateBmpDevL());
-            }
-        }
-    else
-        CFepUiBaseCtrl::HandleResourceChange(aType);
-    }
-
-EXPORT_C void CBubbleCtrl::SetRect(const TRect& aRect)
-    {
-	if( !( UiLayout()->NotDrawToLayoutDevice()))
-		{
-		if( aRect != Rect())
-			{
-			CFepUiBaseCtrl::SetRect( aRect );
-			}
-		}
-	else
-		{
-		if( iShowing )
-			{
-			struct SData
-				{
-				TRect rr;
-				TBool flag;
-				} data;
-
-			 // Remove the original region from list
-			data.rr = Rect();
-			data.flag = EFalse;
-			TPtrC ptrForRemove;
-			ptrForRemove.Set( 
-				reinterpret_cast<const TUint16*>(&data), sizeof(data)/sizeof(TUint16));
-			UiLayout()->SignalOwner( ESignalPopupArea, ptrForRemove );
-
-			// Add the new region to list
-			data.rr = aRect;
-			data.flag = ETrue;
-			TPtrC ptrForAdd;
-			ptrForAdd.Set( 
-				reinterpret_cast<const TUint16*>(&data), sizeof(data)/sizeof(TUint16));
-			UiLayout()->SignalOwner( ESignalPopupArea, ptrForAdd );     
-			}
-			
-		if( aRect != Rect())
-			{
-			CFepUiBaseCtrl::SetRect( aRect );
-			TRAP_IGNORE(ResizeDeviceL());
-			}                   
-		}
-    }
-
 // ---------------------------------------------------------------------------
 // CTooltipBubbleCtrl::NewL
 // factory function
@@ -673,8 +389,8 @@ CTooltipBubbleCtrl::CTooltipBubbleCtrl( const TRect& aRect,
 #ifdef RD_TACTILE_FEEDBACK
     if(IsKindOfControl(ECtrlTactileFeedback) && !Hiden() && UiLayout())
         {
-		SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveInput);
+		SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveKeypad);
         }  
 #endif // RD_TACTILE_FEEDBACK 
     }

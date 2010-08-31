@@ -68,9 +68,5 @@ EXPORTS
 	_ZN15RPeninputServer16SetInternalPopUpEi @ 67 NONAME
 	_ZN15RPeninputServer17SetEditorPriorityEi @ 68 NONAME
 	_ZN15RPeninputServer17SetResourceChangeEi @ 69 NONAME
-	_ZN15RPeninputServer16SupportInputModeEi @ 70 NONAME
-	_ZN15RPeninputServer16SetInputLanguageEi @ 71 NONAME
-	_ZN15RPeninputServer11ConnectAsycER14TRequestStatus @ 72 NONAME
-	_ZN15RPeninputServer18SetDataQueryPoppedEi @ 73 NONAME
-	_ZN15RPeninputServer31EnablePriorityChangeOnOriChangeEi @ 74 NONAME
+	_ZN15RPeninputServer16SupportInputModeEv @ 70 NONAME
 

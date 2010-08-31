@@ -497,11 +497,6 @@ TBool CGSPenInputImple::ShowWritingSpeedPageL()
 TBool CGSPenInputImple::ShowGuideLinePageL()
     {
     TInt currentItem = iModel->GuideLine();
-//    currentItem = ( 0 == currentItem ) ? 1 : 0;
-//    
-//    iModel->SetGuideLine(currentItem);
-//    
-//    return ETrue;
     
     if (currentItem == 1)
         {
@@ -658,30 +653,26 @@ TBool CGSPenInputImple::ShowTrailColourPageL()
 TBool CGSPenInputImple::ShowInputMethodForFindPageL()
     {
     TInt currentItem = iModel->InputMethodForFind();
-    currentItem = ( 0 == currentItem ) ? 1 : 0;
+
+    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
+                                      R_GS_INPUTMETHODFORFIND_TEXT_SETTING_PAGE, 
+                                      currentItem, 
+                                      iInputMethodForFindItems);
+
+    CleanupStack::PushL(dlg);
+    TBool ret = EFalse;
     
-    iModel->SetInputMethodForFind(currentItem);
-    
-    return ETrue;
-//    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
-//                                      R_GS_INPUTMETHODFORFIND_TEXT_SETTING_PAGE, 
-//                                      currentItem, 
-//                                      iInputMethodForFindItems);
-//
-//    CleanupStack::PushL(dlg);
-//    TBool ret = EFalse;
-//    
-//    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
-//        {
-//        if(currentItem != iModel->InputMethodForFind())
-//            {
-//            iModel->SetInputMethodForFind(currentItem);
-//            ret = ETrue;
-//            }
-//        }
-// 
-//    CleanupStack::Pop(dlg);
-//    return ret;
+    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
+        {
+        if(currentItem != iModel->InputMethodForFind())
+            {
+            iModel->SetInputMethodForFind(currentItem);
+            ret = ETrue;
+            }
+        }
+ 
+    CleanupStack::Pop(dlg);
+    return ret;
     }
 
 // ---------------------------------------------------------
@@ -690,14 +681,13 @@ TBool CGSPenInputImple::ShowInputMethodForFindPageL()
 //
 TBool CGSPenInputImple::ShowChineseFindMethodPageL()
     {
-    
+    TInt currentItem = iModel->ChineseFindMethod();
     TBool ret = EFalse;
     if ( !iChineseFindMethodItems )
         {
         // In that case, don't open setting page
-        return ret;
+        return EFalse;
         }
-    TInt currentItem = iModel->ChineseFindMethod();
     CAknRadioButtonSettingPage* dlg 
                  = new (ELeave) CAknRadioButtonSettingPage(
                    R_GS_CHINESEFINDMETHOD_TEXT_SETTING_PAGE,

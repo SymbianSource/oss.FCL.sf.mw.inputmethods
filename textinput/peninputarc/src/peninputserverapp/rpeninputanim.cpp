@@ -324,16 +324,5 @@ void RPeninputAnim::GetDSAState(TBool& aState)
     CommandReply(EPeninputOpRequestDSAState,KNullDesC8,args);
     //Command(EPeninputOpSimulateEvent,msgData);            
     }        
-
-// ---------------------------------------------------------------------------
-// RPeniputAnim::SetDiscreeptPop
-// ---------------------------------------------------------------------------
-//      	
-void RPeninputAnim::SetDiscreeptPop(const TRect& aArea)
-    {
-    TIpcArgs args (TIpcArgs::ENothing);        
-    TPckg<TRect> msgData(aArea);
-    args.Set(KMsgSlot1,&msgData);
-    CommandReply(EPeninputOpSetDiscreeptPop,KNullDesC8,args);           
-    } 
+    
 // End of File

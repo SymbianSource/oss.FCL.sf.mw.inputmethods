@@ -44,3 +44,6 @@ LIBRARY                 euser.lib
 LIBRARY             FeatMgr.lib                // feature manager
 LIBRARY                 tactileclickplugin.lib
 #endif // RD_TACTILE_FEEDBACK
+LIBRARY                 akncapserverclient.lib
+LIBRARY                 apparc.lib
+LIBRARY                 EIKCORE.LIB

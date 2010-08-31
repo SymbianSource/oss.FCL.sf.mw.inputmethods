@@ -223,16 +223,14 @@ NONSHARABLE_CLASS(CPtiEngineImpl) : public CBase
                                        RArray<TPtiNumericKeyBinding>& aResult,
                                        TBool aUseExtendedSet,
                                        TPtiKeyboardType aKeyboardtype = EPtiKeyboardNone);	
-        TPtiKeyboardType ActiveKeyboardType() const;        
+        TPtiKeyboardType ActiveKeyboardTypeL();
         TPtiKeyboardType FindFirstAvailableQwertyKeyboardType(TInt aLang) const;                                              	
         TPtiTextCase CaseForMappedCharacter(TChar aCharacter);
         void RemoveTrailingPunctuations();
         void RemoveTrailingPunctuations12Key();
-		void OnInputModeChanged(TPtiEngineInputMode aOldMode, TPtiEngineInputMode aNewMode);
 #ifdef FF_DUAL_LANGUAGE_SUPPORT
         void  SearchKeySequenceInSecLang(TPtrC aIn, TDes8& aOut);
 #endif // FF_DUAL_LANGUAGE_SUPPORT        
-        TBool IsCurrentCoreSupportCaseInfo();
 	private:	
 	    /*
 	    * Pointer to PtiEngine front end.

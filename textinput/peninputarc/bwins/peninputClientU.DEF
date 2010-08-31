@@ -59,9 +59,5 @@ EXPORTS
 	?SetGlobalNotes@RPeninputServer@@QAEXH@Z @ 58 NONAME ; void RPeninputServer::SetGlobalNotes(int)
 	?SetInternalPopUp@RPeninputServer@@QAEXH@Z @ 59 NONAME ; void RPeninputServer::SetInternalPopUp(int)
 	?SetResourceChange@RPeninputServer@@QAEXH@Z @ 60 NONAME ; void RPeninputServer::SetResourceChange(int)
-	?SupportInputMode@RPeninputServer@@QAEHH@Z @ 61 NONAME ; int RPeninputServer::SupportInputMode(int)
-	?SetInputLanguage@RPeninputServer@@QAEHH@Z @ 62 NONAME ; int RPeninputServer::SetInputLanguage(int)
-	?ConnectAsyc@RPeninputServer@@QAEHAAVTRequestStatus@@@Z @ 63 NONAME ; int RPeninputServer::ConnectAsyc(class TRequestStatus &)
-	?SetDataQueryPopped@RPeninputServer@@QAEXH@Z @ 64 NONAME ; void RPeninputServer::SetDataQueryPopped(int)
-	?EnablePriorityChangeOnOriChange@RPeninputServer@@QAEXH@Z @ 65 NONAME ; void RPeninputServer::EnablePriorityChangeOnOriChange(int)
+	?SupportInputMode@RPeninputServer@@QAEHXZ @ 61 NONAME ; int RPeninputServer::SupportInputMode(void)
 

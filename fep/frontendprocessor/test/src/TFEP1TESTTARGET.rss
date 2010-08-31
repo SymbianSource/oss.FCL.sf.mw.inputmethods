@@ -63,7 +63,16 @@ RESOURCE DIALOG r_tft_dialog
 			prompt="Phonetic-alphabet edwin";
 			id=EControlIdPhoneticAlphabetEdwin;
 			control=EDWIN {width=15;};
+			},
+		DLG_LINE
+			{
+			type=EEikCtEdwin;
+			prompt="CJK edwin";
+			id=EControlIdCJKEdwin;
+			control=EDWIN
+				{width=15;};
 			}
+			
 		};
     }
 

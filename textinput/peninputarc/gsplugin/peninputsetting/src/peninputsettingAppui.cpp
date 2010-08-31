@@ -41,7 +41,7 @@ const TUid KUidPeninputGsPlugin = { 0x1027510C };
 //
 void CPenInputSettingAppUi::ConstructL()
     {
-    BaseConstructL( EAknSingleClickCompatible );   
+    BaseConstructL();   
 
     CEikStatusPane* statusPane = StatusPane();
     CEikStatusPaneBase::TPaneCapabilities titlePaneCapability =

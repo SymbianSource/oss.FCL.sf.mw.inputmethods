@@ -181,7 +181,7 @@ TBool CSymbolList::CheckSymbolModel(const TDesC& aChar ,const THwrUdmRange& aRan
     }
 
 void CSymbolList::GetSymbolModelL(const TDesC& aChar, RArray<TPoint>& aModel ,TUint& aUnicode, const THwrUdmRange& aRange )
-    {CleanupClosePushL( aModel );
+    {
     TInt idx = -1;
     if ( GetSymbolIndex( aChar, idx, aRange ) != KErrNone )
         {
@@ -203,8 +203,7 @@ void CSymbolList::GetSymbolModelL(const TDesC& aChar, RArray<TPoint>& aModel ,TU
     for ( int i = 0; i < symbol->iPointVectorLen; i++ )
         {
         aModel.AppendL( symbol->iPointVector[i] );    
-        }  
-    CleanupStack::Pop( &aModel );
+        }    
     }
 
 void CSymbolList::DeleteSymbolModelL(const TDesC& aChar ,const THwrUdmRange& aRange )
@@ -292,8 +291,7 @@ void CSymbolList::ChangeSymbolTextL(const TDesC& aOldText, const TDesC& aNewText
     }
     
 void CSymbolList::GetModelIndexListL( RArray<TInt>& aList, const THwrUdmRange& aRange)
-    {CleanupClosePushL( aList );
-    
+    {
     aList.Reset();
     for ( int i = 0; i < iSymbolList.Count(); i++ )
         {
@@ -315,7 +313,6 @@ void CSymbolList::GetModelIndexListL( RArray<TInt>& aList, const THwrUdmRange& a
                 }
             }
         }
-    CleanupStack::Pop( &aList );
     }
 
 void CSymbolList::InternalizeL(const TDesC& /*aFile*/)
@@ -533,20 +530,19 @@ void CSymbolList::SavePresetShortcutL( TUint aUnicode, const TDesC& aShortcut )
     }
 
 void CSymbolList::GetAllPresetSymbolsL( RArray<TUint>& aPresets )
-    {CleanupClosePushL( aPresets );
+    {
     User::LeaveIfNull( iPresetModels );
     
     for ( int i = 0; i < iPresetModels->iSymbolList.Count(); i ++ )
         {
         aPresets.AppendL( iPresetModels->iSymbolList[i]->iPresetCode );
         }
-    CleanupStack::Pop( &aPresets );
     }
 
 void CSymbolList::GetPresetSymbolByUnicodeL( TUint aUnicode, RArray<TPoint>& aModel, TDes& aShortcut )
     {
-	CleanupClosePushL( aModel );
-    User::LeaveIfNull( iPresetModels ); 
+    User::LeaveIfNull( iPresetModels );
+    
     for ( int i = 0; i < iPresetModels->iSymbolList.Count(); i ++ )
         {
         CSymbol* sym = iPresetModels->iSymbolList[i];
@@ -561,13 +557,11 @@ void CSymbolList::GetPresetSymbolByUnicodeL( TUint aUnicode, RArray<TPoint>& aMo
             for ( int i = 0; i < sym->iPointVectorLen; i++ )
                 {
                 aModel.AppendL( sym->iPointVector[i] );    
-                }
-            CleanupStack::Pop( &aModel );   
+                }    
             return;
             }
         }
-    CleanupStack::Pop( &aModel );
-    User::Leave( KErrNotFound ); 
+    User::Leave( KErrNotFound );    
     }
     
 void CSymbolList::SignalMutex(TAny* aMutex)

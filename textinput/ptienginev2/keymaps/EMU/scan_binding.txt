@@ -46,7 +46,6 @@ scan_binding (4 3)EPtiKeyHash
 [KEYBOARD BLOCK QWERTY STANDARD]
 
 # no binding for (1 1), it is backlight key in E70
-scan_binding (1 1)EPtiKeyQwertyAtCharacter
 scan_binding (1 2)EPtiKeyQwerty1
 scan_binding (1 3)EPtiKeyQwerty2
 scan_binding (1 4)EPtiKeyQwerty3
@@ -86,7 +85,6 @@ scan_binding (3 11)EPtiKeyQwertySemicolon
 scan_binding (3 12)EPtiKeyQwertyApostrophe
 
 # no binding for (4 1)
-scan_binding (4 1)0x5b
 scan_binding (4 2)EPtiKeyQwertyZ
 scan_binding (4 3)EPtiKeyQwertyX
 scan_binding (4 4)EPtiKeyQwertyC

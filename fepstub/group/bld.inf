@@ -1,0 +1,59 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:           
+*       Bldmake component description file.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <platform_paths.hrh>
+
+PRJ_EXPORTS
+
+../rom/aknfep_variant.iby                   CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(aknfep_variant.iby)
+../rom/aknfepResources.iby                  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(aknfepResources.iby)
+../rom/aknfepuiinterface.iby                CORE_MW_LAYER_IBY_EXPORT_PATH(aknfepuiinterface.iby)
+
+../inc/aknfeppeninputimeplugin.h    |../../inc/aknfeppeninputimeplugin.h
+// Generic configuration interface for component cenrep settings
+../conf/aknfep.confml                  APP_LAYER_CONFML(aknfep.confml)
+../conf/aknfep_japan.confml            CONFML_EXPORT_PATH(aknfep_japan.confml,japan)
+../conf/aknfep_thai.confml             CONFML_EXPORT_PATH(aknfep_thai.confml,thai)
+../conf/aknfep_101F876D.crml           APP_LAYER_CRML(aknfep_101F876D.crml)
+
+
+PRJ_MMPFILES
+//gnumakefile aknfep_icons_dc.mk
+../group/AknFep.mmp
+../UiPlugins/AknFepUiInterface/group/AknFepUiInterface.mmp
+
+
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE aknfepuictrls.mif
+OPTION HEADERFILE aknfepuictrls.mbg
+OPTION SOURCES -c8,1 qgn_indi_fep_arrow_left.bmp -c8,1 qgn_indi_fep_arrow_right.bmp -c8,1 qgn_indi_fep_arrow_up.bmp -c8,1 qgn_indi_fep_arrow_down.bmp
+END
+// End of file

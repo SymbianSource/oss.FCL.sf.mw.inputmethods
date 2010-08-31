@@ -161,14 +161,6 @@ TUint CFepLayoutMIcfCustomWrap::LineBreakClass(TUint aCode, TUint& aRangeStart,
         {
         case 0x0020: // unicode for space
             return MTmCustom::EBkLineBreakClass;//ELineBreakClasses;
-        case 0x0023: // unicode for #
-        case 0x002a: // unicode for *
-        case 0x0040: // unicode for @
-        case 0x0026: // unicode for &
-        case 0x003d: // unicode for =
-        	return MTmCustom::EB2LineBreakClass;
-        case 0x005f: // unicode for _
-            return MTmCustom::EBaLineBreakClass;
         default:
             break; // carry on
         }

@@ -19,7 +19,6 @@
 #define C_CFEPLAYOUTPOPUPWND_H
 
 #include <peninputlayoutctrlgroup.h>
-#include <gdi.h>
 /**
  *  CButtonBase
  *
@@ -30,34 +29,6 @@
  */
 class CFepLayoutPopupWnd : public CControlGroup
     {
-private:
-    class CPopupWndExt : public CBase
-        {
-        public:
-            CFbsBitmap* BackupBitmap(){ return iBitmap;}
-            CFbsBitGc* BackupGc() { return iGc;}
-            CFbsBitmapDevice* BackupDevice() { return iBitmapDevice;}
-            void SetRect(const TRect& aRect);
-            TRect Rect() { return iRect;}
-            
-            static CPopupWndExt* NewL();
-            void ContructBkDeviceL(const TSize& aSize,const TDisplayMode& aMode);
-
-            ~CPopupWndExt() 
-                {
-                delete iBitmapDevice;
-                delete iGc;
-                delete iBitmap;
-                }
-        private:
-            void ResizeBackupDeviceL(const TSize& s);
-        private:
-            CFbsBitmap* iBitmap;
-            CFbsBitGc* iGc;
-            CFbsBitmapDevice* iBitmapDevice;
-            TRect iRect;
-
-        };
 public: 
     enum TDisplayPosition
         {
@@ -125,7 +96,6 @@ public:
     IMPORT_C virtual void OnDeActivate();
     
     IMPORT_C void ReDrawRect(const TRect& aRect);
-    IMPORT_C void HandleResourceChange(TInt aType);
 protected:
 	
     /**
@@ -160,8 +130,6 @@ private:
      * @since S60 V4.0        
      */           	
 	IMPORT_C virtual void OnDisplay(); 
-	void DisableDrawingInGroup();
-	void EnableDrawingInGroup();
 private:    
 	/*
 	 * Flag tells whether the pop up window is shown
@@ -196,7 +164,7 @@ private:
     /**
      * Reserved item2
      */
-     CPopupWndExt* iExt;
+     TInt iReserved2;	       	 
     };
 
 #endif //C_CFEPLAYOUTPOPUPWND_H

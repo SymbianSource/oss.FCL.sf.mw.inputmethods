@@ -67,7 +67,7 @@ public:
      * @param aCharacterTimerFlag Flag indicates whether needs to set character timer        
      *                            Default value is ETrue, set the character timer   
      */                               
-    IMPORT_C virtual void EndStrokeL(TBool aCharacterTimerFlag);        
+    virtual void EndStrokeL(TBool aCharacterTimerFlag);        
 
     /**
      * A callback function. Called when character timer out.
@@ -599,7 +599,7 @@ private:
      * @param aFrameRect frame rect
      * @return None
      */	
-	IMPORT_C virtual void DrawFrame( const TRect& aFrameRect );
+	virtual void DrawFrame( const TRect& aFrameRect );
 private:
     /**
      * mask pen color
@@ -772,7 +772,7 @@ public:
      * Called when character timer out, or write text from the begining again.
      * @since S60 V4.0
      */                                       
-    IMPORT_C virtual void EndStrokeAndClearL(); 
+    virtual void EndStrokeAndClearL(); 
     
     /**
      * From CFepUiBaseCtrl
@@ -783,7 +783,7 @@ public:
      * @since S60 V4.0
      * @param aFocusedFlag ETrue if got focused, otherwise EFalse
      */                                
-    IMPORT_C virtual void CancelPointerDownL();
+    virtual void CancelPointerDownL();
     
     /**
      * Enable/Disable fade
@@ -860,7 +860,7 @@ private:
      * @param aDrawFlag Flag to tell whether to draw or erase stroke
      * @return The affected rect
      */        
-    IMPORT_C virtual TRect DrawPoint(const TPoint& aPoint,TBool aDrawFlag);
+    virtual TRect DrawPoint(const TPoint& aPoint,TBool aDrawFlag);
     
     /**
      * From CHwrWndBase
@@ -872,7 +872,7 @@ private:
      * @param aDrawFlag Flag to tell whether to draw or erase stroke
      * @return The affected rect
      */        
-    IMPORT_C virtual TRect DrawLine(const TPoint& aPt1,const TPoint& aPt2,TBool aDrawFlag = ETrue);
+    virtual TRect DrawLine(const TPoint& aPt1,const TPoint& aPt2,TBool aDrawFlag = ETrue);
 
     //from base class CHwrWndBase
     /**

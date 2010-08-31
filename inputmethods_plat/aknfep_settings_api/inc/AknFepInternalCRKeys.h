@@ -339,48 +339,6 @@ const TUint32 KAknFepLongPressNumberEntryOnQwerty = 0x00000021;
  */
 const TUint32 KAknFepShiftCopyPasteOnQwerty = 0x00000022;
 
-/*
- * This key is used for arabic finger hwr to set or get the default arabic finger hwr orientation.
- * 0 is for portrait and 1 is for landscape.
- */
-const TUint32 KAknFepDefaultArabicFingerHwrOrientation = 0x00000023;
-
-/**
- * This key is required for the Korean Combine Word flag. Korean
- * peninputplugin uses it to store the user selection for Korean Combine 
- * Words settings.
- * Korean Combining Version is 0x00000001,
- * Korean ConsonantSsangKiyeok combining stage is 0x00000002,
- * Korean ConsonantSsangTikeut combining stage is 0x00000004,
- * Korean ConsonantSsangPieup combining stage is 0x00000008,
- * Korean ConsonantSsangSios combining stage is 0x00000010,
- * Korean ConsonantSsangCieuc combining stage is 0x00000020,
- * Korean ConsonantYaPlusI combining stage is 0x00000040,
- * Korean ConsonantYuPlusI combining stage is 0x00000080,
- * Korean Combining Word Setting On is 0x00000100
- *
- */
-const TUint32 KAknFepKoreanCombineWordFlag = 0x00000024;              
-
-/*
- * This key is used for arabic finger hwr to set or get the default number mode.
- * in number table.
- * 0 is for latin number and 1 is for native number.
- */
-const TUint32 KAknFepDefaultArabicNumberMode = 0x00000025;
-
-/**
- * This key is used for storing the last used input mode in portrait orientation.
- * With adding portrait FSQ, users have two choices for portrait input mode,
- * ITU-T and portrait FSQ.  The last used input mode in portrait orientation is
- * kept to have the input mode if the phone changes the orientation to landscape
- * and back to portrait.
- * 
- * Only EPluginInputModeItut(8) and EPluginInputModePortraitFSQ(128) are valid,
- * and the default value is EPluginInputModeItut.
- */
-const TUint32 KAknFepLastUsedPortraitInput = 0x00000026;
-
 #endif
 
 // End of file

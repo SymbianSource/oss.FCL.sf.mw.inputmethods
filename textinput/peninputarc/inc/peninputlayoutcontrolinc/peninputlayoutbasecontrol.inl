@@ -215,7 +215,35 @@ inline CFepUiLayoutRootCtrl* CFepUiBaseCtrl::RootControl()
     {
     return iRootCtrl;
     }
+    
+// ---------------------------------------------------------------------------
+// get graphics context for sprite or window
+// ---------------------------------------------------------------------------
+//   
+inline CBitmapContext* CFepUiBaseCtrl::BitGc()
+    {
+    return iLayoutOwner->BitmapContext();
+    }
+
+// ---------------------------------------------------------------------------
+// get Bitmap device for sprite or window
+// ---------------------------------------------------------------------------
+//
+inline CFbsBitmapDevice* CFepUiBaseCtrl::BitmapDevice()
+    {
+    return iLayoutOwner->BitmapDevice();
+    }
+
+// ---------------------------------------------------------------------------
+// get Mask bitmap device for sprite or window
+// ---------------------------------------------------------------------------
+//
+inline CFbsBitmapDevice* CFepUiBaseCtrl::MaskBitmapDevice()
+    {
+    return iLayoutOwner->MaskBmpDevice();
+    }
  
+
 // ---------------------------------------------------------------------------
 // get control pointer down status
 // ---------------------------------------------------------------------------
@@ -234,6 +262,14 @@ inline void CFepUiBaseCtrl::SetPointerDown(TBool aFlag)
     iPointerDown = aFlag;
     if(!aFlag)
         iPointerLeft = EFalse;
+    }
+// ---------------------------------------------------------------------------
+// get control background maks bmp
+// ---------------------------------------------------------------------------
+//
+inline CFbsBitmap* CFepUiBaseCtrl::BkMaskBmp()
+    {
+    return iBkMaskBmp;
     }
     
 // ---------------------------------------------------------------------------
@@ -376,6 +412,6 @@ inline TInt CFepUiBaseCtrl::OrderPos() const
 //
 inline TInt CFepUiBaseCtrl::TactileFeedbackType() const
     {
-    return iExtension->TactileFeedbackType();	
+    return reinterpret_cast<CFepUiBaseCtrlExtension*>(iReservered1)->TactileFeedbackType();	
     }
 //end of file

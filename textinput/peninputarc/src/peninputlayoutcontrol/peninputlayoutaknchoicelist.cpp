@@ -208,7 +208,7 @@ EXPORT_C void CFepLayoutAknChoiceList::Draw()
         gc->Activate( BitmapDevice() );
 
         const TRect& r = Rect();
-        MAknsSkinInstance* skin = UiLayout()->SkinInstance();
+        MAknsSkinInstance* skin = AknsUtils::SkinInstance();
         TRAP_IGNORE(CWindowGc& sysgc = *(RootControl()->GetRWindowGcL()));
         //if ( !AknsDrawUtils::Background( skin, iBgContext, sysgc, r ) )
             {
@@ -277,7 +277,7 @@ void CFepLayoutAknChoiceList::UpdateTextColors()
     TRgb color( KRgbBlack );  // sane default for nonskinned case
     if ( AknsUtils::AvkonSkinEnabled() )
         {
-        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
+        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
                                color, KAknsIIDQsnTextColors, EAknsCIQsnTextColorsCG8 );
         }
 
@@ -286,7 +286,7 @@ void CFepLayoutAknChoiceList::UpdateTextColors()
 
     if ( AknsUtils::AvkonSkinEnabled() )
         {
-        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
+        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
                                color, KAknsIIDQsnTextColors, EAknsCIQsnTextColorsCG8 );
         }
 

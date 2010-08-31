@@ -701,9 +701,9 @@ EXPORTS
 	_ZN18CTransparentHwrWnd27PenTraceDecorationActivatedEv @ 700 NONAME
 	_ZTI26CPeninputPenTraceDecorator @ 701 NONAME ; #<TI>#
 	_ZTV26CPeninputPenTraceDecorator @ 702 NONAME ; #<VT>#
-	_ZN22CFepLayoutMultiLineIcf17TooltipBubbleCtrlEv @ 703 NONAME
-	_ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16RK5TRecti @ 704 NONAME
-	_ZN22CFepLayoutMultiLineIcf11HideTooltipEv @ 705 NONAME
+        _ZN22CFepLayoutMultiLineIcf17TooltipBubbleCtrlEv @ 703 NONAME
+        _ZN22CFepLayoutMultiLineIcf12ShowTooltipLERK7TDesC16 @ 704 NONAME
+        _ZN22CFepLayoutMultiLineIcf11HideTooltipEv @ 705 NONAME        
 	_ZTI18CTooltipBubbleCtrl @ 706 NONAME
 	_ZTV18CTooltipBubbleCtrl @ 707 NONAME
 	_ZN12CFepUiLayout20RegisterFeedbackAreaEiRK5TRecti @ 708 NONAME
@@ -715,30 +715,4 @@ EXPORTS
 	_ZN22CFepLayoutMultiLineIcf14InfoBubbleCtrlEv @ 714 NONAME
 	_ZN22CFepLayoutMultiLineIcf21SetInfoBubbleCtrlSizeERK5TSize @ 715 NONAME
 	_ZN22CFepLayoutMultiLineIcf21ShowByteWarningBubbleERK7TDesC16 @ 716 NONAME
-	_ZN16CVirtualKeyboard24SetPreviewBubbleRendererEP33MPeninputVkbPreviewBubbleRenderer @ 717 NONAME
-	_ZN36CPeninputAknVkbPreviewBubbleRenderer4NewLEv @ 718 NONAME
-	_ZTI36CPeninputAknVkbPreviewBubbleRenderer @ 719 NONAME
-	_ZTV36CPeninputAknVkbPreviewBubbleRenderer @ 720 NONAME
-	_ZN11CHwrWndBase10EndStrokeLEi @ 721 NONAME
-	_ZN18CTransparentHwrWnd9DrawFrameERK5TRect @ 722 NONAME
-	_ZN21CTransparentHwrWndExt18CancelPointerDownLEv @ 723 NONAME
-	_ZN21CTransparentHwrWndExt18EndStrokeAndClearLEv @ 724 NONAME
-	_ZN21CTransparentHwrWndExt8DrawLineERK6TPointS2_i @ 725 NONAME
-	_ZN21CTransparentHwrWndExt9DrawPointERK6TPointi @ 726 NONAME
-	_ZN16CVirtualKeyboard11SetStarIconEP18CPenInputColorIcon @ 727 NONAME
-	_ZN20CFepLayoutChoiceList16SetTextAlignmentEN16CGraphicsContext10TTextAlignE @ 728 NONAME
-	_ZN14CFepUiBaseCtrl21ActiveExtResponseAreaEv @ 729 NONAME
-	_ZN14CFepUiBaseCtrl21CancelExtResponseAreaEv @ 730 NONAME
-	_ZN14CFepUiBaseCtrl21EnableExtResponseAreaEiRK5TRect @ 731 NONAME
-	_ZN11CButtonBase14BaseConstructLEv @ 732 NONAME
-	_ZN11CBubbleCtrl20HandleResourceChangeEi @ 733 NONAME
-	_ZN11CBubbleCtrl7SetRectERK5TRect @ 734 NONAME
-	_ZN12CFepUiLayout20DisableLayoutDrawingEi @ 735 NONAME
-	_ZN12CFepUiLayout21NotDrawToLayoutDeviceEv @ 736 NONAME
-	_ZN14CFepUiBaseCtrl12BitmapDeviceEv @ 737 NONAME
-	_ZN14CFepUiBaseCtrl16MaskBitmapDeviceEv @ 738 NONAME
-	_ZN14CFepUiBaseCtrl5BitGcEv @ 739 NONAME
-	_ZN14CFepUiBaseCtrl9BkMaskBmpEv @ 740 NONAME
-	_ZN16CVirtualKeyboard20HandleResourceChangeEi @ 741 NONAME
-	_ZN18CFepLayoutPopupWnd20HandleResourceChangeEi @ 742 NONAME
 

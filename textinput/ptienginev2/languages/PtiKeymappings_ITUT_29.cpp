@@ -1,8 +1,8 @@
 /*
-* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
-* under the terms of the License "Eclipse Public License v1.0"
+* under the terms of "Eclipse Public License v1.0""
 * which accompanies this distribution, and is available
 * at the URL "http://www.eclipse.org/legal/epl-v10.html".
 *
@@ -186,7 +186,6 @@ const TInt KStandardQwertyDataSize_TaiwanChinese = 285;
 
 const TPtiKeyBinding StandardQwertyKeyBindings_table_TaiwanChinese[] =
     {
-        {EPtiKeyQwertyAtCharacter, EPtiCaseLower, 0, 0},
         {EPtiKeyQwerty1, EPtiCaseLower, 0, 6},
         {EPtiKeyQwerty2, EPtiCaseLower, 6, 6},
         {EPtiKeyQwerty3, EPtiCaseLower, 12, 6},
@@ -221,7 +220,6 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_TaiwanChinese[] =
         {EPtiKeyQwertyL, EPtiCaseLower, 140, 4},
         {EPtiKeyQwertySemicolon, EPtiCaseLower, 144, 8},
         {EPtiKeyQwertyApostrophe, EPtiCaseLower, 152, 8},
-        {0x5b, EPtiCaseLower, 160, 0},
         {EPtiKeyQwertyZ, EPtiCaseLower, 160, 2},
         {EPtiKeyQwertyX, EPtiCaseLower, 162, 2},
         {EPtiKeyQwertyC, EPtiCaseLower, 164, 2},
@@ -232,7 +230,6 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_TaiwanChinese[] =
         {EPtiKeyQwertyComma, EPtiCaseLower, 174, 8},
         {EPtiKeyQwertyFullstop, EPtiCaseLower, 182, 8},
         {EPtiKeyQwertySlash, EPtiCaseLower, 190, 8},
-        {EPtiKeyQwertyAtCharacter, EPtiCaseUpper, 198, 0},
         {EPtiKeyQwerty1, EPtiCaseUpper, 198, 4},
         {EPtiKeyQwerty2, EPtiCaseUpper, 202, 4},
         {EPtiKeyQwerty3, EPtiCaseUpper, 206, 4},
@@ -267,7 +264,6 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_TaiwanChinese[] =
         {EPtiKeyQwertyL, EPtiCaseUpper, 257, 1},
         {EPtiKeyQwertySemicolon, EPtiCaseUpper, 258, 4},
         {EPtiKeyQwertyApostrophe, EPtiCaseUpper, 262, 4},
-        {0x5b, EPtiCaseUpper, 266, 0},
         {EPtiKeyQwertyZ, EPtiCaseUpper, 266, 1},
         {EPtiKeyQwertyX, EPtiCaseUpper, 267, 1},
         {EPtiKeyQwertyC, EPtiCaseUpper, 268, 1},
@@ -280,7 +276,7 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_TaiwanChinese[] =
         {EPtiKeyQwertySlash, EPtiCaseUpper, 281, 4},
     };
 
-const TInt KMaxStandardQwertyIndex_TaiwanChinese = 92;
+const TInt KMaxStandardQwertyIndex_TaiwanChinese = 88;
 
 
 //

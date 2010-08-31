@@ -135,11 +135,11 @@ EXPORT_C void CFepLayoutMultiLineIcf::SetDimmed(TBool aDimFlag)
     iIcfEditor->SetDimmed(aDimFlag);
     }
 
-EXPORT_C void CFepLayoutMultiLineIcf::SetFontL(TInt /*aFontHeight*/, 
-                                               TInt /*aMaxFontHeight*/, 
+EXPORT_C void CFepLayoutMultiLineIcf::SetFontL(TInt aFontHeight, 
+                                               TInt aMaxFontHeight, 
                                                const CFont* aFont)
     {
-    iIcfEditor->SetFontL(aFont);
+    iIcfEditor->SetFontL(aFontHeight,aMaxFontHeight,aFont);
     }
 
 EXPORT_C void CFepLayoutMultiLineIcf::SetFocus(TBool aFlag)
@@ -447,15 +447,13 @@ EXPORT_C CTooltipBubbleCtrl* CFepLayoutMultiLineIcf::TooltipBubbleCtrl()
 // Show tooltip of ICF
 // ---------------------------------------------------------------------------
 //
-EXPORT_C void CFepLayoutMultiLineIcf::ShowTooltipL( const TDesC& aText,
-		                                            const TRect& aRect,
-		                                            TInt aLangCode )
+EXPORT_C void CFepLayoutMultiLineIcf::ShowTooltipL( const TDesC& aText )
     {
     if ( !iTooltip || !iIcfEditor )
         {
         return;
         }
-    iIcfEditor->ShowTooltipL( aText, aRect, aLangCode );
+    iIcfEditor->ShowTooltipL( aText );
     }
 
 // ---------------------------------------------------------------------------

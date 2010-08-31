@@ -1,8 +1,8 @@
 /*
-* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002-2004 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
-* under the terms of the License "Eclipse Public License v1.0"
+* under the terms of "Eclipse Public License v1.0""
 * which accompanies this distribution, and is available
 * at the URL "http://www.eclipse.org/legal/epl-v10.html".
 *
@@ -192,7 +192,6 @@ const TInt KStandardQwertyDataSize_Hindi = 99;
 
 const TPtiKeyBinding StandardQwertyKeyBindings_table_Hindi[] =
     {
-        {EPtiKeyQwertyAtCharacter, EPtiCaseLower, 0, 0},
         {EPtiKeyQwerty1, EPtiCaseLower, 0, 1},
         {EPtiKeyQwerty2, EPtiCaseLower, 1, 1},
         {EPtiKeyQwerty3, EPtiCaseLower, 2, 1},
@@ -227,7 +226,6 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_Hindi[] =
         {EPtiKeyQwertyL, EPtiCaseLower, 31, 1},
         {EPtiKeyQwertySemicolon, EPtiCaseLower, 32, 1},
         {EPtiKeyQwertyApostrophe, EPtiCaseLower, 33, 1},
-        {0x5b, EPtiCaseLower, 34, 0},
         {EPtiKeyQwertyZ, EPtiCaseLower, 34, 1},
         {EPtiKeyQwertyX, EPtiCaseLower, 35, 1},
         {EPtiKeyQwertyC, EPtiCaseLower, 36, 1},
@@ -238,7 +236,6 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_Hindi[] =
         {EPtiKeyQwertyComma, EPtiCaseLower, 41, 1},
         {EPtiKeyQwertyFullstop, EPtiCaseLower, 42, 1},
         {EPtiKeyQwertySlash, EPtiCaseLower, 43, 1},
-        {EPtiKeyQwertyAtCharacter, EPtiCaseUpper, 44, 0},
         {EPtiKeyQwerty1, EPtiCaseUpper, 44, 1},
         {EPtiKeyQwerty2, EPtiCaseUpper, 45, 1},
         {EPtiKeyQwerty3, EPtiCaseUpper, 46, 1},
@@ -273,7 +270,6 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_Hindi[] =
         {EPtiKeyQwertyL, EPtiCaseUpper, 86, 1},
         {EPtiKeyQwertySemicolon, EPtiCaseUpper, 87, 1},
         {EPtiKeyQwertyApostrophe, EPtiCaseUpper, 88, 1},
-        {0x5b, EPtiCaseUpper, 89, 0},
         {EPtiKeyQwertyZ, EPtiCaseUpper, 89, 1},
         {EPtiKeyQwertyX, EPtiCaseUpper, 90, 1},
         {EPtiKeyQwertyC, EPtiCaseUpper, 91, 1},
@@ -286,7 +282,7 @@ const TPtiKeyBinding StandardQwertyKeyBindings_table_Hindi[] =
         {EPtiKeyQwertySlash, EPtiCaseUpper, 98, 1},
     };
 
-const TInt KMaxStandardQwertyIndex_Hindi = 92;
+const TInt KMaxStandardQwertyIndex_Hindi = 88;
 
 
 //

@@ -608,7 +608,6 @@ EXPORT_C TPtrC CPtiHalfQwertyKeyMappings::GetAll(TPtiTextCase aCase)
 // 
 void CPtiHalfQwertyKeyMappings::GetNumericModeKeysFromDataL(RArray<TPtiNumericKeyBinding>& aResult)
 	{
-	CleanupClosePushL( aResult );
 	__ASSERT_DEBUG(iKeyMapData, User::Panic(KPtiNoKeyMapDataPanic, KErrCorrupt));
 	
 	TInt numEntries = 0;
@@ -619,7 +618,6 @@ void CPtiHalfQwertyKeyMappings::GetNumericModeKeysFromDataL(RArray<TPtiNumericKe
 		{
 		User::LeaveIfError(aResult.Append(dataEntries[i]));
 		}
-    CleanupStack::Pop();
 	}    
 	
 	

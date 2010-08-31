@@ -1204,10 +1204,8 @@ EXPORT_C const RArray<TPtiNumericKeyBinding>& CPtiEngine::ExtendedNumericModeKey
 //	
 EXPORT_C void CPtiEngine::ListAvailablePhysicalKeyboardsL(RArray<TPtiKeyboardType>& aResult)
     {
-	CleanupClosePushL( aResult );
   	// Add real implementation later.	
     User::LeaveIfError(aResult.Append(EPtiKeyboard12Key));        	    
-    CleanupStack::Pop();
     }    
     
         

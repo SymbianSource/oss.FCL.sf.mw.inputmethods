@@ -28,7 +28,8 @@ enum
 	EControlIdNormalEdwin=1,
 	EControlIdNormalNumEdwin,
 	EControlIdHalfWidthKatakanaEdwin,
-	EControlIdPhoneticAlphabetEdwin
+	EControlIdPhoneticAlphabetEdwin,
+	EControlIdCJKEdwin
 	};
 
 #endif

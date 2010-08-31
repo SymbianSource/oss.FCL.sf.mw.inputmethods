@@ -872,7 +872,6 @@ TPtrC CPtiQwertyKeyMappings::GetAll(TPtiTextCase aCase)
 void CPtiQwertyKeyMappings::GetNumericModeKeysFromDataL(RArray<TPtiNumericKeyBinding>& aResult)
 	{
 	__ASSERT_DEBUG(iKeyMapData, User::Panic(KPtiNoQwertyKeyMapDataPanic, KErrCorrupt));
-	CleanupClosePushL( aResult );
 	
 	TInt numEntries = 0;
 	const TPtiNumericKeyBinding* dataEntries = iKeyMapData->NumericModeKeysTable(iKeyboardType, 
@@ -882,7 +881,6 @@ void CPtiQwertyKeyMappings::GetNumericModeKeysFromDataL(RArray<TPtiNumericKeyBin
 		{
 		User::LeaveIfError(aResult.Append(dataEntries[i]));
 		}
-	CleanupStack::Pop( &aResult );
 	}
 			
 

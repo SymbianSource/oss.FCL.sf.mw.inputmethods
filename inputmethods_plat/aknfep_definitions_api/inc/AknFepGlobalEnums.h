@@ -173,9 +173,7 @@ enum TPluginInputMode
     EPluginInputModeFSc = 16,    // new one
     EPluginInputModeMiniItut = 32,
     EPluginInputModeFingerHwr = 64,
-    EPluginInputModePortraitFSQ = 128, // For portrait FSQ
-    // EPluginInputModeHwr | ... | EPluginInputModePortraitFSQ
-    EPluginInputModeAll = 255         
+    EPluginInputModeAll = 127      // EPluginInputModeHwr | ... | EPluginInputModeFingerHwr|
     };
     
 #define KLatinToDevanagariDigitsDelta 0x0936

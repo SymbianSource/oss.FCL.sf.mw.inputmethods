@@ -27,7 +27,6 @@
 #include "peninputlayoutvkb.h"
 #include "peninputpluginutils.h"
 
-#include "peninputvkbpreviewbubblerenderer.h"
 const TInt KFadingParamBlack = 128;
 const TInt KFadingParamWhite = 192;
 const TInt KDefaultBubbleSize = 50;
@@ -95,6 +94,7 @@ EXPORT_C CVirtualKeyboard::CVirtualKeyboard(const TRect& /*aRect*/,
                                 iKeyNormalSkinId(KAknsIIDNone),
                                 iKeyHighlightSkinId(KAknsIIDNone),
                                 iKeyDimSkinId(KAknsIIDNone),
+                                iNeedDrawBackground(ETrue),
                                 iIrregularKey(aIrregular),
                                 iBubbleCtrl(NULL),
                                 iBubbleVerticalMargin(0),                                
@@ -102,7 +102,6 @@ EXPORT_C CVirtualKeyboard::CVirtualKeyboard(const TRect& /*aRect*/,
     {
     iFontSpec = aFontSpec;   
     SetControlType(ECtrlVirtualKeyboard);
-    iBubbleSize = TSize( KDefaultBubbleSize, KDefaultBubbleSize );
     }
     
 // ---------------------------------------------------------------------------
@@ -112,14 +111,8 @@ EXPORT_C CVirtualKeyboard::CVirtualKeyboard(const TRect& /*aRect*/,
 //
 EXPORT_C CVirtualKeyboard::~CVirtualKeyboard()
     {
-    delete iExt;
     if ( iBubbleCtrl )
         delete iBubbleCtrl;
-    if ( iPreviewBubbleRenderer )
-        {
-        iPreviewBubbleRenderer->Detach();
-        iPreviewBubbleRenderer = NULL;
-        }
     
     //free keys
     iKeyArray.ResetAndDestroy();
@@ -157,7 +150,6 @@ EXPORT_C CVirtualKeyboard::~CVirtualKeyboard()
     DestroyIrregularBmps();
     
     delete iShiftIcon;
-    delete iStarIcon;
     }
 
 // ---------------------------------------------------------------------------
@@ -189,8 +181,7 @@ EXPORT_C void CVirtualKeyboard::ConstructL ()
     if (iIrregularKey)
         {
         ConstructIrregularBmps();    
-        }  
-    iExt = new(ELeave) CFepUiKeyboardExt;      
+        }        
     }
 
 // ---------------------------------------------------------------------------
@@ -208,8 +199,8 @@ EXPORT_C void CVirtualKeyboard::AddKeyL(CVirtualKey* aKey)
         CVirtualKeyCtrl* ctrl = CreateKeyCtrlL(aKey,EFalse);//CVirtualKeyCtrl::NewL(this,aKey);
 #ifdef RD_TACTILE_FEEDBACK 
         //Advanced Tactile feedback REQ417-47932
-        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveInput);
+        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveKeypad);
 #endif	  
         CleanupStack::PushL(ctrl);
         AddKeyControlL(ctrl);
@@ -237,8 +228,8 @@ EXPORT_C void CVirtualKeyboard::AddRawKeyL(CVirtualKey* aKey)
         CVirtualRawKeyCtrl* ctrl = static_cast<CVirtualRawKeyCtrl*>(CreateKeyCtrlL(aKey,ETrue));
 #ifdef RD_TACTILE_FEEDBACK 
         //Advanced Tactile feedback REQ417-47932
-        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
-        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveInput);            
+        ctrl->SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
+        UiLayout()->RegisterFeedbackArea(reinterpret_cast<TInt>(ctrl),ctrl->Rect(),ETouchFeedbackSensitiveKeypad);            
         
 #endif	        
         CleanupStack::PushL(ctrl);
@@ -388,12 +379,7 @@ EXPORT_C void CVirtualKeyboard::Draw()
     	return;    
     const TRect& keyboardRect = Rect();
 
-    if(UiLayout()->NotDrawToLayoutDevice() && !Bitmap())
-        {
-        TRAP_IGNORE(CreateBmpDevL());
-        }
-
-    if ( NeedRedrawBg())
+    if (iNeedDrawBackground)
         {
         CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
 
@@ -455,24 +441,10 @@ void CVirtualKeyboard::ClearBubble(TBool /*aSetZeroSize*/)
         {
         iBubbleCtrl->Close();
         }
-    if( iPreviewBubbleRenderer )
-        {
-        iPreviewBubbleRenderer->ClearBubble();
-        }
     }
 
 void CVirtualKeyboard::DrawBubble(CVirtualKey* aKey)
     {
-    if( iPreviewBubbleRenderer )
-        {
-        if ( iIsShowBubble )
-            {
-            TPoint org = UiLayout()->Position();
-            TPoint vkbpos = Rect().iTl;
-            iPreviewBubbleRenderer->DrawBubble( aKey, vkbpos, org, iBubbleSize );
-            }
-        return;
-        }
     
     if ( aKey && !aKey->Dimmed() && iBubbleCtrl && iIsShowBubble)
         {
@@ -494,18 +466,12 @@ void CVirtualKeyboard::DrawBubble(CVirtualKey* aKey)
             {
             rect.iTl.iX = x1;     
             rect.iBr.iX = x2;                 
-            
-            TPoint vkbpos = Rect().iTl;
-            rect.Move( vkbpos.iX, 0 );
             }
         
         rect.iTl.iY = iBubbleVerticalMargin + aKey->Rect().iTl.iY - 
                       iBubbleSize.iHeight + Rect().iTl.iY;
         rect.iBr.iY = iBubbleVerticalMargin + aKey->Rect().iTl.iY + Rect().iTl.iY;
-        
-        TPoint org = UiLayout()->Position();
-        rect.Move( org.iX, org.iY ); //now is in screen coord-sys
-        
+		
 		if( aKey->DisplayUnicode() && aKey->DisplayUnicode()->Length() != 0 )
 			{
 			TRAP_IGNORE(iBubbleCtrl->SetTextL(*aKey->DisplayUnicode()));		
@@ -519,24 +485,14 @@ void CVirtualKeyboard::DrawBubble(CVirtualKey* aKey)
     }
 
 EXPORT_C void CVirtualKeyboard::ShowBubble(TBool aFlag)
-    {
-    iIsShowBubble = aFlag;
-
-    if( iPreviewBubbleRenderer )
-        {
-        iPreviewBubbleRenderer->ShowBubble( aFlag );
-        return;
-        }
+    {  
     TBool flag = iBubbleCtrl ? ETrue : EFalse;
+    iIsShowBubble = aFlag;
     if ( flag != aFlag )
         {
         if(!flag)
             {
             TRAP_IGNORE(iBubbleCtrl = CBubbleCtrl::NewL(TRect(0,0,0,0),UiLayout(),-0xFFFF));
-            if(iBubbleCtrl && UiLayout()->NotDrawToLayoutDevice())
-                {
-                TRAP_IGNORE(iBubbleCtrl->CreateBmpDevL());
-                }
             iBubbleSize = TSize(KDefaultBubbleSize,KDefaultBubbleSize);
             }
         }
@@ -560,10 +516,6 @@ EXPORT_C void CVirtualKeyboard::SetBubbleBitmapParam(CFbsBitmap* aBmpId,
         {
         iBubbleCtrl->SetBitmapParam(aBmpId,aMaskBmpId,aBgSkinId);
         }
-    if( iPreviewBubbleRenderer )
-        {
-        iPreviewBubbleRenderer->SetBubbleBitmapParam( aBmpId,aMaskBmpId,aBgSkinId );
-        }
     }
         
 EXPORT_C void CVirtualKeyboard::SetBubbleSize(const TSize& aSize)
@@ -582,10 +534,6 @@ EXPORT_C void CVirtualKeyboard::SetTextFormat(TAknTextLineLayout aTextFormat)
         {
         iBubbleCtrl->SetTextFormat(aTextFormat);    
         }
-    if( iPreviewBubbleRenderer )
-        {
-        iPreviewBubbleRenderer->SetTextFormat( aTextFormat );
-        }
     }
 
 EXPORT_C void CVirtualKeyboard::SetFrameDiff(TInt aLeftDiff, TInt aTopDiff,
@@ -594,11 +542,7 @@ EXPORT_C void CVirtualKeyboard::SetFrameDiff(TInt aLeftDiff, TInt aTopDiff,
     if ( iBubbleCtrl )
         {
         iBubbleCtrl->SetFrameDiff(aLeftDiff,aTopDiff,aRightDiff,aBottomDiff);    
-        }
-    if ( iPreviewBubbleRenderer )
-        {
-        iPreviewBubbleRenderer->SetFrameDiff( aLeftDiff, aTopDiff, aRightDiff, aBottomDiff );
-        }
+        }        
     }
        
 EXPORT_C CFepUiBaseCtrl* CVirtualKeyboard::HandlePointerMoveEventL(const TPoint& aPt)
@@ -1146,13 +1090,6 @@ EXPORT_C void CVirtualKeyboard::SetShiftIcon( CPenInputColorIcon* aIcon )
 	delete iShiftIcon;
 	iShiftIcon = aIcon;	
 	}
-
-EXPORT_C void CVirtualKeyboard::SetStarIcon( CPenInputColorIcon* aIcon )
-	{
-	delete iStarIcon;
-	iStarIcon = aIcon;	
-	}
-
 /*
 EXPORT_C CFepUiBaseCtrl* CVirtualKeyboard::HandlePointerDownEventL(const TPoint& aPoint)
     {
@@ -1168,25 +1105,7 @@ EXPORT_C CFepUiBaseCtrl* CVirtualKeyboard::HandlePointerMoveEventL(const TPoint&
     {
     return CControlGroup::HandlePointerMoveEventL(aPoint);
     }
-    */
-EXPORT_C void CVirtualKeyboard::SetPreviewBubbleRenderer( MPeninputVkbPreviewBubbleRenderer* aRenderer )
-    {
-    if ( ( NULL != aRenderer ) && ( aRenderer == iPreviewBubbleRenderer ) )
-        {
-        return;
-        }
-    
-    if( iPreviewBubbleRenderer )
-        {
-        iPreviewBubbleRenderer->Detach();
-        }
-    
-    iPreviewBubbleRenderer = aRenderer;
-    if ( aRenderer )
-        {
-        aRenderer->Attach();
-        }
-    }
+    */				 
 //end of implementation of class CVirtualKeyboard
     
 // Implementation of Class CVirtualKey
@@ -1349,10 +1268,6 @@ EXPORT_C void CVirtualKey::SetLatched(TBool aFlag)
         {
         //find key        
         //iKeyboard->DrawKey(this);
-        if ( !aFlag )
-            {
-            iKeyCtrl->UpdateChangedArea(EFalse);
-            }
         iKeyCtrl->Draw();
         }
     }
@@ -1455,191 +1370,4 @@ EXPORT_C void CVirtualKey::HideKeyCtrl( TBool aHide )
         iKeyCtrl->Hide( aHide );
         }
     }
-
-void CFepUiKeyboardExt::CreateBmpDevL(const TDisplayMode &aMode )
-    {
-    if(iBitmap && iHighlightDev && iHighlightGc && iHighlightKeyBmp && iHighlightKeyDev && 
-            iNormalKeyBmp && iNormalKeyDev && iDimmedKeyBmp && iDimmedKeyDev && iKeyGc)
-        return;
-    
-    delete iBitmap;
-    delete iHighlightDev; 
-    delete iHighlightGc; 
-    delete iHighlightKeyBmp; 
-    delete iHighlightKeyDev; 
-    delete iNormalKeyBmp; 
-    delete iNormalKeyDev; 
-    delete iDimmedKeyBmp; 
-    delete iDimmedKeyDev;
-    delete iKeyGc;
-
-    iBitmap = 0;
-    iHighlightDev = 0 ; 
-    iHighlightGc = 0 ; 
-    iHighlightKeyBmp = 0 ; 
-    iHighlightKeyDev = 0 ; 
-    iNormalKeyBmp = 0 ; 
-    iNormalKeyDev = 0 ; 
-    iDimmedKeyBmp = 0 ; 
-    iDimmedKeyDev = 0;
-    iKeyGc = 0;
-    
-    iBitmap = new ( ELeave ) CFbsBitmap;    
-    User::LeaveIfError( iBitmap->Create( TSize(1,1), aMode) );
-    
-    iHighlightDev = CFbsBitmapDevice::NewL(iBitmap);
-    
-    iHighlightGc = CFbsBitGc::NewL();
-    iHighlightGc->Reset();
-    
-
-    iHighlightKeyBmp = new ( ELeave ) CFbsBitmap;    
-    User::LeaveIfError( iHighlightKeyBmp->Create( TSize(1,1), aMode) );    
-    iHighlightKeyDev = CFbsBitmapDevice::NewL(iHighlightKeyBmp);
-
-    iNormalKeyBmp = new ( ELeave ) CFbsBitmap;    
-    User::LeaveIfError( iNormalKeyBmp->Create( TSize(1,1), aMode) );    
-    iNormalKeyDev = CFbsBitmapDevice::NewL(iNormalKeyBmp);
-
-    iDimmedKeyBmp = new ( ELeave ) CFbsBitmap;    
-    User::LeaveIfError( iDimmedKeyBmp->Create( TSize(1,1), aMode) );    
-    iDimmedKeyDev = CFbsBitmapDevice::NewL(iDimmedKeyBmp);
-    
-    iKeyGc = CFbsBitGc::NewL();
-    iKeyGc->Reset();   
-    
-    iHighlightKeyResourceChanged = ETrue;
-    iNormalKeyResourceChanged = ETrue;   
-    }
-
-void CVirtualKeyboard::CreateBmpDevL()
-    {
-    iExt->CreateBmpDevL(UiLayout()->LayoutOwner()->BitmapDevice()->DisplayMode());
-    }
-
-EXPORT_C void CVirtualKeyboard::HandleResourceChange(TInt aType)
-    {
-    if(aType == KPenInputOwnDeviceChange)
-        {
-        if(UiLayout()->NotDrawToLayoutDevice())
-            {
-            TRAP_IGNORE(CreateBmpDevL());
-            }
-        }
-    else if(aType == KPenInputOwnDeviceResourceChange)
-        {
-        iExt->iHighlightKeyResourceChanged = ETrue;
-        iExt->iNormalKeyResourceChanged = ETrue;
-        }    
-    else
-    	{
-        CControlGroup::HandleResourceChange(aType);
-        }
-    }
-    
-CFbsBitmap* CVirtualKeyboard::PrepareMaskBmpL(CFbsBitGc* aGc, const TDisplayMode& aMode, const TRect& aRect)
-    {
-    CFbsBitmap* mask = new(ELeave) CFbsBitmap();
-    CleanupStack::PushL(mask);
-    User::LeaveIfError( mask->Create( aRect.Size(), aMode) );
-    CFbsBitmapDevice* maskDev = CFbsBitmapDevice::NewL(mask);
-    const TRgb KOpaqueMask = TRgb(KOpaqueColor);
-    DrawBackgroundToDevice(aRect,maskDev,NULL,KOpaqueMask,KOpaqueMask,EFalse);
-    delete maskDev;
-    CleanupStack::Pop(mask);
-    return mask;
-    }
-CFbsBitmap* CVirtualKeyboard::PrepareKeyBmpL(CFbsBitGc* aGc, const TDisplayMode& aMode, const TRect& aRect,
-        const TRect& aInnerRect,const TAknsItemID& aFrameID, const TAknsItemID& aCenterID, const TRect& aKeyRect)
-    {
-    CFbsBitmap* key = new(ELeave) CFbsBitmap();
-    CleanupStack::PushL(key);
-    User::LeaveIfError( key->Create( aRect.Size(), aMode) );
-    
-    CFbsBitmapDevice* dev = CFbsBitmapDevice::NewL(key);
-    CleanupStack::PushL(dev);
-    
-    CFbsBitGc* keyGc = CFbsBitGc::NewL();
-    keyGc->Reset();
-    CleanupStack::PushL(keyGc);
-    
-    keyGc->Activate(dev);
-    
-    CFbsBitGc* layoutGc = static_cast<CFbsBitGc*>(
-                            UiLayout()->LayoutOwner()->BitmapContext());
-    layoutGc->Activate(UiLayout()->LayoutOwner()->BitmapDevice()); 
-    
-    keyGc->BitBlt(TPoint(0,0),*layoutGc,aKeyRect);
-    
-    AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
-                             *keyGc, 
-                             aRect, 
-                             aInnerRect,
-                             aFrameID, 
-                             aCenterID);
-
-    layoutGc->Activate(UiLayout()->LayoutOwner()->BitmapDevice());    
-    
-    CleanupStack::PopAndDestroy(2);
-    CleanupStack::Pop(key);
-    
-    return key;
-    }
-
-TBool CVirtualKeyboard::PrepareKeyBmp(CFbsBitmap* aBmp,CFbsBitmapDevice* aDev,const TRect& aRect, 
-                        const TRect& aInnerRect,const TAknsItemID& aFrameID, const TAknsItemID& aCenterID, const TRect& aKeyRect)
-    {
-
-    aBmp->Resize(aRect.Size());
-    aDev->Resize(aRect.Size());
-    iExt->iKeyGc->Activate(aDev);
-    iExt->iKeyGc->Resized();        
-
-    TRect r = aRect;
-    r.Move(-r.iTl.iX, -r.iTl.iY);
-   
-    CFbsBitmap* keyBmp = NULL;
-    TRect inner = aInnerRect;
-    TPoint off = aInnerRect.iTl - aRect.iTl;
-    inner.Move(-inner.iTl.iX + off.iX, -inner.iTl.iY + off.iY);
-    TRAP_IGNORE(keyBmp = PrepareKeyBmpL(iExt->iKeyGc,
-                        UiLayout()->LayoutOwner()->BitmapDevice()->DisplayMode(),
-                        r,inner,aFrameID,aCenterID,aKeyRect));
-    if(!keyBmp)
-        {
-        return EFalse;
-        }
-
-    iExt->iKeyGc->BitBlt(TPoint(0,0), keyBmp,r);      
-
-    delete keyBmp;        
-    return ETrue;
-    }
-
-TBool CVirtualKeyboard::PrepareHighlightKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect)
-    {
-    if(HighightKeyBmp()->SizeInPixels() != aRect.Size() || iExt->iHighlightKeyResourceChanged)
-        {
-        iExt->iHighlightKeyResourceChanged = EFalse;
-        return PrepareKeyBmp(HighightKeyBmp(),HighlightKeyDev(),aRect,aInnerRect
-                                ,KeySkinId(EKeyBmpHighlight),KAknsIIDDefault,aKeyRect);
-        
-        }
-    
-    return ETrue;
-    }
-    
-TBool CVirtualKeyboard::PrepareNormalKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect)
-    {
-    if(NormalKeyBmp()->SizeInPixels() != aRect.Size() || iExt->iNormalKeyResourceChanged)
-        {
-        iExt->iNormalKeyResourceChanged = EFalse; 
-        return PrepareKeyBmp(NormalKeyBmp(),NormalKeyDev(),aRect,aInnerRect
-                            ,KeySkinId(EKeyBmpNormal),KAknsIIDDefault,aKeyRect);
-                           
-        }
-        
-    return ETrue;
-    }
-        
 //end of implementation of Class CVirtualKey    

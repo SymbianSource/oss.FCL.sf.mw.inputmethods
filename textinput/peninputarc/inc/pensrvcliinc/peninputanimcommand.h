@@ -473,27 +473,6 @@ private:
     TBool iSpriteFlag;    
     };
 	
-//class TAnimSetDiscreeptPopCmd
-/**
- * Class for handling pop discreept window area command
- * 
- *
- * @since S60 v4.0
- */
-class TAnimSetDiscreeptPopCmd :  public TAnimCmd
-    {
-public:
-	TAnimSetDiscreeptPopCmd(RPeninputAnim& aAnim,TRect aArea);
-	/**
-     * Execute the command
-     *
-     * @since S60 v4.0
-	 * @return ETrue if command has been executed successfully.     
-     */     
-    virtual TBool ExecuteAnimCommand() const;
-private:
-    TRect iArea;    
-    };
 #include "peninputanimcommand.inl"
 	
 #endif //C_CPENINPUTANIM_CMD_H

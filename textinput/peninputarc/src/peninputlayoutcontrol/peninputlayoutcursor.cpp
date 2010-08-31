@@ -21,8 +21,6 @@
 #include "peninputlayouteditareabase.h"
 #include "peninputlayouttimer.h"
 #include "peninputlayoutrootctrl.h"
-#include "peninputcmd.h"
-#include "peninputlayout.h"
 
 const TInt KDefaultCursorHeight = 10;
 // ============================ MEMBER FUNCTIONS =============================
@@ -56,7 +54,6 @@ void CFepUiCursor::ConstructL()
     CFepUiBaseCtrl::BaseConstructL();
     iCursorBlinkingTimer = CPeriodic::NewL(CActive::EPriorityStandard);
     iRestoreCursorTimer = CLayoutTimer::NewL(this,CLayoutTimer::EOthers);
-    CreateCursorBmpL();
     }
 
 // ---------------------------------------------------------------------------
@@ -87,9 +84,6 @@ CFepUiCursor::~CFepUiCursor()
         }    
    
     delete iRestoreCursorTimer;
-    delete iBitmap;
-    delete iBitmapDevice;
-    delete iGc;
     }
 
 
@@ -102,34 +96,29 @@ CFepUiCursor::~CFepUiCursor()
 EXPORT_C void CFepUiCursor::SetPosition(const TPoint& aPosition)
     {
     
-	if( iPosition != aPosition )
-		{
-		TBool isOn = iIsOn;
-		if (isOn)
-			{
-			SetOn(EFalse);
-
-			}
-		iPosition=aPosition;
-		TPoint correction(KCursorPosCorrectionX,KCursorPosCorrectionY );
-		TRect rect = TRect(iPosition + correction , TSize(KCursorWidth,iHeight));
-		if(rect != iCursorRect)
-			{
-			SetRect(rect);
-			iCursorRect = rect;
-			//must update clip region again.
-			for(TInt i = 0 ; i < RootControl()->PopCtrlList().Count(); ++i)
-				{
-				UpdateValidRegion(RootControl()->PopCtrlList()[i],EFalse);
-				}
-			}
-			
-		if (isOn)
-			{
-			SetOn(ETrue);
-			}
-		}
-
+    TBool isOn = iIsOn;
+    if (isOn)
+        {
+        SetOn(EFalse);
+        }
+    iPosition=aPosition;
+    TPoint correction(KCursorPosCorrectionX,KCursorPosCorrectionY );
+    TRect rect = TRect(iPosition + correction , TSize(KCursorWidth,iHeight));
+    if(rect != iCursorRect)
+        {
+        SetRect(rect);
+        iCursorRect = rect;
+        //must update clip region again.
+        for(TInt i = 0 ; i < RootControl()->PopCtrlList().Count(); ++i)
+            {
+            UpdateValidRegion(RootControl()->PopCtrlList()[i],EFalse);
+            }
+        }
+        
+    if (isOn)
+        {
+        SetOn(ETrue);
+        }
     }
 
 // ---------------------------------------------------------------------------
@@ -173,7 +162,6 @@ EXPORT_C void CFepUiCursor::SetOn(TBool aOn, TBool aImmediately)
             {
             iCursorBlinkingTimer->Cancel();    
             }
-        InvalidateInsertionPoint();
         }
     else
         {
@@ -190,7 +178,7 @@ EXPORT_C void CFepUiCursor::SetOn(TBool aOn, TBool aImmediately)
         }
         
         // Invalidate InsertionPoint's rect, so it will be removed from editarea
-    //InvalidateInsertionPoint();
+    InvalidateInsertionPoint();
     }
 
 // ---------------------------------------------------------------------------
@@ -227,35 +215,10 @@ EXPORT_C void CFepUiCursor::ReDraw(TBool aReset)
     if(aReset)
         iIsVisible = EFalse;
     Draw();
-    //UpdateArea(iCursorRect,EFalse);
-    UpdateCursorArea(iCursorRect,EFalse);
+    UpdateArea(iCursorRect,EFalse);
     }
     
-void CFepUiCursor::DrawCursor(CFbsBitGc* aGc,CFbsBitmapDevice* aDevice)
-    {
-    aGc->Activate(aDevice);    
-   
-   // draw cursor by inverting colors in the selected text rectancle
-    //aGc->SetClippingRegion(ValidClipRegion());                   
-    
-    aGc->SetBrushStyle(CGraphicsContext::ESolidBrush);
-    aGc->SetBrushColor(KRgbBlack);
-    //aGc->SetDrawMode(CGraphicsContext::EDrawModeNOTSCREEN);
-    aGc->Clear();
-    aGc->SetPenColor(KRgbBlack);
-    aGc->SetPenStyle(CGraphicsContext::ESolidPen);
-    aGc->SetPenSize( TSize(1,1));
 
-    // When the blink timer out and cursor is visible, do nothing
-    // else draw the cursor and set the visible flag
-    //aGc->DrawRect(iCursorRect);
-    //iIsVisible = !iIsVisible;
-
-    // restore normal draw mode
-    aGc->SetDrawMode(CGraphicsContext::EDrawModePEN);
-    aGc->SetBrushStyle(CGraphicsContext::ENullBrush);
-    }
-	
 // ---------------------------------------------------------------------------
 // CFepUiCursor::Draw
 // Draws insertion point's Rect and starts blinking timer
@@ -268,25 +231,7 @@ void CFepUiCursor::Draw()//CBitmapContext* aGc, TBool aReset)
         {
         return;
         }
-
-//#ifdef FIX_FOR_NGA
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        if(iIsOn)
-            {   
-            iIsVisible = !iIsVisible;
-            } 
-        else
-            {
-            if(iIsVisible) //only do when already shown
-                {                
-                iIsVisible = EFalse;                       
-                }   
-            }
-        
-        return;
-        }
-//#endif
+    
     /*if (aReset)    
         {
         iIsVisible = EFalse;
@@ -299,14 +244,7 @@ void CFepUiCursor::Draw()//CBitmapContext* aGc, TBool aReset)
         {        
         // draw cursor by inverting colors in the selected text rectancle
         gc->SetClippingRegion(ValidClipRegion());        	        
-
-        const TRegion& tr = ValidClipRegion();
-        const TRect* rl = tr.RectangleList();
-        TRect rr;
-        for(TInt id = 0; id < tr.Count(); ++id)
-            {
-            rr = rl[id];
-            }
+        
         gc->SetBrushStyle(CGraphicsContext::ESolidBrush);
         gc->SetBrushColor(KRgbBlack);
         gc->SetDrawMode(CGraphicsContext::EDrawModeNOTSCREEN);
@@ -386,12 +324,10 @@ TInt CFepUiCursor::CursorBlinkCallBack(TAny *aPtr)
 //
 void CFepUiCursor::InvalidateInsertionPoint()
     {    
-    if(AbleToDraw())
+    //if(iEditor)
         {        
         Draw();
-        //UpdateArea(iCursorRect,EFalse);
-        
-        UpdateCursorArea(iCursorRect,EFalse);
+        UpdateArea(iCursorRect,EFalse);
         }
     }
   
@@ -443,7 +379,7 @@ void CFepUiCursor::HandleTimerOut(TInt /*aTimeType*/)
     iCursorTempDisabled = EFalse;
     iIsOn = ETrue;
     //To avoid the ugly first shown, we draw the cursor directly here.
-    //InvalidateInsertionPoint();
+    InvalidateInsertionPoint();
     SetOn(ETrue, EFalse);    
     }
     
@@ -499,28 +435,6 @@ void CFepUiCursor::ResetValidClipRegion()
     
 void CFepUiCursor::UpdateCursorArea(const TRect& aRect, TBool aFlag)
     {
-    if(UiLayout()->NotDrawToLayoutDevice())
-        {
-        //CopyToBmp();
-        //signal special update
-    
-        struct SData
-            {
-            TBool onOff;
-            CFbsBitmap* bmp;
-            TRect rect;
-            } data;
-        data.onOff = iIsVisible;
-        data.bmp = iBitmap;
-        data.rect = iCursorRect;
-        TPtrC ptr;
-        ptr.Set(reinterpret_cast<const TUint16*>(&data),sizeof(data)/sizeof(TUint16));
-        
-        UiLayout()->SignalOwner(ESignalUpdateCursor,ptr);
-        
-		return;
-		}
-
     CFepUiBaseCtrl* parent = iEditor->ParentCtrl();
     
     if(parent)
@@ -532,31 +446,5 @@ void CFepUiCursor::UpdateCursorArea(const TRect& aRect, TBool aFlag)
         }
     else
         UpdateArea(aRect,aFlag);    
-    }
-
-void CFepUiCursor::CreateCursorBmpL()
-    {
-    iBitmap = new ( ELeave ) CFbsBitmap;    
-    
-    TRect rect = TRect(TPoint(0,0) , TSize(KCursorWidth,iHeight));
-
-    User::LeaveIfError( iBitmap->Create( rect.Size(), BitmapDevice()->DisplayMode() ) );
-    
-    iBitmapDevice = CFbsBitmapDevice::NewL(iBitmap);
-    iGc = CFbsBitGc::NewL();
-    iGc->Reset();
-    DrawCursor(iGc,iBitmapDevice);
-    }
-
-void CFepUiCursor::ResizeCursorBmp()
-    {
-    TRect rect = TRect(TPoint(0,0) , TSize(KCursorWidth,iHeight));
-    iBitmap->Resize(rect.Size());
-    
-    iBitmapDevice->Resize( rect.Size());
-    //gc must be adjusted
-    iGc->Activate(iBitmapDevice);
-    iGc->Resized();
-    DrawCursor(iGc,iBitmapDevice);    
     }
 //  End of File  

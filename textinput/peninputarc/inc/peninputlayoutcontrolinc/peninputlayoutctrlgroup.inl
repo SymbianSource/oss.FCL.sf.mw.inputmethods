@@ -29,15 +29,4 @@ inline const RPointerArray<CFepUiBaseCtrl>& CControlGroup::PopCtrlList() const
     {
     return iPopCtrlList;
     }
-
-inline TBool CControlGroup::NeedRedrawBg() const
-    {
-    return iNeedRedrawBg;
-    }
-
-inline void CControlGroup::SetNeedRedrawBg(TBool aNeedRedrawBg)
-    {
-    iNeedRedrawBg = aNeedRedrawBg;
-    }
-
 //end of file    

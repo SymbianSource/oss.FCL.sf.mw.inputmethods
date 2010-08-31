@@ -1,54 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SystemDefinition schema="3.0.0">
-  <package id="inputmethods" name="Input Methods" levels="plugin engine framework">
-    <collection id="textinput" name="Text Input" level="framework">
-      <component id="ptienginev2" filter="s60" name="Predictive Text Input Engine">
-        <unit bldFile="textinput/ptienginev2/group"/>
-      </component>
-      <component id="akninputlanguage" filter="s60" name="Avkon Input Language">
-        <unit bldFile="textinput/akninputlanguage/group"/>
-      </component>
-      <component id="peninputarc" filter="s60" name="Pen Input Arc">
-        <unit bldFile="textinput/peninputarc/group"/>
-        <!-- <unit bldFile="textinput/peninputarc/src/peninputserverapp"/> -->
-        <!-- <unit bldFile="textinput/peninputarc/utils/group"/> -->
-      </component>
-      <component id="textinput_build" filter="s60" name="Text Input Build">
-       <!--needs #ifdef moved to confguration or individual bld.inf files -->
-        <unit bldFile="textinput/group"/>
-      </component>
-    </collection>
-    <collection id="fep" name="FEP" level="engine">
-      <component id="aknfep" filter="s60" name="Avkon FEP" class="plugin">
-        <unit bldFile="fep/aknfep/group"/>
-        <!-- <unit bldFile="fep/aknfep/peninputplugins/peninputimeplugincn/group"/> -->
-        <!-- <unit bldFile="fep/aknfep/peninputplugins/peninputimeplugingeneric/group"/> -->
-        <!-- <unit bldFile="fep/aknfep/peninputplugins/peninputimepluginitut/group"/> -->
-        <!-- <unit bldFile="fep/aknfep/peninputplugins/peninputimepluginjp/group"/> -->
-        <!-- <unit bldFile="fep/aknfep/uiplugins/aknfepuiinterface/avkonimpl/group"/> -->
-        <!-- <unit bldFile="fep/aknfep/uiplugins/aknfepuiinterface/group"/> -->
-      </component>
-      <component id="frontendprocessor" name="Front End Processor" purpose="mandatory">
-        <unit bldFile="fep/frontendprocessor/group" mrp="fep/frontendprocessor/group/app-framework_fepbase.mrp"/>
-      </component>
-    </collection>
-    <collection id="inputmethods_info" name="Input Methods Info" level="framework">
-      <component id="inputmethods_plat" filter="s60" name="Input Methods Platform Interfaces" class="api">
-        <unit bldFile="inputmethods_plat/group"/>
-        <!-- <unit bldFile="inputmethods_plat/aknfep_uiinterface_api/tsrc/group"/> -->
-        <!-- <unit bldFile="inputmethods_plat/pen_input_server_api/tsrc/group"/> -->
-        <!-- <unit bldFile="inputmethods_plat/ptiengine_hwr_api/tsrc/group"/> -->
-        <!-- <unit bldFile="inputmethods_plat/ptiengine_key_definations_api/tsrc/group"/> -->
-      </component>
-      <component id="inputmethods_pub" filter="s60" name="Input Methods Public Interfaces" class="api">
-        <unit bldFile="inputmethods_pub/group"/>
-        <!-- <unit bldFile="inputmethods_pub/input_language_info_api/tsrc/group"/> -->
-        <!-- <unit bldFile="inputmethods_pub/optical_character_recognition_api/tsrc/group"/> -->
-        <!-- <unit bldFile="inputmethods_pub/ptiengine_iti_api/tsrc/group"/> -->
-      </component>
-      <component id="inputmethods_metadata" name="Input Methods Metadata" class="config" introduced="^2" purpose="development" target="desktop">
-        <unit mrp="inputmethods_info/inputmethods_metadata/inputmethods_metadata.mrp"/>
-      </component>
-    </collection>
-  </package>
+ <package id="inputmethods" name="Input Methods" levels="plugin engine framework api">
+  <collection id="inputmethods_pub" name="Input Methods Public Interfaces" level="api">
+   <component id="ptiengine_iti_api" name="PTI Engine API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_pub/ptiengine_iti_api/ptiengine_api.metaxml"/>
+    <meta rel="config">
+     <defined condition="RD_INTELLIGENT_TEXT_INPUT"/>
+    </meta>
+    <unit bldFile="inputmethods_pub/ptiengine_iti_api/group" filter="!test"/>
+    <!-- <unit bldFile="inputmethods_pub/ptiengine_iti_api/tsrc/group" filter="test,api_test"/> -->
+   </component>
+   <component id="optical_character_recognition_api" name="Optical Character Recognition API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_pub/optical_character_recognition_api/optical_character_recognition_api.metaxml"/>
+    <unit bldFile="inputmethods_pub/optical_character_recognition_api/group" filter="!test"/>
+    <!-- <unit bldFile="inputmethods_pub/optical_character_recognition_api/tsrc/group" filter="test,api_test"/> -->
+   </component>
+   <component id="input_language_info_api" name="Input Language Info API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_pub/input_language_info_api/input_language_info_api.metaxml"/>
+    <unit bldFile="inputmethods_pub/input_language_info_api/group" filter="!test"/>
+    <!-- <unit bldFile="inputmethods_pub/input_language_info_api/tsrc/group" filter="test,api_test"/> -->
+   </component>
+  </collection>
+  <collection id="inputmethods_plat" name="Input Methods Platform Interfaces" level="api">
+   <component id="pen_input_server_api" name="Pen Input Server API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/pen_input_server_api/pen_input_server_api.metaxml"/>
+    <unit bldFile="inputmethods_plat/pen_input_server_api/group" filter="!test"/>
+    <!-- <unit bldFile="inputmethods_plat/pen_input_server_api/tsrc/group" filter="test,api_test"/> -->
+   </component>
+   <component id="ptiengine_hwr_api" name="PTI Engine Handwriting Recognition API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/ptiengine_hwr_api/ptiengine_hwr_api.metaxml"/>
+    <unit bldFile="inputmethods_plat/ptiengine_hwr_api/group" filter="!test"/>
+    <!-- <unit bldFile="inputmethods_plat/ptiengine_hwr_api/tsrc/group" filter="test,api_test"/> -->
+   </component>
+   <component id="aknfep_settings_api" name="Avkon FEP Settings API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/aknfep_settings_api/aknfep_settings_api.metaxml"/>
+    <unit bldFile="inputmethods_plat/aknfep_settings_api/group"/>
+   </component>
+   <component id="aknfep_status_api" name="Avkon FEP Status API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/aknfep_status_api/aknfep_status_api.metaxml"/>
+    <meta rel="config">
+     <defined condition="RD_INTELLIGENT_TEXT_INPUT"/>
+    </meta>
+    <unit bldFile="inputmethods_plat/aknfep_status_api/group"/>
+   </component>
+   <component id="ptiengine_key_definations_api" name="PTI Engine Key Definitions API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/ptiengine_key_definations_api/ptiengine_key_definations_api.metaxml"/>
+    <meta rel="config">
+     <defined condition="RD_INTELLIGENT_TEXT_INPUT"/>
+    </meta>
+    <unit bldFile="inputmethods_plat/ptiengine_key_definations_api/group" filter="!test"/>
+    <!-- <unit bldFile="inputmethods_plat/ptiengine_key_definations_api/tsrc/group" filter="test,api_test"/> -->
+   </component>
+   <component id="aknfep_definitions_api" name="Avkon FEP Definitions API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/aknfep_definitions_api/aknfep_definitions_api.metaxml"/>
+    <unit bldFile="inputmethods_plat/aknfep_definitions_api/group"/>
+   </component>
+   <component id="aknfep_pen_support_api" name="Avkon FEP Pen Support API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/aknfep_pen_support_api/aknfep_pen_support_api.metaxml"/>
+    <unit bldFile="inputmethods_plat/aknfep_pen_support_api/group"/>
+   </component>
+   <component id="ptiengine_indic_definitions_api" name="PTI Engine Indic Definitions API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/ptiengine_indic_definitions_api/ptiengine_indic_definitions_api.metaxml"/>
+    <unit bldFile="inputmethods_plat/ptiengine_indic_definitions_api/group"/>
+   </component>
+   <component id="aknfep_uiinterface_api" name="Avkon FEP UI Interface API" class="api" filter="s60">
+    <meta rel="Api" href="inputmethods_plat/aknfep_uiinterface_api/aknfep_uiinterface_api.metaxml"/>
+    <unit bldFile="inputmethods_plat/aknfep_uiinterface_api/group" filter="!test"/>
+    <!-- <unit bldFile="inputmethods_plat/aknfep_uiinterface_api/tsrc/group" filter="test,api_test"/> -->
+   </component>
+  </collection>
+  <collection id="textinput" name="Text Input" level="framework">
+   <component id="ptienginev2" filter="s60" name="Predictive Text Input Engine">
+    <meta rel="config">
+     <defined condition="RD_INTELLIGENT_TEXT_INPUT"/>
+    </meta>
+	<unit bldFile="textinput/ptienginev2/group"/>
+   </component>
+   <component id="akninputlanguage" filter="s60" name="Avkon Input Language">
+    <unit bldFile="textinput/akninputlanguage/group"/>
+   </component>
+   <component id="peninputarc" filter="s60" name="Pen Input Arc">
+    <unit bldFile="textinput/peninputarc/group"/>
+   </component>
+  </collection>
+  <collection id="fep" name="FEP" level="engine">
+   <component id="aknfep" filter="s60" name="Avkon FEP" class="plugin">
+    <unit bldFile="fepstub/group"/>
+   </component>
+   <component id="frontendprocessor" name="Front End Processor" purpose="mandatory">
+    <unit bldFile="fep/frontendprocessor/group" mrp="fep/frontendprocessor/group/app-framework_fepbase.mrp"/>
+   </component>
+  </collection>
+ </package>
 </SystemDefinition>

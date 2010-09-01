@@ -19,7 +19,7 @@
 #include <w32std.h>
 #include <coemain.h>
 #include <coedef.h>
-#include "CoeDataStorage.h"
+#include "coedatastorage.h"
 #include <fepbase.h>
 #include <fepitfr.h>
 #include <fepbpanic.h>

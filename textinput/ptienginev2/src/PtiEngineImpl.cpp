@@ -38,6 +38,7 @@
 #include <AknUtils.h>
 #include <e32property.h>
 #include <AknFepInternalCRKeys.h>
+#include <AknFepInternalPSKeys.h>
 #include <AvkonInternalCRKeys.h>
 
 const TInt KDefaultLanguageGran = 5;
@@ -133,6 +134,46 @@ const TInt16 KZhuyinIndicator = 0x2462;
 
 // Local method declarations.
 LOCAL_C TInt RemapVietnameseAccentedCharacter(TUint16 aChr);
+LOCAL_C TBool IsRegionalLang(TInt aVariantCode, TInt& aMainCode)
+    {   
+    TBool ret = ETrue;
+    switch(aVariantCode)
+        {
+        case ELangBrazilianPortuguese:
+            aMainCode = ELangPortuguese;
+            break;
+        case ELangCanadianFrench:
+            aMainCode = ELangFrench;
+            break;
+        case ELangLatinAmericanSpanish:
+            aMainCode = ELangSpanish;
+            break;
+        case ELangEnglish_Taiwan:
+        case ELangEnglish_HongKong:
+        case ELangEnglish_Prc:
+            aMainCode = ELangEnglish;
+            break;
+        default:
+            aMainCode = aVariantCode; 
+            ret = EFalse;
+        }
+    return ret;
+    }
+LOCAL_C TBool AlreadyExistLang(CArrayPtrFlat<CPtiCoreLanguage>* aLangArray, TInt aLangCode)
+    {
+    if (aLangArray)
+        {
+        for (TInt i=0; i < aLangArray->Count(); i++)
+            {
+            if (aLangArray->At(i)->LanguageCode() == aLangCode)
+                {
+                return ETrue;
+                }
+            }
+        }
+    return EFalse;
+    }
+const TUid KXt9ImplementationUid = {0x102830B9};
 	
 //
 // CPtiEngineImpl implementation
@@ -285,13 +326,21 @@ void CPtiEngineImpl::GetAvailableLanguagesL(CArrayFix<TInt>* aResult)
 #endif
 		for (TInt i = 0; i < count; i++)
 			{
+		    TInt code = 0;		    
 			if ((iLanguages->At(i)->LanguageCode() != ELangNumeric)
 #ifdef RD_HINDI_PHONETIC_INPUT
 				&& (iLanguages->At(i)->LanguageCode() != KLangHindiPhonetic)
 #endif
                 )
 				{
-				aResult->AppendL(iLanguages->At(i)->LanguageCode());
+			    if(IsRegionalLang(iLanguages->At(i)->LanguageCode(),code))
+                    {
+                    if(AlreadyExistLang(iLanguages,code))
+                        {
+                        continue;
+                        }
+                    }
+				aResult->AppendL(code);
 #ifdef RD_HINDI_PHONETIC_INPUT
 				if (iLanguages->At(i)->LanguageCode() == ELangHindi && isIndicPhoneticInputPresent)
 					aResult->AppendL(KLangHindiPhonetic);
@@ -663,14 +712,36 @@ TInt CPtiEngineImpl::SetInputMode(TPtiEngineInputMode aMode)
 			return KErrNoSuitableCore;	
 			}
 		}
-
-    iInputMode = aMode;	
+	
+	if (iInputMode != aMode)
+		{
+		OnInputModeChanged(iInputMode, aMode);
+		iInputMode = aMode;		
+		}
 
 	TFileName temp;
 	temp.Copy(iTextBuffer);
 	return SetCurrentWord( temp );
 	}
 
+void CPtiEngineImpl::OnInputModeChanged(TPtiEngineInputMode /*aOldMode*/, TPtiEngineInputMode aNewMode)
+	{
+	if (aNewMode == EPtiEngineQwertyPredictive)
+		{
+		HBufC16* oldTextBuf = iTextBuffer.Alloc(); 
+		ClearCurrentWord();
+		if (oldTextBuf)
+			{
+			// why assigned here? eh, I don't want to do that either.
+			// SetCurrentWord will use core(), which will use iInputMode, and 
+			// obviously, the core should return the new core, that is why.
+			iInputMode = aNewMode;
+		
+			SetCurrentWord(oldTextBuf->Des());
+			delete oldTextBuf;
+			}
+		}
+	}
 
 // ---------------------------------------------------------------------------
 // CPtiEngineImpl::CountToneMarks
@@ -1036,9 +1107,8 @@ TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirect
 		case EPtiEngineStrokePhraseHalfQwerty:
 		case EPtiEngineStrokePhraseQwerty:
 			{
-			TPtiKeyboardType keyboardType = EPtiKeyboardNone;
-			TBool IsStokeKey = EFalse;
-            TRAP_IGNORE(keyboardType = ActiveKeyboardTypeL());
+			TPtiKeyboardType keyboardType = ActiveKeyboardType();
+			TBool IsStokeKey = EFalse;            
              if(EPtiKeyboardQwerty4x10 == keyboardType ||
                      EPtiKeyboardQwerty3x11 == keyboardType )
                  {
@@ -2052,7 +2122,7 @@ void CPtiEngineImpl::Capitalize(TDes& aTextBuffer)
 	// Predictive QWERTY (XT9) changes ---->
 	// PtiXt9Core handles the capitalization it self, and it should not be overriden 
 	// byt the PtiEngine.
-	if ( iInputMode==EPtiEngineQwertyPredictive )
+	if ( IsCurrentCoreSupportCaseInfo() )
 	    {
 	    return;
 	    }
@@ -2657,6 +2727,7 @@ CPtiCoreLanguage* CPtiEngineImpl::CreateNumericLanguageL(CPtiCore* aCore)
 //
 void CPtiEngineImpl::GetModeNameIndexL(TPtiChineseVariant aVariant, RArray<TInt>& aResult)
 	{
+	CleanupClosePushL( aResult );
 	TResourceReader reader;	
 	TFileName fileName;
 
@@ -2703,6 +2774,7 @@ void CPtiEngineImpl::GetModeNameIndexL(TPtiChineseVariant aVariant, RArray<TInt>
 		}
 
 	CleanupStack::PopAndDestroy(3);   // fsSession, rsFile, rBuffer
+    CleanupStack::Pop();
 	}
 
 
@@ -2885,16 +2957,26 @@ TBool CPtiEngineImpl::SetToneMark(TInt aToneMark)
 //	
 void CPtiEngineImpl::GetAvailableLanguagesL(RArray<TInt>& aResult)
 	{
+	CleanupClosePushL( aResult ); 
 	aResult.Reset();
 	
 	const TInt count = iLanguages->Count();
 	for (TInt i = 0; i < count; i++)
 		{
+	    TInt code = 0;
 		if (iLanguages->At(i)->LanguageCode() != ELangNumeric)
 			{
-			aResult.AppendL(iLanguages->At(i)->LanguageCode());
-			}
-		}	
+		    if(IsRegionalLang(iLanguages->At(i)->LanguageCode(),code))
+		        {
+		        if(AlreadyExistLang(iLanguages,code))
+		            {
+		            continue;
+			        }
+		        }	
+			aResult.AppendL(code);
+		    }	
+		}
+    CleanupStack::Pop();
 	}
 
 
@@ -3253,13 +3335,14 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
                                                TBool aUseExtendedSet,
                                                TPtiKeyboardType aKeyboardType)
 	{
+	CleanupClosePushL( aResult );
 	aResult.Reset();		
 	TPtiNumericKeyBinding bind;		
 	
 	TPtiKeyboardType keyboardType = aKeyboardType;
 	if (keyboardType == EPtiKeyboardNone)
 	    {
-	    keyboardType = ActiveKeyboardTypeL();
+	    keyboardType = ActiveKeyboardType();
 	    
 	    if (keyboardType == EPtiKeyboard12Key ||
 	        keyboardType == EPtiKeyboardNone)
@@ -3271,6 +3354,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
 	if (keyboardType == EPtiKeyboard12Key ||
 	    keyboardType == EPtiKeyboardNone)
 	    {
+		CleanupStack::Pop();
 	    // No qwerty data available, can't go on.
 	    return;
 	    }
@@ -3289,6 +3373,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
 			bind = NumericModeKeysForNonLatinNumberLanguages[i];
 			User::LeaveIfError(aResult.Append(bind));		
 			}	
+		CleanupStack::Pop();
 		
 		return;			
 		}
@@ -3372,6 +3457,7 @@ void CPtiEngineImpl::NumericModeKeysForQwertyL(TInt aLanguage,
                 }				
 			}			      
 		}		
+	CleanupStack::Pop();
 	}	
 	
 	
@@ -3724,9 +3810,7 @@ TPtiKeyboardType CPtiEngineImpl::KeyboardType() const
         }
 		    		    
     return EPtiKeyboardNone;*/
-	TInt keyboardLayout = 0;
-    
-    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+	TInt keyboardLayout = ActiveKeyboardType();          
 
     if (keyboardLayout <= 0 ||
         keyboardLayout > EPtiKeyboardMaxLayout - 1)
@@ -3817,6 +3901,7 @@ TInt CPtiEngineImpl::SetKeyboardType(TPtiKeyboardType aType)
 void CPtiEngineImpl::KeyboardTypesSupportedByLanguageL(TInt aLanguage,
                                                        RArray<TPtiKeyboardType>& aResult)
     {
+	CleanupClosePushL( aResult );
     CPtiCoreLanguage* lang = NULL;
     
     if (iCurrentLanguage && iCurrentLanguage->LanguageCode() == aLanguage)
@@ -3878,30 +3963,51 @@ void CPtiEngineImpl::KeyboardTypesSupportedByLanguageL(TInt aLanguage,
             User::LeaveIfError(aResult.Append(EPtiKeyboardHalfQwerty));
             }            
         }                
+    CleanupStack::Pop();
     }
 
 
 // ---------------------------------------------------------------------------
-// CPtiEngineImpl::ActiveKeyboardTypeL
+// CPtiEngineImpl::ActiveKeyboardType
 // 
 // ---------------------------------------------------------------------------
 //
-TPtiKeyboardType CPtiEngineImpl::ActiveKeyboardTypeL()
+TPtiKeyboardType CPtiEngineImpl::ActiveKeyboardType() const
     {    
-    // Qwerty Keyboard layout
-    TInt keyboardLayout = 0;
-    
-    RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardLayout);
+	TInt keyboardType = EPtiKeyboardNone;
+#ifdef RD_SCALABLE_UI_V2
+	// Get physical keyboard type
+	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );
 
-    if (keyboardLayout <= 0 ||
-        keyboardLayout > EPtiKeyboardMaxLayout - 1)
-        {
-        return EPtiKeyboardNone;
-        }
-        
-    return (TPtiKeyboardType)keyboardLayout;
+	// When active keyboard is virtual keyboard, 
+	// need to get the active virtual keyboard type 
+	// and set keyboardType again.
+	
+	// When the default physical keyboard is 0, 
+	// it means that there is no physical keyboard,
+	// also need to get the active virtual keyboard type.
+	TInt isQwertyOn = 0;
+	RProperty::Get(KCRUidAvkon, KAknQwertyInputModeActive, isQwertyOn);	
+	TInt isVirtualInputActive = 0;
+	RProperty::Get( KPSUidAknFep, KAknFepTouchInputActive, 
+					isVirtualInputActive );    
+	if (( isVirtualInputActive > 0 || keyboardType == 0) && !isQwertyOn)
+		{
+		// Active keyboard is virtual keyboard          
+		RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, 
+						keyboardType );      
+		}
+#else
+	// Get physical keyboard type
+	RProperty::Get(KCRUidAvkon, KAknKeyBoardLayout, keyboardType );	    
+#endif
+
+	if ( keyboardType <= 0 || keyboardType >= EPtiKeyboardMaxLayout )
+		{
+	    keyboardType = EPtiKeyboardNone;
+		}        
+	return (TPtiKeyboardType)keyboardType;
     }
-
         
 // ---------------------------------------------------------------------------
 // CPtiEngineImpl::GetNumericModeKeysForQwertyL
@@ -4213,5 +4319,16 @@ TInt CPtiEngineImpl::SetSecondaryInputL(TInt aEpocLanguageID)
     
     }
 #endif //FF_DUAL_LANGUAGE_SUPPORT
+TBool CPtiEngineImpl::IsCurrentCoreSupportCaseInfo()
+    {
+    if ( Core() )
+        {
+        if ( Core()->GetCoreInfo()->Uid() == KXt9ImplementationUid.iUid )
+            {
+            return ETrue;
+            }
+        }
+    return EFalse;
+    }
 // End of file
 

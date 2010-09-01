@@ -318,6 +318,8 @@ TInt CPeninputServerSession::DoServiceL( const RMessage2& aMessage )
         case EPeninputRequestInternalDimLayout:
         case EPeninputRequestDimResChangeLayout:
         case EPeninputRequestSupportInputMode:
+        case EPeninputRequestSetInputLanguage:
+		case EPeninputEnablePriorityChangeOnOriChange:
             ret = iPenInputSvr.HandleMessageL(aMessage);            
             break;
         case EPeninputRequestUpdateAppInfo:            

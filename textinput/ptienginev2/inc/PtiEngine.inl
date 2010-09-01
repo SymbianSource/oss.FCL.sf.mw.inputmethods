@@ -304,6 +304,11 @@ inline TBool CPtiEngineImpl::AllowCapitalize(TUint16 aChar) const
 			return EFalse;
 			}				
 		}
+	
+	if (iCurrentLanguage->LanguageCode() == ELangGreek && aChar == 0x3C2)
+	    {
+	    return EFalse;
+	    }
 
 	return ETrue;	
 	}	

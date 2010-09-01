@@ -41,7 +41,7 @@ VENDORID                VID_DEFAULT
 
 SOURCEPATH     ../data
 START RESOURCE  testdomecom.rss
-TARGET  /resource/plugins/testdomecom.rsc
+TARGET  testdomecom.rsc
 END
 
 USERINCLUDE     ../inc

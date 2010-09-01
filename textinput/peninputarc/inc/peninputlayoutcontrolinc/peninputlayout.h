@@ -30,6 +30,7 @@
 #include "peninputlayoutbasecontrol.h"
 #include "peninputcmdparam.h"
 
+class MAknsSkinInstance;
 class CFepUiCursor;
 
 class CControlGroup;
@@ -544,6 +545,24 @@ public:
 	 */      
 	//Advanced Tactile feedback REQ417-47932
 	IMPORT_C void ChangeFeedbackType(TInt aId, TInt aNewTactileType);  
+	
+    IMPORT_C TBool NotDrawToLayoutDevice();
+    IMPORT_C void DisableLayoutDrawing(TBool aFlag);
+    /**
+     * Get the layout SkinInstance
+     *
+     * @since S60 v4.0        
+     * @return SkinInstance
+     */
+    inline MAknsSkinInstance* SkinInstance();
+    
+    /**
+     * Get the layout TouchFeedbackInstance
+     *
+     * @since S60 v4.0        
+     * @return TouchFeedbackInstance
+     */
+    inline MTouchFeedback* TouchFeedbackInstance();
 
 protected:
     /**
@@ -610,7 +629,28 @@ private:
      * @param aData Editor text and cursor pos information
      */
     void SendEditorTextAndCursorPosL(TUint8* aData);
+	void SetSelfBmpDeviceFlag(TBool aFlag);
 
+private:
+    NONSHARABLE_CLASS( CFepUiLayoutExt) : public CBase
+        {
+        public:
+			TBool iTactileSupported;
+    	
+			/**
+			 * Used to Cache skins instance 
+			 */ 
+			MAknsSkinInstance*  iSkinInstance;
+			
+			/**
+			 * Used to Cache TouchFeedback instance 
+			 */ 
+			MTouchFeedback*   iTouchFeedbackInstance;    
+            
+			TBool iSelfBmpDeviceFlag;
+            TBool iDisableDrawing;   
+        };
+ 
 private:  
     /**
      * Layout dragging position. Same as iLayoutPos, but only used when layout is
@@ -660,15 +700,13 @@ private:
      */
      TInt iLayoutReady;     
     
+     CFepUiLayoutExt* iExtension;
     /**
      * Reserved item1
      */
      TInt iReserved1;     
-     
-    /**
-     * Flag for tactile feedback support
-     */        
-    TBool iTactileSupported;
+friend class CFepUiBaseCtrl;
+    
 };
 
 #include "peninputlayout.inl"

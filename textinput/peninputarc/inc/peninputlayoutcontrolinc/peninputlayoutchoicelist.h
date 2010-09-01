@@ -247,7 +247,7 @@ public:
      * @param aIndex Item index
      * @return choice list item pointer of specified index
      */                                 
-    IMPORT_C const CFepLayoutChoiceList::SItem* ItemByIndex(TInt aIndex);
+    const CFepLayoutChoiceList::SItem* ItemByIndex(TInt aIndex);
 
     /**
      * Retrieve a choice list item by item's command
@@ -309,6 +309,8 @@ public:
      */       
     IMPORT_C void SetCurrentFocusedIndex(const TInt aIndex);
     
+    
+    IMPORT_C void SetTextAlignment(const CGraphicsContext::TTextAlign aAlign);
 protected:
 
     /**
@@ -503,6 +505,11 @@ protected:
      */
      TAknsItemID iSubItemSkinID;
      TAknsItemID iBackgroundSkinID;
+     
+     /*
+      * iText alignment
+      */        
+     CGraphicsContext::TTextAlign iAlign;
     };
 
 #include "peninputlayoutchoicelist.inl"

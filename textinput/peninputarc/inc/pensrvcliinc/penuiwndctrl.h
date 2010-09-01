@@ -18,8 +18,48 @@
 #define __PEN_UI_WINDOW_CONTROL__
 
 #include <coecntrl.h>
+#include <AknIconUtils.h>
+#include <AknsUtils.h>
+#include <AknsDrawUtils.h> 
+
+#ifndef FIX_FOR_NGA
+#define FIX_FOR_NGA
+#endif
+
 class RAknUiServer;
 class CPenUiWndCtrl;
+class CPenUiHwnWnd;
+
+struct TCommonBgCtrlSubItem
+    {
+    TRect iRect;    
+    TAknsItemID iFrameID;
+    TAknsItemID iCenterID;
+    TBool iIsShow;      
+    };
+class CPenUiWndCtrl;
+
+class CCursorWindow : public CCoeControl
+    {
+public: // Functions from base classes.
+
+    CCursorWindow(CPenUiWndCtrl* aParent);
+    //void ConstructL(CCoeControl* aParent);
+    /**
+     * From CCoeControl    
+     * Function where control's drawing is done.
+     *
+     * @param aRect Control's area.
+     */
+    void Draw( const TRect &aRect ) const;
+    
+    void SetCursorVisible(TBool aFlag);
+
+private:
+    TBool iCursorVisible;
+    CPenUiWndCtrl* iParent;
+    };
+	
 class CPenUiPopWnd : public CCoeControl
     {
 public: // Constructors and destructor
@@ -153,6 +193,54 @@ public: // New functions
     void DimPenUiForMenu();
     TInt GetWndPriority();
     void SetResourceChange(TBool aResourceChange);
+    void UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,const TRect& aPos);
+    void SetPopupArea(const TRect& aRect, TBool aFlag);
+    void UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos);
+    
+    /**
+     * Update the bubble area list
+     *
+     * @since S60 v5.0
+     * @param aCtrl the Ctrl's address
+     * @param aBmp the bubble bitmap's address
+     * @param aRect the bubble rect
+     * @param aFlag ETrue means add bubble area and 
+     *              EFalse means remove bubble area
+     * @return void
+     */
+    void UpdateChangedArea( const TUint32 aCtrl, 
+    	const CFbsBitmap* aBmp, const TRect& aRect, TBool aFlag );
+    
+    /**
+     * Update the bubble area list
+     *
+     * @since S60 v5.0
+     * @param aCtrl the Ctrl's address
+     * @param aBmp the bubble bitmap's address
+     * @param aMaskBmp the bubble mask bitmap's address
+     * @param aPos the bubble rect
+     * @param aFlag ETrue means add bubble area and 
+     *              EFalse means remove bubble area
+     * @return void
+     */
+    void UpdateBubble( const TUint32 aCtrl, 
+    	const CFbsBitmap* aBmp, const CFbsBitmap* aMaskBmp, 
+    	const TRect& aPos, TBool aFlag );
+    
+    void Clean();
+    
+    void HandleNGASpecificSignal(TInt aEventType, const TDesC& aEventData);
+    void LiftUpPriority();
+    
+    /**
+     * Update the cursor color
+     *
+     * @since S60 v5.0
+     * @param none
+     * @return void
+     */
+    void SetCursorColor();
+    
 public: // Functions from base classes.
 
     /**
@@ -163,6 +251,16 @@ public: // Functions from base classes.
      */
     void Draw( const TRect &aRect ) const;
     
+public:
+    /**
+     * Auto refresh timer callback, refresh pen ui. (for NGA)
+     */
+    void RefreshUI();
+
+protected:
+    CCoeControl* ComponentControl(TInt) const;
+    TInt CountComponentControls() const;
+	    
 private:
 
     /**
@@ -197,6 +295,21 @@ private:
      */
     TUid WindowGroupNameAppUidL( RWsSession& aWS,TInt aWGId  );
     
+    /**
+     * Restart auto refresh timer. (for NGA)
+     */
+    void RestartRefreshTimer();
+    
+    /**
+     * stop auto refresh timer. (for NGA)
+     */
+    void StopRefreshTimer();
+    
+    void DrawBkground(CWindowGc& aGc,const TRect& aRect) const;
+    void DrawFrame( CWindowGc& aGc,const TRect& aRect,TAknsItemID aFrameID,TAknsItemID aCenterID ) const;
+    
+    void DrawCursor(CWindowGc& aGc) const;
+    void DrawBubbleAsBackground(CFbsBitGc* aGc, CFbsBitmap* aBmp, const TRect& aRect);
 
 private: // Data
     RWindowGroup& iWndGroup;
@@ -213,6 +326,7 @@ private: // Data
     
     TInt iPriority;
     TInt iPreEditorPriority;
+    CAknIncallBubble* iIncallBubble;
     CPenUiPopWnd* iPopupWnd;
     
     TBool iShowPopup;
@@ -221,6 +335,57 @@ private: // Data
     //TBool iUiLayoutChange;
     TBool iInGlobalEditorState;
     TRect iLayoutClipRect;
+
+    CFbsBitmap * iCursorBmp;
+    CFbsBitmap* iICFBmp;
+    CFbsBitmap* iChangedBmp;
+    RPointerArray<CFbsBitmap> iBubblesArea;
+    RPointerArray<CFbsBitmap> iBubblesMaskArea;
+    
+    /**
+     * An array of the Controls' addresses 
+     */
+    RArray<TUint32> iBubblesCtrl;
+    
+    RArray<TRect> iBubblesPos;
+    
+    TPoint iCursorPos;
+    TPoint iIcfPos;
+    TPoint iChangedPos;
+    TRect iIcfRect;
+    TRect iCursorRect;
+    CIdle *iIdle;
+    TRect iRedrawRect;
+    TInt iTouchCount;
+    
+    TBool iCursorVisible;
+    
+    RRegion iPopRegion;
+
+    TBool iBackground;
+    TAknsItemID iFrameID;
+    TAknsItemID iCenterID;
+    
+    /**
+     * Auto refresh timer
+     * own
+     */
+    CPeriodic* iAutoRefreshTimer;
+
+    /**
+     * The sub items of the background 
+     */
+    RArray<TCommonBgCtrlSubItem> *iSubItems; //not own
+    
+    TBool iNotUpdating;
+    CCursorWindow* iCursorWnd;
+    
+    /**
+     * The cursor's color 
+     */
+    TRgb iCursorColor;
+    
+friend class CCursorWindow;
     };
 class CInternalBkCtrl : public CCoeControl
     {

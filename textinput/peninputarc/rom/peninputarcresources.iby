@@ -26,6 +26,9 @@ REM PENINPUTARC
 
 #ifdef __PEN_SUPPORT
 
+data = \EPOC32\DATA\Z\resource\gspeninputpluginrsc.RSC 	"resource\gspeninputpluginrsc.rsc" 
+
+S60_APP_RESOURCE(peninputsetting)
 
 #endif //__PEN_SUPPORT
 

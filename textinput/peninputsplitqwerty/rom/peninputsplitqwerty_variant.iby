@@ -1,0 +1,272 @@
+/*
+* Copyright (c) 2002 - 2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Image description file for project peninputsplitqwerty
+*
+*/
+
+
+#ifndef PENINPUTSPLITQWERTY_IBY
+#define PENINPUTSPLITQWERTY_IBY
+
+#include <data_caging_paths_for_iby.hrh>
+#include <bldvariant.hrh>
+
+#ifdef __PEN_SUPPORT
+#if defined(__VIRTUAL_KEYBOARD_INPUT) || defined(FF_VIRTUAL_FULLSCR_QWERTY_INPUT)
+#ifdef RD_SCALABLE_UI_V2 
+
+#if !defined(__CHINESE) && !defined(__KOREAN)
+
+#if defined(LOCALES_SC_IBY) || defined(__LOCALES_01_IBY__)|| defined(__LOCALES_157_IBY__) || defined(__LOCALES_158_IBY__) \
+|| defined(__LOCALES_159_IBY__) || defined(__LOCALES_10_IBY__) || defined(__LOCALES_161_IBY__) || defined(__LOCALES_129_IBY__) || defined(__LOCALES_186_IBY__) || defined(__LOCALES_230_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_01.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_01.rsc
+#endif  // LOCALES_SC_IBY || __LOCALES_01_IBY__
+
+#if defined(__LOCALES_02_IBY__) || defined(__LOCALES_51_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_02.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_02.rsc
+#endif  // __LOCALES_02_IBY__
+
+#if defined(__LOCALES_03_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_03.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_03.rsc
+#endif  // __LOCALES_03_IBY__
+
+#if defined(__LOCALES_04_IBY__) || defined(__LOCALES_83_IBY__) || defined(__LOCALES_44_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_04.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_04.rsc
+#endif  // __LOCALES_04_IBY__
+
+#if defined(__LOCALES_05_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_05.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_05.rsc
+#endif  // __LOCALES_05_IBY__
+
+#if defined(__LOCALES_06_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_06.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_06.rsc
+#endif  // __LOCALES_06_IBY__
+
+#if defined(__LOCALES_07_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_07.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_07.rsc
+#endif  // __LOCALES_07_IBY__
+
+#if defined(__LOCALES_08_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_08.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_08.rsc
+#endif  // __LOCALES_08_IBY__
+
+#if defined(__LOCALES_09_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_09.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_09.rsc
+#endif  // __LOCALES_09_IBY__
+
+#if defined(__LOCALES_10_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_10.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_10.rsc
+#endif  // __LOCALES_10_IBY__
+
+#if defined(__LOCALES_13_IBY__) || defined(__LOCALES_76_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_13.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_13.rsc
+#endif  // __LOCALES_13_IBY__
+
+#if defined(__LOCALES_14_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_14.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_14.rsc
+#endif  // __LOCALES_14_IBY__
+
+#if defined(__LOCALES_15_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_15.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_15.rsc
+#endif  // __LOCALES_15_IBY__
+
+#if defined(__LOCALES_16_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_16.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_16.rsc
+#endif  // __LOCALES_16_IBY__
+
+#if defined(__LOCALES_17_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_17.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_17.rsc
+#endif  // __LOCALES_17_IBY__
+
+#if defined(__LOCALES_18_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_18.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_18.rsc
+#endif  // __LOCALES_18_IBY__
+
+#if defined(__LOCALES_25_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_25.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_25.rsc
+#endif  // __LOCALES_25_IBY__
+
+#if defined(__LOCALES_26_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_26.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_26.rsc
+#endif  // __LOCALES_26_IBY__
+
+#if defined(__LOCALES_27_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_27.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_27.rsc
+#endif  // __LOCALES_27_IBY__
+
+#if defined(__LOCALES_28_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_28.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_28.rsc
+#endif  // __LOCALES_28_IBY__
+
+#if defined(__LOCALES_33_IBY__) || defined(__LOCALES_161_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_33.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_33.rsc
+#endif  // __LOCALES_33_IBY__
+
+#if defined(__LOCALES_37_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_37.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_37.rsc
+#endif  // __LOCALES_37_IBY__
+
+#if defined(__LOCALES_39_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_39.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_39.rsc
+#endif  // __LOCALES_39_IBY__
+
+#if defined(__LOCALES_42_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_42.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_42.rsc
+#endif  // __LOCALES_42_IBY__
+
+#if defined(__LOCALES_44_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_44.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_44.rsc
+#endif  // __LOCALES_44_IBY__
+
+#if defined(__LOCALES_45_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_45.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_45.rsc
+#endif  // __LOCALES_45_IBY__
+
+#if defined(__LOCALES_49_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_49.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_49.rsc
+#endif  // __LOCALES_49_IBY__
+
+#if defined(__LOCALES_50_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_50.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_50.rsc
+#endif  // __LOCALES_50_IBY__
+
+#if defined(__LOCALES_51_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_51.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_51.rsc
+#endif  // __LOCALES_51_IBY__
+
+#if defined(__LOCALES_54_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_54.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_54.rsc
+#endif  // __LOCALES_54_IBY__
+
+#if defined(__LOCALES_57_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_57.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_57.rsc
+#endif  // __LOCALES_57_IBY__
+
+#if defined(__LOCALES_58_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_58.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_58.rsc
+#endif  // __LOCALES_58_IBY__
+
+#if defined(__LOCALES_59_IBY__) || defined(__LOCALES_327_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_59.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_59.rsc
+#endif  // __LOCALES_59_IBY__
+
+#if defined(__LOCALES_67_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_67.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_67.rsc
+#endif  // __LOCALES_67_IBY__
+
+#if defined(__LOCALES_68_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_68.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_68.rsc
+#endif  // __LOCALES_68_IBY__
+
+#if defined(__LOCALES_70_IBY__) || defined(__LOCALES_326_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_70.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_70.rsc
+#endif  // __LOCALES_70_IBY__
+
+#if defined(__LOCALES_72_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_72.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_72.rsc
+#endif  // __LOCALES_72_IBY__
+
+#if defined(__LOCALES_76_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_76.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_76.rsc
+#endif  // __LOCALES_76_IBY__
+
+#if defined(__LOCALES_78_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_78.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_78.rsc
+#endif  // __LOCALES_78_IBY__
+
+#if defined(__LOCALES_79_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_79.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_79.rsc
+#endif  // __LOCALES_79_IBY__
+
+#if defined(__LOCALES_83_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_83.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_83.rsc
+#endif  // __LOCALES_83_IBY__
+
+#if defined(__LOCALES_93_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_93.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_93.rsc
+#endif  // __LOCALES_93_IBY__
+
+#if defined(__LOCALES_94_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_94.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_94.rsc
+#endif  // __LOCALES_94_IBY__
+
+#if defined(__LOCALES_96_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_96.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_96.rsc
+#endif  // __LOCALES_96_IBY__
+
+#if defined(__LOCALES_102_IBY__) || defined(__LOCALES_401_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_102.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_102.rsc
+#endif  // __LOCALES_102_IBY__
+
+#if defined(__LOCALES_103_IBY__)  || defined(__LOCALES_402_IBY__)
+#define PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_103.rsc                  RESOURCE_FILES_DIR\plugins\peninputssqwinconfiginfo_103.rsc
+#endif  // __LOCALES_103_IBY__
+#ifdef PENINPUT_VKB_GENERIC_PLUGIN
+data = DATAZ_\RESOURCE_FILES_DIR\apps\peninputsplitqwerty.mif       RESOURCE_FILES_DIR\apps\peninputsplitqwerty.mif
+ECOM_PLUGIN(peninputsplitqwerty.dll,peninputsplitqwerty.rsc)
+#endif //PENINPUT_VKB_GENERIC_PLUGIN
+
+
+#endif // __CHINESE __KOREAN
+#endif // RD_SCALABLE_UI_V2
+#endif //__VIRTUAL_KEYBOARD_INPUT || FF_VIRTUAL_FULLSCR_QWERTY_INPUT  
+#endif // __PEN_SUPPORT
+
+#endif // PENINPUTSPLITQWERTY_IBY

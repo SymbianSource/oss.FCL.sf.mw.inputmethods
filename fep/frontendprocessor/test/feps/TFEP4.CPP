@@ -1,4 +1,4 @@
-// Copyright (c) 1997-2010 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 1997-2009 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -1087,15 +1087,22 @@ TKeyResponse CTstControl::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode 
 				{
 				//TTstArrayOfOneCtrlCharacter arrayOfOneCtrlCharacter(keyCodeInUpperCase-('A'-1)); // the TTstArrayOfOneCtrlCharacter object cannot be an anonymous (temporary) object as its lifetime must be guaranteed to last until iFep.SimulateKeyEventsL returns
                 //iFep.SimulateKeyEventsL(arrayOfOneCtrlCharacter.ArrayOfModifiedCharacters());
-				const TInt numberOfCharacters = 7;
+				const TInt numberOfCharacters = 11;
 			    CArrayFix<TUint>* arrayOfCharacters=new(ELeave) CArrayFixFlat<TUint>(numberOfCharacters); // a RArray would be better than a CArrayFix, but unfortunately RArray doesn't (yet) have a TArray interface
 			    CleanupStack::PushL(arrayOfCharacters);
-			    arrayOfCharacters->AppendL(' ');
-			    arrayOfCharacters->AppendL('!');
-			    arrayOfCharacters->AppendL('\"');
-			    arrayOfCharacters->AppendL('#');
+			    int i;
+			    TUint32 cjkBase = 0x20020;
 			    TUint32 ch;
-                ch = 0x20024;
+			    for (i=0; i<numberOfCharacters - 3; i++)
+			        {
+			            ch = cjkBase++;
+			            TUint32 hi = ((ch - 0x10000) / 0x400) + 0xD800;
+			            TUint32 lo = ((ch - 0x10000) % 0x400) + 0xDC00;
+			            arrayOfCharacters->AppendL(hi);
+			            arrayOfCharacters->AppendL(lo);
+			            i++;
+			        }
+                ch++;
                 TUint32 hi = ((ch - 0x10000) / 0x400) + 0xD800;
                 TUint32 lo = ((ch - 0x10000) % 0x400) + 0xDC00;
                 arrayOfCharacters->AppendL(lo);

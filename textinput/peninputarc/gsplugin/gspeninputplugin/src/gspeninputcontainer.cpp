@@ -518,9 +518,12 @@ void CGSPenInputContainer::MakeInputModeL()
     CleanupStack::PopAndDestroy(dynamicText);
 
     // And add to listbox
-    iListboxItemArray->SetItemVisibilityL(
+    if( iListboxItemArray != NULL )
+        {
+        iListboxItemArray->SetItemVisibilityL(
             EGSDefaultChineseOnscreenKeyboard, 
             bVisible ? CGSItemTextArray::EVisible : CGSItemTextArray::EInvisible);
+        }
     }
 
 // ---------------------------------------------------------
@@ -760,7 +763,8 @@ void CGSPenInputContainer::MakeChineseFindMethodItemL()
             ptrBuffer = (*iChineseFindMethodItems)[chineseFindMethod];
             }
 
-        if (!ptrBuffer.Length() && iChineseFindMethodItems->Count() > 0)
+        if ( !ptrBuffer.Length() && iChineseFindMethodItems != NULL && 
+                                    iChineseFindMethodItems->Count() > 0 )
             {
             ptrBuffer = (*iChineseFindMethodItems)[0];
             }
@@ -1121,33 +1125,37 @@ void CGSPenInputContainer::ShowTrailWidthPageL()
 void CGSPenInputContainer::ShowGuideLinePageL()
     {
     TInt currentItem = iModel->GuideLine();
+    currentItem = ( 0 == currentItem ) ? 1 : 0;
     
-    if (currentItem == 1)
-        {
-        currentItem = 0;
-        }
-    else
-        {
-        currentItem = 1;
-        }
-
-    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
-                                      R_GS_GUIDLINE_TEXT_SETTING_PAGE, 
-                                      currentItem, 
-                                      iGuideLineItems);
-
-    CleanupStack::PushL(dlg);
+    iModel->SetGuideLine(currentItem);
+    UpdateListBoxL(EGSInputpenIdGuidLine);
     
-    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
-        {
-        if(currentItem == iModel->GuideLine())
-            {
-            iModel->SetGuideLine(currentItem == 0? 1:0);
-            UpdateListBoxL(EGSInputpenIdGuidLine);
-            }
-        }
- 
-    CleanupStack::Pop(dlg);  
+//    if (currentItem == 1)
+//        {
+//        currentItem = 0;
+//        }
+//    else
+//        {
+//        currentItem = 1;
+//        }
+//
+//    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
+//                                      R_GS_GUIDLINE_TEXT_SETTING_PAGE, 
+//                                      currentItem, 
+//                                      iGuideLineItems);
+//
+//    CleanupStack::PushL(dlg);
+//    
+//    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
+//        {
+//        if(currentItem == iModel->GuideLine())
+//            {
+//            iModel->SetGuideLine(currentItem == 0? 1:0);
+//            UpdateListBoxL(EGSInputpenIdGuidLine);
+//            }
+//        }
+// 
+//    CleanupStack::Pop(dlg);  
     }
 
 // ---------------------------------------------------------
@@ -1157,33 +1165,10 @@ void CGSPenInputContainer::ShowGuideLinePageL()
 void CGSPenInputContainer::ShowRecognitionWithDictionaryL()
     {
     TInt currentItem = iModel->RecognitionWithDictionary();
+    currentItem = ( 0 == currentItem ) ? 1 : 0;
+    iModel->SetRecognitionWithDictionary(currentItem);
+    UpdateListBoxL(EGSInputpenIdRecognitionWithDictionary);
     
-    if (currentItem == 1)
-        {
-        currentItem = 0;
-        }
-    else
-        {
-        currentItem = 1;
-        }
-
-    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
-            R_GS_RECOGNITIONWITHDICTIONARY_TEXT_SETTING_PAGE,  
-                                      currentItem, 
-                                      iRecognitionWithDictionaryItems);
-
-    CleanupStack::PushL(dlg);
-    
-    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
-        {
-        if(currentItem == iModel->RecognitionWithDictionary())
-            {
-            iModel->SetRecognitionWithDictionary(currentItem == 0? 1:0);
-            UpdateListBoxL(EGSInputpenIdRecognitionWithDictionary);
-            }
-        }
- 
-    CleanupStack::Pop(dlg);  
     }
 
 // ---------------------------------------------------------
@@ -1193,24 +1178,28 @@ void CGSPenInputContainer::ShowRecognitionWithDictionaryL()
 void CGSPenInputContainer::ShowInputMethodForFindPageL()
     {
     TInt currentItem = iModel->InputMethodForFind();
+    currentItem = ( 0 == currentItem ) ? 1 : 0;
 
-    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
-                                      R_GS_INPUTMETHODFORFIND_TEXT_SETTING_PAGE, 
-                                      currentItem, 
-                                      iInputMethodForFindItems);
+    iModel->SetInputMethodForFind(currentItem);
+    UpdateListBoxL(EGSInputpenIdInputMethodForFind);
 
-    CleanupStack::PushL(dlg);
-    
-    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
-        {
-        if(currentItem != iModel->InputMethodForFind())
-            {
-            iModel->SetInputMethodForFind(currentItem);
-            UpdateListBoxL(EGSInputpenIdInputMethodForFind);
-            }
-        }
- 
-    CleanupStack::Pop(dlg);
+//    CAknRadioButtonSettingPage* dlg = new (ELeave) CAknRadioButtonSettingPage(
+//                                      R_GS_INPUTMETHODFORFIND_TEXT_SETTING_PAGE, 
+//                                      currentItem, 
+//                                      iInputMethodForFindItems);
+//
+//    CleanupStack::PushL(dlg);
+//    
+//    if (dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged))
+//        {
+//        if(currentItem != iModel->InputMethodForFind())
+//            {
+//            iModel->SetInputMethodForFind(currentItem);
+//            UpdateListBoxL(EGSInputpenIdInputMethodForFind);
+//            }
+//        }
+// 
+//    CleanupStack::Pop(dlg);
     }
 
 // ---------------------------------------------------------

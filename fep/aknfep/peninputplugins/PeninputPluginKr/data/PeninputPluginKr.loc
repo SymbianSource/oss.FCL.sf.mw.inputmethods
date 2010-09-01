@@ -1,0 +1,51 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+﻿//  LOCALISATION STRINGS
+
+#ifdef LANGUAGE_01
+
+#define qtn_peninput_plugin_kr_doubleconsonent_setting "Custom Combination"
+
+#define STRING_r_aknexquery_selection_title "Custom Combination"
+
+#define qtn_peninput_plugin_kr_item1 "1\t"<0x3131>" + "<0x3131>" "<0x21D2>" "<0x3132>
+#define qtn_peninput_plugin_kr_item2 "1\t"<0x3137>" + "<0x3137>" "<0x21D2>" "<0x3138>
+#define qtn_peninput_plugin_kr_item3 "1\t"<0x3142>" + "<0x3142>" "<0x21D2>" "<0x3143>
+#define qtn_peninput_plugin_kr_item4 "1\t"<0x3145>" + "<0x3145>" "<0x21D2>" "<0x3146>
+#define qtn_peninput_plugin_kr_item5 "1\t"<0x3148>" + "<0x3148>" "<0x21D2>" "<0x3149>
+#define qtn_peninput_plugin_kr_item6 "1\t"<0x3151>" + "<0x3163>" "<0x21D2>" "<0x3152>
+#define qtn_peninput_plugin_kr_item7 "1\t"<0x3155>" + "<0x3163>" "<0x21D2>" "<0x3156>
+
+#endif
+
+#ifdef LANGUAGE_65
+
+#define qtn_peninput_plugin_kr_doubleconsonent_setting <0xC790><0xBAA8>" "<0xC870><0xD569>" "<0xC124><0xC815>
+
+#define STRING_r_aknexquery_selection_title <0xC790><0xBAA8>" "<0xC870><0xD569>" "<0xC124><0xC815>
+
+#define qtn_peninput_plugin_kr_item1 "1\t"<0x3131>" + "<0x3131>" "<0x21D2>" "<0x3132>
+#define qtn_peninput_plugin_kr_item2 "1\t"<0x3137>" + "<0x3137>" "<0x21D2>" "<0x3138>
+#define qtn_peninput_plugin_kr_item3 "1\t"<0x3142>" + "<0x3142>" "<0x21D2>" "<0x3143>
+#define qtn_peninput_plugin_kr_item4 "1\t"<0x3145>" + "<0x3145>" "<0x21D2>" "<0x3146>
+#define qtn_peninput_plugin_kr_item5 "1\t"<0x3148>" + "<0x3148>" "<0x21D2>" "<0x3149>
+#define qtn_peninput_plugin_kr_item6 "1\t"<0x3151>" + "<0x3163>" "<0x21D2>" "<0x3152>
+#define qtn_peninput_plugin_kr_item7 "1\t"<0x3155>" + "<0x3163>" "<0x21D2>" "<0x3156>
+
+#endif
+
+// End of File

@@ -238,6 +238,7 @@ EXPORT_C CFepLayoutChoiceList::CFepLayoutChoiceList(CFepUiLayout* aUiLayout,
     SetControlType(ECtrlPopupChoiceList);
 	iSubItemSkinID 		= KAknsIIDNone;
 	iBackgroundSkinID   = KAknsIIDNone;
+	iAlign              = CGraphicsContext::ELeft;
     }
 
 // CFepLayoutChoiceList::HitTest
@@ -294,7 +295,7 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerDownEventL(const TPo
 		#ifdef RD_TACTILE_FEEDBACK
         if (UiLayout()->SupportTactileFeedback())
         	{
-        	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
+        	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
         	}
 		#endif //RD_TACTILE_FEEDBACK     
         }
@@ -307,12 +308,6 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerDownEventL(const TPo
             iCurFocusItem = index;
        		Draw();
             UpdateArea(Rect(),EFalse);
-			#ifdef RD_TACTILE_FEEDBACK
-            if (UiLayout()->SupportTactileFeedback())
-            	{
-            	UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad);
-            	}
-			#endif //RD_TACTILE_FEEDBACK
             }
         }
     return this;
@@ -353,7 +348,7 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerMoveEventL(const TPo
             {
             if ( iLastSelIndex != iCurFocusItem) 
                 {
-                UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad);
+                UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput);
                 iLastSelIndex = iCurFocusItem;
                 }
             }
@@ -391,7 +386,7 @@ EXPORT_C CFepUiBaseCtrl* CFepLayoutChoiceList::HandlePointerUpEventL(const TPoin
 		#ifdef RD_TACTILE_FEEDBACK
 		if (UiLayout()->SupportTactileFeedback())
 			{
-			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad, ETrue, EFalse);
+			UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveInput, ETrue, EFalse);
 			}
 		#endif //RD_TACTILE_FEEDBACK	
         }
@@ -451,7 +446,7 @@ void CFepLayoutChoiceList::DrawItem(const TRect& aRect, const CFepLayoutChoiceLi
        	    iSubItemSkinID.iMinor != EAknsMinorNone)
        		{
        		gc->Activate( BitmapDevice() ); 
-			AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+			AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
                          *gc, 
                          rtFocusRect, 
                          rtInnerRect,
@@ -487,7 +482,7 @@ void CFepLayoutChoiceList::DrawItem(const TRect& aRect, const CFepLayoutChoiceLi
         gc->SetPenColor(iFontColor);
         gc->SetPenStyle(CGraphicsContext::ESolidPen);
 
-        gc->DrawText(aItem.iText, aRect, iBaseline, CGraphicsContext::ELeft, iMargin);
+        gc->DrawText(aItem.iText, aRect, iBaseline, iAlign, iMargin);
 
         gc->DiscardFont();
         }
@@ -510,7 +505,7 @@ void CFepLayoutChoiceList::DrawChoiceListBackground(const TRect& aRect)//, TBool
 	    CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
 	    
 	    gc->Activate( BitmapDevice() ); 
-		AknsDrawUtils::DrawFrame( AknsUtils::SkinInstance(), 
+		AknsDrawUtils::DrawFrame( UiLayout()->SkinInstance(), 
 	                     *gc, 
 	                     aRect, 
 	                     rtInnerRect,
@@ -585,6 +580,7 @@ EXPORT_C void CFepLayoutChoiceList::Draw()
 //
 EXPORT_C void CFepLayoutChoiceList::OnDisplay()
     {
+    iCurFocusItem = -1; 
     ReCalcLayout();
     }
 
@@ -657,4 +653,9 @@ EXPORT_C void CFepLayoutChoiceList::AfterDisplayed()
     {
     TRAP_IGNORE(AfterDisplayedL());
     }
+
+EXPORT_C void CFepLayoutChoiceList::SetTextAlignment(const CGraphicsContext::TTextAlign aAlign)
+	{
+	iAlign = aAlign;
+	}
 //End Of File

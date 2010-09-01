@@ -32,4 +32,4 @@
 #include "../inputmethods_plat/group/bld.inf"
 #include "../inputmethods_pub/group/bld.inf"
 #include "../textinput/group/bld.inf"
-#include "../fepstub/group/bld.inf"
+#include "../fep/group/bld.inf"

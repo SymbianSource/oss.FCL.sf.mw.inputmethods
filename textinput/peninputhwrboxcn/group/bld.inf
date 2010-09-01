@@ -1,0 +1,39 @@
+/*
+* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Build information file for project peninputhwrboxcn
+*
+*/
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+
+../rom/peninputhwrboxcn_Variant.iby CUSTOMER_MW_LAYER_IBY_EXPORT_PATH( peninputhwrboxcn_Variant.iby )	
+	
+PRJ_MMPFILES
+
+//gnumakefile peninputhwrboxcn_icons.mk
+
+../group/peninputhwrboxcn.mmp
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE peninputhwrboxcn.mif
+OPTION HEADERFILE peninputhwrboxcn.mbg
+OPTION SOURCEFILE iconlist.txt
+END
+// End Of File

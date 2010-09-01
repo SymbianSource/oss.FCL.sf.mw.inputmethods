@@ -296,6 +296,7 @@ EXPORT_C const TPtiKeyBinding* CPtiKeyMapData::KeyBindingTable(TPtiKeyboardType 
 EXPORT_C void CPtiKeyMapData::GetNumericModeKeysL(TPtiKeyboardType aKeyboardType,
                                                   RArray<TPtiNumericKeyBinding>& aResult) const
 	{	
+	CleanupClosePushL( aResult );
 	TInt numItems = 0;
 	const TPtiNumericKeyBinding* data = NumericModeKeysTable(aKeyboardType, numItems);
 
@@ -308,6 +309,7 @@ EXPORT_C void CPtiKeyMapData::GetNumericModeKeysL(TPtiKeyboardType aKeyboardType
 			User::LeaveIfError(aResult.Append(data[i]));
 			}
 		}
+    CleanupStack::Pop();
 	}	 	 	
 	 	 		 
 	       	
@@ -479,6 +481,7 @@ EXPORT_C CPtiKeyMapDataFactory* CPtiKeyMapDataFactory::CreateImplementationL(con
 //			
 EXPORT_C void CPtiKeyMapDataFactory::ListImplementationsL(RArray<TInt>& aResult)
     {
+	CleanupClosePushL( aResult );
 	RImplInfoPtrArray infoArray;
 	TInt i;
 
@@ -492,6 +495,7 @@ EXPORT_C void CPtiKeyMapDataFactory::ListImplementationsL(RArray<TInt>& aResult)
 		}
 
 	CleanupStack::PopAndDestroy(); // infoArray     
+    CleanupStack::Pop();
     }
         	
         	

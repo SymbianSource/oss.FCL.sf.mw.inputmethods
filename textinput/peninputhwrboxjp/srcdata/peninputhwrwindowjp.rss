@@ -1,0 +1,642 @@
+/*
+* Copyright (c) 2002-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource definitions for project peninputhwrboxjp
+*
+*/
+
+
+// Resource identifier
+NAME PHWJ
+
+// System includes
+#include <eikon.hrh>
+#include <peninputhwrboxjp.mbg>
+#include <aknsconstants.hrh>   // EAknsMajorGeneric
+#include <peninputcommonlayout.rh>
+#include <peninputdropdownlist.rh>
+
+// User includes
+
+RESOURCE RSS_SIGNATURE { }
+RESOURCE TBUF { buf=""; }
+
+// Macros
+#define PENINPUT_LAYOUT_HWR_BMP "z:\\resource\\apps\\peninputhwrboxjp.mbm"
+
+#define peninput_number_mode_keymap_standard "*+pw#"
+#define peninput_number_mode_keymap_plain ""
+#define peninput_number_mode_keymap_calculator "+-*/"
+#define peninput_number_mode_keymap_converter "+-E"
+#define peninput_number_mode_keymap_to_field "+"
+#define peninput_number_mode_keymap_fixed_dialling "*+pw?#"
+#define peninput_number_mode_keymap_sat "*+#"
+#define peninput_number_mode_keymap_sat_hidden "*#"
+#define peninput_number_mode_keymap_Alpha_numeric "*#"
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_window
+// HWR layout window
+// ---------------------------------------------------------------------------
+//
+RESOURCE PENINPUT_LAYOUT_BASE_WINDOW r_peninput_layout_hwr_window
+    {
+    supportskin = 1;
+    moveimage=r_peninput_layout_move_button;
+    closeimage=r_peninput_layout_close_button;
+    icfimage = r_peninput_layout_icf;
+    optionimage=r_peninput_layout_touch_input_option;
+    keymapping=r_peninput_layout_key_mapping_string_list;
+    shadow=r_peninput_layout_hwr_window_shadow;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_icf
+// HWR window input context field
+// ---------------------------------------------------------------------------
+//
+RESOURCE PENINPUT_LAYOUT_ICF r_peninput_layout_icf
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    icfbgimg=EMbmPeninputhwrboxjpQgn_graf_fep_input_bg;
+    icfbgimgskinid=EAknsMinorGenericQgnGrafFepInputBg;
+
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp = EAknsMinorQsnTextColors;
+    textcoloridx = 59;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_window_shadow
+// HWR window shadow
+// ---------------------------------------------------------------------------
+//
+RESOURCE PENINPUT_LAYOUT_WINDOW_SHADOW r_peninput_layout_hwr_window_shadow
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    shadowimgtl=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_tl;
+    shadowimgtlmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_tl_mask;
+    shadowimgtlskinid=EAknsMinorGenericQgnGrafFepPopupShadowTl;
+
+    shadowimgt=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_t;
+    shadowimgtmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_t_mask;
+    shadowimgtskinid=EAknsMinorGenericQgnGrafFepPopupShadowT;
+
+    shadowimgtr=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_tr;
+    shadowimgtrmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_tr_mask;
+    shadowimgtrskinid=EAknsMinorGenericQgnGrafFepPopupShadowTr;
+
+    shadowimgl=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_l;
+    shadowimglmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_l_mask;
+    shadowimglskinid=EAknsMinorGenericQgnGrafFepPopupShadowL;
+
+    shadowimgr=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_r;
+    shadowimgrmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_r_mask;
+    shadowimgrskinid=EAknsMinorGenericQgnGrafFepPopupShadowR;
+
+    shadowimgbl=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_bl;
+    shadowimgblmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_bl_mask;
+    shadowimgblskinid=EAknsMinorGenericQgnGrafFepPopupShadowBl;
+
+    shadowimgb=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_b;
+    shadowimgbmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_b_mask;
+    shadowimgbskinid=EAknsMinorGenericQgnGrafFepPopupShadowB;
+
+    shadowimgbr=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_br;
+    shadowimgbrmask=EMbmPeninputhwrboxjpQgn_graf_fep_popup_shadow_br_mask;
+    shadowimgbrskinid=EAknsMinorGenericQgnGrafFepPopupShadowBr;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_close_button
+// Close button in base window's titlebar
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_close_button
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_close;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonClose;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_close_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCloseSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_close;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonClose;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_close_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCloseSel;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_move_button
+// Move button in base window's titlebar
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_move_button
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_move2;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonMove2;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_move2_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonMove2Sel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_move2;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonMove2;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_move2_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonMove2Sel;
+
+    moveindicator=EMbmPeninputhwrboxjpQgn_indi_fep_button_move2_sel;
+    moveindicatorskinid=EAknsMinorGenericQgnIndiFepButtonMove2Sel;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_touch_input_option
+// Touch input option button in base window's titlebar
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_touch_input_option
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_options;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonOptions;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_options_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonOptionsSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_options;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonOptions;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_options_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonOptionsSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_options;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonOptions;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_switch_range_all
+// Switch button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_switch_range_all
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_all_types_japanese;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseAllTypesJapanese;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_all_types_japanese_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseAllTypesJapaneseSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_all_types_japanese;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseAllTypesJapanese;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_all_types_japanese_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseAllTypesJapaneseSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_all_types_japanese;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseAllTypesJapanese;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_switch_range_kana_kanji
+// Switch button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_switch_range_kana_kanji
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_kana_kanji;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseKanaKanji;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_kana_kanji_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseKanaKanjiSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_kana_kanji;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseKanaKanji;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_kana_kanji_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseKanaKanjiSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_hiragana;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonHiragana;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_switch_range_latin
+// Switch button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_switch_range_latin
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_latin_text_japanese;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseLatinTextJapanese;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_latin_text_japanese_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseLatinTextJapaneseSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_latin_text_japanese;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseLatinTextJapanese;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_latin_text_japanese_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseLatinTextJapaneseSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_capital;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseCapital;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_switch_range_numeric
+// Switch button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_switch_range_numeric
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_numeric_japanese;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumericJapanese;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_numeric_japanese_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumericJapaneseSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_numeric_japanese;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumericJapanese;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_numeric_japanese_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumericJapaneseSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_numeric;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseNumeric;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_vkb_switch_text
+// Switch button text of vkb
+// ---------------------------------------------------------------------------
+//
+RESOURCE PENINPUT_LAYOUT_SWITCH_TEXT r_peninput_layout_hwr_switch_text
+    {
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp=EAknsMinorQsnTextColors;
+    textcoloridx=58;
+    shadowtextcoloridx=61;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_vkb
+// Switch to vkb button
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_vkb
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_vkb;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonVkb;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_vkb_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonVkbSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_vkb;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonVkb;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_vkb_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonVkbSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_vkb;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonVkb;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_key_mapping_string_list
+// Contain key mapping strings for hwr layout
+// ---------------------------------------------------------------------------
+//
+RESOURCE PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING_LIST r_peninput_layout_key_mapping_string_list
+    {
+    items =
+        {
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorStandardNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_standard;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorPlainNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_plain;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorCalculatorNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_calculator;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorConverterNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_converter;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorToFieldNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_to_field;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorFixedDiallingNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_fixed_dialling;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorSATNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_sat;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorSATHiddenNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_sat_hidden;
+            },
+        PENINPUT_LAYOUT_NUMERIC_KEY_MAPPING_STRING
+            {
+            numerickeymapping=EAknEditorAlphanumericNumberModeKeymap;
+            PermittedString=peninput_number_mode_keymap_Alpha_numeric;
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_convert
+// Convert button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_convert
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_convert_to_kanji;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonConvertToKanji;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_convert_to_kanji_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonConvertToKanjiSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_convert_to_kanji;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonConvertToKanji;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_convert_to_kanji_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonConvertToKanjiSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_convert_to_kanji_dimmed;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonConvertToKanjiDimmed;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_backspace
+// Backspace button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_backspace
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_clear_japanese_2;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonClearJapanese2;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_clear_japanese_2_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonClearJapanese2Sel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_clear_japanese_2;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonClearJapanese2;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_clear_japanese_2_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonClearJapanese2Sel;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_enter
+// Enter button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_enter
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_enter;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonEnter;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_enter_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonEnterSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_enter;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonEnter;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_enter_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonEnterSel;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_sct
+// Symbol button of hwr
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_sct
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_special;
+    nactiveskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecial;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_special_sel;
+    nactivepskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecialSel;
+
+    active=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_special;
+    activeskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecial;
+
+    activep=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_special_sel;
+    activepskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecialSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_indi_fep_button_case_special;
+    disableskinid=EAknsMinorGenericQgnIndiFepButtonCaseSpecial;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_scroll_up
+// scroll up button of prediction pane
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_scroll_up
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up;
+    nactiveskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up_sel;
+    nactivepskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+
+    active=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up;
+    activeskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+
+    activep=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up_sel;
+    activepskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up;
+    disableskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_scroll_down
+// scroll down button of prediction pane
+// ---------------------------------------------------------------------------
+//
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_hwr_scroll_down
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+
+    nactive=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down;
+    nactiveskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+
+    nactivep=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down_sel;
+    nactivepskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+
+    active=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down;
+    activeskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+
+    activep=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down_sel;
+    activepskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+
+    disable=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down;
+    disableskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+    }
+
+// ---------------------------------------------------------------------------
+// r_peninput_layout_hwr_drop_down_list
+// DropDownList
+// ---------------------------------------------------------------------------
+//
+RESOURCE FEP_CTRL_DROP_DOWN_LIST_IMAGE r_peninput_layout_hwr_drop_down_list
+    {
+    bmpfile=PENINPUT_LAYOUT_HWR_BMP;
+
+    imgmajorskinid=EAknsMajorGeneric;
+
+    bmpPrimary=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_pri;
+    bmpPrimaryMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_pri_mask;
+    bmpPrimaryskinid=EAknsMinorGenericQgnGrafFepCandiListPri;
+
+    bmpSecondary=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_sec;
+    bmpSecondaryMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_sec_mask;
+    bmpSecondaryskinid=EAknsMinorGenericQgnGrafFepCandiListSec;
+
+    bmpHighlight=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_sel;
+    bmpHighlightMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_sel_mask;
+    bmpHighlightskinid=EAknsMinorGenericQgnGrafFepCandiListSel;
+
+    bmpPenDown=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_sec;
+    bmpPenDownMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_sec_mask;
+    bmpPenDownskinid=EAknsMinorGenericQgnGrafFepCandiListSec;
+
+    bmpNextDisable=EMbmPeninputhwrboxjpQgn_indi_fep_button_expand;
+    bmpNextDisableMask=EMbmPeninputhwrboxjpQgn_indi_fep_button_expand_mask;
+    bmpNextDisableskinid=EAknsMinorGenericQgnIndiFepButtonExpand;
+
+    bmpNext=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down;
+    bmpNextMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down_mask;
+    bmpNextskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDown;
+
+    bmpNextPress=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down_sel;
+    bmpNextPressMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_down_sel_mask;
+    bmpNextPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollDownSel;
+
+    bmpClose=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_close;
+    bmpCloseMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_close_mask;
+    bmpCloseskinid=EAknsMinorGenericQgnGrafFepCandiListClose;
+
+    bmpClosePress=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_close_sel;
+    bmpClosePressMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_close_sel_mask;
+    bmpClosePressskinid=EAknsMinorGenericQgnGrafFepCandiListCloseSel;
+
+    bmpPrevious=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up;
+    bmpPreviousMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up_mask;
+    bmpPreviousskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUp;
+
+    bmpPreviousPress=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up_sel;
+    bmpPreviousPressMask=EMbmPeninputhwrboxjpQgn_graf_fep_candi_list_scroll_up_sel_mask;
+    bmpPreviousPressskinid=EAknsMinorGenericQgnGrafFepCandiListScrollUpSel;
+
+    colormajorskinid=EAknsMajorSkin;
+    textcolorgrp=EAknsMinorQsnTextColors;
+    textcoloridx=59;
+
+    bordercolormajorskinid=EAknsMajorSkin;
+    bordercolorgrp=EAknsMinorQsnOtherColors;
+    bordercoloridx=8;
+    }
+
+RESOURCE LBUF r_peninput_hwr_character_all
+    {
+    txt="All types";
+    }
+
+RESOURCE LBUF r_peninput_hwr_character_kanakanji
+    {
+    txt="Kana Kanji";
+    }
+
+RESOURCE LBUF r_peninput_hwr_character_latin
+    {
+    txt="Latin";
+    }
+
+RESOURCE LBUF r_peninput_hwr_character_number
+    {
+    txt="Number";
+    }
+
+RESOURCE LBUF r_peninput_hwr_character_hiragana
+    {
+    txt=<0x3042>;
+    }
+
+RESOURCE LBUF r_peninput_hwr_character_katakana
+    {
+    txt=<0x30AB>;
+    }
+// End Of File

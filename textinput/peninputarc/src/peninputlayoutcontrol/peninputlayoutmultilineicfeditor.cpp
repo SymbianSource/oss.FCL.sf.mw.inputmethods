@@ -46,6 +46,10 @@
 #include "peninputlayoutsmiley.h"
 
 #include <gdi.h>
+
+#include <e32std.h>
+#include <e32const.h>
+
 const TInt KParagraphSeperator = 0x2029;
 const TInt KSecretUpdateTimer = 1000000; // 1s
 const TInt KSecretInstantShowTimer = 100000; // 100ms
@@ -53,8 +57,10 @@ const TInt KSecretInstantShowTimer = 100000; // 100ms
 const TUint16 KSegment = 0x0020;
 // separator between prompt text and normal text,
 // should use localized character soon
-const TUint16 KSeparator = 0x003a;
-const TUint16 KSeparatorcn = 0xff1a;
+//const TUint16 KSeparator = 0x003a;
+//const TUint16 KSeparatorcn = 0xff1a;
+const TUint16 KColon = 0x003a;
+const TUint16 KColoncn = 0xff1a; 
 _LIT(KLineSeparator, "\n");
 const TInt KStar = '*';
 
@@ -63,6 +69,9 @@ const TInt KMaxMfneDataLen = 30;
 const TInt KMsgBubblePosAdjustValueX = 3;
 const TInt KMsgBubblePosAdjustValueY = 2;
 const TInt KPromptAdjustLen = 5;
+// Tooltip position adjust
+const TInt KTooltipPosAdjustValueY = 5;
+
 EXPORT_C CFepLayoutMultiLineIcfEditor* CFepLayoutMultiLineIcfEditor::NewL(TRect aRect,
                                                               CFepUiLayout* aUiLayout,
                                                               TInt aControlId,
@@ -108,8 +117,8 @@ CFepLayoutMultiLineIcfEditor::CFepLayoutMultiLineIcfEditor(TRect aRect,
     if(aUiLayout)
     	{
     	//Advanced Tactile feedback REQ417-47932
-    	SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);    	
-    	aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveKeypad);
+    	SetTactileFeedbackType(ETouchFeedbackSensitiveInput);    	
+    	aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveInput);
     	}
 #endif //RD_TACTILE_FEEDBACK     
     }
@@ -147,11 +156,11 @@ CFepLayoutMultiLineIcfEditor::~CFepLayoutMultiLineIcfEditor()
         delete iFormExtendedInterfaceProvider;
         iFormExtendedInterfaceProvider = NULL;
         }
-    
+    iCoeEnv->ScreenDevice()->ReleaseFont(CONST_CAST(CFont*, iFont));
     delete iSmileyManager;
     }
 
-void CFepLayoutMultiLineIcfEditor::InitTextLayoutL()
+void CFepLayoutMultiLineIcfEditor::InitTextLayoutL(const CFont *aFont)
     {
 	iParaFormatLayer=CParaFormatLayer::NewL();
 	iCharFormatLayer=CCharFormatLayer::NewL();
@@ -181,7 +190,7 @@ void CFepLayoutMultiLineIcfEditor::InitTextLayoutL()
     //iCtrl->SetContainerWindowL(*iWin);    
     //iWin->Construct(iCoeEnv->RootWin(),reinterpret_cast<TInt>(iCtrl));
     //ctrl->SetExtent(iViewRect.iTl, iViewRect.Size());
-
+    SetFontL(aFont);
 	iTextView = CTextView::NewL(iLayout, 
 	                            iViewRect,
                         		BitmapDevice(),
@@ -268,8 +277,8 @@ void CFepLayoutMultiLineIcfEditor::SetTextAlignmentL(TInt aAlignment, TInt aLang
     iAlignment = aAlignment;
     }
 
-void CFepLayoutMultiLineIcfEditor::BaseConstructL(TInt aFontHeight, 
-                                            TInt aMaxFontHeight, 
+void CFepLayoutMultiLineIcfEditor::BaseConstructL(TInt /*aFontHeight*/, 
+                                            TInt /*aMaxFontHeight*/, 
                                             const CFont* aFont)
     {
     CFepUiBaseCtrl::BaseConstructL();
@@ -278,10 +287,10 @@ void CFepLayoutMultiLineIcfEditor::BaseConstructL(TInt aFontHeight,
     //iMaxFontHeight = aMaxFontHeight;
     //iFontHeight = aFontHeight;
     //iFont = aFont;
-    InitTextLayoutL();
+    InitTextLayoutL(aFont);
     iInsertionPoint = UiLayout()->CreateCursor();
     iInsertionPoint->SetOwner(this);
-    SetFontL(aFontHeight, aMaxFontHeight, aFont);
+    //SetFontL(aFont);
 
     iSecretTextTimer = CPeriodic::NewL(CActive::EPriorityStandard);
 
@@ -340,7 +349,6 @@ void CFepLayoutMultiLineIcfEditor::DeletePromptTextL()
 
 void CFepLayoutMultiLineIcfEditor::RecalculatePosByNewPromptTextL(const TDesC& aNewPromptText)
     {
-    // recalculate cursor pos
     AdjustSelectionL(TCursorSelection(iTextView->Selection().iCursorPos + aNewPromptText.Length() - iPromptTextLen,
                      iTextView->Selection().iAnchorPos + aNewPromptText.Length() - iPromptTextLen));
 
@@ -352,7 +360,6 @@ void CFepLayoutMultiLineIcfEditor::RecalculatePosByNewPromptTextL(const TDesC& a
     iPreAutoEndPos += (aNewPromptText.Length() - iPromptTextLen);
     iPreTextSelStartPos += (aNewPromptText.Length() - iPromptTextLen);
     iPreTextSelEndPos += (aNewPromptText.Length() - iPromptTextLen);
-
     }
 
 const HBufC* CFepLayoutMultiLineIcfEditor::PromptText()
@@ -362,7 +369,6 @@ const HBufC* CFepLayoutMultiLineIcfEditor::PromptText()
 	
 void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBool aCleanContent)
     {
-    
     if ( aCleanContent )
     	{
     	//clean all the content (include prompt text) on the ICF
@@ -374,15 +380,24 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBoo
         iNoMatchState = EFalse;
     	}
     else 
-        {
-        /*if ( ( ( !iInitPromptText && aPromptText.Length() == 0 ) )|| 
+        {   
+        if ( ( ( !iInitPromptText && aPromptText.Length() == 0 ) )|| 
             ( iInitPromptText && *iInitPromptText == aPromptText && 
             iPromptText && TextWidth(*iPromptText) <= iViewRect.Width()) )
     	    {
     	    //prompt text has not been change then need not to be reset
     	    //but iLineSeparator may be changed, need reset prompt text
-    	    return;
-            }*/
+            TBool newLineSeparator = iLineSeparator;
+            if ( !iLineSeparator )
+                {
+                newLineSeparator = ( TBidiText::TextDirectionality( aPromptText )
+                                                     == TBidiText:: ERightToLeft );
+                }
+            if ( newLineSeparator == iLineSeparator )
+                {
+                return;
+                }
+            }
         //prompt text need to be reset and not clean the content
         iRichText->DeleteL( 0,  iPromptTextLen );
         iTextView->HandleInsertDeleteL(TCursorSelection(0, 0), iPromptTextLen );
@@ -430,19 +445,31 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBoo
     iPromptText = HBufC::NewL(prompttextLen);
     TPtr text = iPromptText->Des();
 
-    TBuf<1> ptr0;
-    ptr0.Append( KEllipsis );
+        TBuf<1> ptrEllipsis;
+        ptrEllipsis.Append( KEllipsis );
 
-    TPtrC ptr1(&KSegment, 1);
-    TPtrC ptr2(&KSeparator, 1);
+        TPtrC ptrSpace(&KSegment, 1);
+        TPtrC ptrColon(&KColon, 1);
     
-    TInt separatorLen = TextWidth(ptr1) + TextWidth(ptr2) + TextWidth(ptr0);
-    TInt textWidth = TextWidth(aPromptText) + separatorLen;
-    TBool ret = EFalse;
+        TInt separatorLen = TextWidth(ptrSpace) + TextWidth(ptrColon) + TextWidth(ptrEllipsis);     
+        TInt textWidth = TextWidth(aPromptText);
+
+        if ((aPromptText.LocateReverse(KColon) != aPromptText.Length() - 1) && 
+           (aPromptText.LocateReverse(KColoncn) != aPromptText.Length() - 1))
+           {
+            textWidth += TextWidth(ptrSpace) + TextWidth(ptrColon);
+            }
+
+        else
+                {
+                textWidth += TextWidth(ptrSpace);
+                }     
+
+        TBool truncated = EFalse;
     
-    if (textWidth >= iViewRect.Width() )
-        {
-        ret = ETrue;
+        if (textWidth > iViewRect.Width() )
+            {
+            truncated = ETrue;
         AknBidiTextUtils::ConvertToVisualAndClip(aPromptText,
                                                  text,
                                                  *iFont,
@@ -464,23 +491,23 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextL(const TDesC& aPromptText, TBoo
 		text.Delete( text.Length()-1, 1 );
 	    }
 		
-    if ((text.LocateReverse(KSeparator) != text.Length() - 1) && 
-        (text.LocateReverse(KSeparatorcn) != text.Length() - 1))
+        if ((text.LocateReverse(KColon) != text.Length() - 1) && 
+            (text.LocateReverse(KColoncn) != text.Length() - 1))
         {
         // if sent prompt text already include separator, then no need to 
         // append it again
-        if ( ret )
+            if (truncated)
+                {
+                text.Append( ptrEllipsis );
+                }
+            text.Append(ptrColon);
+           }
+        else if (truncated)
             {
-            text.Append( ptr0 );
-            }
-        text.Append(ptr2);
-        }
-    else if ( ret )
-        {
-        text.Insert( text.Length()-1, ptr0 );
-        }        
+            text.Insert( text.Length()-1, ptrEllipsis );
+            }        
 
-    text.Append(ptr1); // segment between prompt text and official text
+    text.Append(ptrSpace); // segment between prompt text and official text
     textWidth = TextWidth(text);
     
     iRichText->InsertL(0, text);
@@ -532,6 +559,7 @@ void CFepLayoutMultiLineIcfEditor::SetMfneTextL(const TFepInputContextFieldData&
                 iRichText->DeleteL(iPromptTextLen, delLen );
                 iTextView->HandleInsertDeleteL(TCursorSelection(iPromptTextLen, iPromptTextLen), 
                                                delLen);
+                iTextView->SetSelectionL(TCursorSelection(iPromptTextLen, iPromptTextLen));
                 }
             ptr.Copy(icfdata.iText);
             }
@@ -565,6 +593,7 @@ void CFepLayoutMultiLineIcfEditor::SetMfneTextL(const TFepInputContextFieldData&
         iCursorSel.iAnchorPos = icfdata.iCurSel.iAnchorPos + iPromptTextLen;
         DrawMfneText();
         iSynCursor = EFalse;
+        iOldMfneText.Close();
         iOldMfneText.CreateL(ptr);
         }
         
@@ -652,7 +681,8 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
             
             AdjustSelectionL( icfdata.iCurSel );
             RecalcualteTextPositionL();
-            SetMsgBubbleRect();
+            //SetMsgBubbleRect();
+            SetMsgBubbleRectAccordingToLanguage();
             Draw();
             }
             break;
@@ -808,7 +838,8 @@ void CFepLayoutMultiLineIcfEditor::SetSelectionL(TCursorSelection aCurSel)
         }
     else
         {
-        SetMsgBubbleRect();
+        //SetMsgBubbleRect();
+		SetMsgBubbleRectAccordingToLanguage();
         SetInfoBubbleRect();
         }    
     }
@@ -950,26 +981,40 @@ TInt CFepLayoutMultiLineIcfEditor::UpdateSecretTextL(TAny* aEditArea)
         }
     TPtrC icftext = editArea->iRichText->Read(editArea->iPromptTextLen, 
                                               editArea->iRichText->DocumentLength());
-    TInt startPos = icftext.LocateReverse(KStar) + 1 + editArea->iPromptTextLen;
-
-    TBuf<1> buf;
-    buf.Append(KStar);
-
-    TInt textlen = editArea->iRichText->DocumentLength();
-
-    if (startPos < textlen)
+    
+    for (TInt i = 0; i < icftext.Length(); i++)
         {
-        editArea->iRichText->DeleteL(startPos, 1);
-        editArea->iTextView->HandleInsertDeleteL(TCursorSelection(startPos, startPos), 1);
-        editArea->iRichText->InsertL(startPos, buf);
-        editArea->iTextView->HandleInsertDeleteL(TCursorSelection(startPos, startPos+buf.Length()),
-                                                 0);
-
-        if (startPos == textlen - 1)
+        if (icftext[i] != KStar)//find only one none-star char
             {
-            editArea->iSecretTextTimer->Cancel();
+            TInt startPos = i + editArea->iPromptTextLen;
+            TBuf<1> buf;
+            buf.Append(KStar);
+
+            TInt textlen = editArea->iRichText->DocumentLength();
+
+            if (startPos < textlen)
+                {
+                editArea->iRichText->DeleteL(startPos, 1);
+                editArea->iTextView->HandleInsertDeleteL(TCursorSelection(
+                        startPos, startPos), 1);
+                editArea->iRichText->InsertL(startPos, buf);
+                editArea->iTextView->HandleInsertDeleteL(TCursorSelection(
+                        startPos, startPos + buf.Length()), 0);
+
+                if (startPos == textlen - 1)
+                    {
+                    editArea->iSecretTextTimer->Cancel();
+                    }
+                }
+            break;
             }
         }
+    
+    if ( editArea->iCursorVisible )
+    	{
+        editArea->SetSelectionL( editArea->iCursorSel );
+        editArea->Draw();
+    	}
     editArea->UpdateArea(editArea->Rect(),EFalse);
     return KErrNone;
     }
@@ -993,11 +1038,9 @@ void CFepLayoutMultiLineIcfEditor::SetDimmed(TBool aDimFlag)
     iDimmed = aDimFlag;
     }
 
-void CFepLayoutMultiLineIcfEditor::SetFontL(TInt aFontHeight, 
-                                            TInt aMaxFontHeight, 
-                                            const CFont* aFont)
+void CFepLayoutMultiLineIcfEditor::SetFontL(const CFont* aFont)
     {
-    TInt newHeightInPixel = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(aFontHeight);
+    TInt newHeightInPixel = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(aFont->HeightInPixels());
     TInt OldHeightInPixel = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(iFontHeight);
     
     if( newHeightInPixel == OldHeightInPixel )
@@ -1009,9 +1052,16 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(TInt aFontHeight,
         iFormatChange = ETrue;
         }    
     
-    iMaxFontHeight = aMaxFontHeight;
-    iFontHeight = aFontHeight;
-    iFont = aFont;
+    TFontSpec fontSpec;
+    fontSpec = aFont->FontSpecInTwips();
+    fontSpec.iHeight = aFont->HeightInPixels();
+    CFont*  font;
+    iCoeEnv->ScreenDevice()->ReleaseFont(CONST_CAST(CFont*, iFont));
+    iCoeEnv->ScreenDevice()->GetNearestFontInPixels((CFont*&)font,fontSpec);
+    
+    iMaxFontHeight = font->FontMaxHeight();
+    iFontHeight = font->HeightInPixels();
+    iFont = font;
     
         
     iCharFormatMask.ClearAttrib( EAttFontUnderline );
@@ -1022,6 +1072,7 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(TInt aFontHeight,
     iCharFormat.iFontSpec.iHeight = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(iFontHeight);
     iCharFormat.iFontSpec.iFontStyle.SetStrokeWeight(EStrokeWeightNormal);
     iCharFormat.iFontSpec.iFontStyle.SetBitmapType(EAntiAliasedGlyphBitmap);
+    iCharFormat.iFontSpec.iTypeface = iFont->FontSpecInTwips().iTypeface;
 
     iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, iRichText->DocumentLength());    
     if( InlineStateOn() || AutoCompletionStateOn() )
@@ -1029,8 +1080,11 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(TInt aFontHeight,
         iCharFormatMask.ClearAll();
         iCharFormatMask.SetAttrib( EAttFontUnderline );        
         iCharFormat.iFontPresentation.iUnderline = EUnderlineOn ;
-        iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, iPreInlineStartPos, 
-                                    iPreInlineEndPos - iPreInlineStartPos);
+        if( iPreInlineStartPos >= 0 && iPreInlineEndPos <= iRichText->DocumentLength() + 1 )
+            {
+            iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, iPreInlineStartPos, 
+                                        iPreInlineEndPos - iPreInlineStartPos);
+            }
         }
     
     //iRichText->SetInsertCharFormatL(iCharFormat, iCharFormatMask, iRichText->DocumentLength() - iPromptTextLen);
@@ -1097,7 +1151,7 @@ void CFepLayoutMultiLineIcfEditor::Draw()
         TRect innerrect = Rect();
   	    //innerrect.Shrink(4, 4);
 
-        AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+        AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
    		                         *gc, 
    		                         Rect(), 
    		                         innerrect,
@@ -1154,7 +1208,7 @@ void CFepLayoutMultiLineIcfEditor::DrawMfneText()
     TInt baseLine = iFont->AscentInPixels()/2 + rect.Height()/2;
     
     TRect clipRect = 
-        TRect( TPoint(Rect().iTl.iX, rect.iTl.iY), TPoint( Rect().iBr.iX, rect.iBr.iY));    
+        TRect( TPoint(Rect().iTl.iX + 1, rect.iTl.iY), TPoint( Rect().iBr.iX - 1, rect.iBr.iY));
     
     gc->SetClippingRect( clipRect );
     gc->Clear( clipRect );
@@ -1164,7 +1218,7 @@ void CFepLayoutMultiLineIcfEditor::DrawMfneText()
 
     if (iSkinIdSet)
         {
-   		AknsDrawUtils::DrawFrame(AknsUtils::SkinInstance(), 
+   		AknsDrawUtils::DrawFrame(UiLayout()->SkinInstance(), 
     	                         *gc, 
     	                         Rect(), 
     	                         Rect(),
@@ -1274,7 +1328,9 @@ void CFepLayoutMultiLineIcfEditor::SetRectL(const TRect& aRect)
         }
 
     TRAP_IGNORE(RecalcualteTextPositionL());        
-    SetMsgBubbleRect();
+    
+    //SetMsgBubbleRect();
+    SetMsgBubbleRectAccordingToLanguage();
     }
 
 void CFepLayoutMultiLineIcfEditor::ResetViewHeightL()
@@ -1325,6 +1381,31 @@ void CFepLayoutMultiLineIcfEditor::ResetViewHeightL()
     	}
     iTextView->SetViewRect(iViewRect);
     }
+
+void CFepLayoutMultiLineIcfEditor::SetMsgBubbleRectAccordingToLanguage()
+	{
+	if ( iPreLanguageID == ELangPrcChinese || 
+		 iPreLanguageID == ELangHongKongChinese ||
+		 iPreLanguageID == ELangTaiwanChinese ||
+		 iPreLanguageID == ELangKorean )
+		{
+		SetMsgBubbleRect();
+		return;
+		}
+	else
+		{
+		if(( !iMsgBubble->IsShowing() && !iHideBubbleTemp ) ||
+				iLineMaxCount < 1 || iCursorSel.iCursorPos < 0 )
+			{
+			return;
+			}
+		
+		iMsgBubble->Popup( iMsgBubble->Rect());		        
+		iHideBubbleTemp = EFalse;
+		
+		return;
+		}
+	}
 
 void CFepLayoutMultiLineIcfEditor::SetMsgBubbleRect()
     {
@@ -1566,7 +1647,9 @@ void CFepLayoutMultiLineIcfEditor::SetInfoBubbleCtrlSize(const TSize& aSize)
     iInfoBubble->SetRect( TRect(leftTop,aSize) ) ;        
     }
 
-void CFepLayoutMultiLineIcfEditor::ShowTooltipL(const TDesC& aText)
+void CFepLayoutMultiLineIcfEditor::ShowTooltipL( const TDesC& aText, 
+		                                         const TRect& aRect,
+		                                         TInt aLangCode )
 	{
 	if ( !iTooltip )
 	    {
@@ -1574,28 +1657,34 @@ void CFepLayoutMultiLineIcfEditor::ShowTooltipL(const TDesC& aText)
 	    }
 
     iTooltip->SetTextL( aText );
-    TPoint tl = iInsertionPoint->Position();
+    iTooltip->SetLangCode( aLangCode );
+    TPoint tl( 0, 0 ), br( 0, 0 );
+    InlineTextPos( tl, br );    
+    
     if ( iLineMaxCount > 1 )
 	    {
 		TBool firstLine =  iLayout->FirstLineInBand() == iLineNumber;
 		if ( firstLine )
-		    {
-			tl.iY += iInsertionPoint->Height();
+		    {				
+		    tl.iY += KTooltipPosAdjustValueY;
 			}
 		else
 		    {
-			tl.iY -= iTooltip->Rect().Height();
+			tl.iY -= ( iFormatLineHeight + aRect.Height() - KTooltipPosAdjustValueY );			
 			}
-		}
-    TRect tooltipRect = TRect( tl, iTooltip->Rect().Size() );
+		}       
     
+    TRect tooltipRect = TRect( tl, aRect.Size() );
+    
+    // Make sure the right border of tooltip isn't be out of icf rect
     TInt moveX = tooltipRect.iBr.iX - Rect().iBr.iX;
     if ( moveX > 0 )
     	{
     	tooltipRect.iBr.iX -= moveX;
     	tooltipRect.iTl.iX -= moveX;
     	}
-		
+    
+    // Make sure tooltip isn't overlapped by msg bubble.
 	if ( tooltipRect.Intersects( iMsgBubble->Rect() ) )
 	    {
 		moveX = tooltipRect.iBr.iX - iMsgBubble->Rect().iTl.iX;
@@ -1610,7 +1699,13 @@ void CFepLayoutMultiLineIcfEditor::ShowTooltipL(const TDesC& aText)
 	    	tooltipRect.iBr.iX += moveX;
 	    	tooltipRect.iTl.iX += moveX;
 	    	}
+	    }		
+
+	if (( iTooltip->Rect().iTl != tooltipRect.iTl ) && ( iTooltip->Rect().iBr != tooltipRect.iBr ))
+	    {
+        iTooltip->Close();
 	    }
+
     iTooltip->Popup( tooltipRect );
 	}
 
@@ -1634,15 +1729,15 @@ void CFepLayoutMultiLineIcfEditor::RemoveOverlappedCtrlIfNeeded()
     }
 
 void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
-                                                TInt aFontHeight,
-                                                TInt aMaxFontHeight,
+                                                TInt /*aFontHeight*/,
+                                                TInt /*aMaxFontHeight*/,
                                                 const CFont* aFont)
     {   
     TRect oriRect = Rect();
     
     AdjustBmpDeviceIfNeeded();
     // apply font formats 
-    SetFontL(aFontHeight, aMaxFontHeight, aFont);
+    SetFontL( aFont);
     
     if ( !iFormatChange && oriRect == aRect )
         {
@@ -1669,10 +1764,10 @@ void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
 
     iLayout->SetAmountToFormat(CTextLayout::EFFormatAllText);    
     
-    if ( iFormatChange )
-        {
-        iTextView->HandleGlobalChangeNoRedrawL();
-        }
+//    if ( iFormatChange )
+//        {
+//        iTextView->HandleGlobalChangeNoRedrawL();
+//        }
     
     TBool ready = Ready();
     if( ready )
@@ -1686,13 +1781,19 @@ void CFepLayoutMultiLineIcfEditor::SizeChangedL(const TRect& aRect,
 	    SetReady( ETrue );    
 	    }
 
-    if ( iFormatChange )	    
-        {
-        iTextView->SetSelectionL( iTextView->Selection() );
-        RecalcualteTextPositionL();
-        SetMsgBubbleRect();
-        Draw();
-        }
+//    if ( iFormatChange )	    
+//        {
+//        iTextView->SetSelectionL( iTextView->Selection() );
+//        RecalcualteTextPositionL();
+//        SetMsgBubbleRect();
+//        Draw();
+//        }
+		iTextView->HandleGlobalChangeNoRedrawL();
+		iTextView->SetSelectionL( iTextView->Selection() );
+		RecalcualteTextPositionL();
+		//SetMsgBubbleRect();
+		SetMsgBubbleRectAccordingToLanguage();
+		Draw();
     }
 
 TBool CFepLayoutMultiLineIcfEditor::BelongToPromptText(TInt aPos)
@@ -1815,8 +1916,8 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerDownEventL(const TPoi
             break;
         case CFepLayoutMultiLineIcf::EIcfAutoComplete:
             {
-            if (iTextView->Selection().iCursorPos >= iPreInlineStartPos && 
-                iTextView->Selection().iCursorPos < iPreInlineEndPos )
+            if ( iTextView->Selection().iCursorPos >= iPreInlineStartPos 
+                 && iTextView->Selection().iCursorPos < iPreAutoEndPos )
                 {
                 iPntDownOnInline = ETrue;
                 CapturePointer(EFalse);                 
@@ -1827,18 +1928,6 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerDownEventL(const TPoi
                 else
                     {
                     ReportEvent(EEventPointerDownOnInline);
-                    }
-                }
-            else
-                {
-                // do nothing
-                //submit autocomplete when set text
-                if (iTooltip && !iTooltip->IsShowing())
-                    {
-    	            ReportEvent( EEventControlFocusGained );
-                    UiLayout()->SignalOwner( ESignalCommitITIInlineText );
-			        SetInlineStateL( EFalse, iPreInlineStartPos, iPreInlineEndPos );
-			        SetAutoCompleteStateL( EFalse );
                     }
                 }
             }
@@ -1898,6 +1987,19 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerUpEventL(const TPoint
         iCursorSel = TCursorSelection(cursorPos+iPromptTextLen, 
                                       iCursorSel.iAnchorPos);
         AdjustFepCursorPosForPromptText( ETrue );
+        
+        TAmPmName amName(EAm);
+        TAmPmName pmName(EPm);
+        TInt offset = iMfneIcfData->Find(amName)!= KErrNotFound?
+                        iMfneIcfData->Find(amName):iMfneIcfData->Find(pmName);
+	    //if current is 12-hour format and touch on correct position
+        if(offset != KErrNotFound &&
+           iCursorSel.LowerPos()-iPromptTextLen>= offset &&
+           iCursorSel.LowerPos()-iPromptTextLen<= offset+amName.Length())
+            {
+            UiLayout()->SignalOwner(ESignalChangeAmPm);
+            }
+
         return this;
         }
         
@@ -1926,10 +2028,6 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerUpEventL(const TPoint
         else
             {
             AdjustFepCursorPosForPromptText( !iPntDownOnInline );
-            if(iState != CFepLayoutMultiLineIcf::EIcfNormal)
-                {
-                UiLayout()->SignalOwner( ESignalStartInlineText );
-                }
             }
         }
 
@@ -2066,7 +2164,7 @@ CFepUiBaseCtrl* CFepLayoutMultiLineIcfEditor::HandlePointerMoveEventL(const TPoi
         {
         if ( iLastCursorPos != iCursorSel.iCursorPos ) 
             {
-            UiLayout()->DoTactileFeedback(ETouchFeedbackSensitiveKeypad);
+            UiLayout()->DoTactileFeedback(ETouchFeedbackEdit);
             iLastCursorPos = iCursorSel.iCursorPos;
             }
         }
@@ -2454,7 +2552,10 @@ void CFepLayoutMultiLineIcfEditor::SetPromptTextFormatL(TInt aPromptTextLen)
     iCharFormat.iFontPresentation.iTextColor = iTextColor;
 
     // set prompt text as bold
-    iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, aPromptTextLen );//- 1
+    if( aPromptTextLen <= iRichText->DocumentLength() + 1)
+        {
+        iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, aPromptTextLen );//- 1
+        }
     iTextView->HandleRangeFormatChangeL(TCursorSelection(0, aPromptTextLen ), ETrue);//- 1
 
     // set remain text as non-bold
@@ -2492,12 +2593,13 @@ void CFepLayoutMultiLineIcfEditor::SetSpecialStateL(TBool aStateOn,
         
     iCharFormatMask.SetAttrib(aAttribute);
 
-    if (IsTextPosValid(aPreStartPos) && IsTextPosValid(aPreEndPos))
-        {
-        iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, 
+    // comment for updating format anyway.
+    //if (IsTextPosValid(aPreStartPos) && IsTextPosValid(aPreEndPos))
+        //{
+    iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, 
                                     iRichText->DocumentLength());
         //iTextView->HandleRangeFormatChangeL(TCursorSelection(aPreStartPos, aPreEndPos), ETrue);    
-        } 
+        //} 
 
     aPreStartPos = 0;
     aPreEndPos = 0;
@@ -2517,17 +2619,23 @@ void CFepLayoutMultiLineIcfEditor::SetSpecialStateL(TBool aStateOn,
             }
         iCharFormatMask.SetAttrib(aAttribute);
 
+        TInt aPos = Min( aStartPos, aEndPos );
+        TInt aLength = Abs( aEndPos - aStartPos );
         if (aNoMatchState)
             {
-            iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 
-                                        Min(aStartPos,aEndPos), Abs( aEndPos - aStartPos ) + 1);
-            iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos + 1), ETrue);
+            if ( aPos >= 0 && aPos + aLength <= iRichText->DocumentLength())
+                {
+                iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, aPos, aLength + 1);
+                iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos + 1), ETrue);
+                }
             }
         else
             {
-            iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 
-                                        Min(aStartPos,aEndPos), Abs( aEndPos - aStartPos ) );
-            iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos), ETrue);
+            if ( aPos >= 0 && aPos + aLength <= iRichText->DocumentLength() + 1 )
+                {
+                iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, aStartPos, aLength );
+                iTextView->HandleRangeFormatChangeL(TCursorSelection(aStartPos, aEndPos), ETrue);
+                }
             }
 
         aPreStartPos = aStartPos;
@@ -2636,17 +2744,16 @@ void CFepLayoutMultiLineIcfEditor::ShowBubble(const TDesC& aText, const TRect& /
     {
     TRAP_IGNORE(iMsgBubble->SetTextL(aText));
     iHideBubbleTemp = ETrue;
-    SetMsgBubbleRect();
+    //SetMsgBubbleRect();
+    SetMsgBubbleRectAccordingToLanguage();
     }
     
 void CFepLayoutMultiLineIcfEditor::ShowByteWarningBubble(const TDesC& aInfo)
     {
     TSize size = iInfoBubble->Rect().Size();
-    CFont::TMeasureTextInput*  input = new (ELeave) CFont::TMeasureTextInput;
-    CleanupStack::PushL(input);
-    input->iMaxBounds = iRect.Width();
-    TInt width = iFont->MeasureText(aInfo, input, NULL);
-    CleanupStack::PopAndDestroy();
+    CFont::TMeasureTextInput input;// = new (ELeave) CFont::TMeasureTextInput;
+    input.iMaxBounds = iRect.Width();
+    TInt width = iFont->MeasureText(aInfo, &input, NULL);
     size.SetSize(width, size.iHeight);
     SetInfoBubbleCtrlSize(size);
     TRAP_IGNORE(iInfoBubble->SetTextL(aInfo));
@@ -2674,7 +2781,7 @@ void CFepLayoutMultiLineIcfEditor::ApplyFormatL()
     {
     if( !iFormatChange )
         {
-        return;
+        return ;
         }
     //apply line space
     CParaFormat* paraFormat=CParaFormat::NewL();
@@ -2716,12 +2823,12 @@ void CFepLayoutMultiLineIcfEditor::AdjustPromptTextL()
     
 void CFepLayoutMultiLineIcfEditor::ResetApplyFont()
     {
-    TInt fontHeight = iFontHeight; 
-    TInt maxFontHeight = iMaxFontHeight;
+    //TInt fontHeight = iFontHeight; 
+    //TInt maxFontHeight = iMaxFontHeight;
     const CFont *font = iFont;
     
     iFontHeight = 0;
-    TRAP_IGNORE(SetFontL(fontHeight, maxFontHeight, font));
+    TRAP_IGNORE(SetFontL(font));
     }
 
 void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
@@ -2738,7 +2845,8 @@ void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
             {
             iTextView->SetViewLineAtTopL(( lineIndex + 1 ) - ( iLineMaxCount - 1 ));
             RecalcualteTextPositionL();
-            SetMsgBubbleRect();
+            //SetMsgBubbleRect();
+            SetMsgBubbleRectAccordingToLanguage();
             }
         }
     
@@ -2757,7 +2865,8 @@ void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
                                    lineCount - pageCount + 1 < 1 ? 1 : lineCount - pageCount + 1 );
             
             RecalcualteTextPositionL();
-            SetMsgBubbleRect();
+            //SetMsgBubbleRect();
+            SetMsgBubbleRectAccordingToLanguage();
             }
         }
     }
@@ -2795,13 +2904,13 @@ void CFepLayoutMultiLineIcfEditor::AdjustSelectionL( const TCursorSelection& aCu
    
     if ( BelongToPromptText(aCurSel.iCursorPos) )
         {
-        //pls refer to bug: ELWG-7MZ5EZ, why to use iPromptText->Length() instead of iPromptTextLen 
+        //why to use iPromptText->Length() instead of iPromptTextLen 
         //iCursorSel.iCursorPos = iPromptTextLen;
         iCursorSel.iCursorPos = iPromptText->Length();
         }
     if ( BelongToPromptText(aCurSel.iAnchorPos) )
         {
-        //pls refer to bug: ELWG-7MZ5EZ, why to use iPromptText->Length() instead of iPromptTextLen
+        //why to use iPromptText->Length() instead of iPromptTextLen
         //iCursorSel.iAnchorPos = iPromptTextLen;
         iCursorSel.iAnchorPos = iPromptText->Length();
         }
@@ -2885,7 +2994,7 @@ CPeninputSmileyManager* CFepLayoutMultiLineIcfEditor::SmileyManager()
     }
 
 void CFepLayoutMultiLineIcfEditor::CalcSmileyClipRegionL( RRegion& aRgn, 
-                                                          CGraphicsContext& aGc, 
+                                                          CGraphicsContext& /*aGc*/, 
                                                           CFont& aFont,  
                                                           const TDesC& aText, 
                                                           TPoint& aBasePoint, 
@@ -2961,7 +3070,6 @@ void CFepLayoutMultiLineIcfEditor::CustomDrawSmileyL( CGraphicsContext& aGc,
             CPeninputSmileyImage* smiley = iSmileyManager->SmileyImage( code );
             if ( smiley )
                 {
-                gc.SetBrushColor( TRgb(255,0,0) );
                 gc.SetBrushStyle( CGraphicsContext::ENullBrush );
                 
                 smiley->SetImageSize( rect.Size() );

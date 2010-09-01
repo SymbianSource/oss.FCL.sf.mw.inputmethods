@@ -36,7 +36,14 @@
 #include "PtiDefs.h"
 
 const TInt KKdbOpaqueDataLen = 8;
-		
+
+class TPtiXt9KeyBinding
+    {
+    public:
+        TUint16 iScanCode;
+        TInt iIndex[2];
+    };
+    
 //
 // TPtiLangDatabaseMappingOpaque
 //
@@ -85,7 +92,7 @@ class MPtiKeyboardDatabase
 		* @param aNumEntries   Number of binding array entries will be stored here.
 		* @return Pointer to scan code binding table.
 		*/
-        virtual TUint8* ScanBindingTable(TPtiKeyboardType aKeyboardType,
+        virtual TPtiXt9KeyBinding* ScanBindingTable(TPtiKeyboardType aKeyboardType,
                                          TInt& aNumEntries) const = 0;	
                                          
 	    /**

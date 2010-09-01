@@ -59,9 +59,9 @@ EXPORT_C CFepUiBaseCtrl::CFepUiBaseCtrl(const TRect& aRect,CFepUiLayout* aUiLayo
                         iOwnWndCtrl(ETrue),
                         iOrdinalPos(EOrderNomal)
     {
-#ifdef RD_TACTILE_FEEDBACK
-    iReservered1 = reinterpret_cast<TInt>(new CFepUiBaseCtrlExtension(ETouchFeedbackNone));
-#endif // RD_TACTILE_FEEDBACK    
+    //todo code refactoring needed, move to BaseConstructL
+    iExtension = new CFepUiBaseCtrlExtension();
+   
     iPenSize.SetSize(1,1);        
     iBorderSize.SetSize(KDefaultFrameWidth,KDefaultFrameWidth);
     iValidRegion.AddRect(iRect);
@@ -94,9 +94,9 @@ CFepUiBaseCtrl::CFepUiBaseCtrl(CCoeControl* aControl, CFepUiLayout* aUiLayout,
                     iUiLayout(aUiLayout),
                     iOwnWndCtrl(aOwnership)
     {
-#ifdef RD_TACTILE_FEEDBACK
-    iReservered1 = reinterpret_cast<TInt>(new CFepUiBaseCtrlExtension(ETouchFeedbackNone));
-#endif // RD_TACTILE_FEEDBACK
+    //todo code refactoring needed, move to BaseConstructL
+    iExtension = new CFepUiBaseCtrlExtension();
+    
     iRect = aControl->Rect();
     iControlId = aControl->UniqueHandle();
     iValidRegion.AddRect(iRect);
@@ -128,8 +128,9 @@ EXPORT_C CFepUiBaseCtrl::~CFepUiBaseCtrl()
     //de-register the area for tactile feedback
     //if(aUiLayout) //there must be aUiLayout
     UiLayout()->DeRegisterFeedbackArea(reinterpret_cast<TInt>(this), Rect());   
-	delete reinterpret_cast<CFepUiBaseCtrlExtension*>(iReservered1);       
 #endif // RD_TACTILE_FEEDBACK 
+    
+    delete iExtension; 
     }
 
 // ---------------------------------------------------------------------------
@@ -184,7 +185,7 @@ void CFepUiBaseCtrl::BaseConstructL(CFepUiLayoutRootCtrl* aRoot)
 EXPORT_C void CFepUiBaseCtrl::SetTactileFeedbackType(TInt aTactileType)
 	{
 #ifdef RD_TACTILE_FEEDBACK
-	reinterpret_cast<CFepUiBaseCtrlExtension*>(iReservered1)->SetTactileFeedbackType(aTactileType);
+    iExtension->SetTactileFeedbackType(aTactileType);
 #endif // RD_TACTILE_FEEDBACK 
 	}
 
@@ -321,7 +322,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawBackground(const TRect aRect, TBool /*aBmpStre
 //    	
 EXPORT_C void CFepUiBaseCtrl::DrawMaskBackground(TBool aBmpStretchFlag)
 	{
-	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), iBkMaskBmp, iMaskBkCol,
+	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), BkMaskBmp(), iMaskBkCol,
 	                       iBorderColor,aBmpStretchFlag);
 	}
 
@@ -334,7 +335,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawMaskBackground(TBool aBmpStretchFlag)
 EXPORT_C void CFepUiBaseCtrl::DrawOpaqueMaskBackground(TBool aBmpStretchFlag)
 	{
 	const TRgb KOpaqueMask = TRgb(KOpaqueColor);
-	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), iBkMaskBmp, KOpaqueMask,
+	DrawBackgroundToDevice(iRect,MaskBitmapDevice(), BkMaskBmp(), KOpaqueMask,
 	                       KOpaqueMask,aBmpStretchFlag);
 	}
 
@@ -347,7 +348,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawOpaqueMaskBackground(TBool aBmpStretchFlag)
 EXPORT_C void CFepUiBaseCtrl::DrawOpaqueMaskBackground(const TRect aRect, TBool aBmpStretchFlag)
 	{
 	const TRgb KOpaqueMask = TRgb(KOpaqueColor);
-	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), iBkMaskBmp,
+	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), BkMaskBmp(),
 	                       KOpaqueMask, KOpaqueMask, aBmpStretchFlag);
 	}
 
@@ -361,7 +362,7 @@ EXPORT_C void CFepUiBaseCtrl::DrawTransparentMaskBackground(const TRect& aRect,
                                                             TBool aBmpStretchFlag)
 	{
 	const TRgb KOpaqueMask = TRgb(KTransparentColor);
-	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), iBkMaskBmp, KTransparentColor,
+	DrawBackgroundToDevice(aRect, MaskBitmapDevice(), BkMaskBmp(), KTransparentColor,
 	                       KTransparentColor, aBmpStretchFlag);
 	}
 	
@@ -535,6 +536,11 @@ EXPORT_C void CFepUiBaseCtrl::SetBackgroundMaskBitmapL(CFbsBitmap* aBmp)
 //           
 EXPORT_C TBool CFepUiBaseCtrl::Contains(const TPoint& aPt)
     {
+    if( iExtension->iExtResponseAreaActive )
+        {
+        return iExtension->iExtResponseArea.Contains( aPt );
+        }
+   
     return iRect.Contains(aPt);
     //return iValidRegion.Contains(aPt);
     }
@@ -692,9 +698,8 @@ TBool CFepUiBaseCtrl::CompareOrder(CFepUiBaseCtrl* aCtrl)
     }
 
 TBool CFepUiBaseCtrl::IsOnTopOf(CFepUiBaseCtrl* aCtrl)
-    {
-    __ASSERT_DEBUG(aCtrl,EUiNullParam);
-    
+    {     
+    ASSERT(aCtrl);      
     return OrderPos() < aCtrl->OrderPos();
     }
     
@@ -767,6 +772,11 @@ EXPORT_C  void CFepUiBaseCtrl::SetActive(TBool aFlag)
 //      
 EXPORT_C CFepUiBaseCtrl* CFepUiBaseCtrl::HandlePointerDownEventL(const TPoint& aPoint)
     {
+    if ( iExtension->iExtResponseAreaEnabled ) 
+        {
+        ActiveExtResponseArea();
+        }
+    
     iPointerDown = ETrue;
     if(iWndControl)
         {
@@ -791,6 +801,11 @@ EXPORT_C CFepUiBaseCtrl* CFepUiBaseCtrl::HandlePointerDownEventL(const TPoint& a
 EXPORT_C CFepUiBaseCtrl* CFepUiBaseCtrl::HandlePointerUpEventL(
                                                          const TPoint& aPoint)
     {
+    if ( iExtension->iExtResponseAreaActive )
+        {
+        CancelExtResponseArea();
+        }
+    
     iPointerDown = EFalse;
     if(iWndControl)
         {
@@ -845,6 +860,11 @@ EXPORT_C CFepUiBaseCtrl* CFepUiBaseCtrl::HandlePointerMoveEventL(
 //    
 EXPORT_C void CFepUiBaseCtrl::CancelPointerDownL()
     {
+    if ( iExtension->iExtResponseAreaActive )
+        {
+        CancelExtResponseArea();
+        }
+    
     if (PointerDown())
         {
         iPointerDown = EFalse;
@@ -988,6 +1008,11 @@ EXPORT_C void CFepUiBaseCtrl::RequireRegionUpdateL(TBool aRequiredFlag)
 //           
 EXPORT_C void CFepUiBaseCtrl::HandlePointerLeave(const TPoint& /*aPt*/)
     {
+    if ( iExtension->iExtResponseAreaActive )
+        {
+        CancelExtResponseArea();
+        }
+    
     iPointerDown = EFalse;
     iPointerLeft = ETrue;
     //report event
@@ -1002,6 +1027,11 @@ EXPORT_C void CFepUiBaseCtrl::HandlePointerLeave(const TPoint& /*aPt*/)
 //           
 EXPORT_C void CFepUiBaseCtrl::HandlePointerEnter(const TPoint& aPt)
     {
+    if ( iExtension->iExtResponseAreaEnabled ) 
+        {
+        ActiveExtResponseArea();
+        }
+    
     iPointerDown = ETrue;
     iPointerLeft = EFalse;
     TRAP_IGNORE(HandlePointerMoveEventL(aPt));
@@ -1228,7 +1258,9 @@ EXPORT_C void CFepUiBaseCtrl::SetShadowBmp(CFbsBitmap* aBmp,
 
 EXPORT_C TBool CFepUiBaseCtrl::AbleToDraw()
 	{
-    return UiLayout()->LayoutReady() && Ready() && !WholeHiden() && Rect().Size() != TSize(0,0);
+    return UiLayout()->LayoutReady() && Ready()  
+            && (!UiLayout()->iExtension->iDisableDrawing)
+                    && !WholeHiden() && Rect().Size() != TSize(0,0);
 	}
 
 // ---------------------------------------------------------------------------
@@ -1236,8 +1268,12 @@ EXPORT_C TBool CFepUiBaseCtrl::AbleToDraw()
 // ---------------------------------------------------------------------------
 //    
 EXPORT_C TInt CFepUiBaseCtrl::Extension_(TUint aExtensionId, TAny *&a0, TAny *a1)
-    {
-    //not implemented, use CBase's
+    {    
+    if( KFepCtrlExtId == aExtensionId)
+        {
+        a0 = iExtension;
+        return KErrNone;
+        }
     return CBase::Extension_(aExtensionId, a0, a1);
     }
     
@@ -1319,11 +1355,7 @@ EXPORT_C void CFepUiBaseCtrl::SimulateRawEvent(const TRawEvent& aEvent)
 
 EXPORT_C void CFepUiBaseCtrl::SetParent(CFepUiBaseCtrl* aParent)
     {
-    //parent control must be type of control group.
-    if(aParent)
-        {
-        __ASSERT_DEBUG(aParent->IsKindOfControl(ECtrlControlGroup),EUiLayoutBadParentType);
-        }
+    //ASSERT(aParent == NULL || aParent->IsKindOfControl(ECtrlControlGroup));
     iParentCtrl = aParent;
     }
 
@@ -1340,7 +1372,167 @@ EXPORT_C TInt CFepUiBaseCtrl::AbsOrderPos()
     return order;    
     }
 
+void CFepUiBaseCtrl::CreateOwnDeviceL(CFbsBitmap* aBmp, CFbsBitmap* aMaskBmp)
+    {
+    if(iExtension->iBitmap)
+        return;
+    User::LeaveIfError( aBmp->Create( Rect().Size(), iLayoutOwner->BitmapDevice()->DisplayMode() ) );
+    
+    iExtension->iBitmap = aBmp;
+    CFbsBitmapDevice* dev = CFbsBitmapDevice::NewL(aBmp);
+    
+    iExtension->SetBmpDevice(dev); 
 
+    CFbsBitGc* gc = CFbsBitGc::NewL();
+    gc->Reset();
+    iExtension->SetGc(gc);
+    
+    if(iExtension->iMaskBitmap || !aMaskBmp)
+        return;
+    
+    User::LeaveIfError( aMaskBmp->Create( Rect().Size(), iLayoutOwner->MaskBmpDevice()->DisplayMode() ) );
+    
+    iExtension->iMaskBitmap = aMaskBmp;
+    dev = CFbsBitmapDevice::NewL(aMaskBmp);
+    
+    iExtension->SetMaskBmpDevice(dev); 
+        
+    }
+    
+void CFepUiBaseCtrl::ResizeDeviceL()
+    {
+    if(iExtension->BitmapDevice())
+        iExtension->BitmapDevice()->Resize( Rect().Size());
+    //gc must be adjusted
+    if(iExtension->Gc())
+        {
+        iExtension->Gc()->Activate(iExtension->BitmapDevice());
+        iExtension->Gc()->Resized();
+        }
+    }
+    
+// ---------------------------------------------------------------------------
+// get graphics context for sprite or window
+// ---------------------------------------------------------------------------
+//   
+EXPORT_C CBitmapContext* CFepUiBaseCtrl::BitGc()
+    {
+
+
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->Gc())
+        return iExtension->Gc();
+    else
+	    return iLayoutOwner->BitmapContext();
+    }
+
+// ---------------------------------------------------------------------------
+// get Bitmap device for sprite or window
+// ---------------------------------------------------------------------------
+//
+EXPORT_C CFbsBitmapDevice* CFepUiBaseCtrl::BitmapDevice()
+    {
+
+
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->BitmapDevice())
+        return iExtension->BitmapDevice();
+    else   
+        return iLayoutOwner->BitmapDevice();
+    }
+
+// ---------------------------------------------------------------------------
+// get Mask bitmap device for sprite or window
+// ---------------------------------------------------------------------------
+//
+EXPORT_C CFbsBitmapDevice* CFepUiBaseCtrl::MaskBitmapDevice()
+    {
+
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->MaskBitmapDevice())
+        return iExtension->MaskBitmapDevice();
+    else    
+
+        return iLayoutOwner->MaskBmpDevice();
+    }
+
+// ---------------------------------------------------------------------------
+// get control background maks bmp
+// ---------------------------------------------------------------------------
+//
+EXPORT_C  CFbsBitmap* CFepUiBaseCtrl::BkMaskBmp()
+    {
+    if(iUiLayout->NotDrawToLayoutDevice() && iExtension->MaskBitmap())
+        return iExtension->MaskBitmap();
+    else 
+        return iBkMaskBmp;
+    }
+
+
+// ---------------------------------------------------------------------------
+// CFepUiBaseCtrl::EnableExtResponseArea
+// Enable/disable extra response area support
+// ---------------------------------------------------------------------------
+//  
+EXPORT_C void CFepUiBaseCtrl::EnableExtResponseArea( TBool aEnable, 
+                                                     const TRect& aExtMargin )
+    {
+    iExtension->iExtResponseAreaEnabled = aEnable;
+    iExtension->iExtResponseAreaMargin = aExtMargin;
+    }
+
+// ---------------------------------------------------------------------------
+// CFepUiBaseCtrl::EnableExtResponseArea
+// Active extra response area
+// ---------------------------------------------------------------------------
+//  
+EXPORT_C void CFepUiBaseCtrl::ActiveExtResponseArea()
+    {
+    if ( iExtension->iExtResponseAreaEnabled )
+        {
+        TRect response = Rect();
+        response.iTl -= iExtension->iExtResponseAreaMargin.iTl;
+        response.iBr += iExtension->iExtResponseAreaMargin.Size();
+        
+        UpdateExtResponseArea( response );
+        }    
+    }
+
+// ---------------------------------------------------------------------------
+// CFepUiBaseCtrl::EnableExtResponseArea
+// Cancel extra response area
+// ---------------------------------------------------------------------------
+//  
+EXPORT_C void CFepUiBaseCtrl::CancelExtResponseArea()
+    {
+    iExtension->iExtResponseAreaActive = EFalse;
+    
+    CFepUiBaseCtrl* parent = ParentCtrl();
+    if( parent && parent->IsKindOfControl(ECtrlControlGroup) )
+        {
+        parent->CancelExtResponseArea();
+        }    
+    }
+
+// ---------------------------------------------------------------------------
+// CFepUiBaseCtrl::EnableExtResponseArea
+// Update extra response area
+// ---------------------------------------------------------------------------
+//
+void CFepUiBaseCtrl::UpdateExtResponseArea( const TRect& aRect )
+    {
+    if ( aRect.iTl.iX < Rect().iTl.iX || aRect.iTl.iY < Rect().iTl.iY ||
+         aRect.iBr.iX > Rect().iBr.iX || aRect.iBr.iY > Rect().iBr.iY )
+        {
+        iExtension->iExtResponseAreaActive = ETrue;
+        iExtension->iExtResponseArea = Rect();
+        iExtension->iExtResponseArea.BoundingRect( aRect );
+
+        //update parent
+        CFepUiBaseCtrl* parent = ParentCtrl();
+        if ( parent && parent->IsKindOfControl( ECtrlControlGroup ) )
+            {
+            parent->UpdateExtResponseArea( iExtension->iExtResponseArea );
+            }
+        }
+    }
 
 // ---------------------------------------------------------------------------
 // CFepUiBaseCtrl::CFepUiBaseCtrlExtension
@@ -1348,13 +1540,27 @@ EXPORT_C TInt CFepUiBaseCtrl::AbsOrderPos()
 // ---------------------------------------------------------------------------
 //
 
-CFepUiBaseCtrl::CFepUiBaseCtrlExtension::CFepUiBaseCtrlExtension(TInt aTactileType)
+CFepUiBaseCtrl::CFepUiBaseCtrlExtension::CFepUiBaseCtrlExtension()
 	{
 #ifdef RD_TACTILE_FEEDBACK
-	iTactileType = aTactileType;
+	iTactileType = ETouchFeedbackNone;
 #endif // RD_TACTILE_FEEDBACK 
+	
+	//temp code, can be removed after refactoring of CFepUiBaseCtrl::iExtension
+    iExtResponseAreaActive = EFalse;
+    iExtResponseArea.SetRect( TPoint(0,0), TSize(0,0) );
+    iExtResponseAreaEnabled = EFalse;
+    iExtResponseAreaMargin.SetRect( TPoint(0,0), TSize(0,0) );
 	}
 
+CFepUiBaseCtrl::CFepUiBaseCtrlExtension::~CFepUiBaseCtrlExtension()
+    {
+    //delete iBitmap;
+    delete iGc;
+    delete  iBitmapDevice;
+    delete iMaskBitmapDevice;
+    }
+	
 void CFepUiBaseCtrl::CFepUiBaseCtrlExtension::SetTactileFeedbackType(TInt aTactileType)
 	{
 #ifdef RD_TACTILE_FEEDBACK

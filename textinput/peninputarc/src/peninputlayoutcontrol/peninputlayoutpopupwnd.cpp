@@ -48,6 +48,7 @@ EXPORT_C CFepLayoutPopupWnd::~CFepLayoutPopupWnd()
 		{		
 		//do nothing
 		}
+    delete iExt;
 	}	
 	
 // ---------------------------------------------------------------------------
@@ -58,6 +59,14 @@ EXPORT_C CFepLayoutPopupWnd::~CFepLayoutPopupWnd()
 EXPORT_C void CFepLayoutPopupWnd::ConstructL()
 	{
 	BaseConstructL();
+    iExt = CPopupWndExt::NewL();    
+    //check whether we need create backup bmp. Some pop up window is created after UI layout is created
+    //If a pop up window is created during layout constructing, it will create the backup bitmap in Handleresourcechange
+    if (UiLayout()->NotDrawToLayoutDevice())
+        {
+            iExt->ContructBkDeviceL(Rect().Size(),
+                        UiLayout()->LayoutOwner()->BitmapDevice()->DisplayMode());
+        }
 	}	
 
 EXPORT_C void CFepLayoutPopupWnd::ReDrawRect(const TRect& /*aRect*/)
@@ -258,6 +267,9 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
 	RootControl()->SetActiveCtrl(this);
     ReportEvent(EEventCapturePointer);
 
+    //When preparing the pop up window, it causes redraw the underlying control sometimes.
+    DisableDrawingInGroup();//disable any drawing during preparation to avoid it dirty the background
+
 	//let pop up window do preparation
 	OnDisplay();	
 	
@@ -287,13 +299,11 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
     switch( aDisPostion )
         {
         case EDispBottomRight:
-            rtPopup.SetRect( TPoint( offsetRect.iTl.iX, offsetRect.iBr.iY ), szPopup );
+            rtPopup.SetRect( TPoint( offsetRect.iTl.iX, offsetRect.iBr.iY ), szPopup );            
             if( rtPopup.iBr.iY > ptScreenSize.iPixelSize.iHeight )
                 {
-                //we need move x also
-                rtPopup.Move( aOffsetRect.Width(), 
-                              ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
-                }
+                rtPopup.Move( 0, ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
+                }            
             if(rtPopup.iBr.iX > ptScreenSize.iPixelSize.iWidth )
                 {
                 rtPopup.Move ( ptScreenSize.iPixelSize.iWidth - rtPopup.iBr.iX, 0 );
@@ -304,9 +314,8 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
                              szPopup );
             if( rtPopup.iBr.iY > ptScreenSize.iPixelSize.iHeight )
                 {
-                //we need move x also
-                rtPopup.Move( aOffsetRect.Width(), 
-                              ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
+                //we need move the pop wnd up to ensure it not to be out of screen
+                rtPopup.Move( 0, ptScreenSize.iPixelSize.iHeight - rtPopup.iBr.iY );
                 }
             if( rtPopup.iTl.iX < 0 )
                 {
@@ -315,11 +324,11 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
             break;
         case EDispTopRight:
             rtPopup.SetRect( TPoint( offsetRect.iTl.iX, offsetRect.iTl.iY - szPopup.iHeight ), 
-                             szPopup );
+                             szPopup );            
             if( rtPopup.iTl.iY < 0 )
                {
-               rtPopup.Move ( aOffsetRect.Width(), -rtPopup.iTl.iY );
-               }
+               rtPopup.Move ( 0, -rtPopup.iTl.iY );
+               }                       
             if(rtPopup.iBr.iX > ptScreenSize.iPixelSize.iWidth )
                 {
                 rtPopup.Move ( ptScreenSize.iPixelSize.iWidth - rtPopup.iBr.iX, 0 );
@@ -332,7 +341,7 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
                                      
             if( rtPopup.iTl.iY < 0 )
                {
-               rtPopup.Move ( -aOffsetRect.Width(), -rtPopup.iTl.iY );
+               rtPopup.Move ( 0, -rtPopup.iTl.iY );
                }
                
             if( rtPopup.iTl.iX < 0 )
@@ -362,7 +371,9 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
         //RootControl()->Clear();
         DrawTransparentMaskBackground( TRect( TPoint(), rtFinal.Size() ) );
         RootControl()->Move(iLayoutMoveOff);
-        RootControl()->Draw();	    
+        EnableDrawingInGroup();
+        RootControl()->Draw();
+        DisableDrawingInGroup();	    
     	//UpdateArea( TRect( TPoint(), rtFinal.Size()), ETrue); 	
 	    }
 	else
@@ -380,8 +391,30 @@ EXPORT_C void CFepLayoutPopupWnd::Display( const TRect& aOffsetRect, TDisplayPos
 	    
     //iRect = rtPopup;
     Move( rtPopup.iTl - Rect().iTl);
+    //copy and save the bitmap 
+    if (UiLayout()->NotDrawToLayoutDevice())
+        {    
+        iExt->SetRect(Rect());
+        
+        CFbsBitGc* gc = iExt->BackupGc();
+        gc->Activate( iExt->BackupDevice() );
+        CFbsBitGc* layoutGc = static_cast<CFbsBitGc*>(
+                            UiLayout()->LayoutOwner()->BitmapContext()); 
+        gc->BitBlt(TPoint(0,0),*layoutGc,Rect());
+        
+        Hide(EFalse); 
+        }
+    
+    EnableDrawingInGroup();
+
     UiLayout()->LockArea(iRect,this);
-	Hide(EFalse);    
+
+    SetReady(ETrue);//enalbe it as in Close, the flag is reset.
+    if (UiLayout()->NotDrawToLayoutDevice())
+        Draw();//force draw
+    else
+        Hide(EFalse);
+    UpdateArea(iRect, EFalse); 
         
     iIsShowing = ETrue;
     AfterDisplayed();
@@ -437,7 +470,26 @@ EXPORT_C void CFepLayoutPopupWnd::CloseWindow()
 	iIsShowing = EFalse;
 	if(iWndControl)
 	    iWndControl->MakeVisible(EFalse);    
-	Hide(ETrue);	
+    SetReady(EFalse);//disable redraw
+    TRect popRect = iRect;
+    UiLayout()->UnLockArea(iRect, this);
+
+    //restore the background bitmap
+    TBool bRedraw = ETrue;
+    if (UiLayout()->NotDrawToLayoutDevice())
+        {
+        CFbsBitGc* layoutGc = static_cast<CFbsBitGc*>(
+                    UiLayout()->LayoutOwner()->BitmapContext()); 
+ 
+                iExt->BackupGc();
+        layoutGc->Activate( UiLayout()->LayoutOwner()->BitmapDevice());
+        TRect r;
+        r.SetSize(iExt->Rect().Size());
+        layoutGc->BitBlt(iExt->Rect().iTl,iExt->BackupBitmap(),r);
+        bRedraw = EFalse;
+        }
+    
+    Hide(ETrue);
 	UiLayout()->UnLockArea(iRect,this);
 	iRect.Move(-iRect.iTl);	
 	MLayoutOwner* layoutOwner = UiLayout()->LayoutOwner();
@@ -449,14 +501,18 @@ EXPORT_C void CFepLayoutPopupWnd::CloseWindow()
         layoutOwner->SetPosition(iPrevLayoutRect.iTl);
        	layoutOwner->LayoutSizeChanged(iPrevLayoutRect.Size());
         RootControl()->GraphicDeviceSizeChanged();
+        bRedraw = ETrue;
 	    }
 	    
-    RootControl()->Draw();
+    if (bRedraw)    
+	    {
+        RootControl()->Draw();
+		}
 
 	iIsShowing = EFalse;
 	
-	TRect rect( TPoint(0,0),iPrevLayoutRect.Size() );
-	UpdateArea(  rect, EFalse ); 	
+    //TRect rect(TPoint(0, 0), iPrevLayoutRect.Size());
+    UpdateArea(popRect, EFalse);     	
 	}		
 		
 // ---------------------------------------------------------------------------
@@ -499,3 +555,87 @@ EXPORT_C void CFepLayoutPopupWnd::AfterDisplayed()
     {
     //do nothing
     }
+EXPORT_C void CFepLayoutPopupWnd::HandleResourceChange(TInt aType)
+    {
+    if (aType == KPenInputOwnDeviceChange)
+        {
+        if (UiLayout()->NotDrawToLayoutDevice())
+            {
+            TRAP_IGNORE(iExt->ContructBkDeviceL(Rect().Size(),
+                    UiLayout()->LayoutOwner()->BitmapDevice()->DisplayMode()));
+            }
+        }
+    else
+        CControlGroup::HandleResourceChange(aType);
+    }
+void CFepLayoutPopupWnd::DisableDrawingInGroup()
+    {
+
+    UiLayout()->DisableLayoutDrawing(ETrue);
+    SetReady(EFalse);
+    for(TInt i = 0; i < NumOfControls(); ++i)
+        {
+        //There is potential defect that if the child control is a group control, its children not set.
+        //This can be solved by locking the area so no one can update until we unlock it in Enalbegroup
+        ControlList()[i]->SetReady(EFalse); 
+        }
+    }
+void CFepLayoutPopupWnd::EnableDrawingInGroup()
+    {
+    SetReady(ETrue);
+    for(TInt i = 0; i < NumOfControls(); ++i)
+        {
+        //There is potential defect that if the child control is a group control, its children not set.
+        //This can be solved by locking the area so no one can update until we unlock it in Enalbegroup
+        ControlList()[i]->SetReady(ETrue); 
+        }
+    UiLayout()->DisableLayoutDrawing(EFalse);    
+    }
+
+
+
+CFepLayoutPopupWnd::CPopupWndExt* CFepLayoutPopupWnd::CPopupWndExt::NewL()
+    {
+    CPopupWndExt* self = new (ELeave)CPopupWndExt();
+    return self;
+    }
+
+void CFepLayoutPopupWnd::CPopupWndExt::ContructBkDeviceL(const TSize& aSize,const TDisplayMode& aMode)
+    {
+    TBool bNewBmp = EFalse;
+    if(!iBitmap || iBitmap->DisplayMode() != aMode)
+        {
+        delete iBitmap;
+        iBitmap = 0;
+        iBitmap = new (ELeave) CFbsBitmap;    
+        User::LeaveIfError( iBitmap->Create( aSize,aMode));
+        delete iBitmapDevice;
+        iBitmapDevice = 0;
+        iBitmapDevice = CFbsBitmapDevice::NewL(iBitmap);
+        bNewBmp = ETrue;
+        }
+    if(!iGc)
+        iGc = CFbsBitGc::NewL();    
+
+    if(!bNewBmp && aSize != iBitmap->SizeInPixels())
+        {
+        ResizeBackupDeviceL(aSize);
+        }
+    }
+void CFepLayoutPopupWnd::CPopupWndExt::ResizeBackupDeviceL(const TSize& aSize)
+    {
+    
+    iBitmap->Resize(aSize);
+    iBitmapDevice->Resize( aSize);
+    iGc->Activate(iBitmapDevice);
+    iGc->Resized();    
+    }
+void CFepLayoutPopupWnd::CPopupWndExt::SetRect(const TRect& aRect)
+    {
+    iRect = aRect;
+    if(iBitmap && iBitmap->SizeInPixels() != aRect.Size())
+        {            
+        TRAP_IGNORE(ResizeBackupDeviceL(aRect.Size()));
+        }
+    }
+//  End of File  

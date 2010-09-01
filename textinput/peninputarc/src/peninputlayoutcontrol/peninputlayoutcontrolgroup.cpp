@@ -397,6 +397,15 @@ CFepUiBaseCtrl* CControlGroup::ControlForPoints(const TPoint& aPt)
     for ( TInt i = iCtrlList.Count() - 1 ; i > -1 ; i-- )
         {
         ctrl = iCtrlList[i];
+        if ( ctrl->iExtension->iExtResponseAreaActive && ctrl->Contains( aPt ) )
+            {
+            return ctrl;
+            }
+        }
+    
+    for ( TInt i = iCtrlList.Count() - 1 ; i > -1 ; i-- )
+        {
+        ctrl = iCtrlList[i];
         if(!ctrl->Hiden() && ctrl->Contains(aPt))
             {
             return ctrl;

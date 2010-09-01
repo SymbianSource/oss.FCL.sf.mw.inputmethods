@@ -1,0 +1,47 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Build information file for project ?myapp
+*
+*/
+
+#include <platform_paths.hrh>
+
+PRJ_EXPORTS
+../loc/trui.loc MW_LAYER_LOC_EXPORT_PATH(trui.loc)
+../data/TrainUiPreset.dat /epoc32/RELEASE/winscw/udeb/Z/resource/TrainUiPreset.dat
+../data/TrainUiPreset.dat /epoc32/RELEASE/winscw/urel/Z/resource/TrainUiPreset.dat
+../data/TrainUiPreset.dat /epoc32/RELEASE/armv5/UREL/z/resource/TrainUiPreset.dat
+../data/TrainUiPreset.dat /epoc32/RELEASE/armv5/UDEB/z/resource/TrainUiPreset.dat
+../inc/truisupportedlanguageid.h |../../../inc/truisupportedlanguageid.h
+
+../rom/peninputhwrtruivariant.iby CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputhwrtruivariant.iby)
+../rom/peninputhwrtruiresources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(peninputhwrtruiresources.iby)
+
+PRJ_MMPFILES
+
+//gnumakefile trui_aif.mk
+trui.mmp 
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE trui_icons.mif
+OPTION HEADERFILE trui_icons.mbg
+OPTION SOURCEFILE iconlist.txt
+END
+
+START EXTENSION s60/mifconv
+OPTION TARGETFILE trui_aif.mif
+OPTION SOURCEFILE iconlist_aif.txt
+END
+

@@ -494,4 +494,13 @@ void CPeninputAnimObj::GetDSAState(TBool& aState)
     {
     iAnim.GetDSAState(aState);    
     }
+
+TBool CPeninputAnimObj::SetDiscreetPopArea(const TRect& aArea)
+	{
+    TAnimSetDiscreeptPopCmd* cmd = new TAnimSetDiscreeptPopCmd(iAnim,aArea);	
+    if(!cmd)
+        return EFalse;
+    AddAnimCommand(cmd);
+    return ETrue;		
+	}
 //end of file

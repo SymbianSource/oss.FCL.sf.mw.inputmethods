@@ -1,0 +1,319 @@
+EXPORTS
+	_ZN16CPeninputDataMgr10ConstructLEv @ 1 NONAME
+	_ZN16CPeninputDataMgr11RequestDataE17TPeninputDataType @ 2 NONAME
+	_ZN16CPeninputDataMgr12NotifyEngineE17TPeninputDataTypePv @ 3 NONAME
+	_ZN16CPeninputDataMgr16IsShiftPermittedEv @ 4 NONAME
+	_ZN16CPeninputDataMgr19IsCapsLockPermittedEv @ 5 NONAME
+	_ZN16CPeninputDataMgr24HandleGSRepositoryChangeEi @ 6 NONAME
+	_ZN16CPeninputDataMgr26HandleGSRepositoryCallBackEPv @ 7 NONAME
+	_ZN16CPeninputDataMgr4NewLEP22MPeninputLayoutContext @ 8 NONAME
+	_ZN16CPeninputDataMgr5NewLCEP22MPeninputLayoutContext @ 9 NONAME
+	_ZN16CPeninputDataMgr5ResetEv @ 10 NONAME
+	_ZN16CPeninputDataMgr7SaveKeyEii @ 11 NONAME
+	_ZN16CPeninputDataMgr7SetDataE17TPeninputDataTypePv @ 12 NONAME
+	_ZN16CPeninputDataMgr8InitMoreEv @ 13 NONAME
+	_ZN16CPeninputDataMgrC1EP22MPeninputLayoutContext @ 14 NONAME
+	_ZN16CPeninputDataMgrC2EP22MPeninputLayoutContext @ 15 NONAME
+	_ZN16CPeninputDataMgrD0Ev @ 16 NONAME
+	_ZN16CPeninputDataMgrD1Ev @ 17 NONAME
+	_ZN16CPeninputDataMgrD2Ev @ 18 NONAME
+	_ZN17CPeninputCtrlPool10AddControlEP14CFepUiBaseCtrl @ 19 NONAME
+	_ZN17CPeninputCtrlPool13RemoveControlEi @ 20 NONAME
+	_ZN17CPeninputCtrlPool4NewLEv @ 21 NONAME
+	_ZN17CPeninputCtrlPool5NewLCEv @ 22 NONAME
+	_ZN17CPeninputCtrlPool5ResetEv @ 23 NONAME
+	_ZN17CPeninputCtrlPool9ConstructEv @ 24 NONAME
+	_ZN17CPeninputCtrlPoolD0Ev @ 25 NONAME
+	_ZN17CPeninputCtrlPoolD1Ev @ 26 NONAME
+	_ZN17CPeninputCtrlPoolD2Ev @ 27 NONAME
+	_ZN18CPeninputRangeInfo4NewLER15TResourceReader @ 28 NONAME
+	_ZN18CPeninputRangeInfo5NewLCER15TResourceReader @ 29 NONAME
+	_ZN18CPeninputRangeInfoD0Ev @ 30 NONAME
+	_ZN18CPeninputRangeInfoD1Ev @ 31 NONAME
+	_ZN18CPeninputRangeInfoD2Ev @ 32 NONAME
+	_ZN19CPeninputUiStateMgr10AddUiStateEP20CPeninputUiStateBasei @ 33 NONAME
+	_ZN19CPeninputUiStateMgr10GetUiStateEi @ 34 NONAME
+	_ZN19CPeninputUiStateMgr14CurrentUiStateEv @ 35 NONAME
+	_ZN19CPeninputUiStateMgr17SetCurrentUiStateEP20CPeninputUiStateBase @ 36 NONAME
+	_ZN19CPeninputUiStateMgr17SetCurrentUiStateEi @ 37 NONAME
+	_ZN19CPeninputUiStateMgr4NewLEP22MPeninputLayoutContext @ 38 NONAME
+	_ZN19CPeninputUiStateMgr5NewLCEP22MPeninputLayoutContext @ 39 NONAME
+	_ZN19CPeninputUiStateMgrD0Ev @ 40 NONAME
+	_ZN19CPeninputUiStateMgrD1Ev @ 41 NONAME
+	_ZN19CPeninputUiStateMgrD2Ev @ 42 NONAME
+	_ZN20CPeninputControlInfo4NewLER15TResourceReader @ 43 NONAME
+	_ZN20CPeninputControlInfoD0Ev @ 44 NONAME
+	_ZN20CPeninputControlInfoD1Ev @ 45 NONAME
+	_ZN20CPeninputControlInfoD2Ev @ 46 NONAME
+	_ZN20CPeninputUiStateBase15HandleKeyEventLERK9TRawEvent @ 47 NONAME
+	_ZN20CPeninputUiStateBase18HandleControlEventEiRK7TDesC16 @ 48 NONAME
+	_ZN20CPeninputUiStateBase4NewLEP19MPeninputUiStateMgrP22MPeninputLayoutContext @ 49 NONAME
+	_ZN20CPeninputUiStateBase7SendKeyERK7TDesC16 @ 50 NONAME
+	_ZN20CPeninputUiStateBase9ConstructEv @ 51 NONAME
+	_ZN20CPeninputUiStateBaseC1EP19MPeninputUiStateMgrP22MPeninputLayoutContext @ 52 NONAME
+	_ZN20CPeninputUiStateBaseC2EP19MPeninputUiStateMgrP22MPeninputLayoutContext @ 53 NONAME
+	_ZN20CPeninputUiStateBaseD0Ev @ 54 NONAME
+	_ZN20CPeninputUiStateBaseD1Ev @ 55 NONAME
+	_ZN20CPeninputUiStateBaseD2Ev @ 56 NONAME
+	_ZN21CPeninputCommonLayout10ConstructLEPKv @ 57 NONAME
+	_ZN21CPeninputCommonLayout11RequestDataE17TPeninputDataType @ 58 NONAME
+	_ZN21CPeninputCommonLayout11SizeChangedEPKv @ 59 NONAME
+	_ZN21CPeninputCommonLayout13HandleCommandEiPh @ 60 NONAME
+	_ZN21CPeninputCommonLayout16IsShiftPermittedEv @ 61 NONAME
+	_ZN21CPeninputCommonLayout17SendEventToLayoutEiP14CFepUiBaseCtrlRK7TDesC16 @ 62 NONAME
+	_ZN21CPeninputCommonLayout17SendEventToWindowEiP14CFepUiBaseCtrlRK7TDesC16 @ 63 NONAME
+	_ZN21CPeninputCommonLayout18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 64 NONAME
+	_ZN21CPeninputCommonLayout18HandleRawKeyEventLERK9TRawEvent @ 65 NONAME
+	_ZN21CPeninputCommonLayout18IsValidDestinationERK5TRectP8CDragBarRiS5_i @ 66 NONAME
+	_ZN21CPeninputCommonLayout19IsCapsLockPermittedEv @ 67 NONAME
+	_ZN21CPeninputCommonLayout21OnAppEditorTextComingERK25TFepInputContextFieldData @ 68 NONAME
+	_ZN21CPeninputCommonLayout4InitEv @ 69 NONAME
+	_ZN21CPeninputCommonLayout7SaveKeyEii @ 70 NONAME
+	_ZN21CPeninputCommonLayout7SendkeyEiRK7TDesC16 @ 71 NONAME
+	_ZN21CPeninputCommonLayout7SetDataE17TPeninputDataTypePv @ 72 NONAME
+	_ZN21CPeninputCommonLayoutC2EP12MLayoutOwner @ 73 NONAME
+	_ZN21CPeninputCommonLayoutD0Ev @ 74 NONAME
+	_ZN21CPeninputCommonLayoutD1Ev @ 75 NONAME
+	_ZN21CPeninputCommonLayoutD2Ev @ 76 NONAME
+	_ZN21CPeninputLayoutConfig17FindShiftCapsInfoEi @ 77 NONAME
+	_ZN21CPeninputLayoutConfig17FindVkbLayoutInfoEi @ 78 NONAME
+	_ZN21CPeninputLayoutConfig20FindClientLayoutInfoEi @ 79 NONAME
+	_ZN21CPeninputLayoutConfig26ShiftCapsSingleVkbLayoutIdEii @ 80 NONAME
+	_ZN21CPeninputLayoutConfig30ShiftCapsSingleVkbLayoutByCaseEii @ 81 NONAME
+	_ZN21CPeninputLayoutConfig4NewLER20CAknFepCtrlVkbLayoutR15TResourceReader @ 82 NONAME
+	_ZN21CPeninputLayoutConfigD0Ev @ 83 NONAME
+	_ZN21CPeninputLayoutConfigD1Ev @ 84 NONAME
+	_ZN21CPeninputLayoutConfigD2Ev @ 85 NONAME
+	_ZN21CPeninputLayoutWindow10ConstructLEv @ 86 NONAME
+	_ZN21CPeninputLayoutWindow11ChangeRangeEiii @ 87 NONAME
+	_ZN21CPeninputLayoutWindow11ReadIcfInfoE15TResourceReader @ 88 NONAME
+	_ZN21CPeninputLayoutWindow11SizeChangedEi @ 89 NONAME
+	_ZN21CPeninputLayoutWindow13SetWindowRectERK5TRect @ 90 NONAME
+	_ZN21CPeninputLayoutWindow14SetEditorTextLERK25TFepInputContextFieldData @ 91 NONAME
+	_ZN21CPeninputLayoutWindow15ChangeVkbLayoutEi @ 92 NONAME
+	_ZN21CPeninputLayoutWindow16HandleRangeEventEi @ 93 NONAME
+	_ZN21CPeninputLayoutWindow16ReconfigUnitSizeEi @ 94 NONAME
+	_ZN21CPeninputLayoutWindow16SetSwitchBtnFontER22CAknFepCtrlEventButton @ 95 NONAME
+	_ZN21CPeninputLayoutWindow18AddNotOwnedControlEP14CFepUiBaseCtrl @ 96 NONAME
+	_ZN21CPeninputLayoutWindow18ChangeButtonStatusEii @ 97 NONAME
+	_ZN21CPeninputLayoutWindow18ChangeClientLayoutEi @ 98 NONAME
+	_ZN21CPeninputLayoutWindow18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 99 NONAME
+	_ZN21CPeninputLayoutWindow19SetEnableSettingBtnEi @ 100 NONAME
+	_ZN21CPeninputLayoutWindow20ChangeInputLanguageLEi @ 101 NONAME
+	_ZN21CPeninputLayoutWindow20ChangeLayoutPositionEi @ 102 NONAME
+	_ZN21CPeninputLayoutWindow20HandleRangeLoopEventEi @ 103 NONAME
+	_ZN21CPeninputLayoutWindow20SetEnableSwitchToHwrEi @ 104 NONAME
+	_ZN21CPeninputLayoutWindow21HandleShiftBtnClickedEv @ 105 NONAME
+	_ZN21CPeninputLayoutWindow21SetSwitchBtnTextColorER22CAknFepCtrlEventButton @ 106 NONAME
+	_ZN21CPeninputLayoutWindow22ConstructFromResourceLER15TResourceReader @ 107 NONAME
+	_ZN21CPeninputLayoutWindow22ConstructFromResourceLEv @ 108 NONAME
+	_ZN21CPeninputLayoutWindow24HandleCapslockBtnClickedEv @ 109 NONAME
+	_ZN21CPeninputLayoutWindow25CaseByShiftCapslockStatusEv @ 110 NONAME
+	_ZN21CPeninputLayoutWindow4DrawEv @ 111 NONAME
+	_ZN21CPeninputLayoutWindow7DoCloseEv @ 112 NONAME
+	_ZN21CPeninputLayoutWindowC2EP12CFepUiLayoutP22MPeninputLayoutContext @ 113 NONAME
+	_ZN21CPeninputLayoutWindowD0Ev @ 114 NONAME
+	_ZN21CPeninputLayoutWindowD1Ev @ 115 NONAME
+	_ZN21CPeninputLayoutWindowD2Ev @ 116 NONAME
+	_ZN21CPeninputRangeBarInfo4NewLER15TResourceReader @ 117 NONAME
+	_ZN21CPeninputRangeBarInfo5NewLCER15TResourceReader @ 118 NONAME
+	_ZN21CPeninputRangeBarInfo9FindRangeEi @ 119 NONAME
+	_ZN21CPeninputRangeBarInfoD0Ev @ 120 NONAME
+	_ZN21CPeninputRangeBarInfoD1Ev @ 121 NONAME
+	_ZN21CPeninputRangeBarInfoD2Ev @ 122 NONAME
+	_ZN22CPeninputDataConverter15FepCaseByCaseIdEi @ 123 NONAME
+	_ZN22CPeninputDataConverter17CombinationToDescEijR6TDes16 @ 124 NONAME
+	_ZN22CPeninputDataConverter19ShiftCapslockByCaseEiRiS0_ @ 125 NONAME
+	_ZN22CPeninputDataConverter8AnyToIntEPv @ 126 NONAME
+	_ZN22CPeninputDataConverter9IntToDescEjR6TDes16 @ 127 NONAME
+	_ZN22CPeninputDataConverterC1Ev @ 128 NONAME
+	_ZN22CPeninputDataConverterC2Ev @ 129 NONAME
+	_ZN22CPeninputDataConverterD0Ev @ 130 NONAME
+	_ZN22CPeninputDataConverterD1Ev @ 131 NONAME
+	_ZN22CPeninputDataConverterD2Ev @ 132 NONAME
+	_ZN22CPeninputShiftCapsInfo23FindShiftCapsSingleByIdEi @ 133 NONAME
+	_ZN22CPeninputShiftCapsInfo25FindShiftCapsSingleByCaseEi @ 134 NONAME
+	_ZN22CPeninputShiftCapsInfo4NewLER15TResourceReader @ 135 NONAME
+	_ZN22CPeninputShiftCapsInfo5NewLCER15TResourceReader @ 136 NONAME
+	_ZN22CPeninputShiftCapsInfoD0Ev @ 137 NONAME
+	_ZN22CPeninputShiftCapsInfoD1Ev @ 138 NONAME
+	_ZN22CPeninputShiftCapsInfoD2Ev @ 139 NONAME
+	_ZN25CPeninputClientLayoutInfo14AddControlInfoEP20CPeninputControlInfo @ 140 NONAME
+	_ZN25CPeninputClientLayoutInfo15FindControlInfoEi @ 141 NONAME
+	_ZN25CPeninputClientLayoutInfo17RemoveControlInfoEP20CPeninputControlInfo @ 142 NONAME
+	_ZN25CPeninputClientLayoutInfo17RemoveControlInfoEi @ 143 NONAME
+	_ZN25CPeninputClientLayoutInfo22ConstructFromResourceLER15TResourceReader @ 144 NONAME
+	_ZN25CPeninputClientLayoutInfo4NewLER15TResourceReader @ 145 NONAME
+	_ZN25CPeninputClientLayoutInfo5NewLCER15TResourceReader @ 146 NONAME
+	_ZN25CPeninputClientLayoutInfoD0Ev @ 147 NONAME
+	_ZN25CPeninputClientLayoutInfoD1Ev @ 148 NONAME
+	_ZN25CPeninputClientLayoutInfoD2Ev @ 149 NONAME
+	_ZN29CPeninputNumericKepMappingMgr4NewLE15TResourceReader @ 150 NONAME
+	_ZN29CPeninputNumericKepMappingMgr5NewLCE15TResourceReader @ 151 NONAME
+	_ZN29CPeninputNumericKepMappingMgr5ResetEv @ 152 NONAME
+	_ZN29CPeninputNumericKepMappingMgrD0Ev @ 153 NONAME
+	_ZN29CPeninputNumericKepMappingMgrD1Ev @ 154 NONAME
+	_ZN29CPeninputNumericKepMappingMgrD2Ev @ 155 NONAME
+	_ZNK17CPeninputCtrlPool12ControlCountEv @ 156 NONAME
+	_ZNK17CPeninputCtrlPool14ControlByIndexEi @ 157 NONAME
+	_ZNK17CPeninputCtrlPool7ControlEi @ 158 NONAME
+	_ZNK21CPeninputCommonLayout10UiStateMgrEv @ 159 NONAME
+	_ZNK21CPeninputCommonLayout12LayoutWindowEv @ 160 NONAME
+	_ZNK21CPeninputLayoutWindow10ConfigInfoEv @ 161 NONAME
+	_ZNK29CPeninputNumericKepMappingMgr17KeyMappingStringLEi @ 162 NONAME
+	_ZNK29CPeninputNumericKepMappingMgr5CountEv @ 163 NONAME
+	_ZTI16CPeninputDataMgr @ 164 NONAME ; #<TI>#
+	_ZTI17CPeninputCtrlPool @ 165 NONAME ; #<TI>#
+	_ZTI18CPeninputRangeInfo @ 166 NONAME ; #<TI>#
+	_ZTI19CPeninputUiStateMgr @ 167 NONAME ; #<TI>#
+	_ZTI20CPeninputControlInfo @ 168 NONAME ; #<TI>#
+	_ZTI20CPeninputUiStateBase @ 169 NONAME ; #<TI>#
+	_ZTI21CPeninputCommonLayout @ 170 NONAME ; #<TI>#
+	_ZTI21CPeninputLayoutConfig @ 171 NONAME ; #<TI>#
+	_ZTI21CPeninputLayoutWindow @ 172 NONAME ; #<TI>#
+	_ZTI21CPeninputRangeBarInfo @ 173 NONAME ; #<TI>#
+	_ZTI22CPeninputDataConverter @ 174 NONAME ; #<TI>#
+	_ZTI22CPeninputShiftCapsInfo @ 175 NONAME ; #<TI>#
+	_ZTI25CPeninputClientLayoutInfo @ 176 NONAME ; #<TI>#
+	_ZTI29CPeninputNumericKepMappingMgr @ 177 NONAME ; #<TI>#
+	_ZTV16CPeninputDataMgr @ 178 NONAME ; #<VT>#
+	_ZTV17CPeninputCtrlPool @ 179 NONAME ; #<VT>#
+	_ZTV18CPeninputRangeInfo @ 180 NONAME ; #<VT>#
+	_ZTV19CPeninputUiStateMgr @ 181 NONAME ; #<VT>#
+	_ZTV20CPeninputControlInfo @ 182 NONAME ; #<VT>#
+	_ZTV20CPeninputUiStateBase @ 183 NONAME ; #<VT>#
+	_ZTV21CPeninputCommonLayout @ 184 NONAME ; #<VT>#
+	_ZTV21CPeninputLayoutConfig @ 185 NONAME ; #<VT>#
+	_ZTV21CPeninputLayoutWindow @ 186 NONAME ; #<VT>#
+	_ZTV21CPeninputRangeBarInfo @ 187 NONAME ; #<VT>#
+	_ZTV22CPeninputDataConverter @ 188 NONAME ; #<VT>#
+	_ZTV22CPeninputShiftCapsInfo @ 189 NONAME ; #<VT>#
+	_ZTV25CPeninputClientLayoutInfo @ 190 NONAME ; #<VT>#
+	_ZTV29CPeninputNumericKepMappingMgr @ 191 NONAME ; #<VT>#
+	_ZThn448_N21CPeninputLayoutWindow18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 192 NONAME ABSENT ; #<thunk>#
+	_ZThn4_N16CPeninputDataMgr11RequestDataE17TPeninputDataType @ 193 NONAME ; #<thunk>#
+	_ZThn4_N16CPeninputDataMgr5ResetEv @ 194 NONAME ; #<thunk>#
+	_ZThn4_N16CPeninputDataMgr7SaveKeyEii @ 195 NONAME ; #<thunk>#
+	_ZThn4_N16CPeninputDataMgr7SetDataE17TPeninputDataTypePv @ 196 NONAME ; #<thunk>#
+	_ZThn4_N19CPeninputUiStateMgr10AddUiStateEP20CPeninputUiStateBasei @ 197 NONAME ; #<thunk>#
+	_ZThn4_N19CPeninputUiStateMgr10GetUiStateEi @ 198 NONAME ; #<thunk>#
+	_ZThn4_N19CPeninputUiStateMgr14CurrentUiStateEv @ 199 NONAME ; #<thunk>#
+	_ZThn4_N19CPeninputUiStateMgr17SetCurrentUiStateEP20CPeninputUiStateBase @ 200 NONAME ; #<thunk>#
+	_ZThn4_N19CPeninputUiStateMgr17SetCurrentUiStateEi @ 201 NONAME ; #<thunk>#
+	_ZThn4_N21CPeninputCommonLayout13HandleCommandEiPh @ 202 NONAME ; #<thunk>#
+	_ZThn4_N21CPeninputCommonLayout21OnAppEditorTextComingERK25TFepInputContextFieldData @ 203 NONAME ABSENT ; #<thunk>#
+	_ZThn4_N21CPeninputCommonLayout4InitEv @ 204 NONAME ; #<thunk>#
+	_ZThn92_N21CPeninputCommonLayout11RequestDataE17TPeninputDataType @ 205 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N21CPeninputCommonLayout16IsShiftPermittedEv @ 206 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N21CPeninputCommonLayout17SendEventToWindowEiP14CFepUiBaseCtrlRK7TDesC16 @ 207 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N21CPeninputCommonLayout19IsCapsLockPermittedEv @ 208 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N21CPeninputCommonLayout7SaveKeyEii @ 209 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N21CPeninputCommonLayout7SendkeyEiRK7TDesC16 @ 210 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N21CPeninputCommonLayout7SetDataE17TPeninputDataTypePv @ 211 NONAME ABSENT ; #<thunk>#
+	_ZThn8_N21CPeninputCommonLayout18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 212 NONAME ; #<thunk>#
+	_ZThn8_N21CPeninputLayoutWindow22ConstructFromResourceLEv @ 213 NONAME ; #<thunk>#
+	_ZN21CPeninputCommonLayout12PenInputTypeEv @ 214 NONAME
+	_ZThn4_N21CPeninputCommonLayout12PenInputTypeEv @ 215 NONAME ; #<thunk>#
+	_ZThn616_N21CPeninputLayoutWindow18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 216 NONAME ; #<thunk>#
+	_ZN21CPeninputLayoutWindow15SetTextIsSecretEi @ 217 NONAME
+	_ZN24CPeninputCommonLayoutExt10ConstructLEPKv @ 218 NONAME
+	_ZN24CPeninputCommonLayoutExt11RequestDataE17TPeninputDataType @ 219 NONAME
+	_ZN24CPeninputCommonLayoutExt11SizeChangedEPKv @ 220 NONAME
+	_ZN24CPeninputCommonLayoutExt13HandleCommandEiPh @ 221 NONAME
+	_ZN24CPeninputCommonLayoutExt12PenInputTypeEv @ 222 NONAME
+	_ZN24CPeninputCommonLayoutExt16IsShiftPermittedEv @ 223 NONAME
+	_ZN24CPeninputCommonLayoutExt17SendEventToLayoutEiP14CFepUiBaseCtrlRK7TDesC16 @ 224 NONAME
+	_ZN24CPeninputCommonLayoutExt17SendEventToWindowEiP14CFepUiBaseCtrlRK7TDesC16 @ 225 NONAME
+	_ZN24CPeninputCommonLayoutExt18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 226 NONAME
+	_ZN24CPeninputCommonLayoutExt18HandleRawKeyEventLERK9TRawEvent @ 227 NONAME
+	_ZN24CPeninputCommonLayoutExt18IsValidDestinationERK5TRectP8CDragBarRiS5_i @ 228 NONAME
+	_ZN24CPeninputCommonLayoutExt19IsCapsLockPermittedEv @ 229 NONAME
+	_ZN24CPeninputCommonLayoutExt21OnAppEditorTextComingERK25TFepInputContextFieldData @ 230 NONAME
+	_ZN24CPeninputCommonLayoutExt4InitEv @ 231 NONAME
+	_ZN24CPeninputCommonLayoutExt7SaveKeyEii @ 232 NONAME
+	_ZN24CPeninputCommonLayoutExt7SendkeyEiRK7TDesC16 @ 233 NONAME
+	_ZN24CPeninputCommonLayoutExt7SetDataE17TPeninputDataTypePv @ 234 NONAME
+	_ZN24CPeninputCommonLayoutExtC2EP12MLayoutOwner @ 235 NONAME
+	_ZN24CPeninputCommonLayoutExtD0Ev @ 236 NONAME
+	_ZN24CPeninputCommonLayoutExtD1Ev @ 237 NONAME
+	_ZN24CPeninputCommonLayoutExtD2Ev @ 238 NONAME
+	_ZN24CPeninputLayoutWindowExt10ConstructLEv @ 239 NONAME
+	_ZN24CPeninputLayoutWindowExt11ChangeRangeEiii @ 240 NONAME
+	_ZN24CPeninputLayoutWindowExt11SizeChangedEi @ 241 NONAME
+	_ZN24CPeninputLayoutWindowExt12SetLafLayOutEii @ 242 NONAME
+	_ZN24CPeninputLayoutWindowExt13SetWindowRectERK5TRect @ 243 NONAME
+	_ZN24CPeninputLayoutWindowExt14SetEditorTextLERK25TFepInputContextFieldData @ 244 NONAME
+	_ZN24CPeninputLayoutWindowExt15ChangeVkbLayoutEi @ 245 NONAME
+	_ZN24CPeninputLayoutWindowExt15SetTextIsSecretEi @ 246 NONAME
+	_ZN24CPeninputLayoutWindowExt16HandleRangeEventEi @ 247 NONAME
+	_ZN24CPeninputLayoutWindowExt16ReconfigUnitSizeEi @ 248 NONAME
+	_ZN24CPeninputLayoutWindowExt16SetSwitchBtnFontER22CAknFepCtrlEventButton @ 249 NONAME
+	_ZN24CPeninputLayoutWindowExt16SetVkbLayoutSizeEv @ 250 NONAME
+	_ZN24CPeninputLayoutWindowExt18AddNotOwnedControlEP14CFepUiBaseCtrl @ 251 NONAME
+	_ZN24CPeninputLayoutWindowExt18ChangeButtonStatusEii @ 252 NONAME
+	_ZN24CPeninputLayoutWindowExt18ChangeClientLayoutEi @ 253 NONAME
+	_ZN24CPeninputLayoutWindowExt18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 254 NONAME
+	_ZN24CPeninputLayoutWindowExt19SetEnableSettingBtnEi @ 255 NONAME
+	_ZN24CPeninputLayoutWindowExt20ChangeInputLanguageLEi @ 256 NONAME
+	_ZN24CPeninputLayoutWindowExt20ChangeLayoutPositionEi @ 257 NONAME
+	_ZN24CPeninputLayoutWindowExt20HandleRangeLoopEventEi @ 258 NONAME
+	_ZN24CPeninputLayoutWindowExt20SetEnableSwitchToHwrEi @ 259 NONAME
+	_ZN24CPeninputLayoutWindowExt21HandleShiftBtnClickedEv @ 260 NONAME
+	_ZN24CPeninputLayoutWindowExt21OnInputLanguageChangeEv @ 261 NONAME
+	_ZN24CPeninputLayoutWindowExt21SetSwitchBtnTextColorER22CAknFepCtrlEventButton @ 262 NONAME
+	_ZN24CPeninputLayoutWindowExt24HandleCapslockBtnClickedEv @ 263 NONAME
+	_ZN24CPeninputLayoutWindowExt24SizeChangedForBaseWindowEi @ 264 NONAME
+	_ZN24CPeninputLayoutWindowExt25CaseByShiftCapslockStatusEv @ 265 NONAME
+	_ZN24CPeninputLayoutWindowExt4DrawEv @ 266 NONAME
+	_ZN24CPeninputLayoutWindowExt7DoCloseEv @ 267 NONAME
+	_ZN24CPeninputLayoutWindowExtC2EP12CFepUiLayoutP22MPeninputLayoutContext @ 268 NONAME
+	_ZN24CPeninputLayoutWindowExtD0Ev @ 269 NONAME
+	_ZN24CPeninputLayoutWindowExtD1Ev @ 270 NONAME
+	_ZN24CPeninputLayoutWindowExtD2Ev @ 271 NONAME
+	_ZNK24CPeninputCommonLayoutExt10UiStateMgrEv @ 272 NONAME
+	_ZNK24CPeninputCommonLayoutExt12LayoutWindowEv @ 273 NONAME
+	_ZNK24CPeninputLayoutWindowExt10ConfigInfoEv @ 274 NONAME
+	_ZTI24CPeninputCommonLayoutExt @ 275 NONAME ; #<TI>#
+	_ZTI24CPeninputLayoutWindowExt @ 276 NONAME ; #<TI>#
+	_ZTV24CPeninputCommonLayoutExt @ 277 NONAME ; #<VT>#
+	_ZTV24CPeninputLayoutWindowExt @ 278 NONAME ; #<VT>#
+	_ZThn4_N24CPeninputCommonLayoutExt13HandleCommandEiPh @ 279 NONAME ; #<thunk>#
+	_ZThn4_N24CPeninputCommonLayoutExt12PenInputTypeEv @ 280 NONAME ; #<thunk>#
+	_ZThn4_N24CPeninputCommonLayoutExt4InitEv @ 281 NONAME ; #<thunk>#
+	_ZThn616_N24CPeninputLayoutWindowExt18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 282 NONAME ; #<thunk>#
+	_ZThn92_N24CPeninputCommonLayoutExt11RequestDataE17TPeninputDataType @ 283 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N24CPeninputCommonLayoutExt16IsShiftPermittedEv @ 284 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N24CPeninputCommonLayoutExt17SendEventToWindowEiP14CFepUiBaseCtrlRK7TDesC16 @ 285 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N24CPeninputCommonLayoutExt19IsCapsLockPermittedEv @ 286 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N24CPeninputCommonLayoutExt7SaveKeyEii @ 287 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N24CPeninputCommonLayoutExt7SendkeyEiRK7TDesC16 @ 288 NONAME ABSENT ; #<thunk>#
+	_ZThn92_N24CPeninputCommonLayoutExt7SetDataE17TPeninputDataTypePv @ 289 NONAME ABSENT ; #<thunk>#
+	_ZThn8_N24CPeninputCommonLayoutExt18HandleControlEventEiP14CFepUiBaseCtrlRK7TDesC16 @ 290 NONAME ; #<thunk>#
+	_ZN24CPeninputLayoutWindowExt22HandleMergedBtnClickedEi @ 291 NONAME
+	_ZN24CPeninputLayoutWindowExt24ChangeMergedButtonStatusEii @ 292 NONAME
+	_ZN21CPeninputLayoutWindow14IsMultiLineIcfEv @ 293 NONAME
+	_ZN21CPeninputLayoutWindow16IsCanChangeRangeEi @ 294 NONAME
+	_ZN21CPeninputLayoutWindow21ChangeToPreviousRangeEi @ 295 NONAME
+	_ZN21CPeninputLayoutWindow17SetTextAlignmentLEi @ 296 NONAME
+	_ZN24CPeninputLayoutWindowExt17SetTextAlignmentLEi @ 297 NONAME
+	_ZThn88_N21CPeninputCommonLayout11RequestDataE17TPeninputDataType @ 298 NONAME ; #<thunk>#
+	_ZThn88_N21CPeninputCommonLayout16IsShiftPermittedEv @ 299 NONAME ; #<thunk>#
+	_ZThn88_N21CPeninputCommonLayout17SendEventToWindowEiP14CFepUiBaseCtrlRK7TDesC16 @ 300 NONAME ; #<thunk>#
+	_ZThn88_N21CPeninputCommonLayout19IsCapsLockPermittedEv @ 301 NONAME ; #<thunk>#
+	_ZThn88_N21CPeninputCommonLayout7SaveKeyEii @ 302 NONAME ; #<thunk>#
+	_ZThn88_N21CPeninputCommonLayout7SendkeyEiRK7TDesC16 @ 303 NONAME ; #<thunk>#
+	_ZThn88_N21CPeninputCommonLayout7SetDataE17TPeninputDataTypePv @ 304 NONAME ; #<thunk>#
+	_ZThn88_N24CPeninputCommonLayoutExt11RequestDataE17TPeninputDataType @ 305 NONAME ; #<thunk>#
+	_ZThn88_N24CPeninputCommonLayoutExt16IsShiftPermittedEv @ 306 NONAME ; #<thunk>#
+	_ZThn88_N24CPeninputCommonLayoutExt17SendEventToWindowEiP14CFepUiBaseCtrlRK7TDesC16 @ 307 NONAME ; #<thunk>#
+	_ZThn88_N24CPeninputCommonLayoutExt19IsCapsLockPermittedEv @ 308 NONAME ; #<thunk>#
+	_ZThn88_N24CPeninputCommonLayoutExt7SaveKeyEii @ 309 NONAME ; #<thunk>#
+	_ZThn88_N24CPeninputCommonLayoutExt7SendkeyEiRK7TDesC16 @ 310 NONAME ; #<thunk>#
+	_ZThn88_N24CPeninputCommonLayoutExt7SetDataE17TPeninputDataTypePv @ 311 NONAME ; #<thunk>#
+	_ZNK29CPeninputNumericKepMappingMgr17KeyMappingStringLEii @ 312 NONAME
+	_ZN21CPeninputCommonLayout22SetPositionFromOutsideERK6TPoint @ 313 NONAME
+	_ZN24CPeninputCommonLayoutExt22SetPositionFromOutsideERK6TPoint @ 314 NONAME
+	_ZThn4_N21CPeninputCommonLayout22SetPositionFromOutsideERK6TPoint @ 315 NONAME ; #<thunk>#
+	_ZThn4_N24CPeninputCommonLayoutExt22SetPositionFromOutsideERK6TPoint @ 316 NONAME ; #<thunk>#
+	_ZN24CPeninputLayoutWindowExt32HandleShiftAndCapslockBtnClickedEv @ 317 NONAME
+

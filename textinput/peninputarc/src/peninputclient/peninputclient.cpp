@@ -28,6 +28,21 @@ EXPORT_C RPeninputServer::RPeninputServer()
     {
     }
 
+EXPORT_C TInt RPeninputServer::ConnectAsyc(TRequestStatus& aStatus)
+    { 
+    TInt err;
+    TRAP(err, iSingletonServer = RPeninputServerImpl::NewL(&aStatus));    
+    if( !iSingletonServer )   
+        {
+        return KErrGeneral;
+        }
+    //return iSingletonServer->ConnectAsync(status);
+    return err;
+    }
+EXPORT_C void RPeninputServer::SetDataQueryPopped(TBool aFlag)
+	{
+	iSingletonServer->SetDataQueryPopped(aFlag);
+	}
 // ---------------------------------------------------------------------------
 // RPeninputServer::Connect
 // ---------------------------------------------------------------------------
@@ -235,10 +250,15 @@ EXPORT_C TBool RPeninputServer::IsDimmed()
 // RPeninputServer::SupportInputMode
 // ---------------------------------------------------------------------------
 //
-EXPORT_C TInt RPeninputServer::SupportInputMode()
+EXPORT_C TInt RPeninputServer::SupportInputMode( TInt aLanguage )
     {
-    return iSingletonServer->SupportInputMode();
+    return iSingletonServer->SupportInputMode( aLanguage );
     }
+
+EXPORT_C TInt RPeninputServer::SetInputLanguage( TInt aLanguage )
+	{
+	return iSingletonServer->SetInputLanguage( aLanguage );
+	}
 
 // ---------------------------------------------------------------------------
 // RPeninputServer::AddPeninputServerObserverL
@@ -484,5 +504,10 @@ EXPORT_C void RPeninputServer::SetResourceChange(TBool aFlag)
     {
     iSingletonServer->SetResourceChange(aFlag);   
     }    
+
+EXPORT_C void RPeninputServer::EnablePriorityChangeOnOriChange(TBool aEnabled)
+    {
+	iSingletonServer->EnablePriorityChangeOnOriChange(aEnabled);
+	}	
 //end of class RPeninputServer
 // End of File

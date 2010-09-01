@@ -14,6 +14,9 @@
 <layer name="api_test_layer">
   <module name="inputmethods_api_tests">
     <unit unitID="abs.inputmethods.tsrc.all" mrp="" bldFile="&layer_real_source_path;/tsrc/group" name="inputmethods_tsrc_all" />
+    <unit unitID="abs.inputmethods.tsrc.pen_input_server_api" mrp="" bldFile="&layer_real_source_path;/inputmethods_plat/pen_input_server_api/tsrc/group" name="inputmethods_tsrc_pen_input_server" />
+    <unit unitID="abs.inputmethods.tsrc.ptiengine_hwr_api" mrp="" bldFile="&layer_real_source_path;/inputmethods_plat/ptiengine_hwr_api/tsrc/group" name="inputmethods_tsrc_ptiengine_hwr" />
+    <unit unitID="abs.inputmethods.tsrc.aknfep_uiinterface_api" mrp="" bldFile="&layer_real_source_path;/inputmethods_plat/aknfep_uiinterface_api/tsrc/group" name="inputmethods_tsrc_aknfep_uiinterface" />
   </module>
 </layer>
     

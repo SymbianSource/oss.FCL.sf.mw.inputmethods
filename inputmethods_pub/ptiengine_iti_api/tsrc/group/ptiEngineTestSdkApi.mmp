@@ -24,8 +24,12 @@
 
 
 
-#include <bldvariant.hrh>
-#include <platform_paths.hrh>
+
+
+#if defined(__S60_)
+        // To get the OS_LAYER_SYSTEMINCLUDE-definition
+        #include <platform_paths.hrh>
+#endif
 
 TARGET          ptiEngineTestSdkApi.dll
 TARGETTYPE      dll
@@ -48,7 +52,11 @@ SOURCE          ptiEngineTestSdkApiBlocks.cpp
 
 USERINCLUDE     ../inc 
 
+#if defined(__S60_)
 MW_LAYER_SYSTEMINCLUDE
+#else
+    SYSTEMINCLUDE   /epoc32/include 
+#endif
 
 LIBRARY         euser.lib
 LIBRARY         stiftestinterface.lib

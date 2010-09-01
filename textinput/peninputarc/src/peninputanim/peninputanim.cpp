@@ -31,9 +31,7 @@
 #include "peninputcmdparam.h"
 #include "peninputcmdparamext.h"
 #include "peninputcmd.h"
-// Modify for bug ETMA-7X2C5Y begin
 #include "penpointereventsuppressor.h"
-// Modify for bug ETMA-7X2C5Y end
 // ----------- Touch feedback additions start
 #ifdef RD_TACTILE_FEEDBACK
 #include <coecntrl.h>
@@ -44,10 +42,10 @@
 
 #include <avkondomainpskeys.h>
 //CONSTANT
-const TInt KMsgSlot1 = 1;	//msg slot 2 in IPC
-const TInt KMsgSlot2 = 2; 	//msg slot 2 in IPC
-const TInt KFlushTimerPeriod = 1000;		//1/1000 second
-const TInt KResponseQueueWaitTime = 100000;		//1/10 second
+const TInt KMsgSlot1 = 1;     //msg slot 2 in IPC
+const TInt KMsgSlot2 = 2;     //msg slot 2 in IPC
+const TInt KFlushTimerPeriod = 1000 * 10;          //1/100 second
+const TInt KResponseQueueWaitTime = 100000;        //1/10 second
 
 // ======== GLOBAL FUNCTIONS ========
 
@@ -59,7 +57,7 @@ const TInt KResponseQueueWaitTime = 100000;		//1/10 second
 //
 EXPORT_C CAnimDll *CreateCAnimDllL()
     {
-	return(new (ELeave) CPeninputAnimDll()); 
+    return(new (ELeave) CPeninputAnimDll()); 
     }
 
 // ======== MEMBER FUNCTIONS ========
@@ -73,7 +71,7 @@ EXPORT_C CAnimDll *CreateCAnimDllL()
 //
 CAnim* CPeninputAnimDll::CreateInstanceL(TInt /*aType*/)
     {
-	return new(ELeave) CPeninputAnim();
+    return new(ELeave) CPeninputAnim();
     }
 
 // class CPeninputAnim
@@ -85,28 +83,28 @@ CAnim* CPeninputAnimDll::CreateInstanceL(TInt /*aType*/)
 //
 CPeninputAnim::CPeninputAnim()
     {
-	iIsActive = EFalse;
-	//iSpritePosition and iSpriteSize are initialized to 0 by default constructor
-	//iSpritePosition = TPoint(0, 0);
-	//iSpriteSize = TSize(0, 0);
-	iIsPointerCaptured = EFalse;
-	iIsPenDown = EFalse;
-	
-	iPrimaryTouchPtNum = 0;
-	iPrimaryTouchPtDetected = EFalse;
+    iIsActive = EFalse;
+    //iSpritePosition and iSpriteSize are initialized to 0 by default constructor
+    //iSpritePosition = TPoint(0, 0);
+    //iSpriteSize = TSize(0, 0);
+    iIsPointerCaptured = EFalse;
+    iIsPenDown = EFalse;
+    
+    iPrimaryTouchPtNum = 0;
+    iPrimaryTouchPtDetected = EFalse;
 
-	
-#ifdef RD_TACTILE_FEEDBACK	
-	TRAPD( err, FeatureManager::InitializeLibL() );
+    
+#ifdef RD_TACTILE_FEEDBACK    
+    TRAPD( err, FeatureManager::InitializeLibL() );
     if( err == KErrNone )
         {
         iTactileSupported =  FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
         }
-	iFeedback = MTactileFeedbackServer::Instance();
-#endif // RD_TACTILE_FEEDBACK	
+    iFeedback = MTactileFeedbackServer::Instance();
+#endif // RD_TACTILE_FEEDBACK    
     
-    iEnableSprite = ETrue;	
-    iDSAState = EFalse;	
+    iEnableSprite = ETrue;    
+    iDSAState = EFalse;    
     }
 
 // ---------------------------------------------------------------------------
@@ -116,28 +114,19 @@ CPeninputAnim::CPeninputAnim()
 //
 CPeninputAnim::~CPeninputAnim()
     {
-	Deactivate();
+    Deactivate();
 
-	iMsgBufQueue.Close();
-	iKeyMsgResponseQueue.Close();
-	iResponseQueueSemaphore.Close();
-	
-	delete iFlushTimer;
-#ifdef RD_TACTILE_FEEDBACK	
-	FeatureManager::UnInitializeLib();
-	iTactileControl.Close();
-	iBackupTactileControl.Close();
-#endif // RD_TACTILE_FEEDBACK	
-	// Modify for bug ETMA-7X2C5Y begin
-	delete iPointerEventSuppressor;
-	// Modify for bug ETMA-7X2C5Y end
-	if (iDiscreetPopSubscriber)
-	    {
-	    iDiscreetPopSubscriber->StopSubscribe();
-	    }
-	iDiscreetPopProperty.Close();
-	delete iDiscreetPopSubscriber;
-	iAknUiSrv.Close();
+    iMsgBufQueue.Close();
+    iKeyMsgResponseQueue.Close();
+    iResponseQueueSemaphore.Close();
+    
+    delete iFlushTimer;
+#ifdef RD_TACTILE_FEEDBACK    
+    FeatureManager::UnInitializeLib();
+    iTactileControl.Close();
+    iBackupTactileControl.Close();
+#endif // RD_TACTILE_FEEDBACK    
+    delete iPointerEventSuppressor;
     }
 
 // ---------------------------------------------------------------------------
@@ -147,27 +136,12 @@ CPeninputAnim::~CPeninputAnim()
 //
 void CPeninputAnim::ConstructL(TAny* /*aParameters*/)
     {
-	// the animation feature is not used
-	iFunctions->SetInterval(0);
-	iFlushTimer = CPeriodic::NewL(CActive::EPriorityStandard);
-	
+    // the animation feature is not used
+    iFunctions->SetInterval(0);
+    iFlushTimer = CPeriodic::NewL(CActive::EPriorityStandard);
+    
     iFunctions->RegisterForNotifications(EDirectScreenAccess);
-	// Modify for bug ETMA-7X2C5Y begin
     iPointerEventSuppressor = CPenPointerEventSuppressor::NewL();
-    // Modify for bug ETMA-7X2C5Y end
-    User::LeaveIfError(iDiscreetPopProperty.Attach(KPSUidAvkonDomain, 
-                                         KAknGlobalDiscreetPopupNumChanged));
-    iDiscreetPopSubscriber = new (ELeave) CSubscriber(
-			TCallBack( DiscreetPopChangeNotification, this), 
-			iDiscreetPopProperty);
-    iDiscreetPopSubscriber->SubscribeL();
-	
-	User::LeaveIfError(iAknUiSrv.Connect());
-	iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
-    if(iDiscreetPopArea.Size().iWidth > 0)
-    	{
-		iDiscreetPoped = ETrue;
-    	}
     }
 
 
@@ -225,7 +199,7 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
     {
     if( iIsSimulatedEvent )
         {
-    	return EFalse;
+        return EFalse;
         }
     
     // Suppress multi-touch events
@@ -254,7 +228,7 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
         }
 
     
-	// Suppress unexpected drag events, refer to error ETMA-7X2C5Y
+    // Suppress unexpected drag events
     TPointerEvent pointerEvent;
     switch ( aRawEvent.Type() )
         {
@@ -286,30 +260,39 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
         }
 
     
-	switch(aRawEvent.Type())
-	    {
-		case TRawEvent::EKeyUp:
-		case TRawEvent::EKeyDown:
-		    {
-			return OnRawKeyEvent(aRawEvent);        	
-		    }
-		case TRawEvent::EButton1Down:
-		    {
-			return OnRawButton1Down(aRawEvent);
-		    }
-		case TRawEvent::EButton1Up:
-		    {
-			return OnRawButton1Up(aRawEvent);
-		    }
-		case TRawEvent::EPointerMove:
-		    {
-			return OnRawPointerMove(aRawEvent);
-		    }
-		default:
-		    {
-			return EFalse;
-		    }            
-	    }	
+    switch(aRawEvent.Type())
+        {
+        case TRawEvent::EKeyUp:
+        case TRawEvent::EKeyDown:
+            {
+            return OnRawKeyEvent(aRawEvent);            
+            }
+        case TRawEvent::EButton1Down:
+            {
+            TBool used = OnRawButton1Down(aRawEvent);
+            
+            if ( used )
+                {
+                StartTimer();
+                }
+            
+            return used;
+            }
+        case TRawEvent::EButton1Up:
+            {
+            TBool used = OnRawButton1Up(aRawEvent);
+            StopTimer();
+            return used;
+            }
+        case TRawEvent::EPointerMove:
+            {
+            return OnRawPointerMove(aRawEvent);
+            }
+        default:
+            {
+            return EFalse;
+            }            
+        }    
     }
 
 // ---------------------------------------------------------------------------
@@ -322,7 +305,7 @@ void CPeninputAnim::Command(TInt aOpcode, TAny* aParams)
     {
     switch(aOpcode)
         {
-		case EPeninputOpActivate:
+        case EPeninputOpActivate:
             {
             Activate();
             break;
@@ -334,16 +317,16 @@ void CPeninputAnim::Command(TInt aOpcode, TAny* aParams)
             }        
         case EPeninputOpLayoutUpdateArea:
             {
-            PanicClientIfNoParam(aParams);	                
-			TUpdateDataArea* area = static_cast<TUpdateDataArea*>(aParams);
-			iSpriteFunctions->UpdateMember( 0, area->iRect, area->iUpdateFlag );
-			break;
-		    }			
+            PanicClientIfNoParam(aParams);                    
+            TUpdateDataArea* area = static_cast<TUpdateDataArea*>(aParams);
+            iSpriteFunctions->UpdateMember( 0, area->iRect, area->iUpdateFlag );
+            break;
+            }            
         case EPeninputOpCapturePointer:
             {
             PanicClientIfNoParam(aParams);            
-	        iIsPointerCaptured = *(static_cast<TBool*>(aParams));
-	        break;
+            iIsPointerCaptured = *(static_cast<TBool*>(aParams));
+            break;
             }
         case EPeninputOpSimulateEvent:
             {
@@ -382,7 +365,7 @@ void CPeninputAnim::Command(TInt aOpcode, TAny* aParams)
                 }
             TTactileControlInfo controlitem(area.iId, area.iNewRect, area.iTactileType);
             TInt idx = iTactileControl.Find(controlitem, 
-            		TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
+                    TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
             if(idx != KErrNotFound)
                 {  
                 iTactileControl.Remove(idx);
@@ -404,18 +387,18 @@ void CPeninputAnim::Command(TInt aOpcode, TAny* aParams)
             }
             break; 
         case EPeninputOpChangeFeedbackType:
-        	{
-        	PanicClientIfNoParam(aParams);
+            {
+            PanicClientIfNoParam(aParams);
             TTactileFeedbackArea area = *(static_cast<TTactileFeedbackArea*>(aParams));
             TTactileControlInfo controlitem(area.iId, area.iNewRect, area.iTactileType);
             TInt idx = iTactileControl.Find(controlitem,                    
-					TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
+                    TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
             if(idx != KErrNotFound)
                 {                                
                 //change the tactile type
                 iTactileControl[idx].iTactileType = area.iTactileType;
-                }        	
-        	}
+                }            
+            }
             break;
 #endif // RD_TACTILE_FEEDBACK
         case EPeninputOpEnalbeSprite:
@@ -432,7 +415,7 @@ void CPeninputAnim::Command(TInt aOpcode, TAny* aParams)
             iFunctions->Panic();
             break;
             }
-	    }
+        }
     }
 
 
@@ -458,7 +441,7 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             iKeyMsgResponseQueue.OpenGlobal(KMsgEventResponseQueue);
             iResponseQueueSemaphore.OpenGlobal(KAnimKeyEventSemaphore);
 
-			break;
+            break;
             }
 
         case EPeninputOpActivate:
@@ -474,19 +457,19 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             }       
             
         case EPeninputOpLayoutUpdateArea:
-        	{
-        	//TUpdateDataArea s;
-			//TPckg<TUpdateDataArea> pkg(s);        	
-			TRect rect;
-			TBool flag;
-		    TPckg<TRect> rectMsg(rect);			
-		    TPckg<TBool> flagMsg(flag);    
-			
-			msg->ReadL(KMsgSlot1,rectMsg);
-			msg->ReadL(KMsgSlot2,flagMsg);
-			iSpriteFunctions->UpdateMember(0, rect,flag);			
-        	  }
-        	  break;
+            {
+            //TUpdateDataArea s;
+            //TPckg<TUpdateDataArea> pkg(s);            
+            TRect rect;
+            TBool flag;
+            TPckg<TRect> rectMsg(rect);            
+            TPckg<TBool> flagMsg(flag);    
+            
+            msg->ReadL(KMsgSlot1,rectMsg);
+            msg->ReadL(KMsgSlot2,flagMsg);
+            iSpriteFunctions->UpdateMember(0, rect,flag);            
+              }
+              break;
         case EPeninputOpLayoutUpdateAreaRegion:
             {
             TInt num;
@@ -507,8 +490,8 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
                 }
 
             CleanupStack::PopAndDestroy( buf );
-        	}
-        	break;
+            }
+            break;
         case EPeninputOpSetLayoutPos:
             {
             TPoint pt;
@@ -521,55 +504,55 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
         case EPeninputOpCapturePointer:
             {
             TInt captureCtrlID;
-			TPckg<TBool> msgData(iIsPointerCaptured);
-			TPckg<TInt> msgCaptureCtrlIDData(captureCtrlID);
+            TPckg<TBool> msgData(iIsPointerCaptured);
+            TPckg<TInt> msgCaptureCtrlIDData(captureCtrlID);
             
             msg->ReadL(KMsgSlot1,msgData);
             msg->ReadL(KMsgSlot2,msgCaptureCtrlIDData);
 #ifdef RD_TACTILE_FEEDBACK
-			// When pointer is captured by some ctrl,
-			// only the captured ctrl has tactile feedback ablity,
-			// disable all other one's.
+            // When pointer is captured by some ctrl,
+            // only the captured ctrl has tactile feedback ablity,
+            // disable all other one's.
             if (iIsPointerCaptured)
-            	{
-            	// Back up all the tactile area
-            	iBackupTactileControl.Reset();        	
-		        TInt count = iTactileControl.Count();
-		        for(TInt i = 0; i < count; ++i)
-		            {
-		            iBackupTactileControl.Append(iTactileControl[i]);
-		            }
-		        
-		        // Clean up the original tactile area
-		        iTactileControl.Reset();		       
-		        
-		        // Find the captured ctrl, restore its tactile ablity
-		        for(TInt i = 0; i < count; ++i)
-		            {
-		            if (iBackupTactileControl[i].iId == captureCtrlID)
-		            	{
-		            	iTactileControl.Append(iBackupTactileControl[i]);
-		            	}
-		            }
+                {
+                // Back up all the tactile area
+                iBackupTactileControl.Reset();            
+                TInt count = iTactileControl.Count();
+                for(TInt i = 0; i < count; ++i)
+                    {
+                    iBackupTactileControl.Append(iTactileControl[i]);
+                    }
+                
+                // Clean up the original tactile area
+                iTactileControl.Reset();               
+                
+                // Find the captured ctrl, restore its tactile ablity
+                for(TInt i = 0; i < count; ++i)
+                    {
+                    if (iBackupTactileControl[i].iId == captureCtrlID)
+                        {
+                        iTactileControl.Append(iBackupTactileControl[i]);
+                        }
+                    }
 
-            	}
+                }
             // When pointer released captured, 
             // restore all original tactile area.
             else 
-            	{
-            	if (iBackupTactileControl.Count() != 0)
-            		{
-            		iTactileControl.Reset();			       
-	            	
-			        TInt count = iBackupTactileControl.Count();
-			        for(TInt i = 0; i < count; ++i)
-			            {
-			            iTactileControl.Append(iBackupTactileControl[i]);
-			            }
-			        iBackupTactileControl.Reset();
-            		}
-            	}
-#endif            	
+                {
+                if (iBackupTactileControl.Count() != 0)
+                    {
+                    iTactileControl.Reset();                   
+                    
+                    TInt count = iBackupTactileControl.Count();
+                    for(TInt i = 0; i < count; ++i)
+                        {
+                        iTactileControl.Append(iBackupTactileControl[i]);
+                        }
+                    iBackupTactileControl.Reset();
+                    }
+                }
+#endif                
             }
             break;
         case EPeninputOpLayoutSizeChangedWithSize:
@@ -593,7 +576,7 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             
 #ifdef RD_TACTILE_FEEDBACK             
         case EPeninputOpRegisterFeedbackArea:
-            {						
+            {                        
             GetFeedbackAreaDataL(iTactileControl,msg);            
             }
             break;
@@ -609,7 +592,7 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             //remove all registered feedback area
             const TInt KRemoveAllId = -1;           
             if(controlarray.Count() && controlarray[0].iId == KRemoveAllId && 
-										controlarray[0].iArea == TRect(0,0,0,0))
+                                        controlarray[0].iArea == TRect(0,0,0,0))
                 {
                 //remove all
                 iTactileControl.Reset();
@@ -621,7 +604,7 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
                     {
                     //find id first
                     TInt idx = iTactileControl.Find(controlarray[i], 
-								TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
+                                TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
                     
                     if(idx != KErrNotFound)
                         {
@@ -650,7 +633,7 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
                 {
                 //find id first
                 TInt idx = iTactileControl.Find(controlarray[i], 
-                		   TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
+                           TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
                                     
                 if(idx != KErrNotFound)
                     {
@@ -680,12 +663,12 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             for(TInt i = 0; i < controlarray.Count(); ++i)
                 {
                 //find id first
-                TInt idx = iTactileControl.Find(controlarray[i],                 		   
-						   TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
+                TInt idx = iTactileControl.Find(controlarray[i],                            
+                           TIdentityRelation<TTactileControlInfo>(CPeninputAnim::MatchItemByControlID));
                 if(idx != KErrNotFound)
                     {
                     //change the tactile feedback type
-					iTactileControl[idx].iTactileType = controlarray[i].iTactileType;
+                    iTactileControl[idx].iTactileType = controlarray[i].iTactileType;
                     break;
                     }
                 }
@@ -698,10 +681,18 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
 #endif // RD_TACTILE_FEEDBACK 
         case EPeninputOpRequestDSAState:                        
             {
-		    TPckgC<TBool> flagMsg(iDSAState);    
-			
-			msg->WriteL(KMsgSlot1,flagMsg);
+            TPckgC<TBool> flagMsg(iDSAState);    
             
+            msg->WriteL(KMsgSlot1,flagMsg);
+            
+            }
+            break;
+        case EPeninputOpSetDiscreeptPop:
+            {
+            TRect area;
+            TPckg<TRect> msgData(area);
+            msg->ReadL(KMsgSlot1,msgData);
+            SetDiscreeptPop(area); 
             }
             break;
         default:
@@ -723,16 +714,14 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
 //
 void CPeninputAnim::Activate()
     {
-	if(!iIsActive)
-	    {
-		iSpriteFunctions->SetPosition(iSpritePosition);
-		if(iEnableSprite)
-		    iSpriteFunctions->Activate(ETrue);
-		iFunctions->GetRawEvents(ETrue);
-		iIsActive = ETrue;		
-
-		StartTimer();
-	    }        
+    if(!iIsActive)
+        {
+        iSpriteFunctions->SetPosition(iSpritePosition);
+        if(iEnableSprite)
+            iSpriteFunctions->Activate(ETrue);
+        iFunctions->GetRawEvents(ETrue);
+        iIsActive = ETrue;        
+        }        
     }
 
 // ---------------------------------------------------------------------------
@@ -742,15 +731,15 @@ void CPeninputAnim::Activate()
 //
 void CPeninputAnim::Deactivate()
     {
-	if(iIsActive)
-	    {
-	    if(iEnableSprite)
-		    iSpriteFunctions->Activate(EFalse);
-		iFunctions->GetRawEvents(EFalse);        
-		iIsActive = EFalse;
-		
-		StopTimer();
-	    }        
+    if(iIsActive)
+        {
+        if(iEnableSprite)
+            iSpriteFunctions->Activate(EFalse);
+        iFunctions->GetRawEvents(EFalse);        
+        iIsActive = EFalse;
+        
+        StopTimer();
+        }        
     }
     
 #ifdef RD_TACTILE_FEEDBACK
@@ -758,7 +747,7 @@ void CPeninputAnim::Deactivate()
 // CPeninputAnim::DoTactileFeedBack
 // Give tactile feedback
 // ---------------------------------------------------------------------------
-//						
+//                        
 void CPeninputAnim::DoTactileFeedBack(const TPoint& aPos)
     {
     if ( iFeedback ) 
@@ -771,7 +760,7 @@ void CPeninputAnim::DoTactileFeedBack(const TPoint& aPos)
                 iFeedback->InstantFeedback((TTouchLogicalFeedback)iTactileControl[i].iTactileType);
                 return;
                 }                 
-        	}           
+            }           
         }
     }
 #endif // RD_TACTILE_FEEDBACK
@@ -786,112 +775,140 @@ void CPeninputAnim::DoTactileFeedBack(const TPoint& aPos)
 
 TBool CPeninputAnim::OnRawButton1Down(const TRawEvent& aRawEvent)
     {
-	if(iIsSimulatedEvent)
-	    {
-		return EFalse;
-	    }
-		
-    if(iDirty )
+    if(iIsSimulatedEvent)
         {
-        Refresh();
+        return EFalse;
         }
+        
     
-	if(iDiscreetPoped && iDiscreetPopArea.Contains(aRawEvent.Pos()))
-		{
-		iDiscreetPopedCapture = ETrue;
-		return EFalse;
-		}
-	TRect rect(iSpritePosition, iSpriteSize);        
-	if(rect.Contains(aRawEvent.Pos()))
-	    {                
-#ifdef RD_TACTILE_FEEDBACK		    
-	    //give tactile feedback	    
-	    if(iTactileSupported)
+    if(iDiscreetPoped && iDiscreetPopArea.Contains(aRawEvent.Pos()))
+        {
+        iDiscreetPopedCapture = ETrue;
+        return EFalse;
+        }
+    TRect rect(iSpritePosition, iSpriteSize);        
+    if(rect.Contains(aRawEvent.Pos()))
+        {                
+#ifdef RD_TACTILE_FEEDBACK            
+        //give tactile feedback        
+        if(iTactileSupported)
             DoTactileFeedBack(aRawEvent.Pos() - rect.iTl);
-#endif // RD_TACTILE_FEEDBACK	
-		iIsPenDown = ETrue;
-		PostRawEvent(aRawEvent); 
-		return ETrue;
-	    }
+#endif // RD_TACTILE_FEEDBACK    
+        iIsPenDown = ETrue;
 
-	if(iIsPointerCaptured)
-	    {                    
-		PostRawEvent(aRawEvent);
-		return ETrue;
-	    }
+        // When button downing event is happened, iIsMove is reset to EFalse
+        iIsMove = EFalse;              
 
-	//pointer outside of input area,inform layout
-	SendRawEvent(aRawEvent);
+        // Recording pointer that button is pressing down in at this time
+        iPointerDown = aRawEvent.Pos();  
+        //
 
-	return EFalse;
+        PostRawEvent(aRawEvent); 
+        return ETrue;
+        }
+
+    if(iIsPointerCaptured)
+        {                    
+        PostRawEvent(aRawEvent);
+        return ETrue;
+        }
+
+    //pointer outside of input area,inform layout
+    SendRawEvent(aRawEvent);
+
+    return EFalse;
     }
 
 TBool CPeninputAnim::OnRawButton1Up(const TRawEvent& aRawEvent)
     {
-	if(iIsSimulatedEvent)
-	    {
-		return EFalse;
-	    }
+    if(iIsSimulatedEvent)
+        {
+        return EFalse;
+        }
 
-	//For discreetPop
-	if(iDiscreetPopedCapture )
-		{
-		iDiscreetPopedCapture = EFalse;
-		return EFalse;
-		}
-	if(iIsPenDown)
-	    {      
-		iIsPenDown = EFalse;
-		
-		TRect rect(iSpritePosition, iSpriteSize);        
-		if(rect.Contains(aRawEvent.Pos()))
-		    {
-			//send pen up event immediately
-			SendRawEvent(aRawEvent);
-			return ETrue;                    
-		    }
-	    }
-	
-	if(iIsPointerCaptured)
-	    {                    
-		PostRawEvent(aRawEvent);
-		return ETrue;
-	    }
+    //For discreetPop
+    if(iDiscreetPopedCapture )
+        {
+        iDiscreetPopedCapture = EFalse;
+        return EFalse;
+        }
+    if(iIsPenDown)
+        {      
+  
+        // When the control key pressing down in is different with the control key pressing up 
+        // and pointer moving event isn¡¯t happened,
+        // pointer moving event will is supplied 
+        if(iPointerDown != aRawEvent.Pos() && !iIsMove)
+          {
+          TRawEvent rawEvent = aRawEvent;
+          rawEvent.Set( TRawEvent::EPointerMove );
+          OnRawPointerMove(rawEvent);
+          }
+        //
+
+        iIsPenDown = EFalse;
+        
+        TRect rect(iSpritePosition, iSpriteSize);        
+        if(rect.Contains(aRawEvent.Pos()))
+            {
+            //send pen up event immediately
+            SendRawEvent(aRawEvent);
+            
+            // When key pressing up event is completed, iIsMove is reset to EFalse.
+            iIsMove = EFalse;   
+            //
+
+            return ETrue;                    
+            }
+        }
     
-	//pointer outside of input area,inform layout
-	SendRawEvent(aRawEvent);
+    if(iIsPointerCaptured)
+        {                    
+        PostRawEvent(aRawEvent);
+        return ETrue;
+        }
+    
+    //pointer outside of input area,inform layout
+    SendRawEvent(aRawEvent);
 
-	return EFalse;	
+    return EFalse;    
     }
 
 TBool CPeninputAnim::OnRawPointerMove(const TRawEvent& aRawEvent)
     {
-	if(iIsSimulatedEvent)
-	    {
-		return EFalse;
-	    }
-	if(iDiscreetPopedCapture)
-	    {
-	    return EFalse;
-	    }
-#ifdef RD_TACTILE_FEEDBACK		    
-	TRect rect(iSpritePosition, iSpriteSize);        
-	if( iIsPenDown && iIsPointerCaptured)
-	    {                
-	    //give tactile feedback	    
+    if(iIsSimulatedEvent)
+        {
+        return EFalse;
+        }
+    if(iDiscreetPopedCapture)
+        {
+        return EFalse;
+        }
+#ifdef RD_TACTILE_FEEDBACK            
+    TRect rect(iSpritePosition, iSpriteSize);        
+    if( iIsPenDown && iIsPointerCaptured)
+        {                
+        //give tactile feedback        
+        // When pointer moving event is happened, iIsMove is set to ETrue
+        iIsMove = ETrue;        
+        //
 
-		PostRawEvent(aRawEvent); 
-		return ETrue;
-	    }
-#endif // RD_TACTILE_FEEDBACK	
+        PostRawEvent(aRawEvent); 
+        return ETrue;
+        }
+#endif // RD_TACTILE_FEEDBACK    
 
-	if(iIsPointerCaptured || iIsPenDown)
-	    {                    
-		PostRawEvent(aRawEvent);
-		return ETrue;
-	    }
-	
-	return EFalse;
+    if(iIsPointerCaptured || iIsPenDown)
+        {                    
+        // When pointer moving event is happened, iIsMove is set to ETrue
+        iIsMove = ETrue;        
+        //
+
+        PostRawEvent(aRawEvent);
+        return ETrue;
+        }
+    
+    return EFalse;
     }
 
 // ---------------------------------------------------------------------------
@@ -902,12 +919,12 @@ TBool CPeninputAnim::OnRawPointerMove(const TRawEvent& aRawEvent)
 
 TPoint CPeninputAnim::SetPosition(const TPoint& aNewPos)
     {
-	if(aNewPos != iSpritePosition)
-	    {
-		iSpritePosition = aNewPos;
-		iSpriteFunctions->SetPosition(iSpritePosition);	
-	    }
-	return iSpritePosition;
+    if(aNewPos != iSpritePosition)
+        {
+        iSpritePosition = aNewPos;
+        iSpriteFunctions->SetPosition(iSpritePosition);    
+        }
+    return iSpritePosition;
     }
 
 // ---------------------------------------------------------------------------
@@ -917,11 +934,11 @@ TPoint CPeninputAnim::SetPosition(const TPoint& aNewPos)
 //
 void CPeninputAnim::UpdateArea(const TRect& aRect, TBool aFullUpdate)
     {
-	if(iIsActive)
+    if(iIsActive)
         {
-	    // if function is called without specifying the parameter aRect
-	    // (using default param value) the whole area drawn to is updated
-	    iSpriteFunctions->UpdateMember(0, aRect, aFullUpdate);
+        // if function is called without specifying the parameter aRect
+        // (using default param value) the whole area drawn to is updated
+        iSpriteFunctions->UpdateMember(0, aRect, aFullUpdate);
         }
     }
 
@@ -961,8 +978,8 @@ void CPeninputAnim::PostRawEvent(const TRawEvent& aRawEvent)
     if(iEventBuffer.iNum >= KMaxEvent)
         {
         FlushRawEventBuffer();
-	    }
-	
+        }
+    
     iEventBuffer.iEvent[iEventBuffer.iNum] = aRawEvent;
     iEventBuffer.iNum++;
     }
@@ -974,12 +991,12 @@ void CPeninputAnim::PostRawEvent(const TRawEvent& aRawEvent)
 //
 TInt CPeninputAnim::FlushRawEventBuffer()
     {
-	TInt ret = KErrNone;
-	
+    TInt ret = KErrNone;
+    
     if(iEventBuffer.iNum > 0)
-	    {
+        {
         ret = iMsgBufQueue.Send(iEventBuffer);
-       	iEventBuffer.iNum = 0;        	
+           iEventBuffer.iNum = 0;            
         }
     
     return ret;
@@ -993,21 +1010,21 @@ TInt CPeninputAnim::FlushRawEventBuffer()
 //    
 TBool CPeninputAnim::OnRawKeyEvent(const TRawEvent& aRawEvent)
     {
-	TInt ret = KErrNone;
-	
-	//first sends all buffered event out
+    TInt ret = KErrNone;
+    
+    //first sends all buffered event out
     FlushRawEventBuffer();
     
     //clear the signal and the response msg queue
     TBool isHandled = EFalse;
     ret = iKeyMsgResponseQueue.Receive(isHandled);
     while(ret == KErrNone)
-	    {
+        {
         iResponseQueueSemaphore.Wait();
         ret = iKeyMsgResponseQueue.Receive(isHandled);
         }
 
-	//send the event directly        
+    //send the event directly        
     iEventBuffer.iNum = 1;
     iEventBuffer.iEvent[0] = aRawEvent;
     ret = FlushRawEventBuffer();
@@ -1015,13 +1032,13 @@ TBool CPeninputAnim::OnRawKeyEvent(const TRawEvent& aRawEvent)
     isHandled = EFalse;
     if(ret == KErrNone) 
         {
-	    //wait for the key event processed.    
-	    ret = iResponseQueueSemaphore.Wait(KResponseQueueWaitTime);
-	    if(ret == KErrNone)
-	        {        
-	        //read the response from msg queue
-	        iKeyMsgResponseQueue.Receive(isHandled);
-	        }
+        //wait for the key event processed.    
+        ret = iResponseQueueSemaphore.Wait(KResponseQueueWaitTime);
+        if(ret == KErrNone)
+            {        
+            //read the response from msg queue
+            iKeyMsgResponseQueue.Receive(isHandled);
+            }
         }
 
     return isHandled;
@@ -1034,12 +1051,15 @@ TBool CPeninputAnim::OnRawKeyEvent(const TRawEvent& aRawEvent)
 // 
 void CPeninputAnim::StartTimer()
     {
-	iFlushTimer->Start(
-		KFlushTimerPeriod, 
-		KFlushTimerPeriod, 
-		TCallBack(FlushTimerCallBack, this));	
+    if ( iIsActive && !iFlushTimer->IsActive())
+        {
+        iFlushTimer->Start(
+            KFlushTimerPeriod, 
+            KFlushTimerPeriod, 
+            TCallBack(FlushTimerCallBack, this));
+        }
     }
-	
+    
 // ---------------------------------------------------------------------------
 // CPeninputAnim::StopTimer
 // Cancel timer
@@ -1047,12 +1067,13 @@ void CPeninputAnim::StartTimer()
 // 
 void CPeninputAnim::StopTimer()
     {
-	iFlushTimer->Cancel();	
+    iFlushTimer->Cancel();
+    FlushRawEventBuffer();
     }
 
 #ifdef RD_TACTILE_FEEDBACK
 void CPeninputAnim::GetFeedbackAreaDataL(RArray<TTactileControlInfo>& aTactileControlArray,
-										 const RMessagePtr2* msg, 
+                                         const RMessagePtr2* msg, 
                                          RArray<TRect>* aPrevRectArray)
     {
     TInt num;
@@ -1069,7 +1090,7 @@ void CPeninputAnim::GetFeedbackAreaDataL(RArray<TTactileControlInfo>& aTactileCo
         {
         //Advanced Tactile feedback REQ417-47932
         aTactileControlArray.Append(TTactileControlInfo(area[i].iId,
-									area[i].iNewRect,area[i].iTactileType));      
+                                    area[i].iNewRect,area[i].iTactileType));      
         //aRectArray.Append(area[i].iNewRect);                
         if(aPrevRectArray)
             aPrevRectArray->Append(area[i].iPrevRect);                    
@@ -1084,11 +1105,11 @@ void CPeninputAnim::GetFeedbackAreaDataL(RArray<TTactileControlInfo>& aTactileCo
 // ---------------------------------------------------------------------------
 // 
 TBool CPeninputAnim::MatchItemByControlID (const TTactileControlInfo& aFirst, const TTactileControlInfo& aSecond)
-	{
-	if (aFirst.iId == aSecond.iId)
-		return ETrue;
-	return EFalse;
-	}
+    {
+    if (aFirst.iId == aSecond.iId)
+        return ETrue;
+    return EFalse;
+    }
 
 // ---------------------------------------------------------------------------
 // CPeninputAnim::MatchItemByControlIDAndArea
@@ -1096,28 +1117,16 @@ TBool CPeninputAnim::MatchItemByControlID (const TTactileControlInfo& aFirst, co
 // ---------------------------------------------------------------------------
 // 
 TBool CPeninputAnim::MatchItemByControlIDAndArea (const TTactileControlInfo& aFirst, const TTactileControlInfo& aSecond)
-	{
-	if ((aFirst.iId == aSecond.iId) && (aFirst.iArea == aSecond.iArea))
-		return ETrue;
-	return EFalse;
-	}
-#endif // RD_TACTILE_FEEDBACK    
-TInt CPeninputAnim::DiscreetPopChangeNotification(TAny* aObj)
     {
-    if (aObj)
-        {
-        static_cast<CPeninputAnim*>(aObj)->HandleDiscreetPopNotification();
-        return KErrNone;
-        }
-    else
-        {
-        return KErrArgument;
-        }
+    if ((aFirst.iId == aSecond.iId) && (aFirst.iArea == aSecond.iArea))
+        return ETrue;
+    return EFalse;
     }
+#endif // RD_TACTILE_FEEDBACK    
 
-void CPeninputAnim::Refresh()
+void CPeninputAnim::SetDiscreeptPop(TRect aArea)
     {
-    iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
+    iDiscreetPopArea = aArea;
     if(iDiscreetPopArea.Size().iWidth > 0)
         {
         iDiscreetPoped = ETrue;
@@ -1127,51 +1136,5 @@ void CPeninputAnim::Refresh()
         iDiscreetPoped = EFalse;
         iDiscreetPopedCapture = EFalse;
         }
-    iDirty = EFalse;
-    }
-
-void CPeninputAnim::HandleDiscreetPopNotification()
-    {
-    iDirty = ETrue;
-    }
-    
-CSubscriber::CSubscriber(TCallBack aCallBack, RProperty& aProperty)
-    :
-    CActive(EPriorityNormal), iCallBack(aCallBack), iProperty(aProperty)
-    {
-    CActiveScheduler::Add(this);
-    }
-
-CSubscriber::~CSubscriber()
-    {
-    Cancel();
-    }
-
-void CSubscriber::SubscribeL()
-    {
-    if (!IsActive())
-        {
-        iProperty.Subscribe(iStatus);
-        SetActive();
-        }
-    }
-
-void CSubscriber::StopSubscribe()
-    {
-    Cancel();
-    }
-
-void CSubscriber::RunL()
-    {
-    if (iStatus.Int() == KErrNone)
-        {
-        iCallBack.CallBack();
-        SubscribeL();
-        }
-    }
-
-void CSubscriber::DoCancel()
-    {
-    iProperty.Cancel();
     }
 // End of File

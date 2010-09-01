@@ -103,6 +103,15 @@ enum TSignalEvent
 	ESignalChangeFeedbackType,
     ESignalImmeSimulateEvent,
     ESignalServerReady = 1450,
+    ESignalUpdateCursor,
+    ESignalPopupArea,
+    ESignalUpdateICFArea,
+    ESignalUpdateChangedArea,
+    ESignalUpdateBubble,
+    ESignalRegisterBkControl,
+    ESignalDisableUpdating,
+    ESignalDrawBackground,
+    ESignalEnableLayoutRedrawWhenActive,
     ESignalFepEventBase = 1500,    //Event base for Fep. All fep event
                                     //is re-directed to Fep.
     ESignalKeyEvent = 1501,        //hwr recongition selection event.
@@ -139,8 +148,12 @@ enum TSignalEvent
     ESignalShowCandidate,
     ESignalSelectCandidate,
     ESignalAcceptTooltip,
-    ESignalStartInlineText,    
-    ESignalCommitITIInlineText,    
+    ESignalCommitITIInlineText,  
+    EPeninputOpSetDiscreeptPop,  
+    ESignalDeleteLastInput,
+    ESignalArabicSCTChar,
+    ESignalDeactivateSprite,
+    ESignalChangeAmPm,//notify  mfne editor to toggle AM or PM
     ESignalUserEventBase = 2000
     };
 

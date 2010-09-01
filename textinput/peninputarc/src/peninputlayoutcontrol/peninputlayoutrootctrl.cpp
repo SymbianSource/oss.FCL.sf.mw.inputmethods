@@ -815,7 +815,13 @@ void CFepUiLayoutRootCtrl::Draw()
 
 	if(!AbleToDraw())
         return;
-	
+    
+    if(UiLayout()->NotDrawToLayoutDevice())
+	    {
+	    HandleResourceChange(KPenInputOwnDeviceResourceChange);
+	    }
+	    
+	Clear();	
     CControlGroup::Draw();
 
     if(!iShadowRect.IsEmpty())        
@@ -865,7 +871,7 @@ TRect CFepUiLayoutRootCtrl::DrawFrame(const TRect& aFrameRect, TBool aDrawFlag)
 
     if ( AknsUtils::AvkonSkinEnabled() )
         {
-        AknsUtils::GetCachedColor( AknsUtils::SkinInstance(),
+        AknsUtils::GetCachedColor( UiLayout()->SkinInstance(),
                                penCor, KAknsIIDQsnTextColors, clrIndex );
         }
 
@@ -1004,7 +1010,9 @@ void CFepUiLayoutRootCtrl::InsertToPopList(CFepUiBaseCtrl* aCtrl)
         {
         if(aCtrl->OrderPos() <= iPopCtrlList[i]->OrderPos())
             {
+            CFepUiBaseCtrl* temp = iPopCtrlList[i - 1];
             iPopCtrlList[i - 1] = iPopCtrlList[i];
+            iPopCtrlList[i] = temp;
             }
         else
             {
@@ -1142,7 +1150,10 @@ void CFepUiLayoutRootCtrl::BringToBackInGroup(CFepUiBaseCtrl* aCtrl)
             {
             if(aCtrl->OrderPos() >= iPopCtrlList[i]->OrderPos())
                 {
-                iPopCtrlList[i+1] = iPopCtrlList[i];
+                CFepUiBaseCtrl* temp = iPopCtrlList[i + 1];
+                iPopCtrlList[i + 1] = iPopCtrlList[i];
+                iPopCtrlList[i] = temp;   
+
                 }
             else
                 {

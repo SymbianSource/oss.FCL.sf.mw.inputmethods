@@ -174,7 +174,7 @@ private:
      *
      * @since S60 V5.0     
      */            
-    void DrawKeyText();
+    void DrawKeyText(CFbsBitGc* aGc);
     
     /**
      * Redraw and update the key
@@ -196,6 +196,10 @@ private:
     void DrawBmp(const TRect& aDestRect,const TRect& aSourceRect,
                     const CFbsBitmap* aBmp,CFbsBitmap* aMask,
                     TBool aInvertFlag = EFalse);
+
+    void DrawBmp(CFbsBitGc* aGc, const TRect& aDestRect,const TRect& aSourceRect,
+                                      const CFbsBitmap* aBmp,CFbsBitmap* aMask,
+                                      TBool aInvertFlag = EFalse);
 
     /**
      * Get the control event for given internal event type
@@ -231,7 +235,13 @@ private:
     
     TVirtualKeyDrawInfo iVirtualKeyDrawInfo;     
     
-friend class CVirtualKeyboard;    
+public:
+    void UpdateChangedArea(TBool aFlag);    
+private:    
+    CFbsBitGc* GetGc();
+    TRect GetRect(); 
+    
+    friend class CVirtualKeyboard;    
     };
     
 inline CVirtualKeyboard* CVirtualKeyCtrl::Keyboard()

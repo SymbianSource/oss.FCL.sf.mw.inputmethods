@@ -1,0 +1,197 @@
+-c8,8 qgn_graf_fep_candi_list_pri.svg
+-c8,8 qgn_graf_fep_candi_list_sec.svg
+-c8,8 qgn_graf_fep_candi_list_sel.svg
+-c8,8 qgn_graf_fep_candi_list_pressed.svg
+-c8,8 qgn_indi_fep_button_expand.svg
+-c8,8 qgn_indi_fep_button_expand_sel.svg
+-c8,8 qgn_graf_fep_candi_list_close.svg
+-c8,8 qgn_graf_fep_candi_list_close_sel.svg
+-c8,8 qgn_graf_fep_candi_list_scroll_down.svg
+-c8,8 qgn_graf_fep_candi_list_scroll_down_sel.svg
+-c8,8 qgn_graf_fep_candi_list_scroll_up.svg
+-c8,8 qgn_graf_fep_candi_list_scroll_up_sel.svg
+
+-c8,8 qgn_graf_fep_char_button_dimmed.svg
+
+-c8,8 qgn_indi_fep_button_move1.svg
+-c8,8 qgn_indi_fep_button_move1_sel.svg
+-c8,8 qgn_indi_fep_button_move2.svg
+-c8,8 qgn_indi_fep_button_move2_sel.svg
+-c8,8 qgn_indi_fep_arrow_left.svg
+-c8,8 qgn_indi_fep_arrow_right.svg
+-c8,8 qgn_indi_fep_button_close.svg
+-c8,8 qgn_indi_fep_button_close_sel.svg
+-c8,8 qgn_indi_fep_button_options.svg
+-c8,8 qgn_indi_fep_button_options_sel.svg
+
+-c8,8 qgn_indi_fep_button_backspace1.svg
+-c8,8 qgn_indi_fep_button_backspace1_sel.svg
+
+-c8,8 qgn_indi_fep_button_enter.svg
+-c8,8 qgn_indi_fep_button_enter_sel.svg
+
+-c8,8 qgn_indi_fep_button_switch.svg
+-c8,8 qgn_indi_fep_button_switch_sel.svg
+
+-c8,8 qgn_indi_fep_button_tab.svg
+-c8,8 qgn_indi_fep_button_tab_sel.svg
+-c8,8 qgn_indi_fep_button_space1.svg
+-c8,8 qgn_indi_fep_button_space1_sel.svg
+-c8,8 qgn_indi_fep_button_capslock.svg
+-c8,8 qgn_indi_fep_button_capslock_sel.svg
+-c8,8 qgn_indi_fep_button_shift.svg
+-c8,8 qgn_indi_fep_button_shift_sel.svg
+-c8,8 qgn_indi_fep_button_hwr.svg
+-c8,8 qgn_indi_fep_button_hwr_sel.svg
+
+
+-c8,8 qgn_indi_fep_button_case_capital.svg
+-c8,8 qgn_indi_fep_button_case_capital_sel.svg
+-c8,8 qgn_indi_fep_button_case_small.svg
+-c8,8 qgn_indi_fep_button_case_small_sel.svg
+-c8,8 qgn_indi_fep_button_case_text.svg
+-c8,8 qgn_indi_fep_button_case_text_sel.svg
+-c8,8 qgn_indi_fep_button_case_numeric.svg
+-c8,8 qgn_indi_fep_button_case_numeric_sel.svg
+
+-c8,8 qgn_indi_fep_button_case_special.svg
+-c8,8 qgn_indi_fep_button_case_special_sel.svg
+-c8,8 qgn_indi_fep_button_case_accented.svg
+-c8,8 qgn_indi_fep_button_case_accented_sel.svg
+
+-c8,8 qgn_graf_fep_bg_colour.svg
+-c8,8 qgn_graf_fep_char_11x3.svg
+-c8,8 qgn_graf_fep_char_12x3.svg
+-c8,8 qgn_graf_fep_char_11x4.svg
+-c8,8 qgn_graf_fep_input_bg.svg
+-c8,8 qgn_graf_fep_numb_11x3.svg
+-c8,8 qgn_graf_fep_numb_11x3_1.svg
+-c8,8 qgn_graf_fep_numb_11x3_1_button_dimmed.svg
+-c8,8 qgn_graf_fep_numb_11x3_2.svg
+-c8,8 qgn_graf_fep_numb_11x3_2_button_dimmed.svg
+-c8,8 qgn_graf_fep_numb_12x3.svg
+-c8,8 qgn_graf_fep_numb_12x3_1.svg
+-c8,8 qgn_graf_fep_numb_12x3_1_button_dimmed.svg
+-c8,8 qgn_graf_fep_numb_12x3_2.svg
+-c8,8 qgn_graf_fep_numb_12x3_2_button_dimmed.svg
+
+-c8,8 qgn_graf_fep_popup_shadow_b.svg
+-c8,8 qgn_graf_fep_popup_shadow_bl.svg
+-c8,8 qgn_graf_fep_popup_shadow_br.svg
+-c8,8 qgn_graf_fep_popup_shadow_l.svg
+-c8,8 qgn_graf_fep_popup_shadow_r.svg
+-c8,8 qgn_graf_fep_popup_shadow_t.svg
+-c8,8 qgn_graf_fep_popup_shadow_tl.svg
+-c8,8 qgn_graf_fep_popup_shadow_tr.svg
+
+-c8,8 qgn_indi_fep_button_chinese.svg
+-c8,8 qgn_indi_fep_button_chinese_sel.svg
+
+-c8,8 qgn_indi_fep_button_case_accented_cyrillic.svg
+-c8,8 qgn_indi_fep_button_case_accented_cyrillic_sel.svg
+-c8,8 qgn_indi_fep_button_case_capital_cyrillic.svg
+-c8,8 qgn_indi_fep_button_case_capital_cyrillic_sel.svg
+-c8,8 qgn_indi_fep_button_case_small_cyrillic.svg
+-c8,8 qgn_indi_fep_button_case_small_cyrillic_sel.svg
+-c8,8 qgn_indi_fep_button_case_text_cyrillic.svg
+-c8,8 qgn_indi_fep_button_case_text_cyrillic_sel.svg
+
+-c8,8 qgn_indi_fep_button_case_capital_greek.svg
+-c8,8 qgn_indi_fep_button_case_capital_greek_sel.svg
+-c8,8 qgn_indi_fep_button_case_small_greek.svg
+-c8,8 qgn_indi_fep_button_case_small_greek_sel.svg
+-c8,8 qgn_indi_fep_button_case_text_greek.svg
+-c8,8 qgn_indi_fep_button_case_text_greek_sel.svg
+
+-c8,8 qgn_indi_fep_button_case_text_arabic.svg
+-c8,8 qgn_indi_fep_button_case_text_arabic_sel.svg
+-c8,8 qgn_indi_fep_button_case_numeric_arabic_indic.svg
+-c8,8 qgn_indi_fep_button_case_numeric_arabic_indic_sel.svg
+
+-c8,8 qgn_indi_fep_button_case_text_hebrew.svg
+-c8,8 qgn_indi_fep_button_case_text_hebrew_sel.svg
+
+-c8,8 qgn_indi_fep_button_case_text_hindi.svg
+-c8,8 qgn_indi_fep_button_case_text_hindi_sel.svg
+-c8,8 qgn_indi_fep_button_case_numeric_devanagari.svg
+-c8,8 qgn_indi_fep_button_case_numeric_devanagari_sel.svg
+
+-c8,8 qgn_indi_fep_button_case_text_thai.svg
+-c8,8 qgn_indi_fep_button_case_text_thai_sel.svg
+-c8,8 qgn_indi_fep_button_case_numeric_thai.svg
+-c8,8 qgn_indi_fep_button_case_numeric_thai_sel.svg
+-c8,8 qgn_graf_fep_char_button_pressed.svg
+-c8,8 qgn_graf_fep_training_arrow_left.svg
+-c8,8 qgn_graf_fep_training_arrow_left_sel.svg
+-c8,8 qgn_graf_fep_training_arrow_right.svg
+-c8,8 qgn_graf_fep_training_arrow_right_sel.svg
+
+-c8,8 qgn_graf_fep_char_t_left_down.svg
+-c8,8 qgn_graf_fep_char_t_left_down_dimmed.svg
+-c8,8 qgn_graf_fep_char_t_left_down_pressed.svg
+-c8,8 qgn_graf_fep_char_t_middle_down.svg
+-c8,8 qgn_graf_fep_char_t_middle_down_dimmed.svg
+-c8,8 qgn_graf_fep_char_t_middle_down_pressed.svg
+-c8,8 qgn_graf_fep_char_t_middle_up.svg
+-c8,8 qgn_graf_fep_char_t_middle_up_dimmed.svg
+-c8,8 qgn_graf_fep_char_t_middle_up_pressed.svg
+-c8,8 qgn_graf_fep_char_t_right_down.svg
+-c8,8 qgn_graf_fep_char_t_right_down_dimmed.svg
+-c8,8 qgn_graf_fep_char_t_right_down_pressed.svg
+-c8,8 qgn_graf_fep_char_t_right_up.svg
+-c8,8 qgn_graf_fep_char_t_right_up_dimmed.svg
+-c8,8 qgn_graf_fep_char_t_right_up_pressed.svg
+
+-c8,8 qgn_indi_fep_button_backspace_wide.svg
+-c8,8 qgn_indi_fep_button_backspace_wide_sel.svg
+-c8,8 qgn_indi_fep_button_case_numeric_special.svg
+-c8,8 qgn_indi_fep_button_case_numeric_special_sel.svg
+-c8,8 qgn_indi_fep_button_close_wide.svg
+-c8,8 qgn_indi_fep_button_close_wide_sel.svg
+-c8,8 qgn_indi_fep_button_cursor_left.svg
+-c8,8 qgn_indi_fep_button_cursor_left_sel.svg
+-c8,8 qgn_indi_fep_button_cursor_right.svg
+-c8,8 qgn_indi_fep_button_cursor_right_sel.svg
+-c8,8 qgn_indi_fep_button_options_wide.svg
+-c8,8 qgn_indi_fep_button_options_wide_sel.svg
+-c8,8 qgn_indi_fep_button_smileys.svg
+-c8,8 qgn_indi_fep_button_smileys_sel.svg
+-c8,8 qgn_indi_fep_button_input_switch.svg
+-c8,8 qgn_indi_fep_button_input_switch_sel.svg
+-c8,8 qgn_indi_input_capslock.svg
+-c8,8 qgn_indi_input_shift.svg
+-c8,8 qgn_indi_input_close.svg
+-c8,8 qgn_indi_input_options.svg
+-c8,8 qgn_indi_input_backspace.svg
+-c8,8 qgn_indi_input_enter.svg
+-c8,8 qgn_indi_input_switcher.svg
+-c8,8 qgn_indi_input_move.svg
+-c8,8 qgn_indi_input_char_next.svg
+-c8,8 qgn_indi_input_char_prev.svg
+
+-c8,8 qgn_indi_input_case_capital.svg
+-c8,8 qgn_indi_input_case_numeric_special.svg
+-c8,8 qgn_indi_input_case_accented.svg
+-c8,8 qgn_indi_input_case_capital_cyrillic.svg
+-c8,8 qgn_indi_input_case_accented_cyrillic.svg
+-c8,8 qgn_indi_input_case_text_thai.svg
+-c8,8 qgn_indi_input_case_numeric_thai.svg
+-c8,8 qgn_indi_input_case_numeric_arabic_indic.svg
+-c8,8 qgn_indi_input_case_text_arabic.svg
+-c8,8 qgn_indi_input_case_capital_greek.svg
+-c8,8 qgn_indi_input_case_text_hebrew.svg
+-c8,8 qgn_indi_input_case_numeric_devanagari.svg
+-c8,8 qgn_indi_input_case_text_hindi.svg
+-c8,8 qgn_graf_input_icf_bg.svg
+-c8,8 qgn_graf_input_bg.svg
+-c8,8 qsn_fr_keypad_button_normal.svg
+-c8,8 qsn_fr_keypad_button_pressed.svg
+-c8,8 qsn_fr_keypad_button_inactive.svg
+-c8,8 qgn_indi_itut_backspace.svg
+
+-c8,8 qgn_indi_input_space_l.svg
+-c8,8 qgn_indi_input_space_middle.svg
+-c8,8 qgn_indi_input_space_r.svg
+-c8,8 qgn_indi_fsq_cursor_up.svg
+-c8,8 qgn_indi_fsq_cursor_down.svg
+-c8,8 qgn_indi_input_backspace1.svg

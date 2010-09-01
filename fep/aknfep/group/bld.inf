@@ -1,0 +1,109 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:           
+*       Bldmake component description file.
+*
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+#include <platform_paths.hrh>
+
+PRJ_EXPORTS
+// specify the source file followed by its destination here
+// copy will be used to copy the source file to its destination
+// If there's no destination then the source file will be copied
+// to the same name in /epoc32/include
+
+PRJ_PLATFORMS
+DEFAULT
+//  Help exports
+#include "../help/group/bld.inf"
+
+../inc/AknFepManagerInterface.h     |../../../inc/AknFepManagerInterface.h
+../inc/AknFepManagerUIInterface.h   |../../../inc/AknFepManagerUIInterface.h
+../inc/AknFepUiIndicEnums.h         |../../../inc/AknFepUiIndicEnums.h
+../inc/aknfeppeninputimeplugin.h    |../../../inc/aknfeppeninputimeplugin.h
+../inc/AknFepVietnameseInputTables.h  |../../../inc/aknFepVietnameseInputTables.h 
+
+//From AknFepUiInterface
+
+../UiPlugins/AknFepUiInterface/inc/AknFepIndicator.h      |../../../inc/aknfepindicator.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUICtrlCandidatePane.h	|../../../inc/AknFepUICtrlCandidatePane.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUICtrlCandidatePaneInterface.h	|../../../inc/AknFepUICtrlCandidatePaneInterface.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUiCtrlContainerChinese.h	|../../../inc/AknFepUiCtrlContainerChinese.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUICtrlContainerJapanese.h	|../../../inc/AknFepUICtrlContainerJapanese.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUICtrlInputPane.h	|../../../inc/AknFepUICtrlInputPane.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUICtrlPinyinPopup.h	|../../../inc/AknFepUICtrlPinyinPopup.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUiStylusPopupMenu.h	|../../../inc/AknFepUIStylusPopupMenu.h
+../UiPlugins/AknFepUiInterface/inc/aknfepuictrleditpane.h     |../../../inc/aknfepuictrleditpane.h
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+../UiPlugins/AknFepUiInterface/inc/AknFepCandidatePopup.h 		|../../../inc/AknFepCandidatePopup.h
+../UiPlugins/AknFepUiInterface/inc/AknFepCandidatePopupCallback.h   |../../../inc/AknFepCandidatePopupCallback.h
+../UiPlugins/AknFepUiInterface/inc/AknFepUiWordPopupContent.h	|../../../inc/AknFepUiWordPopupContent.h
+#endif //RD_INTELLIGENT_TEXT_INPUT
+
+
+../rom/aknfep_variant.iby                   CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(aknfep_variant.iby)
+../rom/aknfepResources.iby                  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(aknfepResources.iby)
+../rom/aknfepuiinterface.iby                CORE_MW_LAYER_IBY_EXPORT_PATH(aknfepuiinterface.iby)
+../rom/peninputimeplugincn_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugincn_Variant.iby)
+../rom/peninputimeplugingeneric.iby         CORE_MW_LAYER_IBY_EXPORT_PATH(peninputimeplugingeneric.iby)
+../rom/peninputimepluginitut_Variant.iby    CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginitut_Variant.iby)
+../rom/PeninputPluginKr.iby                 CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(PeninputPluginKr.iby)
+../rom/peninputimepluginjp_Variant.iby      CUSTOMER_MW_LAYER_IBY_EXPORT_PATH(peninputimepluginjp_Variant.iby)
+
+// Generic configuration interface for component cenrep settings
+../conf/aknfep.confml                  APP_LAYER_CONFML(aknfep.confml)
+../conf/aknfep_japan.confml            CONFML_EXPORT_PATH(aknfep_japan.confml,japan)
+../conf/aknfep_thai.confml             CONFML_EXPORT_PATH(aknfep_thai.confml,thai)
+../conf/aknfep_101F876D.crml           APP_LAYER_CRML(aknfep_101F876D.crml)
+
+
+PRJ_MMPFILES
+// specify the .mmp files required for building the important component releasables
+// note that you should specify any .mmp files for test programs further down the file.
+//
+// Use C++ style #defines to denote that a component is only built for a particular platform
+
+//gnumakefile aknfep_icons_dc.mk
+../group/AknFep.mmp
+../UiPlugins/AknFepUiInterface/group/AknFepUiInterface.mmp
+../UiPlugins/AknFepUiInterface/AvkonImpl/group/AknFepUiAvkonPlugin.mmp
+
+#ifdef RD_SCALABLE_UI_V2
+../peninputplugins/peninputimepluginitut/group/peninputimepluginitut.mmp
+../peninputplugins/peninputimeplugincn/group/peninputimeplugincn.mmp
+../peninputplugins/peninputimepluginjp/group/peninputimepluginjp.mmp
+../peninputplugins/peninputimeplugingeneric/group/peninputimeplugingeneric.mmp
+../peninputplugins/PeninputPluginKr/group/PeninputPluginKr.mmp
+#endif //RD_SCALABLE_UI_V2
+
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE aknfepuictrls.mif
+OPTION HEADERFILE aknfepuictrls.mbg
+OPTION SOURCES -c8,1 qgn_indi_fep_arrow_left.bmp -c8,1 qgn_indi_fep_arrow_right.bmp -c8,1 qgn_indi_fep_arrow_up.bmp -c8,1 qgn_indi_fep_arrow_down.bmp
+END
+// End of file

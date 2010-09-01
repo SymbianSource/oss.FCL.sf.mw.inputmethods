@@ -1,0 +1,39 @@
+/*
+* Copyright (c) 2002-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Build information file for project ?myapp
+*
+*/
+
+#include <platform_paths.hrh>
+
+PRJ_EXPORTS 
+
+../rom/peninputcommonctrlsjp_Variant.iby  CUSTOMER_MW_LAYER_IBY_EXPORT_PATH( peninputcommonctrlsjp_Variant.iby )
+
+// From peninputcontextfield
+../inc/peninputcontextfieldjp.h				|../../../inc/peninputcontextfieldjp.h
+
+// From peninputhiraganakanji
+../inc/peninputeventjp.h					|../../../inc/peninputeventjp.h
+../inc/peninputhiraganakanji.h				|../../../inc/peninputhiraganakanji.h
+../inc/peninputjapaneseview.h				|../../../inc/peninputjapaneseview.h
+../inc/peninputjapanesecandidatewnd.h		|../../../inc/peninputjapanesecandidatewnd.h
+../inc/peninputjapanesepredictivewnd.h		|../../../inc/peninputjapanesepredictivewnd.h
+../inc/peninputjapanesepredictivelistboxmodel.h	|../../../inc/peninputjapanesepredictivelistboxmodel.h
+../inc/peninputlayoutwindowjp.h					|../../../inc/peninputlayoutwindowjp.h
+
+PRJ_MMPFILES
+../group/peninputcommonctrlsjp.mmp
+
+// End Of File

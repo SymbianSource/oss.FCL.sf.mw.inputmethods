@@ -1,0 +1,385 @@
+/*
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Localization strings for GSLangPlugin
+*
+*/
+
+
+//  LOCALISATION STRINGS
+
+//d:Text in title pane
+//d:Language, setting list view
+//l:title_pane_t2/opt9
+//w:
+//r: 3.1
+#define qtn_set_title_pers_language "Language"
+
+//d:Caption of a list item in Personalisation folder list
+//d:Item opens Language folder
+//l:list_single_large_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_pers_language "Language"
+
+// MAIN PAGE
+
+//d:Text of a list item in Language list view's list
+//d:Item opens Display text language setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_display_language "Phone language"
+
+//d:Text of a list item in Language list view's list
+//d:Item opens Writing language setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_input_language "Writing language"
+
+// DEFAULT NUMBER ENTRY SETTING PAGE FOR A&H
+
+//d:Text of a list item in Language list view's list
+//d:Item opens Default numbers setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_ah_default_nbr_sett "Default numbers"
+
+//d:Item in Default number mode setting page's list
+//d:Setting value Latin
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_ah_latin_nbrs "Latin"
+
+//d:Item in Default number mode setting page's list
+//d:Setting value Arabic
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_ah_arabic_nbrs "Arabic"
+
+// DEFAULT NUMBER ENTRY SETTING PAGE FOR HINDI
+
+//d:Text of a list item in Language list view's list
+//d:Item opens Default numbers setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_hi_default_nbr_sett "Default numbers"
+
+//d:Item in Default number mode setting page's list
+//d:Setting value Latin
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_hi_latin_nbrs "Latin"
+
+//d:Item in Default number mode setting page's list
+//d:Setting value Indic
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_hi_indic_nbrs "Indic"
+
+//d:Text of a list item in Language list view's list
+//d:Item opens Dictionary setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_t9_pre_default_setting "Dictionary"
+
+//d:Text of a list item in Language list view's list
+//d:CangJie Input mode
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_chi_set_cangjie_mode "CangJie Input mode"
+
+// JAPANESE VARIANT >>>>>>>>>>>
+
+//d:Text of a list item in Language list view's list
+//d:Item opens Japanese predictive input setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_predictive_input "Japanese prediction"
+
+//d:Text of a list item in general setting list view's list
+//d:Item opens English predictive input setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_jp_predtext_eng "English predictive input"
+
+//d:Item in English predictive input setting page's list
+//d:Setting value On
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_jp_predtext_eng_on "On"
+
+//d:Item in English predictive input setting page's list
+//d:Setting value Off
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_jp_predtext_eng_off "Off"
+
+//d:Item in Japanese predictive input setting page's list
+//d:Setting value On
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_prediction_on "On"
+
+//d:Item in Japanese predictive input setting page's list
+//d:Setting value Off
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_prediction_off "Off"
+
+//d:Text of a list item in general setting list view's list
+//d:Item Reset ATOK Dictionary
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_jp_reset_atok_dict "Reset ATOK Dictionary"
+
+//d: Confirmation for Resetting ATOK dictionary.
+//l: popup_note_window
+//w:
+//r: 3.1
+#define qtn_reset_core_dict "Reset dictionary to core state?"
+
+// NEW
+//d:Text of a list item in general setting list view's list
+//d:Item opens ","-key in hiragana/kanji mode inputs setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_qwerty_comma "\",\"-key in hiragana/kanji mode inputs"
+
+//d:Item in ","-key in hiragana/kanji mode inputs setting page's list
+//d:Setting value full-width Japanese comma
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_qwerty_japanese_comma "<0x3001>"
+
+//d:Item in ","-key in hiragana/kanji mode inputs setting page's list
+//d:Setting value full-width western comma
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_qwerty_western_comma "<0xFF0C>"
+
+//d:Text of a list item in general setting list view's list
+//d:Item opens "."-key in hiragana/kanji mode inputs setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_qwerty_period "\".\"-key in hiragana/kanji mode inputs"
+
+//d:Item in "."-key in hiragana/kanji mode inputs setting page's list
+//d:Setting value full-width Japanese period
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_qwerty_japanese_period "<0x3002>"
+
+//d:Item in "."-key in hiragana/kanji mode inputs setting page's list
+//d:Setting value full-width western period
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_qwerty_western_period "<0xFF0E>"
+
+//d:Text of a list item in general setting list view's list
+//d:Item opens Width of Space in hiragana/kanji mode setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_japin_qwerty_width_space "Width of Space in hiragana/kanji mode"
+
+//d:Item in Width of Space/punctuation marks and symbols in hiragana/kanji mode setting page's list
+//d:Setting value full-width space
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_japin_edit_full_width "Full width"
+
+//d:Item in Width of Space/punctuation marks and symbols in hiragana/kanji mode setting page's list
+//d:Setting value half-width space
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_japin_edit_half_width "Half width"
+
+// JAPANESE VARIANT <<<<<<<<<<<
+
+
+// CHINESE VARIANT >>>>>>>>>>>
+
+//d:Text of a list item in general setting list view's list
+//d:Item opens Default input method setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_chi_set_default_method "Default input method"
+
+// CHINESE VARIANT <<<<<<<<<<<
+
+//d:Text of a list item in Language Settings view's list
+//d:Item opens Keypress timeout setting page
+//l:list_setting_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_keypress_timeout "Keypress timeout"
+
+//d:Text of a list item in Keypress timeout setting page's list
+//d:Setting value Medium (1000000msec)
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_keyp_timeout_default "Medium"
+
+//d:Text of a list item in Keypress timeout setting page's list
+//d:Setting value Short 40% faster than default
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_keyp_timeout_short "Short"
+
+//d:Text of a list item in Keypress timeout setting page's list
+//d:Setting value Long (40% slower than default)
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_keyp_timeout_long "Long"
+
+//d:Text of a list item in Keypress timeout setting page's list
+//d:Setting value Off
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_set_keyp_timeout_off "Off"
+
+
+// PHONE LANGUAGE SETTING PAGE
+
+//d:Item in Display Text Language setting page's list
+//d:Setting value Automatic
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_dtl_automatic "Automatic"
+
+// d: Confirmation for Display Text Language operation.
+// l: popup_note_window
+//w:
+//r: 3.1
+#define qtn_langu_restart_query "Selected language: %U \n Phone needs to be restarted. Continue?"
+
+
+// d: Note if user tries to activate Display Language Switching when there are
+// d: ongoing calls or connections.
+// l: popup_note_window
+//w:
+//r: 3.1
+#define qtn_dtl_note_active_calls "Ongoing calls and connections must be terminated before."
+
+
+// PREDICTIVE TEXT LANGUAGE SETTING PAGE
+
+//d:Item in Predictive Text Language setting page's list
+//d:Setting value On
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_t9_on "On"
+
+//d:Item in Predictive Text Language setting page's list
+//d:Setting value Off
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_t9_off "Off"
+
+
+//d:Text in setting list's Predictive Text Language item's current value field
+//d:Setting value Not available
+//l:list_set_graphic_pane_t1
+//w:
+//r: 3.1
+#define qtn_t9_set_not_available "Not available"
+
+//d:Text of a list item in Language list view's list
+//d:Predictive mode
+//l:list_setting_pane_t1 
+//w:
+//r: 4.0
+#define qtn_set_predictive_mode "Predictive mode"
+
+//d:Item in Predictive mode setting page's list
+//d:Setting value Normal
+//l:list_set_graphic_pane_t1
+//w:
+//r: 4.0
+#define qtn_set_predictive_mode_normal "Normal"
+
+//d:Item in Predictive mode setting page's list
+//d:Setting value Autocompletion
+//l:list_set_graphic_pane_t1
+//w:
+//r: 4.0
+#define qtn_set_predictive_mode_autocompletion "Autocompletion"
+
+//CONTROL PANEL
+
+//d:Text of a list item in Language list view's list
+//d:Item opens Display text language setting page
+//l:list_setting_pane_t1
+//w:
+//r: 5.0
+#define qtn_cp_device_language "Device language"
+
+
+//DUAL LANGUAGE SUPPORT
+
+//d:Text in title pane
+//d:Writing language, setting list view
+//l:title_pane_t2/opt9
+//w:
+//r: 5.0
+#define qtn_set_title_settings_writing_language "Writing language"
+
+//d:Text of a list item in Writing language list view's list
+//d:Item opens Primary writing language setting page
+//l:list_setting_pane_t1
+//w:
+//r: 5.0
+#define qtn_set_primary_writing_language "Primary writing language"
+
+//d:Text of a list item in Writing language list view's list
+//d:Item opens Secondary writing language setting page
+//l:list_setting_pane_t1
+//w:
+//r: 5.0
+#define qtn_set_secondary_writing_language "Secondary writing language"
+
+
+// End of File

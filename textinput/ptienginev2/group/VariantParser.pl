@@ -59,7 +59,7 @@ print(INFFILE "* All rights reserved.\n");
 print(INFFILE "* This component and the accompanying materials are made available\n");
 print(INFFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 print(INFFILE "* which accompanies this distribution, and is available\n");
-print(INFFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
+print(INFFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\". \n");
 print(INFFILE "*\n");
 print(INFFILE "* Initial Contributors:\n");
 print(INFFILE "* Nokia Corporation - initial contribution.\n");
@@ -128,6 +128,7 @@ foreach $line (@master_raw_data)
 				print(CFFFILE "\n");
 				print(CFFFILE "void CPtiVariant${variant_name}DataFactory::ListLanguagesL(RArray<TInt>& aResult)\n");
 				print(CFFFILE "    {\n");
+				print(CFFFILE "    CleanupClosePushL(aResult);\n");
 
 				for ($ii = 0; $ii < scalar(@lang_name_array); $ii++)
 				{
@@ -140,7 +141,7 @@ foreach $line (@master_raw_data)
 						print(CFFFILE "    aResult.AppendL(ELang@lang_name_array[$ii]);\n");
 					}
 				}
-
+                print(CFFFILE "    CleanupStack::Pop();\n");
 				print(CFFFILE "    }\n");
 				print(CFFFILE "\n");
 				print(CFFFILE "// End of file\n");
@@ -199,7 +200,7 @@ foreach $line (@master_raw_data)
 				print(RESFILE "* This component and the accompanying materials are made available\n");
 				print(RESFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(RESFILE "* which accompanies this distribution, and is available\n");
-				print(RESFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
+				print(RESFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
 				print(RESFILE "*\n");
 				print(RESFILE "* Initial Contributors:\n");
 				print(RESFILE "* Nokia Corporation - initial contribution.\n");
@@ -259,7 +260,7 @@ foreach $line (@master_raw_data)
 				print(MMPFILE "* This component and the accompanying materials are made available\n");
 				print(MMPFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(MMPFILE "* which accompanies this distribution, and is available\n");
-				print(MMPFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
+				print(MMPFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
 				print(MMPFILE "*\n");
 				print(MMPFILE "* Initial Contributors:\n");
 				print(MMPFILE "* Nokia Corporation - initial contribution.\n");
@@ -340,7 +341,7 @@ foreach $line (@master_raw_data)
 				print(IBYFILE "* This component and the accompanying materials are made available\n");
 				print(IBYFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(IBYFILE "* which accompanies this distribution, and is available\n");
-				print(IBYFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
+				print(IBYFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
 				print(IBYFILE "*\n");
 				print(IBYFILE "* Initial Contributors:\n");
 				print(IBYFILE "* Nokia Corporation - initial contribution.\n");
@@ -394,7 +395,7 @@ foreach $line (@master_raw_data)
 				print(CPPFILE "* This component and the accompanying materials are made available\n");
 				print(CPPFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(CPPFILE "* which accompanies this distribution, and is available\n");
-				print(CPPFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
+				print(CPPFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
 				print(CPPFILE "*\n");
 				print(CPPFILE "* Initial Contributors:\n");
 				print(CPPFILE "* Nokia Corporation - initial contribution.\n");
@@ -430,7 +431,7 @@ foreach $line (@master_raw_data)
 				print(CHHFILE "* This component and the accompanying materials are made available\n");
 				print(CHHFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(CHHFILE "* which accompanies this distribution, and is available\n");
-				print(CHHFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
+				print(CHHFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
 				print(CHHFILE "*\n");
 				print(CHHFILE "* Initial Contributors:\n");
 				print(CHHFILE "* Nokia Corporation - initial contribution.\n");
@@ -467,7 +468,7 @@ foreach $line (@master_raw_data)
 				print(CFFFILE "* This component and the accompanying materials are made available\n");
 				print(CFFFILE "* under the terms of the License \"Eclipse Public License v1.0\"\n");
 				print(CFFFILE "* which accompanies this distribution, and is available\n");
-				print(CFFFILE "* at the URL "http://www.eclipse.org/legal/epl-v10.html".\n");
+				print(CFFFILE "* at the URL \"http://www.eclipse.org/legal/epl-v10.html\".\n");
 				print(CFFFILE "*\n");
 				print(CFFFILE "* Initial Contributors:\n");
 				print(CFFFILE "* Nokia Corporation - initial contribution.\n");
@@ -478,8 +479,8 @@ foreach $line (@master_raw_data)
 				print(CFFFILE "*\n");
 				print(CFFFILE "*/\n");
 				print(CFFFILE "\n\n\n\n\n\n\n\n\n\n\n\n");
-				print(CFFFILE "#include <ECom/ImplementationProxy.h>\n");
-				print(CFFFILE "\n#include <Languages.hrh>\n");
+				print(CFFFILE "#include <ecom/implementationproxy.h>\n");
+				print(CFFFILE "\n#include <languages.hrh>\n");
 				print(CFFFILE "\n");
 				print(CFFFILE "#include \"${output_dll}${variant_name}.h\"\n");
 				print(CFFFILE "\n");
@@ -647,7 +648,7 @@ print(CFFFILE "\n");
 print(CFFFILE "\n");
 print(CFFFILE "void CPtiVariant${variant_name}DataFactory::ListLanguagesL(RArray<TInt>& aResult)\n");
 print(CFFFILE "    {\n");
-     
+print(CFFFILE "    CleanupClosePushL(aResult);\n");
 for ($ii = 0; $ii < scalar(@lang_name_array); $ii++)
      {    
      if (@lang_name_array[$ii] eq "Basque" || @lang_name_array[$ii] eq "Galician")
@@ -659,7 +660,7 @@ for ($ii = 0; $ii < scalar(@lang_name_array); $ii++)
             print(CFFFILE "    aResult.AppendL(ELang@lang_name_array[$ii]);\n");
             }
      }
-
+print(CFFFILE "    CleanupStack::Pop();\n");
 print(CFFFILE "    }\n");
 print(CFFFILE "\n");
 print(CFFFILE "// End of file\n");

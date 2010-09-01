@@ -29,6 +29,7 @@ class CVirtualKeyCtrl;
 class CBubbleCtrl;
 class CPenInputColorIcon;
    
+class MPeninputVkbPreviewBubbleRenderer;
 #define INVALID_COLOR_GROUP -1
    
 typedef struct TVirtualKeyEventData_Tag
@@ -134,6 +135,43 @@ struct TVirtualKeyDrawInfo
         iSupportSkin = EFalse;
         };
     };    
+
+class CFepUiKeyboardExt : public CBase
+    {
+public:
+    ~CFepUiKeyboardExt()
+        {
+        delete iBitmap;
+        delete iHighlightDev;
+        delete iHighlightGc;
+
+        delete iHighlightKeyBmp;
+        delete iNormalKeyBmp;
+        delete iDimmedKeyBmp;
+        delete iNormalKeyDev;
+        delete iHighlightKeyDev;
+        delete iDimmedKeyDev;
+        delete iKeyGc;
+        }
+private:
+    void CreateBmpDevL(const TDisplayMode &aMode);
+private:
+    CFbsBitmap* iBitmap;
+    CFbsBitmapDevice* iHighlightDev;
+    CFbsBitGc* iHighlightGc;
+    
+    CFbsBitmap* iHighlightKeyBmp;
+    CFbsBitmap* iNormalKeyBmp;
+    CFbsBitmap* iDimmedKeyBmp;
+
+    CFbsBitmapDevice* iNormalKeyDev;
+    CFbsBitmapDevice* iHighlightKeyDev;
+    CFbsBitmapDevice* iDimmedKeyDev;
+    CFbsBitGc* iKeyGc;
+    TBool iHighlightKeyResourceChanged;
+    TBool iNormalKeyResourceChanged;
+friend class CVirtualKeyboard;   
+    };
 
 //class CVirtualKeyboard
 /**
@@ -558,8 +596,19 @@ public:
      * @param aIcon shift icon
      */ 	
 	IMPORT_C void SetShiftIcon( CPenInputColorIcon* aIcon );
+	IMPORT_C void SetStarIcon( CPenInputColorIcon* aIcon );
 	inline CPenInputColorIcon* ShiftIcon();
+	inline CPenInputColorIcon* StarIcon();
     
+	/**
+	 * Install preview bubble renderer
+	 * 
+	 * @param aRenderer Preview bubble renderer. 
+	 *  Ownership transfered(shared by all targets of aRenderer)
+	 * @return None.
+	 */
+	IMPORT_C void SetPreviewBubbleRenderer( MPeninputVkbPreviewBubbleRenderer* aRenderer );
+	
 protected:                          
 
     /**
@@ -802,12 +851,7 @@ private:
      * Item text display color.
      */
     TRgb  iFontColor;
-    
-    /**
-     * Reserve item
-     */    
-    TInt iReserver1;
-    
+        
     TAknsItemID iKeyNormalSkinId;
     TAknsItemID iKeyHighlightSkinId;
     TAknsItemID iKeyDimSkinId;
@@ -854,6 +898,47 @@ private:
      * The shift icon showing on the key
      */      
     CPenInputColorIcon* iShiftIcon;
+	
+	/**
+     * The star icon showing on the key
+     */      
+    CPenInputColorIcon* iStarIcon;
+	
+    MPeninputVkbPreviewBubbleRenderer* iPreviewBubbleRenderer;
+	
+    /**
+     * Reserve item
+     */    
+    CFepUiKeyboardExt* iExt;
+
+
+protected:
+    //void HandleResourceChange(TInt aType);
+    virtual IMPORT_C void HandleResourceChange(TInt aType);
+private: 
+    void CreateBmpDevL();
+    CFbsBitmap* Bitmap() { return iExt->iBitmap;}
+    CFbsBitmapDevice* HighlightDev() { return iExt->iHighlightDev;}
+    CFbsBitGc* HighlightGc() { return iExt->iHighlightGc;}
+    CFbsBitmap* NormalKeyBmp() { return iExt->iNormalKeyBmp;}
+    CFbsBitmap* HighightKeyBmp() { return iExt->iHighlightKeyBmp;}
+    CFbsBitmap* DimmedKeyBmp() { return iExt->iDimmedKeyBmp;}
+    
+    CFbsBitmapDevice* HighlightKeyDev() { return iExt->iHighlightKeyDev;}
+    CFbsBitmapDevice* NormalKeyDev() { return iExt->iNormalKeyDev;}
+    CFbsBitmapDevice* DimmedKeyDev() { return iExt->iDimmedKeyDev;}
+    CFbsBitGc* KeyGc() { return iExt->iKeyGc;}
+    
+
+    CFbsBitmap* PrepareMaskBmpL(CFbsBitGc* aGc, const TDisplayMode& aMode, const TRect& aRect);
+    CFbsBitmap* PrepareKeyBmpL(CFbsBitGc* aGc, const TDisplayMode& aMode, const TRect& aRect,
+            const TRect& aInnerRect,const TAknsItemID& aFrameID, const TAknsItemID& aCenterID, const TRect& aKeyRect);
+    
+    TBool PrepareKeyBmp(CFbsBitmap* aBmp,CFbsBitmapDevice* aDev,const TRect& aRect, 
+            const TRect& aInnerRect,const TAknsItemID& aFrameID, const TAknsItemID& aCenterID,const TRect& aKeyRect);
+    TBool PrepareHighlightKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect);
+    TBool PrepareNormalKeyBmp(const TRect& aRect, const TRect& aInnerRect, const TRect& aKeyRect);        
+
 friend class CVirtualKeyCtrl;
 friend class CVirtualRawKeyCtrl;
 //friend class CVirtualKey;    

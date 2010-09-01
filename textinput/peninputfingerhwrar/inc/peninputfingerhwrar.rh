@@ -1,0 +1,111 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource headers for project peninputfingerhwrar
+*
+*/
+
+
+#ifndef PENINPUTFINGERHWRAR_RH
+#define PENINPUTFINGERHWRAR_RH
+
+// ---------------------------------------------------------------------------
+// virtual key info
+// ---------------------------------------------------------------------------
+//
+STRUCT PENINPUT_FINGERHWR_KEYPAD_KEY
+    {
+    LTEXT leftstr = "";
+    LTEXT rightstr1 = "";
+    LTEXT rightstr2 = "";
+    LTEXT rightstr3 = "";
+    WORD scancode = 0;
+    }
+
+// ---------------------------------------------------------------------------
+// virtual keypad info
+// ---------------------------------------------------------------------------
+//
+STRUCT PENINPUT_FINGERHWR_KEYPAD
+    {
+    STRUCT keys[];
+    }
+
+
+// ---------------------------------------------------------------------------
+// fingerhwr main windows appearance
+// ---------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_FINGERHWR_WINDOW
+    {
+    WORD supportskin = 0xffff;
+
+    LLINK shadow;
+    LLINK icfimage;
+    LLINK boxwnd;
+    LLINK bgimage=0;
+    }
+
+// ---------------------------------------------------------------------------
+// writing box colors
+// ---------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_FINGERHWR_BOXWINDOW
+    {
+    LONG colormajorskinid = 0xffff;
+    WORD boxbgcolorgrp = 0xffff;
+    WORD boxbgcoloridx = 0xffff;
+    WORD boxframecolorgrp = 0xffff;
+    WORD boxframecoloridx = 0xffff;
+    }
+
+// ---------------------------------------------------------------------------
+// icf colors
+// ---------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_FINGERHWR_ICF
+    {
+    LONG colormajorskinid = 0xffff;
+    WORD textcolorgrp = 0xffff;
+    WORD textcoloridx = 0xffff;
+    WORD bordercolorgrp = 0xffff;
+    WORD bordercoloridx = 0xffff;
+    }    
+    
+// -----------------------------------------------------------------------------
+// AKN_FEP_COLOR_ICON_IMAGE
+// Resource definition for color icon
+// -----------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_FINGERHWR_ICON_IMAGE
+	{
+	LTEXT bmpfile="";
+	LONG imgmajorskinid=0xffff;
+	WORD colorgroup=DEFAULT_ICON_COLOR_GROUP;
+
+	WORD iconimage=0xffff;
+	WORD iconimagemsk=0xffff;
+	WORD iconimageskinid=0xffff;    
+   	}
+
+// ---------------------------------------------------------------------------
+// fingerhwr symbol table
+// ---------------------------------------------------------------------------
+//
+STRUCT AKN_FEP_FINGERHWR_SYMBOLTABLE
+    {
+    LLINK bgimage=0;
+    }
+#endif // PENINPUTFINGERHWRAR_RH
+
+// End Of File

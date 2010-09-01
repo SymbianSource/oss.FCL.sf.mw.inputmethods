@@ -47,6 +47,7 @@
 #include <aknappui.h> 
 
 #include "peninputcrpclient.h"
+#include <avkondomainpskeys.h>
 //#define __WND_TEST_
 
 // CONSTANTS
@@ -56,6 +57,11 @@ const TInt KMsgResponseQueueLen = 10;
 
 const TInt KWsSessionFlushPerioid = 50000;//50ms
 const TInt KInvalidValue = -1;
+// Layout UID for portrait FSQ.  Used for distinguish between 
+// landscape and portrait FSQ for EPluginInputModeFSQ, which 
+// is used for both orientation in Pen Input server side code.
+const TInt KPenInputSrvPrtFsqUiId = 0x20026837;
+
 
 enum TActivationFlag
 	{
@@ -186,6 +192,7 @@ CPeninputServer::CPeninputServer ( TInt aPriority) :  CServer2 ( aPriority,EShar
     //iDispMode = iDispModeForMask= CCoeEnv::Static()->WsSession().GetDefModeMaxNumColors(col,grey);    
     iPreNonGloebalNotesWndGrpId = -1;
     iNoNeedClean = EFalse;
+	iEnablePriorityChangeOnOriChange = ETrue;
     }
 
 
@@ -211,9 +218,7 @@ CPeninputServer* CPeninputServer::NewL()
 void CPeninputServer::ConstructL( )
     {
 #ifdef RD_TACTILE_FEEDBACK     
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
 	FeatureManager::InitializeLibL();
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
    	iSupportFeedback = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
 
 #endif //RD_TACTILE_FEEDBACK   
@@ -264,6 +269,19 @@ void CPeninputServer::ConstructL( )
     iCurScrMode = CCoeEnv::Static()->ScreenDevice()->CurrentScreenMode();
     iCrpService = CPenInputCrpServiceClient::NewL();
     iSensorRepository = CRepository::NewL(KCRUidSensorSettings);
+    User::LeaveIfError(iDiscreetPopProperty.Attach(KPSUidAvkonDomain, 
+                                         KAknGlobalDiscreetPopupNumChanged));
+    iDiscreetPopSubscriber = new (ELeave) CSubscriber(
+            TCallBack( DiscreetPopChangeNotification, this), 
+            iDiscreetPopProperty);
+    iDiscreetPopSubscriber->SubscribeL();
+    // Get the pop area
+    User::LeaveIfError(iAknUiSrv.Connect());
+    iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
+    if(iDiscreetPopArea.Size().iWidth > 0)
+        {
+        HandleDiscreetPopNotification();
+        }
     }
 
 void CPeninputServer::CleanAll()
@@ -319,9 +337,7 @@ void CPeninputServer::CleanAll()
         
 
 #ifdef RD_TACTILE_FEEDBACK
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
 	FeatureManager::UnInitializeLib();
-	//KS: QUICK FIX FOR EGSN-7BCBWS 
     iFeedbackAreaArray.Close();
 #endif // RD_TACTILE_FEEDBACK    
     delete iPenUiCtrl;
@@ -332,6 +348,13 @@ void CPeninputServer::CleanAll()
 #ifdef __LOG_WNDGROU__    
     iLogFile.Close();    
 #endif
+    if (iDiscreetPopSubscriber)
+	    {
+	    iDiscreetPopSubscriber->StopSubscribe();
+	    }
+    iDiscreetPopProperty.Close();
+    delete iDiscreetPopSubscriber;
+    iAknUiSrv.Close();
     delete iAnimObj;
     iAnimObj = NULL;
     
@@ -410,17 +433,50 @@ void CPeninputServer::DecreaseSessionCount(CPeninputServerSession* aSession)
 //
 void CPeninputServer::ActivateSpriteInGlobalNotesL()
     {
+    TBool notDraw = EFalse;
+    
+    if(iUiLayout)
+        {
+        iUiLayout->HandleCommand( ECmdPeninputDisableLayoutDrawing, 
+                                 (unsigned char*)&notDraw );  
+        }
+
+    // [[[ temporary solution for Virtual keyboard becomes corrupted after several rotations
+    if(!iUiLayout)
+    	{
+        return;
+    	}
+    
+    // we should not be able to activate and show pen ui if this mode is disabled currently
+    TInt inputType = iUiLayout->PenInputType();
+    if( inputType == EPluginInputModeFSQ && iLayoutId.iUid == KPenInputSrvPrtFsqUiId )
+        {
+        inputType = EPluginInputModePortraitFSQ;
+        }
+    if( inputType & DisabledByOrientation() )
+
+        {
+        // we have activate the animation otherwise we will see the penui but not reponse
+        // when clicking on it in the case we rotating the screen quickly and continously
+        if(iAnimObj)
+            {
+            iAnimObj->AddActivationCmd(ECmdActivate,EFalse);                
+            }
+        return;
+        }
+    // ]]] temporary solution for Virtual keyboard becomes corrupted after several rotations
+    
     if(iActive)
         {
-	    if(iUseWindowCtrl)
-	        {
+        if(iUseWindowCtrl)
+            {
 /*            RWsSession &ws = CCoeEnv::Static()->WsSession();
             TInt wgId =ws.GetFocusWindowGroup();
             //TInt wgHandle = ws.GetWindowGroupHandle(wgId);
 
       
-    		TInt priority;
-    		//TInt pos;
+            TInt priority;
+            //TInt pos;
             //wg.Construct(wgHandle);
             //pos = wg.FullOrdinalPosition();
             priority = ws.GetWindowGroupOrdinalPriority(wgId);*/
@@ -429,57 +485,57 @@ void CPeninputServer::ActivateSpriteInGlobalNotesL()
             ActivatePenUiLayout(EFalse);
             iDimmed = EFalse;
             iPenUiCtrl->ShowPenUiL(iDimmed);            
-	        }
-	    return;
+            }
+        return;
         }
 
-        TBool bNeedWait = AnimOpNeedWaiting(ESignalPenUiActivated);
-        //add animation command
+    TBool bNeedWait = AnimOpNeedWaiting(ESignalPenUiActivated);
+    //add animation command
         
-        /*
-        if(iAnimObj->AddActivationCmd(ECmdActivate,bNeedWait))
-        	{
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        //iUiLayout->OnActivate();                  
-            ActivatePenUiLayout();
-	        
-	        DrawSprite();        
-	        
-	        iEventBufferQueue->GetEvent();
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
-                iPenUiCtrl->ShowPenUi();
-            }
-            */
-        if(ActivatePenUiLayout(bNeedWait))
+    /*
+    if(iAnimObj->AddActivationCmd(ECmdActivate,bNeedWait))
             {
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        
-	        DrawSprite();        	        
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
-	            {
-                /*RWsSession &ws = CCoeEnv::Static()->WsSession();
-                TInt wgId =ws.GetFocusWindowGroup();
-                //TInt wgHandle = ws.GetWindowGroupHandle(wgId);
+            if(bNeedWait)
+                iForegroundUiHandler->AddDelayedCmd();
+            //iUiLayout->OnActivate();                  
+            ActivatePenUiLayout();
+            
+            DrawSprite();        
+            
+            iEventBufferQueue->GetEvent();
+            
+            iActive = ETrue;                
+            
+            if(iUseWindowCtrl)
+                iPenUiCtrl->ShowPenUi();
+        }
+        */
+    if(ActivatePenUiLayout(bNeedWait))
+        {
+        if(bNeedWait)
+            iForegroundUiHandler->AddDelayedCmd();
+            
+        DrawSprite();                    
+            
+        iActive = ETrue;                
+            
+        if(iUseWindowCtrl)
+            {
+            /*RWsSession &ws = CCoeEnv::Static()->WsSession();
+            TInt wgId =ws.GetFocusWindowGroup();
+            //TInt wgHandle = ws.GetWindowGroupHandle(wgId);
 
-          
-        		TInt priority;
-        		//TInt pos;
-                //wg.Construct(wgHandle);
-                //pos = wg.FullOrdinalPosition();
-                priority = ws.GetWindowGroupOrdinalPriority(wgId);*/
-                //wg.Close();           
-                iPenUiCtrl->ShowPenUiL(iDimmed);            	        
-	            }
+            TInt priority;
+            //TInt pos;
+            //wg.Construct(wgHandle);
+            //pos = wg.FullOrdinalPosition();
+            priority = ws.GetWindowGroupOrdinalPriority(wgId);*/
+            //wg.Close();           
+            iPenUiCtrl->ShowPenUiL(iDimmed);                        
             }
         }
+    }
+
 // ---------------------------------------------------------------------------
 // CPeninputServer::ActivateSprite
 // Activate sprite
@@ -512,6 +568,29 @@ void CPeninputServer::ActivateSprite()
     if(!iUiLayout)
         return;
     
+    // [[[ temporary solution for Virtual keyboard becomes corrupted after several rotations
+    // we should not be able to activate and show pen ui if this mode is disabled currently
+    TInt inputType = iUiLayout->PenInputType();
+    if( inputType == EPluginInputModeFSQ && iLayoutId.iUid == KPenInputSrvPrtFsqUiId )
+        {
+        inputType = EPluginInputModePortraitFSQ;
+        }
+    if( inputType & DisabledByOrientation() )
+        {
+        // we have activate the animation otherwise we will see the penui but not reponse 
+        // when clicking on it in the case we rotating the screen quickly and continously
+        if(iAnimObj)
+            {
+            iAnimObj->AddActivationCmd(ECmdActivate,EFalse);
+            }
+        
+        return;
+        }
+    // ]]] temporary solution for Virtual keyboard becomes corrupted after several rotations
+
+    TBool notDraw = EFalse;
+    iUiLayout->HandleCommand(ECmdPeninputDisableLayoutDrawing,(unsigned char*)&notDraw);
+  
     // move it out from if(!iActive) to make sure that msg bubble can be 
     // shown if fast swap from other application to msg application.
     TBool bNeedWait = AnimOpNeedWaiting(ESignalPenUiActivated);
@@ -533,51 +612,73 @@ void CPeninputServer::ActivateSprite()
         
         /*
         if(iAnimObj->AddActivationCmd(ECmdActivate,bNeedWait))
-        	{
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        //iUiLayout->OnActivate();                  
+            {
+            if(bNeedWait)
+                iForegroundUiHandler->AddDelayedCmd();
+            //iUiLayout->OnActivate();                  
             ActivatePenUiLayout();
-	        
-	        DrawSprite();        
-	        
-	        iEventBufferQueue->GetEvent();
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
+            
+            DrawSprite();        
+            
+            iEventBufferQueue->GetEvent();
+            
+            iActive = ETrue;                
+            
+            if(iUseWindowCtrl)
                 iPenUiCtrl->ShowPenUi();
             }
             */
             
         if(ActivatePenUiLayout(bNeedWait, ETrue))
             {
-        	if(bNeedWait)
-        		iForegroundUiHandler->AddDelayedCmd();
-	        
-	        DrawSprite();        	        
-	        
-	        iActive = ETrue;                
-	        
-	        if(iUseWindowCtrl)
-	            {
-                TRAP_IGNORE( iPenUiCtrl->ShowPenUiL(iDimmed) );            	        
-                           	        
-		        if (iPreNonGloebalNotesWndGrpId != focusApp.iUid &&
-		            IsGlobalNotesApp(focusApp) && !iInGlobalEditorState )
-		            {
-	                iDimmed = ETrue;
-	                DimPenUi();                
-		            }
-	            }
+            if(bNeedWait)
+                iForegroundUiHandler->AddDelayedCmd();
+            
+            DrawSprite();                    
+            
+            iActive = ETrue;                
+            
+            if(iUseWindowCtrl)
+                {
+                TRAP_IGNORE( iPenUiCtrl->ShowPenUiL(iDimmed) );                        
+                                       
+                if (iPreNonGloebalNotesWndGrpId != focusApp.iUid &&
+                    IsGlobalNotesApp(focusApp) && !iInGlobalEditorState )
+                    {
+                    iDimmed = ETrue;
+                    DimPenUi();                
+                    }
+                }
             }
+        iIsLayoutReDrawAllowWhenActive = EFalse;    
         }
     else
         {
         //actived but dimmed by global notes
         if(iUseWindowCtrl)
             {
-            ActivatePenUiLayout(EFalse);
+            /**
+            * 1. IF THE GLOBAL NOTES HAS BEEN OPENED UP, WE NEED TO REDRAW THE LAYOUT
+            * 2. IF iIsLayoutReDrawAllowWhenActive was set to be ETrue. 
+            *    if we did not put this condition guard, the layout
+            *    redraw will be executed even if the layout is active. But if this flag is
+            *    set to be ture, layout redraw will be carried out even if the layout is active, so
+            *    it will leave this for layout to decide if it need set this flag to be ture or false
+            *    in some special cases: for example for entering and exiting the spell mode.
+            *    
+            */
+            if(iInGlobalNotesApp || iInGlobalEditorState || iIsLayoutReDrawAllowWhenActive )
+                {
+                ActivatePenUiLayout(EFalse);
+                if(iIsLayoutReDrawAllowWhenActive)
+                    {
+                    iIsLayoutReDrawAllowWhenActive = EFalse;    
+                    }
+                }
+            else
+                {
+                ActivatePenUiLayout(EFalse,ETrue);
+                }
 
             if (iDimmed && (iInGlobalNotesApp || iInGlobalEditorState))
                 {
@@ -588,7 +689,7 @@ void CPeninputServer::ActivateSprite()
             TRAP_IGNORE( iPenUiCtrl->ShowPenUiL(iDimmed) );
             iDimmed = EFalse;
             }
-        }				  
+        }                  
     }
 
 // ---------------------------------------------------------------------------
@@ -647,14 +748,20 @@ void CPeninputServer::DimPenUiWnd(TBool aFlag)
     if(aFlag)
         {
         iEventBufferQueue->Cancel();                   
-        iUiLayout->OnDeActivate(); 
+        if( iUiLayout )
+        	{
+			iUiLayout->OnDeActivate(); 
+        	}
         if(iUseWindowCtrl)
             iPenUiCtrl->OnDeactivate(); //disable non fading                     
         }
     else
         {
         iEventBufferQueue->GetEvent();                   
-        iUiLayout->OnActivate(); 
+        if( iUiLayout )
+        	{
+			iUiLayout->OnActivate(); 
+        	}
         if(iUseWindowCtrl)
             iPenUiCtrl->OnActivate(CPenUiWndCtrl::ENoremalEditor); //disable non fading                             
         }
@@ -1093,13 +1200,31 @@ TInt CPeninputServer::HandleMessageL(const RMessage2& aMessage)
             break;
     	case EPeninputRequestSupportInputMode:
     	    {
-            TInt supportMode = GetSupportModeL();
-
-            TPckg<TInt> msg(supportMode);
-            
+    	    TInt language = 0;
+    	    TPckg<TInt> msgLanguage( language );
+    	    aMessage.ReadL( 1, msgLanguage );    	    
+    	    TInt supportMode = GetSupportModeByLanguageL( language );                      
+            TPckg<TInt> msg(supportMode);           
             aMessage.WriteL(0,msg);
     	    }
     	    break;            
+            
+    	case EPeninputRequestSetInputLanguage:
+    		{
+			TPckg<TInt> msg(iInputLanguage);
+			aMessage.ReadL(0,msg); 
+			if(iUiLayout)
+				{
+				iUiLayout->HandleCommand(ECmdPenInputLanguage,
+						                 (unsigned char*)&iInputLanguage);  
+				}
+    	    }
+    	    break;
+        case EPeninputEnablePriorityChangeOnOriChange:
+            {
+			TPckg<TBool> enablePriority( iEnablePriorityChangeOnOriChange );
+            aMessage.ReadL( 0, enablePriority );
+			}
         default: //Let user pluging handling the user command
             break;
         }
@@ -1171,9 +1296,19 @@ TInt CPeninputServer::CreateLayoutL(const RMessage2& aMessage )
     iUILayoutReady = EFalse;    
     if(iUiLayout)
         {
-		ClearSpriteGc();
+        //if(!iUseWindowCtrl)
+        	//{
+			//ClearSpriteGc();
+        	//}
         DeactivateSprite();
         iDestroyingLayout = ETrue;
+        if(iUseWindowCtrl)
+		   {
+		   if(iPenUiCtrl)
+		       {
+			   iPenUiCtrl->Clean();
+			   }
+		   }
         iUiLayout->Destroy();
         iUiLayout = NULL;    
         iDestroyingLayout = EFalse;
@@ -1277,8 +1412,12 @@ TInt CPeninputServer::CreateLayoutL(const RMessage2& aMessage )
         iUseWindowCtrl = ETrue;
 
         if(iUseWindowCtrl)
-            {            
-        iPenUiCtrl->SetExtent(layoutRect.iTl,layoutSize);
+            {
+#ifdef FIX_FOR_NGA
+            TBool flag = ETrue;
+            iUiLayout->HandleCommand(ECmdPeninputEnableOwnBitmap,reinterpret_cast<TUint8*>(&flag));
+#endif            
+            iPenUiCtrl->SetExtent(layoutRect.iTl,layoutSize);
             if(iAnimObj)
                 {
                 iAnimObj->AddEnalbeSpriteCmd(EFalse);
@@ -1501,7 +1640,7 @@ void CPeninputServer::ClearSpriteGc()
 void CPeninputServer::DrawSprite()
     {
 
-    if(!iUiLayout)
+    if(!iUiLayout || iActive)
         return;
     ClearSpriteGc();
     
@@ -1547,7 +1686,11 @@ void CPeninputServer::UpdateArea(const TRect& aRect,TBool /*aFullUpdate*/,
     
     if(iUseWindowCtrl)
         {        
-        iPenUiCtrl->Invalidate(aRect,EFalse);
+#ifdef FIX_FOR_NGA
+		iPenUiCtrl->Invalidate(TRect( TPoint(0,0), LayoutRect().Size()),EFalse);
+#else
+		iPenUiCtrl->Invalidate(aRect,EFalse);
+#endif
         return;
         } 
 	
@@ -1626,7 +1769,10 @@ void CPeninputServer::Hide(TBool aHideFlag)
         }
     else
         {
-        ActivateSprite();
+        if(!iActive)
+            {
+            ActivateSprite();
+            }
         }
     }
 
@@ -1862,16 +2008,19 @@ void CPeninputServer::SignalOwner(TInt aEventType, const TDesC& aEventData)
             	    }
         	    }
         	    break;
+            case ESignalEnableLayoutRedrawWhenActive:
+                {
+				TUint16* buf = const_cast<TUint16* >( aEventData.Ptr() );    
+                TBool* retVal = reinterpret_cast< TBool* > ( buf );
+				iIsLayoutReDrawAllowWhenActive = *retVal;
+				}
+				break;	
 
-        	case ESignalPopupWndClosed:
-        	    {        	    
-        	    if(iUseWindowCtrl)
-        	        {
-        	        iPenUiCtrl->ClosePopup();
-        	        }
-        	    }
-        	    break;
         	default:
+        	    if(iUseWindowCtrl)                    
+        	        {
+                    iPenUiCtrl->HandleNGASpecificSignal(aEventType, aEventData);
+        	        }
         		break;
         	}
         }
@@ -1974,12 +2123,87 @@ void CPeninputServer::DoIdleConstructL()
 // ---------------------------------------------------------------------------
 //    
 void CPeninputServer::HandleResourceChange(TInt aType)
-    {   
-    if(iUiLayout && !(iUiLayout->PenInputType() & DisabledByOrientation()) )
+    {
+	// Update the cursor color when resource is changed
+	iPenUiCtrl->SetCursorColor();
+	
+	#ifdef FIX_FOR_NGA 
+	// iEnablePriorityChangeOnOriChange will be set to be EFalse, if some dialog in FEP end were opened and 
+	// not close after rotation for example: Symbol Table, Writing Language list and Match Dialog on ITI
+	if(iUiLayout && iActive && iEnablePriorityChangeOnOriChange && aType == KEikDynamicLayoutVariantSwitch)
         {
-        //hide the layout if it's already shown
+        TPixelsTwipsAndRotation size; 
+        CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+                
+        TBool isPortrait = ( size.iPixelSize.iWidth < size.iPixelSize.iHeight );
+   
+        TBool needToLiftUp = EFalse;
+        TInt inputMode = 0; 
+        inputMode = iUiLayout->PenInputType();
         
-        iUiLayout->OnResourceChange(aType);
+        // If input mode is either ITU-T or portrait FSQ, and if orientation 
+        // is changed to landscape, highest priority is given to Pen UI to avoid 
+        // flickering problem while drawing landscape FSQ layout.        
+        if( inputMode == EPluginInputModeItut ||
+          ( inputMode == EPluginInputModeFSQ && 
+            iLayoutId.iUid == KPenInputSrvPrtFsqUiId ) )
+            {
+            if(!isPortrait)
+                {
+                needToLiftUp = ETrue;
+                }
+            }
+        else if(inputMode == EPluginInputModeFSQ)
+            {
+            if(isPortrait)
+                {
+                needToLiftUp = ETrue;
+                }
+            }
+    
+        else if(inputMode == EPluginInputModeFingerHwr)
+            {
+            ClearSpriteGc();
+            //Close the UI immediately, without notify UI handler 
+            DeactivateSprite(ETrue, ETrue);
+            }
+        if(needToLiftUp)
+            {
+            if(iPenUiCtrl)
+                {
+                
+                // must lift up the wnd group priority otherwise when rotating screen, the underling application will show first and then
+                // our PEN UI, but we should keep an eye on this issue. If NGA will fix the fliker assigned on them, we will check if it will
+                // work if we remove this line of code. 
+                iPenUiCtrl->LiftUpPriority();				
+                }
+            }
+        }
+	#endif	
+    if( iUiLayout )
+        {
+        TInt inputType = iUiLayout->PenInputType();
+        if( inputType == EPluginInputModeFSQ && iLayoutId.iUid == KPenInputSrvPrtFsqUiId )
+            {
+            inputType = EPluginInputModePortraitFSQ;
+            }
+        if( !( inputType & DisabledByOrientation() ) )
+            {
+            //hide the layout if it's already shown
+        
+            if ( iActive )
+                {
+                iUiLayout->OnActivate();  
+                }  
+        
+            iUiLayout->OnResourceChange(aType);
+        
+            if(iUseWindowCtrl)
+                {
+                iPenUiCtrl->DrawNow();
+                }
+            }
+            
         //show the layout if it's active
         }
     }
@@ -2079,15 +2303,52 @@ void CPeninputServer::HideLayoutTemporaryL()
             }
         return;    
         }
-*/    if(iActive && !iPrevActive && 
-       iUiLayout->PenInputType() != EPluginInputModeFSQ && 
-       iBackgroudDefaultOri == CAknAppUiBase::EAppUiOrientationUnspecified )
+*/    
+    TInt inputMode = iUiLayout ? iUiLayout->PenInputType() : EPluginInputModeNone;
+	
+    TBool isArabicFingerInput = (inputMode == EPluginInputModeFingerHwr && iInputLanguage == ELangArabic);
+    
+    if(isArabicFingerInput)
         {
-        
+        return;
+        }
+    
+    // Both landscape and portrait FSQs are handled as EPluginInputModeFSQ
+    // in Pen Input server. iLayoutId can be used to check it's landscape or
+    // portrait.
+    TBool isLandscapeFSQ = 
+        ( inputMode == EPluginInputModeFSQ && 
+          iLayoutId.iUid != KPenInputSrvPrtFsqUiId )
+         ? ETrue : EFalse;
+    
+    if ( iActive && !iPrevActive && !isLandscapeFSQ && 
+         iBackgroudDefaultOri == CAknAppUiBase::EAppUiOrientationUnspecified )
+        {
+        #ifdef FIX_FOR_NGA
+        if(inputMode == EPluginInputModeFingerHwr)
+            {
+            iPrevActive = ETrue;
+            ClearSpriteGc();
+            //Close the UI immediately, without notify UI handler 
+            DeactivateSprite(ETrue, ETrue);
+            }
+        else
+            {// for other input mode: we are not going to cose UI, since it will cause
+             // serious fliker: which will have the mixed ui(with other app ui) on pen input ui
+            
+			if(iUiLayout)
+			    {
+				//TBool notDraw = ETrue;
+	            //iUiLayout->HandleCommand(ECmdPeninputDisableLayoutDrawing,(unsigned char*)&notDraw);
+	            iUiLayout->OnDeActivate();
+			    }
+            }       
+        #else
         iPrevActive = ETrue;
         ClearSpriteGc();
-	    //Close the UI immediately, without notify UI handler 
-	    DeactivateSprite(ETrue, ETrue);
+        //Close the UI immediately, without notify UI handler 
+        DeactivateSprite(ETrue, ETrue);
+        #endif
         }    
     }
     
@@ -2100,16 +2361,7 @@ TInt CPeninputServer::SetDisabledLayouts( TInt aDisabledLayouts )
     {
     // No spcified logic now, so just store the disabled layout in the CFepUiLayoutBase class.
     TInt allowedPlugin = EPluginInputModeNone;// EPluginInputModeHwr | EPluginInputModeVkb | EPluginInputModeItut | EPluginInputModeFSc;
-    
-    CRepository* repository = NULL;
-    TRAPD(ret, repository = CRepository::NewL(KCRUidAknFep));
-    if (ret != KErrNone)
-        {
-        return EPluginInputModeAll;
-        }
-    TInt curLanguage ;
-    repository->Get(KAknFepInputTxtLang, curLanguage);
-    delete repository;
+    TInt curLanguage = iInputLanguage;
     
     if (curLanguage == 401) curLanguage = 102;
     if (curLanguage == 402) curLanguage = 103;
@@ -2220,13 +2472,14 @@ void CPeninputServer::HandleRawEventL(const TRawEvent& aEvent)
     if(iActive)
         { 
         if( aEvent.Type() == TRawEvent::ENone && 
-        	aEvent.IsTip() &&
-        	iCrpService->IsDsaActive() )
+        	aEvent.IsTip() 
+        	&& iCrpService && iCrpService->IsDsaActive() )
             {
             SignalOwner( ESignalLayoutClosed, KNullDesC );    
             }
                    
-        TBool handled = iUiLayout->HandleEventL(ERawEvent,&aEvent);
+        TBool handled = iUiLayout ? iUiLayout->HandleEventL(ERawEvent,&aEvent)
+        		        : EFalse;
 
         if (TRawEvent::EButton1Down == aEvent.Type())
             {
@@ -2290,28 +2543,32 @@ void CPeninputServer::HandleWsEventL(const TWsEvent &aEvent,
                     break;
                     }
                 */
-                if(IsGlobalNotesApp(focusApp))
-                        {
-                        iInGlobalNotesState = ETrue; 	             
-                        break;            
-                        }
+                if( IsGlobalNotesApp(focusApp) )
+                    {
+                    iInGlobalNotesState = ETrue;
+                    // add this to enable global dim   
+                    DeactivatePenUiLayout(EFalse);           
+                    break;            
+                    }
                     
 /*                else if (focusApp.iUid == 0x102750f0)
                     {
                     DeactivateSprite();    
                     }
-*/                else
+*/               else
                     {
-                        if(iInGlobalNotesState)
-                            {			  
-                            //fix for fast swap case
+                    if(iInGlobalNotesState)
+                        {			  
+                        //fix for fast swap case
                         iInGlobalNotesState = EFalse;                        
-                        if(iPreNonGloebalNotesWndGrpId != focusApp.iUid)
+                        if(iPreNonGloebalNotesWndGrpId != focusApp.iUid )
                             {                            
-                            iPreNonGloebalNotesWndGrpId = focusApp.iUid;    
-             
+                            iPreNonGloebalNotesWndGrpId = focusApp.iUid;
                             DeactivateSprite(ETrue);//hide pen ui immediately if switched to another application
-                            iForegroundSession = NULL;
+                            // Notify FEP to close touch input window.
+                            // Under this case, touch input window can't be closed without norifying FEP side.
+                            // After close touch input window, FEP must change some states.
+                            SignalOwner( ESignalDeactivateSprite, KNullDesC );                            
                             }
                         }
                     else
@@ -2319,7 +2576,7 @@ void CPeninputServer::HandleWsEventL(const TWsEvent &aEvent,
                         DeactivateSprite(ETrue);
                         }
                     }
-                        break;                            
+                break;                            
                 }   
             DeactivateSprite(ETrue);//hide pen ui immediately
     	    }
@@ -2419,7 +2676,7 @@ TBool CPeninputServer::AnimOpNeedWaiting(TInt aSignalCode)
         }
     if(iForegroundUiHandler)
         {
-        TInt uiType = iUiLayout->PenInputType();
+		TInt uiType = iUiLayout  ? iUiLayout->PenInputType() : EPluginInputModeNone;
         bNeedWait = iForegroundUiHandler->SignalUiActivationObserver(
                                             			aSignalCode,uiType);
         }	
@@ -2447,6 +2704,11 @@ void CPeninputServer::RecoverSimulatedKeyEventState()
 
 void CPeninputServer::RecoverButtonEventState()
     {
+	if(!iUiLayout)
+		{
+		return;
+		}
+	
         if (TRawEvent::EButton1Down == iLastRawEvent.Type())
             {
             iLastRawEvent.Set(TRawEvent::EButton1Up);//,iLastSimulatedKeyEvent.ScanCode()
@@ -2673,7 +2935,14 @@ TInt CPeninputServer::DisabledByOrientation()
                     }
                 if( size.iPixelSize.iWidth > size.iPixelSize.iHeight )
                     {
-                    return disabled |= EPluginInputModeItut;
+                    // Portrait input modes which are ITU-T and Portrait FSQ
+                    // should be disabled in portrait orientation. 
+                    // Note: no need to check feature flag because if it is not
+                    // turned on, EPluginInputModePortraitFSQ will not be handled 
+                    // at all so adding it to "disabled" will take no effect.
+                    disabled |= EPluginInputModeItut | EPluginInputModePortraitFSQ;
+
+                    return disabled;
                     }
                 }
             }
@@ -2683,16 +2952,7 @@ TInt CPeninputServer::DisabledByOrientation()
 
 TInt CPeninputServer::GetSupportModeL()
     {
-    CRepository* repository = NULL;
-    TRAPD(ret, repository = CRepository::NewL(KCRUidAknFep));
-    if (ret != KErrNone)
-        {
-        return ret;
-        }
-    TInt curLanguage ;
-    repository->Get(KAknFepInputTxtLang, curLanguage);
-    delete repository;
-    repository = NULL;
+    TInt curLanguage = iInputLanguage;
     
     if (curLanguage == 401) curLanguage = 102;
     if (curLanguage == 402) curLanguage = 103;    	    
@@ -2714,7 +2974,63 @@ TInt CPeninputServer::GetSupportModeL()
         }    
     return supportMode;
     }
+
+TInt CPeninputServer::GetSupportModeByLanguageL( TInt aInputLanguage )
+	{
+    TInt curLanguage = aInputLanguage;
     
+    if ( curLanguage == 401 )
+    	{
+        curLanguage = 102;
+    	}    
+    if (curLanguage == 402)
+    	{
+        curLanguage = 103;
+    	}        
+    TInt supportMode = EPluginInputModeNone;
+    TInt tempMode = EPluginInputModeHwr;
+    
+    iLayoutEng->InitializeL();
+    
+    while ( tempMode < EPluginInputModeAll )
+        {
+        if ( iLayoutEng->IsSupportPluginMode( ( TLanguage )curLanguage, 
+                                              ( TPluginInputMode )tempMode ) )
+            {
+            supportMode |= tempMode;
+            }
+        tempMode<<=1;
+        }    
+    return supportMode;	
+	}
+	
+// ---------------------------------------------------------------------------
+// CPeninputServer::DiscreetPopChangeNotification
+// handle notification of discreept pop changing
+// ---------------------------------------------------------------------------
+// 
+TInt CPeninputServer::DiscreetPopChangeNotification(TAny* aObj)
+    {
+    if (aObj)
+        {
+        static_cast<CPeninputServer*>(aObj)->HandleDiscreetPopNotification();
+        return KErrNone;
+        }
+    else
+        {
+        return KErrArgument;
+        }
+    }
+// ---------------------------------------------------------------------------
+// CPeninputServer::HandleDiscreetPopNotification
+// handle notification of discreept pop changing
+// ---------------------------------------------------------------------------
+// 
+void CPeninputServer::HandleDiscreetPopNotification()
+    {
+	iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
+	iAnimObj->SetDiscreetPopArea(iDiscreetPopArea);
+    }
 // ======== class CEventQueue========
 //
 // ---------------------------------------------------------------------------
@@ -2924,5 +3240,47 @@ GLDEF_C void PanicServer(TPeninputServerPanic aPanic)
     {
     User::Panic( KPeninputServerName, aPanic );
     } 
+	
+// ======== class CSubscriber========
+//
+CSubscriber::CSubscriber(TCallBack aCallBack, RProperty& aProperty)
+    :
+    CActive(EPriorityNormal), iCallBack(aCallBack), iProperty(aProperty)
+    {
+    CActiveScheduler::Add(this);
+    }
+
+CSubscriber::~CSubscriber()
+    {
+    Cancel();
+    }
+
+void CSubscriber::SubscribeL()
+    {
+    if (!IsActive())
+        {
+        iProperty.Subscribe(iStatus);
+        SetActive();
+        }
+    }
+
+void CSubscriber::StopSubscribe()
+    {
+    Cancel();
+    }
+
+void CSubscriber::RunL()
+    {
+    if (iStatus.Int() == KErrNone)
+        {
+        iCallBack.CallBack();
+        SubscribeL();
+        }
+    }
+
+void CSubscriber::DoCancel()
+    {
+    iProperty.Cancel();
+    }
 // End of File
 

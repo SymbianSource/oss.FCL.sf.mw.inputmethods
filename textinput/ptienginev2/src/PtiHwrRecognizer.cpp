@@ -200,6 +200,7 @@ TBool CHwrRecognizer::Match(const TDesC8& aImplementationData, TInt aValue)
 // 
 void CHwrRecognizer::AppendMatchedLanguagesL(const TDesC8& aImplementationData, RArray<TInt>& aResult)
 	{
+	CleanupClosePushL( aResult );
     TInt lower, upper, i;
     const TInt separatorLength = KDataSeparator().Length();
         
@@ -253,6 +254,7 @@ void CHwrRecognizer::AppendMatchedLanguagesL(const TDesC8& aImplementationData, 
             	}
             }
         }
+    CleanupStack::Pop();
 	}
 
 // ---------------------------------------------------------------------------

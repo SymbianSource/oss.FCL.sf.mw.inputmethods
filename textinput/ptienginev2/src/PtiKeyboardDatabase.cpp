@@ -88,6 +88,7 @@ EXPORT_C void CPtiKeyboardDatabase::Reserved_2()
 EXPORT_C TInt CPtiKeyboardDatabaseFactory::CreateMappingTableWithOpaqueL(TInt aInterfaceUid,
                                                   RArray<TPtiKeyboardDatabaseMappingOpaque>& aResult)
     {
+	CleanupClosePushL( aResult );
 	TInt res = 0;
 	TPtiKeyboardDatabaseMappingOpaque map;	
 	RImplInfoPtrArray infoArray;
@@ -106,6 +107,7 @@ EXPORT_C TInt CPtiKeyboardDatabaseFactory::CreateMappingTableWithOpaqueL(TInt aI
 		
 	CleanupStack::PopAndDestroy(); // infoArray    
 
+    CleanupStack::Pop();
 	return res;    
     }
 		
@@ -134,6 +136,7 @@ EXPORT_C CPtiKeyboardDatabaseFactory* CPtiKeyboardDatabaseFactory::CreateImpleme
 EXPORT_C void CPtiKeyboardDatabaseFactory::ListImplementationsL(TInt aCoreUid, 
                                                                 RArray<TInt>& aResult)
     {
+	CleanupClosePushL( aResult );
 	RImplInfoPtrArray infoArray;
 	TInt i;
 
@@ -146,6 +149,7 @@ EXPORT_C void CPtiKeyboardDatabaseFactory::ListImplementationsL(TInt aCoreUid,
 		}
 
 	CleanupStack::PopAndDestroy(); // infoArray     
+    CleanupStack::Pop();
     }
         
 // ---------------------------------------------------------------------------

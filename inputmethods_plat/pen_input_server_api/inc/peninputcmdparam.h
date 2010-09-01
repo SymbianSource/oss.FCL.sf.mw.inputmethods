@@ -133,8 +133,13 @@ struct TFepITITooltipText
  */
 struct TFepITICandidateList
     {
-    CDesCArray* iItemArray;
+	union
+		{
+		CDesCArray* iItemArray;
+		const RArray<TPtrC>* iItemArray2;
+		};
     TInt iActiveIndex;
+    TInt iLangCode;
     };
 
 class CPtiEngine;
@@ -149,5 +154,12 @@ struct TFepSymbolOfHardwareOne
     TInt iSymbol1;
     TInt iSymbol2;
 	TInt iSymbol3;
+	};
+	
+struct TFepSpellICFDisplayContent
+	{
+	TInt iCurPos;
+	TPtrC iICFText;
+	TPtrC iPromptText;
 	};
 #endif

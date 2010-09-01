@@ -15,6 +15,7 @@
 *
 */
 
+#include <featmgr.h>
 #include <AknFepGlobalEnums.h>
 #include "peninputlayoutbutton.h"
 #include "peninputlayouttimer.h"
@@ -47,7 +48,23 @@ EXPORT_C CButtonBase* CButtonBase::NewL(const TRect& aRect,
     CleanupStack::Pop(btn);
     return btn;    
     }
+
+// ---------------------------------------------------------------------------
+// CButtonBase::BaseConstructL
+// Do base contruction
+// ---------------------------------------------------------------------------
+//
+EXPORT_C void CButtonBase::BaseConstructL()
+    {
+    CFepUiBaseCtrl::BaseConstructL();
     
+    //tap accuracy enhancement
+    if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
+        {
+        EnableExtResponseArea( ETrue, TRect(TPoint(10,10),TSize(10,10)) );
+        }
+    }
+
 // ---------------------------------------------------------------------------
 // CButtonBase::CButtonBase
 // C++ default constructor
@@ -73,6 +90,7 @@ EXPORT_C CButtonBase::CButtonBase(const TRect& aRect,CFepUiLayout* aUiLayout,
     
     SetBkColor(KDefaultButtonBackCol);
 
+    //todo code refactoring needed, move to BaseConstructL
 #ifdef RD_TACTILE_FEEDBACK     
     //Advanced Tactile feedback REQ417-47932
     if(aUiLayout)
@@ -85,8 +103,8 @@ EXPORT_C CButtonBase::CButtonBase(const TRect& aRect,CFepUiLayout* aUiLayout,
     		}
     	else
     		{
-    		SetTactileFeedbackType(ETouchFeedbackSensitiveKeypad);
-    		aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveKeypad);
+    		SetTactileFeedbackType(ETouchFeedbackSensitiveInput);
+    		aUiLayout->RegisterFeedbackArea(reinterpret_cast<TInt>(this),aRect,ETouchFeedbackSensitiveInput);
     		}
     	}       
 #endif //RD_TACTILE_FEEDBACK     
@@ -340,6 +358,8 @@ EXPORT_C void CButtonBase::SetActive(TBool aActiveFlag)
 //
 EXPORT_C void CButtonBase::SetDimmed(TBool aDimFlag)
     {
+    if(iDimmed == aDimFlag)
+        return;
     //Remove its active flag if dim an active button.
     if(aDimFlag && IsActive())
         SetActive(EFalse);

@@ -342,6 +342,8 @@ const TPtiLangDatabaseMapping langUids[] =
 	{0, 0}
 	};
 
+const TInt xt9LangImplUidDanish = 0x10282D36;
+const TInt xt9LangImplUidNorwegian = 0x10282D38;
 
 // ---------------------------------------------------------------------------
 // CPtiLanguageDatabase::LanguageCodeForUid
@@ -351,6 +353,15 @@ const TPtiLangDatabaseMapping langUids[] =
 EXPORT_C TInt CPtiLanguageDatabase::LanguageCodeForUid(TInt aUid)
 	{
 	TInt i;
+	
+	if ( aUid == xt9LangImplUidDanish )
+	    {
+	    return ELangDanish;
+	    }
+	else if ( aUid == xt9LangImplUidNorwegian )
+	    {
+	    return ELangNorwegian;
+	    }
 
 	for (i = 0; ; i++)
 		{
@@ -375,6 +386,7 @@ EXPORT_C TInt CPtiLanguageDatabase::LanguageCodeForUid(TInt aUid)
 //
 EXPORT_C TInt CPtiLanguageDatabase::CreateMappingTableL(TInt aCoreUid, RArray<TPtiLangDatabaseMapping>& aResult)
 	{
+	CleanupClosePushL( aResult );
 	TInt res = 0, i, lc;
 	TPtiLangDatabaseMapping map;
 	CArrayFix<TInt>* dbs = ListDatabasesLC(aCoreUid);
@@ -402,6 +414,7 @@ EXPORT_C TInt CPtiLanguageDatabase::CreateMappingTableL(TInt aCoreUid, RArray<TP
 		}
 
 	CleanupStack::PopAndDestroy(); // dbs
+	CleanupStack::Pop( &aResult );
 	return res;
 	}
 
@@ -413,6 +426,7 @@ EXPORT_C TInt CPtiLanguageDatabase::CreateMappingTableL(TInt aCoreUid, RArray<TP
 //		
 EXPORT_C TInt CPtiLanguageDatabase::CreateMappingTableWithOpaqueL(TInt aCoreUid, RArray<TPtiLangDatabaseMappingOpaque>& aResult)
     {
+	CleanupClosePushL( aResult );
   	TInt res = 0, lc;
 	TPtiLangDatabaseMappingOpaque map;	
 	RImplInfoPtrArray infoArray;
@@ -447,7 +461,7 @@ EXPORT_C TInt CPtiLanguageDatabase::CreateMappingTableWithOpaqueL(TInt aCoreUid,
 		}
 
 	CleanupStack::PopAndDestroy(); // infoArray    
-
+	CleanupStack::Pop( &aResult );
 	return res;
     }
 	

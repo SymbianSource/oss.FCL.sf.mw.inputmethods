@@ -1,0 +1,40 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0""
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource headers for project peninputsplitqwerty
+*
+*/
+
+
+#ifndef PENINPUTSPLITQWERTY_RH
+#define PENINPUTSPLITQWERTY_RH
+
+// system includes
+#include <uikon.rh>
+
+// -----------------------------------------------------------------------------
+// PENINPUT_SPLITQWERTY_RANGELABELS
+// Resource definition for range labels of range list
+// -----------------------------------------------------------------------------
+//
+STRUCT PENINPUT_SPLITQWERTY_RANGELABELS
+    {
+    LTEXT nativeChar   ="";
+    LTEXT nativeNumber ="";
+    LTEXT latinChar    ="";
+    LTEXT latinNumber  ="";
+    LTEXT symbol       ="";
+    LTEXT accent       ="";
+    }
+
+#endif /* PENINPUTSPLITQWERTY_RH */

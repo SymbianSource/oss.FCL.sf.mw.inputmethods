@@ -579,6 +579,14 @@ private:
     
     TUid AppUidFromWndGroupIdL( TInt aWndGrpId );
     TBool IsTruiSupportedLanguage();
+    
+    /**
+     * Check if support hwr
+     *     
+     * @return ETrue: support hwr
+     *         EFalse: doesn't support hwr
+     */
+    TBool IsSupportHWR();
 
 private: 
 

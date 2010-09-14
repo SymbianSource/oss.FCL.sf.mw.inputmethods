@@ -503,4 +503,21 @@ TBool CPeninputAnimObj::SetDiscreetPopArea(const TRect& aArea)
     AddAnimCommand(cmd);
     return ETrue;		
 	}
+
+// ---------------------------------------------------------------------------
+// CPeninputAnimObj::UpdatePointerEventSuppressor()
+// Update parameters of pointer event suppressor.
+// ---------------------------------------------------------------------------
+//
+void CPeninputAnimObj::UpdatePointerEventSuppressor( 
+        const TPointerEventSuppressorParameters& aParameters )
+    {
+    TAnimUpdatePointerEventSuppressorCmd* cmd = 
+            new TAnimUpdatePointerEventSuppressorCmd( iAnim, aParameters );
+    
+    if ( cmd != NULL )
+        {
+        AddAnimCommand( cmd );
+        }
+    }
 //end of file

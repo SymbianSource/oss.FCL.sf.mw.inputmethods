@@ -275,6 +275,16 @@ private: // New Fanctions
      */
     void ConstructL(TLanguage aLanguage);
 
+	/**
+	* Tell whether this key mapped valid zhuyin, pinyin, or cangjie symbol
+	*/
+    TBool IsValidChineseInputSymbol(TInt aKey, TPtiEngineInputMode aMode) const;
+	
+	/**
+	* Tell whether this key mapped valid chinese tone mark
+	*/
+    TBool IsValidChineseToneMarkKey(TInt aKey, TPtiEngineInputMode aMode) const;
+
 private: // Data
     TAknFepInputStateChineseBase iFepUiState;
     MAknFepUICtrlContainerChinese* iContainerPane;

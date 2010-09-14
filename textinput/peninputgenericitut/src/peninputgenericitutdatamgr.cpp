@@ -494,7 +494,7 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	TRect cellSpellRect;
 	cellSpellRect.iTl.iX = middleButtonPaneRect.iTl.iX;
 	cellSpellRect.iTl.iY = middleButtonPaneRect.iTl.iY + 
-			itucellrect.Rect().Height() * 5 + 7;
+			itucellrect.Rect().Height() * 5;
 	cellSpellRect.SetHeight( itucellrect.Rect().Height());
 	cellSpellRect.SetWidth( itucellrect.Rect().Width());
 		
@@ -907,8 +907,18 @@ void CGenericItutDataMgr::ReadLafInfo()
     iCandsUnitHeight = charpanerect1.Rect().Height() ;
     
     iCandsSpinBtnHeight = listctrlrect.Rect().Height();
+    
+    TInt gapValue = ( iScreenSize.iWidth - ( 
+    		iCandsUnitWidth + iCandsHorizontalMargin + KCandsAdjustment ) * 6 ) / 2;
+    if ( gapValue < 0 )
+    	{
+		gapValue = 0;
+    	}
+    
     iCandsSpellLTPos = charpanerect1.Rect().iTl;
+    iCandsSpellLTPos.iX = gapValue;
     iCandsLTPos = charpanerect3.Rect().iTl;
+    iCandsLTPos.iX = gapValue;
     iCandsPuncLTPos = iCandsSpellLTPos;
     
     TAknTextLineLayout candstxtlayout = 

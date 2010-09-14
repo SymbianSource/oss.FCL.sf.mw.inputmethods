@@ -132,6 +132,14 @@ const TInt16 KStrokeBendingValue = 0x4e5b;
 const TInt16 KStrokeQuestionValue = 0x003f;
 const TInt16 KStrokeUnicode = 0x2461;
 const TInt16 KZhuyinIndicator = 0x2462;
+const TInt16 KPinyinIndicator = 0x2460;
+//const TInt16 KStrokeIndicator = 0x2461;
+const TInt16 KCanjieIndicator = 0x2463;
+const TInt16 KChineseTone1 = 0x02c9;
+const TInt16 KChineseTone2 = 0x02ca; 
+const TInt16 KChineseTone3 = 0x02c7; 
+const TInt16 KChineseTone4 = 0x02cb;
+const TInt16 KChineseTone0 = 0x02d9;
 /**
 *  CAknFepUIManagerChinese class.
 * 
@@ -475,6 +483,48 @@ TBool  CAknFepUIManagerChinese::IsKeyMappedStroke(TInt aKey) const
     return EFalse;
     }
 #endif
+TBool CAknFepUIManagerChinese::IsValidChineseInputSymbol(TInt aKey, TPtiEngineInputMode aMode) const
+    {
+    if( aMode == EPtiEnginePinyinPhraseQwerty)
+        {
+        return MapAgainst(aKey, aMode, KPinyinIndicator, EPtiCaseLower);
+        }
+    else if( aMode == EPtiEngineZhuyinPhraseQwerty)
+        {
+        return MapAgainst(aKey, aMode, KZhuyinIndicator, EPtiCaseLower);
+        }
+    else if( aMode == EPtiEngineNormalCangjieQwerty || 
+             aMode == EPtiEngineEasyCangjieQwerty ||
+             aMode == EPtiEngineAdvCangjieQwerty)
+        {
+        return MapAgainst(aKey, aMode, KCanjieIndicator, EPtiCaseLower);
+        }
+    return EFalse;
+    }
+TBool CAknFepUIManagerChinese::IsValidChineseToneMarkKey(TInt aKey, TPtiEngineInputMode aMode) const
+    {
+    if( MapAgainst(aKey, aMode, KChineseTone1, EPtiCaseLower))
+        {
+        return ETrue;
+        }
+    else if( MapAgainst(aKey, aMode, KChineseTone2, EPtiCaseLower))
+        {
+        return ETrue;
+        }
+    else if( MapAgainst(aKey, aMode, KChineseTone3, EPtiCaseLower))
+        {
+        return ETrue;
+        }
+    else if( MapAgainst(aKey, aMode, KChineseTone4, EPtiCaseLower))
+        {
+        return ETrue;
+        }
+    else if( MapAgainst(aKey, aMode, KChineseTone0, EPtiCaseLower))
+        {
+        return ETrue;
+        }
+    return EFalse;
+    }
 // ---------------------------------------------------------------------------
 // CAknFepUIManagerChinese::IsValidChineseInputKeyQwerty
 // 
@@ -495,8 +545,7 @@ TBool CAknFepUIManagerChinese::IsValidChineseInputKeyQwerty(TInt aKey) const
 
     if(iMode == EPinyin)
         {
-        if( (aKey >= EPtiKeyQwertyA && aKey <= EPtiKeyQwertyZ) ||
-        	(aKey >= EPtiKeyQwerty1 && aKey <= EPtiKeyQwerty9) ||
+        if( IsValidChineseInputSymbol(aKey, EPtiEnginePinyinPhraseQwerty) ||
             (IsFlagSet(ESupportPinyinPhrase) && aKey == EPtiKeyQwertyApostrophe 
              && State() != EInitial))
             {
@@ -602,37 +651,14 @@ TBool CAknFepUIManagerChinese::IsValidChineseInputKeyQwerty(TInt aKey) const
     
     if(iMode == ECangJie)
         {
-        if (aKey >= EPtiKeyQwertyA && aKey <= EPtiKeyQwertyZ)
-            {
-            response = ETrue;
-            }
+        response = IsValidChineseInputSymbol(aKey, (TPtiEngineInputMode)iFepMan->CangJieMode());
         }
     
     if(iMode == EZhuyin || iMode == EZhuyinFind)
         {
 #ifdef RD_INTELLIGENT_TEXT_INPUT        
-        if(EPtiKeyboardQwerty4x10 == keyboardType ||
-           EPtiKeyboardQwerty3x11 == keyboardType )
-            {
-            TBuf<KMaxName> lowerdata;
-            iPtiEngine->MappingDataForKey((TPtiKey)aKey, lowerdata, EPtiCaseLower);
        //     TInt ZhuyinUnicodeCur =0;
-            for(TInt i=0;i<lowerdata.Length();i++)
-                {
-                if(lowerdata[i]==KZhuyinIndicator)
-                    {
-                response = ETrue;
-                }   
-                }
-            }
-        else if( EPtiKeyboardCustomQwerty == keyboardType)        
-            {
-			if((aKey >= EPtiKeyQwertyA && aKey <= EPtiKeyQwertyZ))
-    			{
-				response = ETrue;        
-    			}       	
-            }
-        else if (  EPtiKeyboardHalfQwerty == keyboardType )
+        if (  EPtiKeyboardHalfQwerty == keyboardType )
             {
             if((aKey >= EPtiKeyQwertyA && aKey <= EPtiKeyQwertyZ) || 
                     (aKey >= EPtiKey0 && aKey <= EPtiKey9) ||
@@ -644,13 +670,7 @@ TBool CAknFepUIManagerChinese::IsValidChineseInputKeyQwerty(TInt aKey) const
         else
             {
 #endif
-        if((aKey >= EPtiKeyQwertyA && aKey <= EPtiKeyQwertyZ) ||
-            (aKey >= EPtiKeyQwerty0 && aKey <= EPtiKeyQwerty9)||
-            (aKey == EPtiKeyQwertySemicolon) ||
-            (aKey == EPtiKeyQwertyApostrophe) ||
-            (aKey == EPtiKeyQwertyComma) ||
-            (aKey == EPtiKeyQwertyFullstop) ||
-            (aKey == EPtiKeyQwertySlash))
+          if(IsValidChineseInputSymbol(aKey, (TPtiEngineInputMode)EPtiEngineZhuyinPhraseQwerty))
             {
             response = ETrue;        
             }
@@ -697,37 +717,13 @@ TBool CAknFepUIManagerChinese::IsQwertyZhuyinToneMarkKey(TInt aKey) const
     if(iQwertyMode && (iMode == EZhuyin) && supportSCTToneMarks)
         {
 #ifdef RD_INTELLIGENT_TEXT_INPUT 
-        if( keyboardType == EPtiKeyboardQwerty4x12)
-            {
-#endif            
-            if(aKey == EPtiKeyQwerty3 || aKey == EPtiKeyQwerty4 || aKey == EPtiKeyQwerty6 || aKey == EPtiKeyQwerty7)
-                {
-                return ETrue;
-                }
-            else
-                {
-                return EFalse;
-                }
-#ifdef RD_INTELLIGENT_TEXT_INPUT 
-            }
-        else if( keyboardType == EPtiKeyboardQwerty4x10 || keyboardType == EPtiKeyboardQwerty3x11)
-            {
-            if(aKey == EPtiKeyQwertyE || aKey == EPtiKeyQwertyR || aKey == EPtiKeyQwertyY || aKey == EPtiKeyQwertyU)
-                {
-                return ETrue;
-                }
-            else
-                {
-                return EFalse;
-                }
-            }
+        return IsValidChineseToneMarkKey(aKey, EPtiEngineZhuyinPhraseQwerty);            
 #endif        
         }
     else 
         {
         return EFalse;
         }
-    return EFalse;
     }
 
 // ---------------------------------------------------------------------------

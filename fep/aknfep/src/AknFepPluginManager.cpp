@@ -153,6 +153,17 @@ TBool IsGlobalNotesApp(TUid& aUid)
         return ETrue;
     return EFalse;
     }
+
+// -----------------------------------------------------------------------------
+// Check if the app specified by aUid is avkon notify server
+// -----------------------------------------------------------------------------
+//
+TBool IsAknNotifyServerApp( const TUid& aUid )
+    {
+    const TInt KAknNotifySrvUid = 0x10281EF2; 
+    return aUid.iUid == KAknNotifySrvUid;
+    }
+
 #ifdef RD_SCALABLE_UI_V2
 inline TBool IsAbleTouseCallBubble()
     {
@@ -305,7 +316,10 @@ void CAknFepPluginManager::ActivatePenInputL()
     if( !iPenInputSvrConnected || !iPenInputServer.IsVisible() || iPenInputServer.IsDimmed() )
         {
         if( iFepMan.FepAwareTextEditor() )
-            {            
+            {
+            // Enable transition effect when close pen ui 
+            // by pressing close button.
+            iPenInputServer.EnableGfxTransEffect( ETrue );
   			iPreferredUiMode = ETrue;	
             TryChangePluginInputModeByModeL((TPluginInputMode)(iSharedData.PluginInputMode()),
                                             EPenInputOpenManually,
@@ -563,6 +577,8 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 }
                 break;
             case ESignalLayoutClosed:
+            	// Enable transition effect when close pen ui by pressing close button.
+            	iPenInputServer.EnableGfxTransEffect( ETrue );
                 if(iPluginInputMode == EPluginInputModeItut)
                 	{
 					iFepMan.PtiEngine()->CancelTimerActivity();
@@ -1013,9 +1029,24 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
             break;
         case EPluginResourceChanged:
             {
-			iOrientationChangedfromUI = ETrue;
-            OnResourceChangedL( aEventData );
-			iOrientationChangedfromUI = EFalse;
+            iOrientationChangedfromUI = ETrue;
+            
+            TUid uid = GetCurAppUid();
+            if ( IsAknNotifyServerApp( uid ) )
+                {
+                //turn off AutoForeground feature of global query temporarily during layout switching
+                //if not, global query may be shown on top of virtual input by unexpected tap events.
+                CCoeEnv::Static()->RootWin().AutoForeground( EFalse );
+                TRAPD( err, OnResourceChangedL( aEventData ) );
+                CCoeEnv::Static()->RootWin().AutoForeground( ETrue );
+                User::LeaveIfError( err );
+                }
+            else
+                {
+                OnResourceChangedL( aEventData );
+                }
+            
+            iOrientationChangedfromUI = EFalse;
             }
             break;
         case EPluginFaseSwap:
@@ -2824,7 +2855,11 @@ void CAknFepPluginManager::SendIcfDataL(  TPluginSync aSyncType )
     	{
 		iCurrentPluginInputFepUI->HandleCommandL
 			(ECmdPenInputSendEditorTextAndCurPos, reinterpret_cast<TInt>(&icfData));
-		iFepMan.TryPopExactWordInICFL();
+		if ( icfData.iMidPos >= 0 )
+			{
+		    // icfData.iMidPos >= 0 means the text which will be sent to ICF is inline text.
+		    iFepMan.TryPopExactWordInICFL();
+			}		
     	}
 
     if ( secretEditor ) 
@@ -5949,7 +5984,8 @@ TBool CAknFepPluginManager::IsChineseIndicator( TAknEditingState aOldState )
          } 
       
      TInt flags = editorState->Flags();         
-     return ( flags & EEikEdwinAvkonDisableCursor ) == EEikEdwinAvkonDisableCursor; 
+     return ( flags & EAknEditorFlagAvkonSecretEditor ) == EAknEditorFlagAvkonSecretEditor; 
+      
      } 
 
 // --------------------------------------------------------------------------- 
@@ -6102,6 +6138,16 @@ TPtiTextCase CAknFepPluginManager::CaseForMappedCharacter(TChar aCharacter)
     TPtiTextCase caseCalculated = EPtiCaseLower;
     TBuf<KDefaulCoreMaximumWordLength> mappedCharacters; 
     TBool isMappingFound = EFalse;
+    TPtiEngineInputMode oldInputMode = iFepMan.PtiEngine()->InputMode();
+    if ( oldInputMode != EPtiEngineQwertyPredictive ) 
+		{
+        // if current input mode isn't EPtiEngineQwertyPredictive, 
+        // change it to EPtiEngineQwertyPredictive temporarily, 
+        // so that during the process of searching in qwerty keymapping afterward, 
+        // qwerty keymapping can be gained.
+        iFepMan.PtiEngine()->SetInputMode( EPtiEngineQwertyPredictive );
+		}
+
     TPtiKey key = iFepMan.PtiEngine()->CharacterToKey( aCharacter );
 
     //It loops through all the key mappings to find the character in the key mappings and
@@ -6124,6 +6170,15 @@ TPtiTextCase CAknFepPluginManager::CaseForMappedCharacter(TChar aCharacter)
         	break;
         	}
         }
+    
+    if ( oldInputMode != EPtiEngineQwertyPredictive ) 
+    	{
+        // if current input mode isn't EPtiEngineQwertyPredictive, 
+        // current input mode has been set to EPtiEngineQwertyPredictive temporarily before, 
+        // now we need to restore it,
+        // because state machine is responsible for changing it practically.
+        iFepMan.PtiEngine()->SetInputMode( oldInputMode );
+    	}
     //Now if there is no key mapping found for the character, then use the default TChar
     //APIs to find the case of the character.
     if( !isMappingFound )

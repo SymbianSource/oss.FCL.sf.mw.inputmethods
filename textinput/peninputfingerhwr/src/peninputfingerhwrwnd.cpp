@@ -1223,7 +1223,13 @@ void CPeninputFingerHwrWnd::CreatePredictListL()
     // hide the predictive list
     iPredictList->Hide( ETrue );
     iPredictList->SetDropdownListImgID( predicDrawInfo );
-    
+               
+    iPredictList->SizeChanged( iLafManager->CandidateUnitWidth(),
+            iLafManager->CandidateUnitHeight(),
+            iLafManager->CandidateUnitWidth(), 
+            iLafManager->PredictiveLTPos(),
+            KPredictiveCountPerRow,
+            KPredictiveRowCount );
     
 #ifndef RD_INTELLIGENT_TEXT_INPUT
     TDropdownListDrawInfo candiDrawInfo( 

@@ -43,6 +43,7 @@ private:
     TBool IsSCTKey(TInt aKey);
     TBool IsCharacter(TInt aKey);
     TBool HandleKeyByShiftOrCharPressed(TInt aKey, TKeyPressLength aLength);
+    TInt ToneMark(TInt aKey, TDes& aResult);
     };
 
 #endif //__AKN_FEP_UI_INPUT_STATE_INIT_CHIN_GEN_QWERTY_H__

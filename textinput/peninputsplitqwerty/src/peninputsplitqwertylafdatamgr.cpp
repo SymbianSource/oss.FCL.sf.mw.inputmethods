@@ -345,10 +345,6 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
     layoutrect.LayoutRect( pic3paneRect.Rect(), linelayout );
     pic3pRightWidth = layoutrect.Rect().Width();
 
-    linelayout = AknLayoutScalable_Avkon::aid_vkbss_key_offset(v1).LayoutLine();    
-    layoutrect.LayoutRect( keypadRect.Rect(), linelayout );
-    TInt rowIndentWidth = layoutrect.Rect().Width();
-
     base = rectMainWin.iTl;
 
     data->iClientRect =  RelativeRect( rectMainWin, base );
@@ -356,8 +352,43 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
 
     TRect rectOfKeypad = RelativeRect( keypadRect.Rect(), base );
     TRect rectOfButtons = rectOfKeypad;
-    rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
-    rectOfButtons.iTl.iY += rectOfKeypad.Height();
+    
+    TInt rowNumberOfKeyboard;
+    TInt gapValue;
+    switch ( aLayoutType )
+        {
+        case ELayout10x3:
+            {
+            rowNumberOfKeyboard = 3;
+            break;
+            }
+        case ELayout11x3:
+            {
+            rowNumberOfKeyboard = 3;
+            break;
+            }
+        case ELayout11x4:
+            {
+            rowNumberOfKeyboard = 4;
+            break;
+            }
+        default:
+            {
+            rowNumberOfKeyboard = 3;
+            break;
+            }
+        }
+    
+    // Compute the gap between first row key's top line and keyboard's top line
+    gapValue = keypaneRect.Rect().iTl.iY - keypadRect.Rect().iTl.iY;
+    // Compute function button's top left Y coordinate
+    rectOfButtons.iTl.iY = rectOfButtons.iTl.iY + 
+    		keypaneRect.Rect().Height() * rowNumberOfKeyboard + gapValue;
+    
+    // Compute keyboard position
+    rectOfKeypad.iBr.iY = rectOfKeypad.iTl.iY + 
+    		keypaneRect.Rect().Height() * rowNumberOfKeyboard + gapValue;
+    rectOfKeypad.iTl.iY += gapValue;
 
     //keypad
     data->iKeypad.iKaypadRect = rectOfKeypad;
@@ -375,18 +406,15 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
 
     for ( TInt i = 0; i < aRows; i++ )
         {
-        TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
         for ( TInt j = 0; j < aCols; j++ )
             {
 			TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            bound.Move( indent, 0 );
             
             data->iKeypad.iRects.AppendL( bound );
             
             TRect inner = rectXPane;
             inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            inner.Move( indent, 0 );        
             
             TAknLayoutText keyTextLayout; 
             keyTextLayout.LayoutText( inner, keyText );
@@ -398,7 +426,10 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
 
     //all template rects are relative to TL of buttons row
     rectXPane = keypaneRect.Rect();
-    rectXBorder = RelativeRect( keycellRect.Rect(), rectXPane.iTl );
+    
+    // The key rect without gap
+    rectXBorder = RelativeRect( keypaneRect.Rect(), rectXPane.iTl );
+    
     rectXInner = RelativeRect( keylabelRect.Rect(), rectXPane.iTl );
     TRect rect3PicPane = RelativeRect( pic3paneRect.Rect(), rectXPane.iTl );
     rectXPane.Move( - rectXPane.iTl ); 

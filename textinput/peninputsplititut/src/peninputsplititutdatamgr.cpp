@@ -359,7 +359,7 @@ void CSplitItutDataMgr::ReadLafInfo()
 	TRect cellSpellRect;
 	cellSpellRect.iTl.iX = middleButtonPaneRect.iTl.iX;
 	cellSpellRect.iTl.iY = middleButtonPaneRect.iTl.iY + 
-			itucellrect.Rect().Height() * 5 + 7;
+			itucellrect.Rect().Height() * 5;
 	cellSpellRect.SetHeight( itucellrect.Rect().Height());
 	cellSpellRect.SetWidth( itucellrect.Rect().Width());
 

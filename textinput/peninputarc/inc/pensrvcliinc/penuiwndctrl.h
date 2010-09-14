@@ -241,6 +241,18 @@ public: // New functions
      */
     void SetCursorColor();
     
+   /**
+    * Enable or disable transition effect.
+    * 
+    * @since Symbian^3
+    * @param aEnableGfxTransEffect, ETrue: enable transition effect
+    *                               EFalse: disable transition effect.
+    */
+    inline void EnableGfxTransEffect( TBool aEnableGfxTransEffect )
+    	{
+    	iEnableGfxTransEffect = aEnableGfxTransEffect;
+    	};
+    
 public: // Functions from base classes.
 
     /**
@@ -385,6 +397,12 @@ private: // Data
      */
     TRgb iCursorColor;
     
+    
+   /**
+    * If transition effect is enabled. 
+    */
+    TBool iEnableGfxTransEffect;
+
 friend class CCursorWindow;
     };
 class CInternalBkCtrl : public CCoeControl

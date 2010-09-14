@@ -171,6 +171,11 @@ public:
 	* LAF data for tooltip box
 	*/
 	TPeninputCnTooltipBoxLayoutData iTooltipBox;
+	
+	/*
+	* LAF data for composition area
+	*/
+	TRect iCompositionRect;
 	};	
 
 class MPeninputCnLafDataBase
@@ -196,6 +201,14 @@ public:
 	const TPeninputCnKeyLayoutData& KeypadLayoutData() const ;
 	const TPeninputCnRangeBarLayoutData& RangbarLayoutData() const;
 	const CPeninputCnQwtLayoutDataInfo& QwtLayoutData() const;
+	
+	/*
+	* Get layout rect for composition area
+	*
+	* @param none 
+	* @return rect of composition area
+	*/
+	const TRect& compositionLayoutData() const;
 	
 	/*
 	* Return layout data for candidate list;
@@ -432,6 +445,15 @@ public:
 	* @return The layout data for tooltip box	
 	*/	
 	const TPeninputCnTooltipBoxLayoutData& TooltipBoxLayoutData() const;
+	
+	/*
+	* Get layout rect for composition area
+	*
+	* @param none 
+	* @return rect of composition area
+	*/
+	const TRect& compositionLayoutData() const;
+	
 protected:
 
 	/**

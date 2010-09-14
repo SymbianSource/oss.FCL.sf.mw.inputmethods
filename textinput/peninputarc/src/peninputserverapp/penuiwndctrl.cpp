@@ -419,8 +419,9 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
 	
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS      
 	
-    if ( GfxTransEffect::IsRegistered( this ) && !IsVisible())
+    if ( iEnableGfxTransEffect && GfxTransEffect::IsRegistered( this ) && !IsVisible())
         {
+        iEnableGfxTransEffect = EFalse;
         this->MakeVisible(EFalse);
         GfxTransEffect::NotifyExternalState( ENotifyGlobalAbort ); 
 
@@ -463,9 +464,9 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
         return;
         }
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS           
-    if ( GfxTransEffect::IsRegistered( this ))
+    if ( iEnableGfxTransEffect && GfxTransEffect::IsRegistered( this ) )
         {
-
+        iEnableGfxTransEffect = EFalse;
         GfxTransEffect::NotifyExternalState( ENotifyGlobalAbort ); 
 
         //If still visible, do a transition to invisible state.

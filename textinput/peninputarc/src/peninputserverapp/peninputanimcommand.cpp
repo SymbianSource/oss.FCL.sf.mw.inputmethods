@@ -362,3 +362,17 @@ TBool TAnimSetDiscreeptPopCmd :: ExecuteAnimCommand() const
     iAnim.SetDiscreeptPop(iArea);
     return ETrue;
 	}
+
+TAnimUpdatePointerEventSuppressorCmd::TAnimUpdatePointerEventSuppressorCmd( 
+        RPeninputAnim& aAnim, const TPointerEventSuppressorParameters& aParameters )
+        : TAnimCmd( aAnim ), iParameters( aParameters )
+    {
+    
+    }
+
+TBool TAnimUpdatePointerEventSuppressorCmd::ExecuteAnimCommand() const
+    {
+    iAnim.UpdatePointerEventSuppressor( iParameters );
+    return ETrue;
+    }
+

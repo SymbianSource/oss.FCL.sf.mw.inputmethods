@@ -1023,4 +1023,18 @@ CAknFepZhuyinAnalyser* CAknFepUIManagerBase::ZhuyinAnalyser()
     return iFepMan->ZhuyinAnalyser();
     }
 
+TBool CAknFepUIManagerBase::MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase) const
+    {
+    if(iPtiEngine)
+        {
+        iPtiEngine->SetInputMode((TPtiEngineInputMode)aMode);
+        TBuf<KMaxName> data;
+        iPtiEngine->MappingDataForKey((TPtiKey)aKey, data, (TPtiTextCase)aCase);
+        if(data.Length() > 0)
+            {
+            return (data[0] == aAgainst);                
+            }
+        }
+    return EFalse;
+    }
 // End of file

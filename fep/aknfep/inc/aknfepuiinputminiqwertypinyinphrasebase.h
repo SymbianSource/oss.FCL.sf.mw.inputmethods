@@ -534,7 +534,15 @@ private:
       * @return None.
       */
     void DoActionAfterCommitL();
+	/**
+      * Get real pinyin symbol from scancode.
+      *
+      * @since S60 v3.2.3
+      * @param aKey 
+      * @return None.
+      */
     
+    void MapKey(TInt& aKey);
     };		
 
 #endif //T_AKNFEPUIINPUTMINIQWERTYPINYINPHRASEBASE_H

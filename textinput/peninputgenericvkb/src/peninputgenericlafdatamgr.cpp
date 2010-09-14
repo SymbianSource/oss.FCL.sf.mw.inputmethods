@@ -1038,12 +1038,17 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
     aDataInfo.iQwtRect = aParentWndRect;
     
     TInt v1, v2, gridLayoutVariant;
+
+    // Get the variant for Portrait QWERTY
+    TInt cellVariantForPortraitQWERTY;
+    
     switch ( aLayoutType )
         {
         case ELayout10x3:
             {
             v1 = 0;
             v2 = 0;
+            cellVariantForPortraitQWERTY = 0;
             gridLayoutVariant = 1;
             break;
             }
@@ -1051,6 +1056,7 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
             {
             v1 = 1;
             v2 = 2;
+            cellVariantForPortraitQWERTY = 2;
             gridLayoutVariant = 1;
             break;
             }
@@ -1058,6 +1064,7 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
             {
             v1 = 1;
             v2 = 3;
+            cellVariantForPortraitQWERTY = 3;
             gridLayoutVariant = 2;
             break;
             }
@@ -1065,7 +1072,9 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
             {
             v1 = 0;
             v2 = 0;
+            cellVariantForPortraitQWERTY = 0;
             gridLayoutVariant = 1;
+            break;
             }
         }
     
@@ -1164,6 +1173,32 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
     linelayout = AknLayoutScalable_Avkon::grid_vkbss_keypad_pane(v1).LayoutLine();
     keypadRect.LayoutRect( rectBottomWin, linelayout );
     
+    TInt rowNumberOfKeyboard;
+    TInt gapValue;
+    switch ( aLayoutType )
+        {
+        case ELayout10x3:
+            {
+            rowNumberOfKeyboard = 3;
+            break;
+            }
+        case ELayout11x3:
+            {
+            rowNumberOfKeyboard = 3;
+            break;
+            }
+        case ELayout11x4:
+            {
+            rowNumberOfKeyboard = 4;
+            break;
+            }
+        default:
+            {
+            rowNumberOfKeyboard = 3;
+            break;
+            }
+        }
+    
     if ( !isPortraitFSQEnabled ||
         ( isPortraitFSQEnabled && Layout_Meta_Data::IsLandscapeOrientation() ) )
         {
@@ -1192,7 +1227,10 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
         pic3pRightWidth = layoutrect.Rect().Width();
         
         TRect rectXPane = keypaneRect.Rect();
-        rect = keycellRect.Rect();
+        
+        // the key rect without gap
+        rect = keypaneRect.Rect();
+    
         rect.Move( - rectXPane.iTl.iX, - rectXPane.iTl.iY );
         TRect rectXBorder = rect;
         rect = keylabelRect.Rect();
@@ -1205,11 +1243,14 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
         
         rect = keypadRect.Rect();
         rect.Move( - base.iX, - base.iY );
-        TRect rectOfKeypad = rect;
-        TRect rectOfButtons = rectOfKeypad;
-        rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
-        rectOfButtons.iTl.iY += rectOfKeypad.Height();
-        
+    
+        TRect rectOfButtons = rect;
+        // The gap between the top of the first row key and the top of the keyboard
+        gapValue = keypaneRect.Rect().iTl.iY - keypadRect.Rect().iTl.iY;
+        // compute the top left Y coordinate of the function buttons
+        rectOfButtons.iTl.iY = rectOfButtons.iTl.iY + 
+    		keypaneRect.Rect().Height() * rowNumberOfKeyboard + gapValue;
+    
         TInt spaceBtnWidth = rectOfButtons.Width() - rectXPane.Width() * 8;
         TInt dx = rectOfButtons.iTl.iX;
         TInt dy = rectOfButtons.iTl.iY;
@@ -1270,8 +1311,8 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
         linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(15).LayoutLine();
         bottomRowRect.LayoutRect( keypadRect.Rect(), linelayout );
         
-        // key cell rect
-        linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(8).LayoutLine();
+        // key cell rect with out gap
+        linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(15).LayoutLine();
         keycellRect.LayoutRect( bottomRowRect.Rect(), linelayout );
         
         // key label rect
@@ -1289,10 +1330,23 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
         
         rect = keypadRect.Rect();
         rect.Move( - base.iX, - base.iY );
-        TRect rectOfKeypad = rect;
-        TRect rectOfButtons = rectOfKeypad;
-        rectOfKeypad.iBr.iY -= ( bottomRowRect.Rect().Height() );
-        rectOfButtons.iTl.iY += rectOfKeypad.Height();
+        
+        // Get the height of one key
+        linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane( 
+        		cellVariantForPortraitQWERTY ).LayoutLine();
+        keycellRect.LayoutRect( keypadRect.Rect(), linelayout );
+        TInt theHeightOfTheKey = keycellRect.Rect().Height();
+        // Compute the gap between the top of the first row key and 
+        // the top of the keyboard
+        gapValue = keycellRect.Rect().iTl.iY - keypadRect.Rect().iTl.iY;
+        // Get the second row function button's height
+        linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(4).LayoutLine();
+        keycellRect.LayoutRect( keypadRect.Rect(), linelayout );
+        
+        TRect rectOfButtons = rect;
+        // compute the top left Y coordinate of the first row function buttons
+        rectOfButtons.iTl.iY += keycellRect.Rect().Height() + 
+        		theHeightOfTheKey * rowNumberOfKeyboard + gapValue + 1;
         
         TInt dx = rectOfButtons.iTl.iX;
         TInt dy = rectOfButtons.iTl.iY;
@@ -1332,8 +1386,8 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
         linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(4).LayoutLine();
         shiftRect.LayoutRect( keypadRect.Rect(), linelayout );
         
-        // key cell rect
-        linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(4).LayoutLine();
+        // key cell rect without gap
+        linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(4).LayoutLine();
         keycellRect.LayoutRect( shiftRect.Rect(), linelayout );
         
         // key label rect
@@ -1351,6 +1405,8 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
         
         // Update the height to account for the second row
         rectOfButtons.iTl.iY -= shiftRect.Rect().Height();
+        // adjust the Y coordinate
+        rectOfButtons.iTl.iY -= 1;
         
         dx = rectOfButtons.iTl.iX;
         dy = rectOfButtons.iTl.iY;
@@ -1363,8 +1419,8 @@ void CPeninputLafDataFSQ::GetTopAndBottomPaneInfo( const TRect& aParentWndRect,
         linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(8).LayoutLine();
         spaceRect.LayoutRect( keypadRect.Rect(), linelayout );
         
-        // key cell rect
-        linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(5).LayoutLine();
+        // key cell rect without gap
+        linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_pane(8).LayoutLine();
         keycellRect.LayoutRect( spaceRect.Rect(), linelayout );
         
         // key label rect
@@ -1660,6 +1716,8 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
     TAknLayoutText keyTextLayout; 
 	TAknTextLineLayout keyText;
 	TRect keyRect;
+	// The gap value of keyboard
+	TInt gapValue;
 
     TBool isLandscape = Layout_Meta_Data::IsLandscapeOrientation();
 
@@ -1733,7 +1791,12 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
         }
   	    
   	rectVkbCtrl = keypadRect.Rect();
-    rectVkbCtrl.iBr.iY -= functionKeyRowsHeight;
+  	// Compute the gap between first row key's top line and keyboard's top line
+  	gapValue = keypaneRect.Rect().iTl.iY - rectVkbCtrl.iTl.iY;
+  	// Compute keyboard position
+  	rectVkbCtrl.iBr.iY = rectVkbCtrl.iTl.iY + keypaneRect.Rect().Height() * 3 + gapValue;
+  	rectVkbCtrl.iTl.iY += gapValue;
+  	
   	dataInfo->iKeypad.iKaypadRect = rectVkbCtrl;
 
   	linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(0).LayoutLine();
@@ -1742,10 +1805,6 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
   	linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(0).LayoutLine();
   	keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
 
-  	linelayout = AknLayoutScalable_Avkon::aid_vkbss_key_offset(0).LayoutLine();    
-  	layoutrect.LayoutRect( keypadRect.Rect(), linelayout );
-  	TInt rowIndentWidth = layoutrect.Rect().Width();
-  	
     TRect rectOfKeypad = RelativeRect( keypadRect.Rect(), base );
     rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
   	
@@ -1759,18 +1818,15 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
   	
   	for( TInt i = 0; i < KKeypadLayout[0][1]; i++)
   		{
-  		TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
   		for( TInt j = 0; j < KKeypadLayout[0][0]; j++)
             {
 			TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            bound.Move( indent, 0 );
             
             dataInfo->iKeypad.iRects.AppendL( bound );
             
             TRect inner = rectXPane;
             inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            inner.Move( indent, 0 );        
             
             TAknLayoutText keyTextLayout; 
             keyTextLayout.LayoutText( inner, keyText );
@@ -1888,7 +1944,13 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
         }
   	    
   	rectVkbCtrl = keypadRect.Rect();
-    rectVkbCtrl.iBr.iY -= functionKeyRowsHeight;
+    
+  	// Compute the gap between first row key's top line and keyboard's top line
+    gapValue = keypaneRect.Rect().iTl.iY - rectVkbCtrl.iTl.iY;
+    // Compute keyboard position
+    rectVkbCtrl.iBr.iY = rectVkbCtrl.iTl.iY + keypaneRect.Rect().Height() * 3 + gapValue;
+    rectVkbCtrl.iTl.iY += gapValue;
+    
     dataInfo->iKeypad.iKaypadRect = rectVkbCtrl;
 
     linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(2).LayoutLine();
@@ -1897,10 +1959,6 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
     linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(2).LayoutLine();
     keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
 
-    linelayout = AknLayoutScalable_Avkon::aid_vkbss_key_offset(1).LayoutLine();    
-    layoutrect.LayoutRect( keypadRect.Rect(), linelayout );
-    rowIndentWidth = layoutrect.Rect().Width();
-    
     rectOfKeypad = RelativeRect( keypadRect.Rect(), base );
     rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
     
@@ -1914,18 +1972,15 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
     
     for( TInt i = 0; i < KKeypadLayout[1][1]; i++)
         {
-        TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
         for( TInt j = 0; j < KKeypadLayout[1][0]; j++)
             {
 		    TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            bound.Move( indent, 0 );
             
             dataInfo->iKeypad.iRects.AppendL( bound );
             
             TRect inner = rectXPane;
             inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            inner.Move( indent, 0 );        
             
             TAknLayoutText keyTextLayout; 
             keyTextLayout.LayoutText( inner, keyText );
@@ -2031,8 +2086,14 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
         keypaneRect.LayoutRect( keypadRect.Rect(), linelayout );
         }
   	    
-  	rectVkbCtrl = keypadRect.Rect();
-    rectVkbCtrl.iBr.iY -= functionKeyRowsHeight;
+    rectVkbCtrl = keypadRect.Rect();
+    
+    // Compute the gap between first row key's top line and keyboard's top line
+    gapValue = keypaneRect.Rect().iTl.iY - rectVkbCtrl.iTl.iY;
+    // Compute keyboard position
+    rectVkbCtrl.iBr.iY = rectVkbCtrl.iTl.iY + keypaneRect.Rect().Height() * 4 + gapValue;
+    rectVkbCtrl.iTl.iY += gapValue;
+    
     dataInfo->iKeypad.iKaypadRect = rectVkbCtrl;    
 
     linelayout = AknLayoutScalable_Avkon::bg_cell_vkbss_key_g1(3).LayoutLine();
@@ -2041,10 +2102,6 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
     linelayout = AknLayoutScalable_Avkon::cell_vkbss_key_g1(3).LayoutLine();
     keylabelRect.LayoutRect( keypaneRect.Rect(), linelayout );
 
-    linelayout = AknLayoutScalable_Avkon::aid_vkbss_key_offset(1).LayoutLine();    
-    layoutrect.LayoutRect( keypadRect.Rect(), linelayout );
-    rowIndentWidth = layoutrect.Rect().Width();
-    
     rectOfKeypad = RelativeRect( keypadRect.Rect(), base );
     rectOfKeypad.iBr.iY -= keypaneRect.Rect().Height(); 
     
@@ -2058,18 +2115,15 @@ void CPeninputLafDataFSQ::ReadLafInfoL()
     
     for( TInt i = 0; i < KKeypadLayout[2][1]; i++)
         {
-        TInt indent = ( i % 2 == 1 ) ? rowIndentWidth : 0;
         for( TInt j = 0; j < KKeypadLayout[2][0]; j++)
             {
 		    TRect bound = rectXPane;
             bound.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            bound.Move( indent, 0 );
             
             dataInfo->iKeypad.iRects.AppendL( bound );
             
             TRect inner = rectXPane;
             inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
-            inner.Move( indent, 0 );        
             
             TAknLayoutText keyTextLayout; 
             keyTextLayout.LayoutText( inner, keyText );

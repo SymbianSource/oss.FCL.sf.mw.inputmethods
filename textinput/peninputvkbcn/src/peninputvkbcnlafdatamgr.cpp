@@ -235,6 +235,17 @@ const TRect& CPeninputCnGenericVkbLafMgr::KeypadRect() const
 	}
 	
 // ---------------------------------------------------------------------------
+// CPeninputCnGenericVkbLafMgr::compositionLayoutData
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//
+const TRect& CPeninputCnGenericVkbLafMgr::compositionLayoutData() const
+	{
+	ASSERT(iLafData);
+	return iLafData->compositionLayoutData();
+	}
+
+// ---------------------------------------------------------------------------
 // CPeninputCnGenericVkbLafMgr::ICFRect
 // (other items were commented in a header)
 // ---------------------------------------------------------------------------
@@ -676,7 +687,18 @@ const TPeninputCnKeyLayoutData& MPeninputCnLafDataCommon::KeypadLayoutData() con
 	ASSERT( IsValid() );
 	return iLayoutDataInfo[iLayoutType]->iKeypad;
 	}
-	
+
+// ---------------------------------------------------------------------------
+// MPeninputCnLafDataCommon::compositionLayoutData()
+// (other items were commented in a header)
+// ---------------------------------------------------------------------------
+//	
+const TRect& MPeninputCnLafDataCommon::compositionLayoutData() const
+	{
+	ASSERT( IsValid());
+	return iLayoutDataInfo[iLayoutType]->iCompositionRect;
+	}
+
 // ---------------------------------------------------------------------------
 // CPeninputLafDataCommon::RangbarLayoutData(TInt aRangbarID)
 // (other items were commented in a header)
@@ -854,6 +876,13 @@ void MPeninputCnLafDataCommon::GetTopAndBottomPaneInfo( const TRect& aParentWndR
 		aDataInfo.iRightButton.iRect = cellBtnRect.Rect();
 		aDataInfo.iRightButton.iInnerRect = cellBtnRect.Rect();		
 		}
+	
+	// Read composition area laf data
+    TAknWindowLineLayout compositionWindowLineLayout = 
+    		AknLayoutScalable_Avkon::vkb2_top_candi_pane(0).LayoutLine();
+    TAknLayoutRect compositionLayoutRect;
+    compositionLayoutRect.LayoutRect( toppaneRect.Rect(), compositionWindowLineLayout );
+    aDataInfo.iCompositionRect = compositionLayoutRect.Rect();
 	
 	// bottom pane
 	const TInt VKBParamBottom2Range[] = { 6, 8, 8 };

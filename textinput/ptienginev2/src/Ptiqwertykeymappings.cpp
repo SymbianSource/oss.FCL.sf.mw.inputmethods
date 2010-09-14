@@ -80,6 +80,7 @@ const TPtiKey vietnameseToneMarkKeys[KNumVietnameseToneMarks] =
     {
     EPtiKeyQwertyS, EPtiKeyQwertyF, EPtiKeyQwertyR, EPtiKeyQwertyX, EPtiKeyQwertyJ	
     };
+const TUint16 KShortCombine = 0xF010;
     
     
 //
@@ -540,6 +541,23 @@ EXPORT_C TInt CPtiQwertyKeyMappings::ReplaceKeyMapL(TPtiKey aKey, TDesC& aMap,
 // 
 TUint16 CPtiQwertyKeyMappings::GetCharForMode(TPtiEngineInputMode aMode, TPtrC aChars, TBool aSkipFirst)
 	{
+    if( DoesModeCharMatchToInputMode(KPtiPinyinMarker, aMode) ||
+        DoesModeCharMatchToInputMode(KPtiStrokeMarker, aMode) ||
+        DoesModeCharMatchToInputMode(KPtiZhuyinMarker, aMode) ||
+        DoesModeCharMatchToInputMode(KPtiCangjieMarker, aMode))
+        {
+        for (TInt i = 0; i < aChars.Length(); i++)
+            {
+            if (DoesModeCharMatchToInputMode(aChars[i], aMode))
+                {
+                if (i + 1 >= aChars.Length())
+                    {
+                    return 0;
+                    }
+                return aChars[i + 1];       
+                }
+            }
+        }   
 	for (TInt i = 0; i < aChars.Length(); i++)
 		{
 		if (!IsModeControlChar(aChars[i]))
@@ -549,15 +567,14 @@ TUint16 CPtiQwertyKeyMappings::GetCharForMode(TPtiEngineInputMode aMode, TPtrC a
 				iCurrentChar++;				
 				continue;	
 				}
+			if(aChars[i] != KShortCombine)
+			    {
 			return aChars[i];
 			}
-		if (DoesModeCharMatchToInputMode(aChars[i], aMode))
-			{
-			if (i + 1 >= aChars.Length())
+			else
 				{
 				return 0;
 				}
-			return aChars[i + 1];		
 			}
 		i++;   // Wrong mode, skip char
 		}
@@ -604,7 +621,13 @@ EXPORT_C TPtiKey CPtiQwertyKeyMappings::KeyForCharacter(TUint16 aChar)
 		if (key != EPtiKeyNone)
 			{
 			TPtrC keyData = DataForKeyLocal(key, textCase, EPtiEngineQwerty);
-			if (keyData.Locate(aChar) != KErrNotFound)
+			TInt indexOfSpecialMark = keyData.Locate(KShortCombine);
+            TInt indexOfChar = keyData.Locate(aChar);
+            if (indexOfSpecialMark != KErrNotFound && indexOfChar != KErrNotFound && indexOfChar > indexOfSpecialMark)
+                {
+                continue;
+                }
+            else if ( indexOfChar != KErrNotFound)
 				{
 				return key;
 				}			

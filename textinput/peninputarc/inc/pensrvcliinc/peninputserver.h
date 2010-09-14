@@ -693,6 +693,15 @@ private:    // New functions
     void CheckSessionValidL(CPeninputServerSession* aSession1,
                             CPeninputServerSession* aSession2) const;
     
+    /**
+     * Update parameters of pointer event suppressor.
+     * 
+     * @since Symbian^3
+     * @param aData parameters of pointer event suppressor
+     * @return none
+     */
+    void UpdatePointerEventSuppressor( const TDesC& aData );
+    
 public:    
     TInt DisabledByDSA(); 
     TInt DisabledByDSAFromAnim();   

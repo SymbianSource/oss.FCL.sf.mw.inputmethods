@@ -21,6 +21,9 @@ const TInt KPenPointerEventSuppressorDefaultMaxTapDuration = 400000;	// 0.4 seco
 const TInt KPenPointerEventSuppressorDefaultMinInterDragInterval = 0;
 const TInt KPenPointerEventSuppressorDefaultMovement = 6;
 
+const TInt KPenPointerEventSuppressorDefaultMaxDownUpDuration = 400000; // 0.4 seconds
+const TInt KPenPointerEventSuppressorDefaultDownUpMovement = 7;
+
 CPenPointerEventSuppressor* CPenPointerEventSuppressor::NewL()
 	{
 	return new (ELeave) CPenPointerEventSuppressor;
@@ -32,17 +35,20 @@ CPenPointerEventSuppressor::~CPenPointerEventSuppressor()
 	}
 
 CPenPointerEventSuppressor::CPenPointerEventSuppressor()
-: iMaxTapDuration(KPenPointerEventSuppressorDefaultMaxTapDuration),
-  iMinInterDragInterval(KPenPointerEventSuppressorDefaultMinInterDragInterval),
-  iTap(EFalse)
+: iMaxTapDuration( KPenPointerEventSuppressorDefaultMaxTapDuration ),
+  iMinInterDragInterval( KPenPointerEventSuppressorDefaultMinInterDragInterval ),
+  iTap( EFalse ),
+  iMaxDownUpDuration( KPenPointerEventSuppressorDefaultMaxDownUpDuration )
   	{
   	// default move limit is 6 units, which seems to be a forgiving value for finger touch
   	iMaxTapMove.iWidth = KPenPointerEventSuppressorDefaultMovement;
 	iMaxTapMove.iHeight = KPenPointerEventSuppressorDefaultMovement;
+	
+	iMaxDownUpMove.iWidth = KPenPointerEventSuppressorDefaultDownUpMovement;
+	iMaxDownUpMove.iHeight = KPenPointerEventSuppressorDefaultDownUpMovement;
   	}
 
-TBool CPenPointerEventSuppressor::SuppressPointerEvent(
-        const TPointerEvent& aPointerEvent)
+TBool CPenPointerEventSuppressor::SuppressPointerEvent( TPointerEvent& aPointerEvent )
 	{
 	switch ( aPointerEvent.iType )
 		{
@@ -88,7 +94,17 @@ TBool CPenPointerEventSuppressor::SuppressPointerEvent(
 			break;
 			}
 		case TPointerEvent::EButton1Up:
-		    {
+            {
+            TTime now;
+            now.HomeTime();
+            TPoint delta = aPointerEvent.iPosition - iDownPos;
+            if ( now.MicroSecondsFrom( iDownTime ) < iMaxDownUpDuration 
+                 && Abs( delta.iX ) < iMaxDownUpMove.iWidth 
+                 && Abs( delta.iY ) < iMaxDownUpMove.iHeight )
+                {
+                //within maximum movement and timeout, so move to position of down
+                aPointerEvent.iPosition = iDownPos;
+                }
 			iTap = EFalse;
 			break;
 		    }
@@ -118,3 +134,13 @@ void CPenPointerEventSuppressor::SetMinInterDragInterval(
 	{
 	iMinInterDragInterval = aInterval;
 	}
+
+void CPenPointerEventSuppressor::SetMaxDownUpMove( TSize aMaxDownUpMove ) 
+    { 
+    iMaxDownUpMove = aMaxDownUpMove; 
+    }
+
+void CPenPointerEventSuppressor::SetMaxDownUpDuration( TTimeIntervalMicroSeconds aDuration ) 
+    {
+    iMaxDownUpDuration = aDuration; 
+    }

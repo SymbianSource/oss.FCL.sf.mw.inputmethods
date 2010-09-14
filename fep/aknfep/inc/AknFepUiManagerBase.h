@@ -442,6 +442,16 @@ protected: // New Functions
     * @since 3.2
     */
     virtual TBool RollbackPreviousCharL();
+	
+	/**
+    * Check whether the character mapped on given key
+    * @param    aKey    The scancode of the key to be checked.
+    * @param    aMode   The InputMode regarding ptiengine
+	* @param    aAgainst The character to be checked.
+	* @param    aCase    Text case.
+	* @Return   ETrue : yes it is on the key; EFalse : No it is not on the Key
+    */
+    TBool MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase) const;
 
 #endif //RD_INTELLIGENT_TEXT_INPUT
 #endif // __ITI_LONGPRESS_NUM_SHIFT_COPYPASTE__

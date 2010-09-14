@@ -93,6 +93,24 @@ protected:
     * @param    aLength The key press length.
     */
     TBool HandleNaviKeysL(TInt aKey, TKeyPressLength aLength);
+private:
+	
+	/**
+    * Get scancode from given character and textcase
+    * @param    aChar    The character to be checked against to gain the scancode
+    * @param    aCase    The textcase info
+    */
+    TInt ScanCodeForCharacter( TUint aChar, TPtiTextCase& aCase );
+	
+	/**
+    * Check whether the character mapped on given key
+    * @param    aKey    The scancode of the key to be checked.
+    * @param    aMode   The InputMode regarding ptiengine
+	* @param    aAgainst The character to be checked.
+	* @param    aCase    Text case.
+	* @Return   ETrue : yes it is on the key; EFalse : No it is not on the Key
+    */
+    TBool MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase) const;
 };
 
 #endif //__AKN_FEP_UI_INPUT_STATE_ENTRY_QWERTY_WESTERN_PREDICTIVE_H__

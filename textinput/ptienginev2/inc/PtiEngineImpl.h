@@ -233,6 +233,9 @@ NONSHARABLE_CLASS(CPtiEngineImpl) : public CBase
         void  SearchKeySequenceInSecLang(TPtrC aIn, TDes8& aOut);
 #endif // FF_DUAL_LANGUAGE_SUPPORT        
         TBool IsCurrentCoreSupportCaseInfo();
+        void IsGroupUnicodeExist(TPtiKey aKey, TDes& aResult, TInt aPosition);
+        TBool MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase);
+        TInt ScanCodeForCharacter( TUint aChar, TPtiTextCase& aCase );
 	private:	
 	    /*
 	    * Pointer to PtiEngine front end.

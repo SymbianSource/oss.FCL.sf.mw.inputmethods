@@ -45,4 +45,19 @@ public:
     // see MAnimSpriteFunctions::UpdateMember
     TBool iFullUpdateFlag;
     };
+
+/**
+ * parameters for pointer event suppressor
+ */
+struct TPointerEventSuppressorParameters
+    {
+    TBool iMoveEventSuppressEnabled;
+    TSize iMoveEventMaxMovement;
+    TInt  iMoveEventTimeout;
+    
+    TBool iUpEventSuppressEnabled;
+    TSize iUpEventMaxMovement;
+    TInt  iUpEventTimeout;
+    };
+
 #endif //_PENINPUTPARAM_EXT_H

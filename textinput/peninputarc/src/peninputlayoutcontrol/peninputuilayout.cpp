@@ -35,6 +35,11 @@
 #include <touchfeedback.h>
 #include <featmgr.h>
 #endif //RD_TACTILE_FEEDBACK
+
+#include <AknFepGlobalEnums.h>
+#include <layoutmetadata.cdl.h>
+#include "peninputtapsettingmanager.h"
+
 // ======== MEMBER FUNCTIONS ========
 
 // ---------------------------------------------------------------------------
@@ -85,6 +90,20 @@ EXPORT_C void CFepUiLayout::BaseConstructL()
     iExtension->iSkinInstance = AknsUtils::SkinInstance();
     iExtension->iTouchFeedbackInstance = MTouchFeedback::Instance();
 	iExtension->iDisableDrawing = EFalse;
+
+    TInt inputMode = PenInputType();
+    TBool isPortraitFSQEnabled = FeatureManager::FeatureSupported(
+            KFeatureIdFfVirtualFullscrPortraitQwertyInput );
+
+    //detect real type of two qwerty layout
+    if ( inputMode == EPluginInputModeFSQ && isPortraitFSQEnabled
+         && !Layout_Meta_Data::IsLandscapeOrientation() )
+        {
+        inputMode = EPluginInputModePortraitFSQ;
+        }
+
+    //load settings of tap accuracy enhancement
+    LoadTapAccuracySettingsL( inputMode );
     }
 
 // ---------------------------------------------------------------------------
@@ -474,7 +493,22 @@ EXPORT_C void CFepUiLayout::OnActivate()
     iRootCtrl->OnActivate();
 #ifdef RD_TACTILE_FEEDBACK  
     iExtension->iTactileSupported = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
-#endif // RD_TACTILE_FEEDBACK      
+#endif // RD_TACTILE_FEEDBACK
+    
+    //update pointer event suppressor
+    if ( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ) )
+        {
+        TPointerEventSuppressorParameters parameters;
+        parameters.iMoveEventMaxMovement = iExtension->iPointerMoveSuppressMaxMovement;
+        parameters.iMoveEventTimeout = iExtension->iPointerMoveSuppressTimeout;
+        parameters.iUpEventMaxMovement = iExtension->iPointerUpSuppressMaxMovement;
+        parameters.iUpEventTimeout = iExtension->iPointerUpSuppressTimeout;
+        
+        TPtrC data( reinterpret_cast<TUint16*>(&parameters),
+                    sizeof(TPointerEventSuppressorParameters) / 2 );
+        
+        SignalOwner( ESignalUpdatePointerSuppressor, data );
+        }
     }
     
 // ---------------------------------------------------------------------------
@@ -921,6 +955,45 @@ EXPORT_C void CFepUiLayout::DisableLayoutDrawing(TBool aFlag)
     ptr.Set(reinterpret_cast<const TUint16*>(&aFlag),sizeof(aFlag)/sizeof(TUint16));
     
     SignalOwner(ESignalDisableUpdating,ptr);
+    }
+
+// ---------------------------------------------------------------------------
+// Get extra response area of key controls.
+// ---------------------------------------------------------------------------
+//
+void CFepUiLayout::GetKeyExtResponseArea( TMargins& aMargins )
+    {
+    aMargins = iExtension->iKeyExtResponseMargins;
+    }
+
+// ---------------------------------------------------------------------------
+// Get extra response area of button controls.
+// ---------------------------------------------------------------------------
+//
+void CFepUiLayout::GetButtonExtResponseArea( TMargins& aMargins )
+    {
+    aMargins = iExtension->iButtonExtResponseMargins;
+    }
+
+// ---------------------------------------------------------------------------
+// Load tap accuracy enhancement settings according to the specified input mode.
+// ---------------------------------------------------------------------------
+//
+void CFepUiLayout::LoadTapAccuracySettingsL( TInt alayoutType )
+    {
+    CPeninputTapSettingManager* manager = CPeninputTapSettingManager::NewL();
+    
+    manager->Load( alayoutType );
+    manager->GetPointerMoveSuppressor( iExtension->iPointerMoveSuppressMaxMovement, 
+                                      iExtension->iPointerMoveSuppressTimeout );
+
+    manager->GetPointerUpSuppressor( iExtension->iPointerUpSuppressMaxMovement, 
+                                      iExtension->iPointerUpSuppressTimeout );
+    
+    manager->GetKeyExtResponseArea( iExtension->iKeyExtResponseMargins );
+    manager->GetButtonExtResponseArea( iExtension->iButtonExtResponseMargins );
+    
+    delete manager;
     }
 
 //end of file

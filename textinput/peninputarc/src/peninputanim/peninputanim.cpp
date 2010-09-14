@@ -241,6 +241,7 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
         case TRawEvent::EButton1Up:
             {
             pointerEvent.iType = TPointerEvent::EButton1Up;
+            pointerEvent.iPosition = aRawEvent.Pos();
             break;
             }
         case TRawEvent::EPointerMove:
@@ -259,17 +260,25 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
         return ETrue;
         }
 
+    TRawEvent rawEvent = aRawEvent;
+    if ( aRawEvent.Type() == TRawEvent::EButton1Up 
+         && aRawEvent.Pos() != pointerEvent.iPosition )
+        {
+        rawEvent.Set( TRawEvent::EButton1Up, 
+                      pointerEvent.iPosition.iX, 
+                      pointerEvent.iPosition.iY );
+        }
     
     switch(aRawEvent.Type())
         {
         case TRawEvent::EKeyUp:
         case TRawEvent::EKeyDown:
             {
-            return OnRawKeyEvent(aRawEvent);            
+            return OnRawKeyEvent( rawEvent );            
             }
         case TRawEvent::EButton1Down:
             {
-            TBool used = OnRawButton1Down(aRawEvent);
+            TBool used = OnRawButton1Down( rawEvent );
             
             if ( used )
                 {
@@ -280,19 +289,19 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
             }
         case TRawEvent::EButton1Up:
             {
-            TBool used = OnRawButton1Up(aRawEvent);
+            TBool used = OnRawButton1Up( rawEvent );
             StopTimer();
             return used;
             }
         case TRawEvent::EPointerMove:
             {
-            return OnRawPointerMove(aRawEvent);
+            return OnRawPointerMove( rawEvent );
             }
         default:
             {
             return EFalse;
-            }            
-        }    
+            }
+        }
     }
 
 // ---------------------------------------------------------------------------
@@ -693,6 +702,18 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             TPckg<TRect> msgData(area);
             msg->ReadL(KMsgSlot1,msgData);
             SetDiscreeptPop(area); 
+            }
+            break;
+        case EPeninputOpUpdatePointerSuppressor:
+            {
+            TPointerEventSuppressorParameters parameters;
+            TPckg<TPointerEventSuppressorParameters> msgData( parameters );
+            msg->ReadL( KMsgSlot1, msgData );
+            
+            iPointerEventSuppressor->SetMaxTapMove( parameters.iMoveEventMaxMovement );
+            iPointerEventSuppressor->SetMaxTapDuration( parameters.iMoveEventTimeout );
+            iPointerEventSuppressor->SetMaxDownUpMove( parameters.iUpEventMaxMovement );
+            iPointerEventSuppressor->SetMaxDownUpDuration( parameters.iUpEventTimeout );
             }
             break;
         default:

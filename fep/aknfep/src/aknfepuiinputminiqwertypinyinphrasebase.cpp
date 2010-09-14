@@ -1307,6 +1307,26 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::ShowInfoOnCandidatePane()
         }
     }
 
+//-------------------------------------------------------------------------------
+// Purpose: to adjust the scancode to make pinyin works
+// Pinyin symbol inheritantly accepts A-Z, any input out of this range will make it crash.
+// Add this function to turn some alienated scancode to A-Z.
+//
+//---------------------------------------------------------------------------
+//
+void TAknFepInputMiniQwertyPinyinPhraseBase::MapKey(TInt& aKey)
+    {    
+    if(iOwner && iOwner->PtiEngine())
+        {
+        iOwner->PtiEngine()->SetInputMode(EPtiEnginePinyinPhraseQwerty);
+        TBuf<KMaxName> upperdata;
+        iOwner->PtiEngine()->MappingDataForKey((TPtiKey)aKey, upperdata, EPtiCaseUpper);
+        if(upperdata.Length() > 0)
+            {
+            aKey = upperdata[0];
+            }
+        }
+    }
 // ---------------------------------------------------------------------------
 // TAknFepInputMiniQwertyPinyinPhraseBase::GetShowKeystroke
 //Handle horizontal navigation.
@@ -1315,10 +1335,12 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::ShowInfoOnCandidatePane()
 void TAknFepInputMiniQwertyPinyinPhraseBase::GetShowKeystroke(TInt aKey,
     TDes& aKeystroke)
     {
+    TInt key = aKey;
+    MapKey(key);   
     TInt count = sizeof(StrokeMap )/sizeof(StrokeMap[0] );
     for (TInt i = 0; i < count; i++)
         {
-        if (aKey == StrokeMap[i].iKeyCode)
+        if (key == StrokeMap[i].iKeyCode)
             {
             aKeystroke.Append(StrokeMap[i].iValue);
             break;
@@ -1679,6 +1701,12 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::AddKeystrokeL(TInt aKey)
         }
 
     GetShowKeystroke(aKey, keystroke);
+	
+	//Add this condition to avoid crash in case keystroke is empty.
+    if(keystroke.Length() == 0)
+        {
+        return EFalse;
+        }
     if ( index >= keystrokeArray->Count() )
         {
         keystrokeArray->AppendL(keystroke);

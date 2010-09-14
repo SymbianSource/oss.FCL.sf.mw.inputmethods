@@ -468,6 +468,15 @@ public:
     TBool ServerReady();
     void OnServerStarted(TInt aErr);
     
+    /**
+     * Enable or disable transition effect.
+     * 
+     * @since Symbian^3
+     * @param aEnable, ETrue: enable transition effect
+     *                 EFalse: disable transition effect.     
+     */
+    void EnableGfxTransEffect( TBool aEnable );
+    
 private:
         /**
      * Constructor

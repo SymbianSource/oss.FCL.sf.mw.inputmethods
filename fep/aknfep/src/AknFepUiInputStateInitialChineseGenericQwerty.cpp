@@ -91,6 +91,33 @@ TAknFepInputStateInitialChineseGenericQwerty(MAknFepUIManagerStateInterface* aOw
 #endif
     }
 
+TInt TAknFepInputStateInitialChineseGenericQwerty::ToneMark(TInt aKey, TDes& aResult)
+    {
+    CPtiEngine* ptiengine = iOwner->PtiEngine();
+    TInt number = 0;
+    aResult.Zero();
+    if(ptiengine)
+        {
+        TBuf<KMaxName> data;
+        ptiengine->MappingDataForKey((TPtiKey)aKey, data, EPtiCaseLower);
+        if(data.Length() > 0)
+            {
+            for(TInt i = 0; i < data.Length(); i++)
+                {
+                if(data[i] == KZhuyinTone2 || data[i] == KZhuyinTone3 || data[i] == KZhuyinTone4 || data[i] == KZhuyinTone5)
+                    {                   
+                    if(aResult.MaxLength() > i)
+                        {
+                    aResult.Append(data[i]);
+                    number++;                        
+                        }                                            
+                    }
+                }
+            }
+        }
+    return number;
+    }
+	
 TBool TAknFepInputStateInitialChineseGenericQwerty::HandleKeyL(TInt aKey, TKeyPressLength aLength)
     {
     CPtiEngine* ptiengine = iOwner->PtiEngine();
@@ -124,58 +151,14 @@ TBool TAknFepInputStateInitialChineseGenericQwerty::HandleKeyL(TInt aKey, TKeyPr
         && !fepMan->IsFlagSet(CAknFepManager::EFlagQwertyChrKeyDepressed))
         {
         TBuf<1> ToneMarkBuf;
-#ifdef RD_INTELLIGENT_TEXT_INPUT 
-        if( keyboardType == EPtiKeyboardQwerty4x12)
-            {
-#endif
-        switch(aKey)
-            {
-            case EPtiKeyQwerty3:
-                ToneMarkBuf.Append(KZhuyinTone3);
-                break;
+        if(ToneMark(aKey, ToneMarkBuf) > 0)
 
-            case EPtiKeyQwerty4:
-                ToneMarkBuf.Append(KZhuyinTone4);
-                break;
 
-            case EPtiKeyQwerty6:
-                ToneMarkBuf.Append(KZhuyinTone2);
-                break;
 
-            case EPtiKeyQwerty7:
-                ToneMarkBuf.Append(KZhuyinTone5);
-                break;
-            default:
-                break;
-            }
-#ifdef RD_INTELLIGENT_TEXT_INPUT 
-                }
-            else
-                if (keyboardType == EPtiKeyboardQwerty4x10 || keyboardType
-                        == EPtiKeyboardQwerty3x11)
                     {
-                    switch (aKey)
-                        {
-                        case EPtiKeyQwertyE:
-                            ToneMarkBuf.Append(KZhuyinTone3);
-                            break;
 
-                        case EPtiKeyQwertyR:
-                            ToneMarkBuf.Append(KZhuyinTone4);
-                            break;
 
-                        case EPtiKeyQwertyY:
-                            ToneMarkBuf.Append(KZhuyinTone2);
-                            break;
 
-                        case EPtiKeyQwertyU:
-                            ToneMarkBuf.Append(KZhuyinTone5);
-                            break;
-                        default:
-                            break;
-                        }
-                    }
-#endif
         
         MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
         fepMan->NewCharacterL(ToneMarkBuf);
@@ -186,6 +169,7 @@ TBool TAknFepInputStateInitialChineseGenericQwerty::HandleKeyL(TInt aKey, TKeyPr
             iOwner->FepMan()->TryCloseUiL();
             }
         ret = ETrue;
+            }
         }
     else if(iOwner->IsValidChineseInputKeyQwerty(aKey) && 
             !fepMan->IsFlagSet(CAknFepManager::EFlagQwertyChrKeyDepressed) && 
@@ -336,10 +320,29 @@ TBool TAknFepInputStateInitialChineseGenericQwerty::IsSCTKey(TInt aKey)
     return response;
     }
 
+//--------------------------------------------------------------------------
+// The gate to decide whether it is a character is whether it has valid mapping
+// If return ETrue, the key will pass to ptiengine.
+//--------------------------------------------------------------------------
+//
 TBool TAknFepInputStateInitialChineseGenericQwerty::IsCharacter(TInt aKey)
     {
     TBool response = EFalse;
-    if (aKey >= EPtiKeyQwertyA && aKey <= EPtiKeyQwertyZ)
+    CPtiEngine* ptiengine = iOwner->PtiEngine(); 
+    MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
+    TPtiTextCase textCase = EPtiCaseLower;
+    if (ptiengine && fepMan)
+        {
+        TBuf<KMaxName> data;
+        ptiengine->MappingDataForKey((TPtiKey)aKey, data, textCase);
+        if (data.Length() > 0)
+            {
+        response = ETrue;
+            }
+        }
+		
+	// exception Z might has no mapping but need to put into ptiengine.
+    if(!response && aKey == EPtiKeyQwertyZ)
         {
         response = ETrue;
         }

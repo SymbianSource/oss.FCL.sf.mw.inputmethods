@@ -513,8 +513,7 @@ void TAknFepInputStateEditingMiniQwertyZhuyinPhrase::CommitContentL(
         fepMan->NewTextL( currentText );
         fepMan->CommitInlineEditL();
         }
-    UIContainer()->EditPaneWindow()->ResetAllArray();
-    UIContainer()->EditPaneWindow()->SetPhraseCreationFlag( EFalse );
+    
     if ( fepMan->IsFlagSet( CAknFepManager::EFlagEditorFull ) )
         {
         fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
@@ -539,6 +538,8 @@ void TAknFepInputStateEditingMiniQwertyZhuyinPhrase::CommitContentL(
 			}
 		AddPhraseToDB( phraseCreatedWithZhuYin );
         }
+    UIContainer()->EditPaneWindow()->ResetAllArray();
+    UIContainer()->EditPaneWindow()->SetPhraseCreationFlag( EFalse );
     fepMan->TryCloseUiL();
     }
 

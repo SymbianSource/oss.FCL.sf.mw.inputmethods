@@ -1542,6 +1542,18 @@ void RPeninputServerImpl::OnServerStarted(TInt aErr)
     User::RequestComplete(iPendingRequest, aErr);
     }
 
+// ---------------------------------------------------------------------------
+// Enable or disable transition effect.
+// ---------------------------------------------------------------------------
+//
+void RPeninputServerImpl::EnableGfxTransEffect( TBool aEnable)
+    {
+    TPckg<TBool> msg( aEnable );
+    TIpcArgs arg;
+    arg.Set( KMsgSlot0, &msg );    
+    SendReceive(EPeninputRequestEnableGfxTransEffect, arg );  
+    }
+
 CWaitingServerAo::CWaitingServerAo(RPeninputServerImpl* aClient) 
                 : CActive(CActive::EPriorityStandard),
                   iClient(aClient)

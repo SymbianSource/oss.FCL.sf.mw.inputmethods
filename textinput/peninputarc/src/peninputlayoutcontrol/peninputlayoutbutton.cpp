@@ -59,9 +59,13 @@ EXPORT_C void CButtonBase::BaseConstructL()
     CFepUiBaseCtrl::BaseConstructL();
     
     //tap accuracy enhancement
-    if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
+    if ( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ) )
         {
-        EnableExtResponseArea( ETrue, TRect(TPoint(10,10),TSize(10,10)) );
+        TMargins margins;
+        UiLayout()->GetButtonExtResponseArea( margins );
+        TPoint topLeftMargin( margins.iLeft, margins.iTop );
+        TSize bottomRightMargin( margins.iRight, margins.iBottom );
+        EnableExtResponseArea( ETrue, TRect( topLeftMargin,bottomRightMargin ) );
         }
     }
 

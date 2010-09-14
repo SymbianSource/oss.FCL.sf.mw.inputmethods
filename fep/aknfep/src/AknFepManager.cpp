@@ -6305,7 +6305,8 @@ void CAknFepManager::DoChineseSubMenu(CAknFepUiInterfaceMenuPane* aMenuPane)
         
         TBool isCangJieSupported = EFalse;
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-        if ( EPtiKeyboardQwerty3x11 == KeyboardLayout() )
+        if ( EPtiKeyboardQwerty3x11 == KeyboardLayout() ||
+             EPtiKeyboardQwerty4x10 == KeyboardLayout())
         	{
         	isCangJieSupported = ETrue;
         	}
@@ -12295,31 +12296,30 @@ void CAknFepManager::ChangeInputLanguageL(TInt aInputLanguage)
 	        }
   
         if (!iLanguageCapabilities.iLocalInputLanguageInUse)
-        	{
-        	switch (iSharedDataInterface->InputTextLanguage())
-            	{
-            	case ELangPrcChinese:
-            		{
-            		iSharedDataInterface->SetInputMode(EPinyin);
-            		SetFlag(EFlagNewSharedDataInputMode);
-            		break;            		
-            		}
+            {
+            switch (iSharedDataInterface->InputTextLanguage())
+                {
+                case ELangPrcChinese:
+                    {
+                    iSharedDataInterface->SetInputMode(EPinyin);
+                    SetFlag(EFlagNewSharedDataInputMode);
+                    break;
+                    }
             	case ELangTaiwanChinese:
-            		{
-            	    iSharedDataInterface->SetInputMode(EZhuyin);
-            	    SetFlag(EFlagNewSharedDataInputMode);
-            	    break;
-            		}
-            	case ELangHongKongChinese:
-            		{
-            	    iSharedDataInterface->SetInputMode(EStroke);
-            	    iSharedDataInterface->SetCangJieMode(ECangJieNormal);
-            	    SetFlag(EFlagNewSharedDataInputMode);
-            	    break;
-            		}
-            	default:
-            		break;
-            	}
+                    {
+                    iSharedDataInterface->SetInputMode(EZhuyin);
+                    SetFlag(EFlagNewSharedDataInputMode);
+                    break;
+                    }
+                case ELangHongKongChinese:
+                    {
+                    iSharedDataInterface->SetInputMode(EStroke);
+                    SetFlag(EFlagNewSharedDataInputMode);
+                    break;
+                    }
+                default:
+                    break;
+                }
             }
 
     	SetHashKeyStyle();

@@ -515,8 +515,7 @@ TBool TAknFepInputStateEntryMiniQwertyZhuyinPhrase::HandleKeyForMiniQwertyL( TIn
 
     TBool ret = ETrue;
 
-    if ( (aKey == EPtiKeyQwertyE || aKey == EPtiKeyQwertyR || 
-        aKey == EPtiKeyQwertyY || aKey == EPtiKeyQwertyU || aKey == EStdKeySpace)
+    if ( (iOwner->IsQwertyZhuyinToneMarkKey(aKey)|| aKey == EStdKeySpace)
         && (aLength == EShortKeyPress) )
         {
         if ( keystrokeLength == 0 )

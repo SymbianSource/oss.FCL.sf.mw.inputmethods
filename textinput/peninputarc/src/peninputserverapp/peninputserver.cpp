@@ -863,7 +863,17 @@ TInt CPeninputServer::HandleMessageL(const RMessage2& aMessage)
     //message requests UI attribute is always handled.
     switch(aMessage.Function())
         {
-        
+        case EPeninputRequestEnableGfxTransEffect:
+            {
+            if( iUseWindowCtrl && iPenUiCtrl )
+                {
+                TBool enable = EFalse;
+                TPckg<TBool> msg( enable );
+                aMessage.ReadL( 0,msg );
+                iPenUiCtrl->EnableGfxTransEffect( enable );
+                }
+            }
+            break;
         case EPeninputRequestUiIsVisible:
             {                      
             TPckg<TBool> msg(iActive);
@@ -2015,7 +2025,11 @@ void CPeninputServer::SignalOwner(TInt aEventType, const TDesC& aEventData)
 				iIsLayoutReDrawAllowWhenActive = *retVal;
 				}
 				break;	
-
+            case ESignalUpdatePointerSuppressor:
+                {               
+                UpdatePointerEventSuppressor( aEventData );
+                }
+                break;
         	default:
         	    if(iUseWindowCtrl)                    
         	        {
@@ -3031,6 +3045,21 @@ void CPeninputServer::HandleDiscreetPopNotification()
 	iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
 	iAnimObj->SetDiscreetPopArea(iDiscreetPopArea);
     }
+
+// ---------------------------------------------------------------------------
+// CPeninputServer::UpdatePointerEventSuppressor()
+// Update parameters of pointer event suppressor.
+// ---------------------------------------------------------------------------
+//
+void CPeninputServer::UpdatePointerEventSuppressor( const TDesC& aData )
+    {
+    TUint16* buf = const_cast<TUint16* >( aData.Ptr() );
+    TPointerEventSuppressorParameters* parameters = 
+            reinterpret_cast<TPointerEventSuppressorParameters*> ( buf );
+    
+    iAnimObj->UpdatePointerEventSuppressor( *parameters );
+    }
+
 // ======== class CEventQueue========
 //
 // ---------------------------------------------------------------------------

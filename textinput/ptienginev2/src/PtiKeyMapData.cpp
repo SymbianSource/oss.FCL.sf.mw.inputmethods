@@ -43,7 +43,7 @@ void CleanupArray( TAny* aAny )
 	implArray->Close();
 	}
 
-const TInt KNumItemsPerDeadKeyDataRow = 6;
+
 
 //
 // CPtiKeyMapData
@@ -211,10 +211,10 @@ EXPORT_C TPtrC CPtiKeyMapData::DeadKeyDataForKey(TPtiKeyboardType aKeyboardType,
 		    {
 		    if (data[0] == index)
 			    {
-			    data++;
-			    return TPtrC(data, KNumItemsPerDeadKeyDataRow - 1);
+			    data += 2;
+			    return TPtrC(data, *(data - 1));
 			    }
-		    data += KNumItemsPerDeadKeyDataRow;
+		    data += (data[1] + 2);
 		    }
         }
 	

@@ -106,9 +106,13 @@ void CVirtualKeyCtrl::ConstructL()
     BaseConstructL();
     
     //tap accuracy enhancement
-    if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
+    if ( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
         {
-        EnableExtResponseArea( ETrue, TRect(TPoint(10,10),TSize(10,10)) );
+        TMargins margins;
+        UiLayout()->GetKeyExtResponseArea( margins );
+        TPoint topLeftMargin( margins.iLeft, margins.iTop );
+        TSize bottomRightMargin( margins.iRight, margins.iBottom );
+        EnableExtResponseArea( ETrue, TRect( topLeftMargin,bottomRightMargin ) );
         }
     }
 
@@ -155,10 +159,29 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
 				else if(iKeyboard->StarIcon() &&
 						iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyStarCharacter )
 					{
-					//CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());
+					// Get the size of the icon
+					TSize starIconSize = iKeyboard->StarIcon()->Bitmap()->SizeInPixels();
+					// Get the rect of draw icon area
+					TRect drawIconRect = textLayout.TextRect();
+					// When the size of icon is different with the size of draw icon area,
+					// because the icon is drew from the left top coordinate of the draw
+					// icon area, so the icon will not be drew in the center. In this case,
+					// we need to adjust the top left coordinate of draw icon rect to 
+					// make sure that the icon will be drew in the center of the key
+					if ( starIconSize != drawIconRect.Size())
+                        {
+						// Adjust the top left coordinate of draw icon rect to make sure
+						// that the icon will be drew in the center of the key
+						drawIconRect.iTl.iX += 
+							( drawIconRect.Width() -  starIconSize.iWidth ) / 2;
+						drawIconRect.iTl.iY += 
+							( drawIconRect.Height() - starIconSize.iHeight ) / 2;
+                        }
+                
+					// Draw the icon
 					AknPenInputDrawUtils::DrawColorIcon( iKeyboard->StarIcon(),
 														 *aGc,
-														 textLayout.TextRect() );		
+														 drawIconRect );		
 					}
 				else				    
 				    {

@@ -73,4 +73,5 @@ EXPORTS
 	_ZN15RPeninputServer11ConnectAsycER14TRequestStatus @ 72 NONAME
 	_ZN15RPeninputServer18SetDataQueryPoppedEi @ 73 NONAME
 	_ZN15RPeninputServer31EnablePriorityChangeOnOriChangeEi @ 74 NONAME
+	_ZN15RPeninputServer20EnableGfxTransEffectEi @ 75 NONAME
 

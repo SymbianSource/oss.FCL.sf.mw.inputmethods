@@ -89,7 +89,8 @@ enum TPeninputServerRqst
     EPeninputRequestDimResChangeLayout,
     EPeninputRequestSupportInputMode,
     EPeninputRequestSetInputLanguage,
-	EPeninputEnablePriorityChangeOnOriChange
+	EPeninputEnablePriorityChangeOnOriChange,
+	EPeninputRequestEnableGfxTransEffect
     };
 
 //server error code

@@ -131,6 +131,12 @@ const TInt16 KStrokeBendingValue = 0x4e5b;
 const TInt16 KStrokeQuestionValue = 0x003f;
 const TInt16 KStrokeUnicode = 0x2461;
 const TInt16 KZhuyinIndicator = 0x2462;
+const TText KZhuyinTone2 = 0x02CA; // qwerty key6
+const TText KZhuyinTone3 = 0x02C7; // qwerty key3
+const TText KZhuyinTone4 = 0x02CB; // qwerty key4
+const TText KZhuyinTone5 = 0x02D9; // qwerty key7
+static const TUint KShortCombine = 0xF010;
+const TInt KMaxMapping = 10;
 
 // Local method declarations.
 LOCAL_C TInt RemapVietnameseAccentedCharacter(TUint16 aChr);
@@ -763,6 +769,29 @@ TInt CPtiEngineImpl::GetNextWordCandidateListL(CDesCArray& aList)
 	return KErrNoSuitableCore;
 	}
 
+// ---------------------------------------------------------------------------
+// Group Unicode is that kind of mapping which one visible character with more 
+// than one unicode submitted.
+// 
+// ---------------------------------------------------------------------------
+//
+void CPtiEngineImpl::IsGroupUnicodeExist(TPtiKey aKey, TDes& aResult, TInt aPosition)
+    {
+    TBuf<5> keyMappings;    
+    MappingDataForKey( (TPtiKey)aKey, keyMappings, Case());
+    if(keyMappings.Length() > 0 && keyMappings.Locate(KShortCombine) == aPosition )
+        {
+        for(TInt i = 0; i < keyMappings.Length(); i++)
+            {
+            aResult.Append(keyMappings[i]);
+            }
+        }
+    else
+        {
+        aResult.Append(aKey);
+        }    
+    }
+
 		
 // ---------------------------------------------------------------------------
 // CPtiEngineImpl::AppendKeyPress
@@ -849,7 +878,24 @@ TPtrC CPtiEngineImpl::AppendKeyPress(TPtiKey aKey)
 			    }
 			
 			// Forward to core object
-			Core()->AppendKeyPress(aKey);
+			TBuf<KMaxMapping> mappings;
+			IsGroupUnicodeExist(aKey, mappings, 0);
+			if(mappings.Length() == 1)
+			    {
+				Core()->AppendKeyPress(aKey);
+			    }
+			else
+			    {
+                for(TInt i = 0; i < mappings.Length(); i++)
+                    {
+                    TPtiTextCase retCase, oriCase;
+                    retCase = oriCase = Case();
+                    TPtiKey key = (TPtiKey)ScanCodeForCharacter(mappings[i], retCase);
+                    SetCase(retCase);
+                    Core()->AppendKeyPress(key);
+                    SetCase(oriCase); 
+                    }
+			    }
 			
 			if(KeyboardType() == EPtiKeyboardHalfQwerty && aKey == EStdKeyFullStop)
 			    {
@@ -987,6 +1033,60 @@ TPtrC CPtiEngineImpl::AppendKeyPress(TPtiKey aKey)
 	return iTextBuffer;
 	}
 
+TBool CPtiEngineImpl::MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase)
+    {
+    SetInputMode((TPtiEngineInputMode)aMode);
+    TBuf<KMaxName> data;
+    MappingDataForKey((TPtiKey)aKey, data, (TPtiTextCase)aCase);
+    if(data.Length() > 0)
+        {
+        return (data[0] == aAgainst);                
+        }
+    return EFalse;        
+    }
+TInt CPtiEngineImpl::ScanCodeForCharacter( TUint aChar, TPtiTextCase& aCase )
+    {
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+    CPtiCoreLanguage *lang = static_cast<CPtiCoreLanguage*>( CurrentLanguage() );
+    MPtiKeyMappings* keymapping = lang->GetQwertyKeymappings();
+    if ( keymapping )
+        {
+        TPtiEngineInputMode oldInputMode = InputMode();
+        SetInputMode( EPtiEngineQwertyPredictive );
+        TInt retKey = keymapping->KeyForCharacter( (TUint16)aChar );
+        if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseLower))
+            {
+            aCase = EPtiCaseLower;
+            }
+        else if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseUpper))
+            {
+            aCase = EPtiCaseUpper;
+            }
+        else if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseFnLower))
+            {
+            aCase = EPtiCaseFnLower;
+            }
+        else if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseFnUpper))
+            {
+            aCase = EPtiCaseFnUpper;
+            }
+        else
+            {
+            }
+        SetInputMode( oldInputMode );
+#if defined(__WINS__)
+    if (retKey == EPtiKeyQwertyPlus)
+        {
+        retKey = EStdKeyNkpPlus;
+        }
+#endif
+        return retKey;
+        }
+    return EPtiKeyNone;
+#else
+    return EPtiKeyNone;
+#endif // RD_INTELLIGENT_TEXT_INPUT
+    }
 
 // ---------------------------------------------------------------------------
 // CPtiEngineImpl::DeleteKeyPress
@@ -1056,7 +1156,9 @@ TPtrC CPtiEngineImpl::DeleteKeyPress()
 TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirected)
 	{
 	aRedirected = EFalse;
-    TPtiKeyboardType kbdType = KeyboardType();	
+    TPtiKeyboardType kbdType = KeyboardType();
+	TBuf<KMaxName> data;
+	TInt key;
     
 	switch (iInputMode)
 		{
@@ -1112,47 +1214,48 @@ TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirect
              if(EPtiKeyboardQwerty4x10 == keyboardType ||
                      EPtiKeyboardQwerty3x11 == keyboardType )
                  {
-                TBuf<KMaxName> lowerdata;
                  TInt StrokeUnicodePosition =0;
-                 MappingDataForKey((TPtiKey)aKey, lowerdata, EPtiCaseLower);  
-                 if(lowerdata.Length()>0)
+                 MappingDataForKey((TPtiKey)aKey, data, EPtiCaseLower);  
+                 if(data.Length()>0)
                          {
-                         for(TInt i=0;i<lowerdata.Length();i++)
+                         for(TInt i=0;i<data.Length();i++)
                              {
-                             if(lowerdata[i]==KStrokeUnicode)
+                             if(data[i]==KStrokeUnicode)
                                  {
                                  StrokeUnicodePosition = i + 1;
                                  break;
                             }
+                     if(data[0] == KZhuyinTone2 ||
+                        data[0] == KZhuyinTone3 ||
+                        data[0] == KZhuyinTone4 ||
+                        data[0] == KZhuyinTone5 )
+                         {
+                         return TPtrC();
+                         }
                         }
                     }
-                if (lowerdata.Length() > StrokeUnicodePosition && iCase
+                if (data.Length() > StrokeUnicodePosition && iCase
                         == EPtiCaseLower)
                     {
-                    if (lowerdata[StrokeUnicodePosition]
+                    if (data[StrokeUnicodePosition]
                             == KStrokeHorizontalValue
-                            || lowerdata[StrokeUnicodePosition]
+                            || data[StrokeUnicodePosition]
                                     == KStrokeVerticalValue
-                            || lowerdata[StrokeUnicodePosition]
+                            || data[StrokeUnicodePosition]
                                     == KStrokeDownToLeftValue
-                            || lowerdata[StrokeUnicodePosition]
+                            || data[StrokeUnicodePosition]
                                     == KStrokeDownToRightValue
-                            || lowerdata[StrokeUnicodePosition]
+                            || data[StrokeUnicodePosition]
                                     == KStrokeBendingValue
-                            || lowerdata[StrokeUnicodePosition]
+                            || data[StrokeUnicodePosition]
                                     == KStrokeQuestionValue)
 
                         {
                         return TPtrC();
                         }
                     }
-                 if (iCase == EPtiCaseLower && (aKey == EPtiKeyQwertySpace
-                        || aKey == EPtiKeyQwertyChr || aKey
-                        == EPtiKeyQwertyApostrophe))
-                    {
-                    return TPtrC();
-                    }
-                 if(iCase == EPtiCaseLower && aKey == EPtiKeyQwertySpace)
+                 
+                 if(iCase == EPtiCaseLower && (aKey == EPtiKeyQwertySpace || aKey == EPtiKeyQwertyZ))
                      {
                      return TPtrC();
                      }
@@ -1219,8 +1322,14 @@ TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirect
 		case EPtiEngineNormalCangjieQwerty:
 		case EPtiEngineEasyCangjieQwerty:
 		case EPtiEngineAdvCangjieQwerty:
+            MappingDataForKey((TPtiKey)aKey, data, EPtiCaseUpper);
+            key = aKey;
+            if(data.Length() > 0)
+                {
+                key = (TPtiKey)data[0];
+                }
 			 if ((iCase == EPtiCaseLower) &&
-				 (aKey >= EPtiKeyQwertyA) && (aKey <= EPtiKeyQwertyY))
+				 (key >= EPtiKeyQwertyA) && (key <= EPtiKeyQwertyY))
 			    {
 			    return TPtrC();
 			    }
@@ -1247,19 +1356,18 @@ TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirect
 		     else if(EPtiKeyboardQwerty4x10 == kbdType ||
 		            EPtiKeyboardQwerty3x11 == kbdType  )
 		        {
-		        TBuf<KMaxName> lowerdata;
-                TInt i;
-                MappingDataForKey((TPtiKey) aKey, lowerdata, EPtiCaseLower);
-                if (lowerdata.Length() > 0)
+                MappingDataForKey((TPtiKey) aKey, data, EPtiCaseLower);
+                if (data.Length() > 0)
                     {
-                    for ( i = 0; i < lowerdata.Length(); i++)
+					TInt i;
+                    for ( i = 0; i < data.Length(); i++)
                         {
-                        if (lowerdata[i] == KZhuyinIndicator)
+                        if (data[i] == KZhuyinIndicator)
                             {
                             break;
                             }
                         }
-                    if(i!=lowerdata.Length() && iCase == EPtiCaseLower )
+                    if(i!=data.Length() && iCase == EPtiCaseLower )
                         {
                         return TPtrC();
                         }
@@ -3223,6 +3331,7 @@ void CPtiEngineImpl::MappingDataForKey(TPtiKey aKey, TDes& aResult, TPtiTextCase
 		     	 CPtiQwertyKeyMappings* maps = static_cast<CPtiQwertyKeyMappings*>(iCurrentLanguage->GetQwertyKeymappings());
 				 if( maps != NULL )
 				     {
+                     maps->SetKeyboardType(KeyboardType());
 		     	     maps->GetDataForKey(aKey, aResult, aCase);
 				     }
 				 }     			

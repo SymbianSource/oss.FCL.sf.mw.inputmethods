@@ -42,9 +42,11 @@
 #include <featmgr.h>                //FeatureManager
 #include <e32keys.h>
 #include <aknfep.rsg>
+#include <PtiKeyMappings.h>
 
 
 static const TInt KKeyMappingsLength = 63;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -603,6 +605,72 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::HandleQwertyKeysL(TInt aKey
         
         // Framework will handle the key event.
        	return EFalse;
+    }
+
+
+// use ptiengine's api to tell whether a character mapped on a given key.	
+TBool TAknFepInputStateEntryQwertyWesternPredictive::MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase) const
+    {    
+    CPtiEngine* ptiengine = iOwner->PtiEngine();
+    if(ptiengine)
+        {
+        ptiengine->SetInputMode((TPtiEngineInputMode)aMode);
+        TBuf<KMaxName> data;
+        ptiengine->MappingDataForKey((TPtiKey)aKey, data, (TPtiTextCase)aCase);
+        if(data.Length() > 0)
+            {
+            return (data[0] == aAgainst);                
+            }
+        }
+    return EFalse;        
+    }
+	
+	
+// Get Scancode from a given character and tell the case at the same time.
+TInt TAknFepInputStateEntryQwertyWesternPredictive::ScanCodeForCharacter( TUint aChar, TPtiTextCase& aCase )
+    {
+    MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
+    CPtiEngine* ptiengine = iOwner->PtiEngine();
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+    CPtiCoreLanguage *lang = static_cast<CPtiCoreLanguage*>( ptiengine->CurrentLanguage() );
+    MPtiKeyMappings* keymapping = lang->GetQwertyKeymappings();
+    if ( keymapping )
+        {
+        TPtiEngineInputMode oldInputMode = ptiengine->InputMode();
+        ptiengine->SetInputMode( EPtiEngineQwertyPredictive );
+        TInt retKey = keymapping->KeyForCharacter( (TUint16)aChar );
+        if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseLower))
+            {
+            aCase = EPtiCaseLower;
+            }
+        else if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseUpper))
+            {
+            aCase = EPtiCaseUpper;
+            }
+        else if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseFnLower))
+            {
+            aCase = EPtiCaseFnLower;
+            }
+        else if(MapAgainst(retKey, EPtiEngineQwertyPredictive, aChar, EPtiCaseFnUpper))
+            {
+            aCase = EPtiCaseFnUpper;
+            }
+        else
+            {
+            }
+        ptiengine->SetInputMode( oldInputMode );
+#if defined(__WINS__)
+    if (retKey == EPtiKeyQwertyPlus)
+        {
+        retKey = EStdKeyNkpPlus;
+        }
+#endif
+        return retKey;
+        }
+    return EPtiKeyNone;
+#else
+    return EPtiKeyNone;
+#endif // RD_INTELLIGENT_TEXT_INPUT
     }
     
 

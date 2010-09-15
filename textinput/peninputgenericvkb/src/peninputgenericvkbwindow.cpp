@@ -2011,7 +2011,26 @@ TBool CPeninputGenericVkbWindow::HandleVirtualKeyUpEvent(TInt aEventType,
     iNewDeadKeyBuf = KNullDesC;
     return EFalse;
     } 
- 
+
+// ---------------------------------------------------------------------------
+// CPeninputGenericVkbWindow::HandleVirtualKeyDownEvent
+// (Handle virtual key down event)
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbWindow::HandleVirtualKeyDownEvent()
+	{
+    // Get DeadKey state
+    TInt latchedFlag = CPeninputDataConverter::AnyToInt(
+				   iLayoutContext->RequestData( EAkninputDataTypeLatchedSet ));
+    
+    if ( latchedFlag )
+    	{
+		UnLatchDeadKey( iNewDeadKeyBuf );
+	    TBool deadKeyChange = ETrue;
+	    iLayoutContext->SetData( EAkninputDataTypeLatchedSet, &deadKeyChange );
+    	}
+	}
+
  TBool CPeninputGenericVkbWindow::HandleDeadKeyL(TInt aEventType, 
                                                  const TDesC& aEventData )
  	{

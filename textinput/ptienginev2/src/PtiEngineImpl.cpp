@@ -747,6 +747,19 @@ void CPtiEngineImpl::OnInputModeChanged(TPtiEngineInputMode /*aOldMode*/, TPtiEn
 			delete oldTextBuf;
 			}
 		}
+     else
+         {
+         // call CPtiKoreanQwertyCore::LoadKeyboards() by OpenLanguageL() again,
+         // make sure that in hardware Qwerty, product keymappings can be used correctly.
+         if ( aNewMode == EPtiEngineQwertyKorean )
+            {    
+              CPtiCore* core = static_cast<CPtiCore*>(iCurrentLanguage->GetCore( aNewMode ));
+              if ( core )
+                  {
+                  TRAP_IGNORE( core->OpenLanguageL( iCurrentLanguage ) );
+                  }
+            }
+          }
 	}
 
 // ---------------------------------------------------------------------------
@@ -2460,13 +2473,25 @@ void CPtiEngineImpl::SetCandidatePageLength(TInt aLength)
 //
 void CPtiEngineImpl::LoadCoresInDefaultDirL(TBool aUseDefaultUserDictionary)
 	{
-	TInt i;
-	CArrayFix<TInt>* array = CPtiCore::ListCoresLC();
-	User::LeaveIfNull(array);
-	for (i = 0; i < array->Count(); i++)
-		{
-		AddCoreL(TUid::Uid(array->At(i)), aUseDefaultUserDictionary);
-		}
+    TUid KPtiSogouCoreUid = { 0x20031DD7 };
+    TInt i = 0;
+    TInt postponed = -1;
+    CArrayFix<TInt>* array = CPtiCore::ListCoresLC();
+    User::LeaveIfNull(array);
+    for (i = 0; i < array->Count(); i++)
+        {
+        if (TUid::Uid(array->At(i)) == KPtiSogouCoreUid )
+            {
+            postponed = i;
+            continue;
+            }
+        AddCoreL(TUid::Uid(array->At(i)), aUseDefaultUserDictionary);
+        }
+    
+    if (postponed >= 0)
+        {
+        AddCoreL(TUid::Uid(array->At(postponed)), aUseDefaultUserDictionary);
+        }
 
 	CleanupStack::PopAndDestroy(); // array
 	}

@@ -45,8 +45,6 @@
 
 #include "data_caging_path_literals.hrh"
 
-_LIT(KFepUiControlsBitmapFile, "aknfepuictrls.mbm");
-
 CAknFepUICtrlPinyinPopup* CAknFepUICtrlPinyinPopup::NewL(RWindow& aParent, CAknFepUiLayoutDataMgr* aLafDataMgr )
     {
     CAknFepUICtrlPinyinPopup* self = new(ELeave) CAknFepUICtrlPinyinPopup( aLafDataMgr );
@@ -62,10 +60,6 @@ CAknFepUICtrlPinyinPopup::~CAknFepUICtrlPinyinPopup()
     iPages.Reset();
     delete iSpellingArray;
     delete iSpellingIndexArray;
-    delete iNaviArrowBitmapLeft;
-    delete iNaviArrowBitmapLeftMask;
-    delete iNaviArrowBitmapRight;
-    delete iNaviArrowBitmapRightMask;
     delete iBgContext;
     delete iKeystrokeArray;
     delete iInEffectKeystrokeArray;
@@ -213,7 +207,7 @@ void CAknFepUICtrlPinyinPopup::SplitPhraseSpellingIntoPages(void)
         TAknWindowLineLayout layoutEntryItem = 
                 CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData(ELayoutEntryItem));
         TAknTextLineLayout entryTextLine = 
-            CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData(EEntryTextLayout));
+            CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData(EEEPTextLine));
         TInt layoutLinePrevLeft = 0;
         TInt layoutLinePrevWidth = 0;
 
@@ -225,7 +219,7 @@ void CAknFepUICtrlPinyinPopup::SplitPhraseSpellingIntoPages(void)
         layoutText.LayoutText(rectEntryItem,entryTextLine);
         TRect rectText = layoutText.TextRect();
         
-        TInt rightLimit = iIndiFepArrowRight.Rect().iTl.iX;
+        TInt rightLimit = rectText.iBr.iX;
         // value is 3 for 176*208 resolution
         TInt distance = rectText.iTl.iX - rectEntryItem.iTl.iX + rectEntryItem.iBr.iX - rectText.iBr.iX;
         
@@ -291,9 +285,9 @@ void CAknFepUICtrlPinyinPopup::SplitSpellingIntoPages(TInt aCount)
         TInt spellingLeftNum = aCount - index > EMaxCandidates? EMaxCandidates:aCount - index;
  
         TAknWindowLineLayout layoutEntryItem = 
-                CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData(ELayoutEntryItem));
+                CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EInputLayout ));
         TAknTextLineLayout entryTextLine = 
-            CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData(EEntryTextLayout));
+            CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData(EInputTextLayout ));
         TInt layoutLinePrevLeft = 0;
         TInt layoutLinePrevWidth = 0;
 
@@ -703,19 +697,6 @@ void CAknFepUICtrlPinyinPopup::Draw(const TRect& /*aRect*/) const
         iRectOutlineFrameInput.DrawRect(gc);
         iRectInsideAreaInput.DrawRect(gc);
         }
-
-    if((iVisibleCount >= 1) && (iPages.Count() > 1))
-        {
-        if(iCurDisplayPage != 0)
-            {
-            iIndiFepArrowLeft.DrawImage(gc, iNaviArrowBitmapLeft, iNaviArrowBitmapLeftMask);
-            }
-
-        if (iPages.Count() > iCurDisplayPage + 1)
-            {
-            iIndiFepArrowRight.DrawImage(gc, iNaviArrowBitmapRight, iNaviArrowBitmapRightMask);
-            }
-	    }
     }
 
 TTypeUid::Ptr CAknFepUICtrlPinyinPopup::MopSupplyObject(TTypeUid aId)
@@ -725,16 +706,14 @@ TTypeUid::Ptr CAknFepUICtrlPinyinPopup::MopSupplyObject(TTypeUid aId)
     return CCoeControl::MopSupplyObject(aId);
     }
 
-void CAknFepUICtrlPinyinPopup::ConstructL(RWindow& /*aParent*/)
+void CAknFepUICtrlPinyinPopup::ConstructL( RWindow& aParent )
     {
-    CreateWindowL();
-    ConstructBitmapsL();
-    RWindow& window = Window();
+    CreateWindowL( aParent );
 
     for(TInt i = 0; i < EMaxPhraseCandidate; i++)
         {
         CAknFepUICtrlInputPane* inputPane = 
-            CAknFepUICtrlInputPane::NewL(window, CAknFepUICtrlInputPane::ELayoutPhrasePinyinPopupPane, iLafDataMgr);
+            CAknFepUICtrlInputPane::NewL(aParent, CAknFepUICtrlInputPane::ELayoutPhrasePinyinPopupPane, iLafDataMgr);
         inputPane->SetMopParent(this);
         CleanupStack::PushL(inputPane);
         // ownership is passed, unless allocation is unsuccessful, in which case we still have it on the stack
@@ -766,8 +745,6 @@ void CAknFepUICtrlPinyinPopup::ConstructL(RWindow& /*aParent*/)
     iZhuyinSymbolsForChineseCharsDisped = new(ELeave)CDesCArrayFlat(1);
     
     SetNonFocusing();
-    window.SetOrdinalPosition(0, ECoeWinPriorityFep); // right at the front
-    window.SetNonFading(ETrue);
 
     TRect outerRect = TRect();
     TRect innerRect = TRect();
@@ -776,40 +753,6 @@ void CAknFepUICtrlPinyinPopup::ConstructL(RWindow& /*aParent*/)
     iBgContext = CAknsFrameBackgroundControlContext::NewL(KAknsIIDQsnFrPopupSub, outerRect, innerRect, ETrue);
     iLastResouce = 0;
     MakeVisible(EFalse);
-    }
-
-void CAknFepUICtrlPinyinPopup::ConstructBitmapsL()
-    {
-    MAknsSkinInstance* skin = AknsUtils::SkinInstance();    
-    
-    TFileName bmpFile;
-    bmpFile.Copy(_L("z:"));
-    bmpFile.Append(KDC_BITMAP_DIR);
-    bmpFile.Append(KFepUiControlsBitmapFile);      
-    
-    AknsUtils::CreateColorIconL( skin,
-                                     KAknsIIDQgnIndiFepArrowLeft,
-                                     KAknsIIDQsnIconColors,
-                                     EAknsCIQsnIconColorsCG20,
-                                     iNaviArrowBitmapLeft,
-                                     iNaviArrowBitmapLeftMask,
-                                     bmpFile,
-                                     EMbmAknfepuictrlsQgn_indi_fep_arrow_left,
-                                     EMbmAknfepuictrlsQgn_indi_fep_arrow_left_mask,
-                                     AKN_LAF_COLOR( 0 )
-                                 );  
-
-    AknsUtils::CreateColorIconL( skin,
-                                     KAknsIIDQgnIndiFepArrowRight,
-                                     KAknsIIDQsnIconColors,
-                                     EAknsCIQsnIconColorsCG20,
-                                     iNaviArrowBitmapRight,
-                                     iNaviArrowBitmapRightMask,
-                                     bmpFile,
-                                     EMbmAknfepuictrlsQgn_indi_fep_arrow_right,
-                                     EMbmAknfepuictrlsQgn_indi_fep_arrow_right_mask,
-                                     AKN_LAF_COLOR( 0 )
-                                 );    
     }
 
 CAknFepUICtrlPinyinPopup::CAknFepUICtrlPinyinPopup( CAknFepUiLayoutDataMgr* aLafDataMgr )
@@ -835,16 +778,6 @@ CAknFepUICtrlPinyinPopup::CAknFepUICtrlPinyinPopup( CAknFepUiLayoutDataMgr* aLaf
 
 void CAknFepUICtrlPinyinPopup::LayoutRects()
     {
-    // left arrow
-    iIndiFepArrowLeft = 
-        CAknFepChineseUIDataConv::AnyToLayoutRect( iLafDataMgr->RequestData( EIndiFepArrowLeft ));
-    AknIconUtils::SetSize( iNaviArrowBitmapLeft, iIndiFepArrowLeft.Rect().Size());
-
-    // right arrow
-    iIndiFepArrowRight = 
-        CAknFepChineseUIDataConv::AnyToLayoutRect( iLafDataMgr->RequestData( EIndiFepArrowRight ));
-    AknIconUtils::SetSize( iNaviArrowBitmapRight, iIndiFepArrowRight.Rect().Size());
-
     // cover main pane
     iRectCoverMainPaneInput = 
         CAknFepChineseUIDataConv::AnyToLayoutRect( iLafDataMgr->RequestData( ERectCoverMainPaneInput ));
@@ -878,30 +811,41 @@ void CAknFepUICtrlPinyinPopup::LayoutInputPane(TInt aIndex)
 
     CAknFepUICtrlInputPane* inputPane = iInputPaneArray[aIndex];
     TAknWindowLineLayout layoutEntryItem = 
-            CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData(ELayoutEntryItem));
+           CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EInputLayout ));
     TAknTextLineLayout layoutLineText = 
-        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData(EEntryTextLayout));
+        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EInputTextLayout ));
     TAknLayoutRect layoutRectEntryItem;
-    layoutRectEntryItem.LayoutRect(rect,layoutEntryItem);
+    layoutRectEntryItem.LayoutRect( rect, layoutEntryItem );
     TRect rectEntryItem = layoutRectEntryItem.Rect();
     
     TAknLayoutText layoutText;
-    layoutText.LayoutText(rectEntryItem,layoutLineText);
+    layoutText.LayoutText( rectEntryItem, layoutLineText );
+    
+    // Get text rect
     TRect rectText = layoutText.TextRect();
+    TInt minWidth = rectText.Width();
     
     // value is 3 for 176*208 resolution
     TInt distance = rectText.iTl.iX - rectEntryItem.iTl.iX + rectEntryItem.iBr.iX - rectText.iBr.iX;
     
-    if( aIndex > 0)
+    if ( aIndex > 0 )
         {
         CAknFepUICtrlInputPane* inputPanePrev = iInputPaneArray[aIndex - 1];
         rectText.iTl.iX = inputPanePrev->Rect().iBr.iX;
         }
-    rectText.SetWidth(inputPane->LabelTextWidthInPixels() + distance);
-    rectText.SetHeight(rect.Height());
+    
+    TInt width = inputPane->LabelTextWidthInPixels();
+    // Only there has text that need the distance.
+    if ( width > 0 ) 
+    	{
+		width = width > minWidth ? width : minWidth;
+		width += distance;
+    	}
+    rectText.SetWidth( width );
+    rectText.SetHeight( rect.Height());
 
-    inputPane->SetRect(rectText);
-    inputPane->SetHighlighted(aIndex == iSelected);
+    inputPane->SetRect( rectText );
+    inputPane->SetHighlighted( aIndex == iSelected );
     }
 
 void CAknFepUICtrlPinyinPopup::SetInputPaneVisibility()
@@ -945,7 +889,7 @@ void CAknFepUICtrlPinyinPopup::LayoutFrames()
 void CAknFepUICtrlPinyinPopup::CalculateFrameRects(TRect& aOuterRect, TRect& aInnerRect) const
     {
     TRect windowRect = 
-        CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectEntry ));
+        CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectEEP ));
     TInt rectHeight = windowRect.iBr.iY - windowRect.iTl.iY;
     TInt rectWidth = windowRect.Width();
     windowRect.iTl.iX = 0;

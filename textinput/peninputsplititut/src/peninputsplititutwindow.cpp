@@ -43,7 +43,6 @@
 #include "peninputcommonbgctrl.h"
 
 _LIT(KBmpFileName, "z:\\resource\\apps\\peninputsplititut.mbm");
-_LIT(KEmptyString, "");
 
 const TInt KImageMajorSkinId = EAknsMajorGeneric;
 const TUint KDefaultSpellTextColor = 0;
@@ -262,6 +261,13 @@ void CSplitItutWindow::ConstructItutKeypadFromResourceL(TInt aResId)
     iStandardItutKp->SetTextLineLayout(
         TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine3)),
         EPosRight3);
+    
+    TRect* iconRect = static_cast<TRect*>( iDataMgr->RequestData( EStarIconRect ));
+    // Set the star icon rect
+    iStandardItutKp->SetStarIconRect( *iconRect );
+    iconRect = static_cast<TRect*>( iDataMgr->RequestData( EShiftIconRect ));
+    // Set the shift icon rect
+    iStandardItutKp->SetShiftIconRect( *iconRect );
 
     TResourceReader reader;
     CCoeEnv::Static()->CreateResourceReaderLC(reader, aResId);
@@ -785,7 +791,7 @@ void CSplitItutWindow::CreateICFL()
     									   KAknsIIDQsnFrInputPreviewSideR );  
     iICF->SetMsgBubbleCtrlSize(TSize(iBubbleSize.iW,iBubbleSize.iH));
     
-    iICF->MsgBubbleCtrl()->SetTextL( KEmptyString );
+    iICF->MsgBubbleCtrl()->SetTextL( KNullDesC );
     
     iICF->SetTextMargin( iDataMgr->iIcfTextLeftMargin,
             			 iDataMgr->iIcfTextRightMargin,
@@ -794,8 +800,27 @@ void CSplitItutWindow::CreateICFL()
             					  
     iICF->SetLineSpace( iDataMgr->iIcfTextLineSpaceMargin );    					  
         	 
-    SetIndiBubble();
+    SetSpellIndiBubble();
     iICF->Hide( ETrue );
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::CreateSplitIndiBubbleL
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::CreateSplitIndiBubbleL()
+    {
+    // char count bubble
+    TRect bubbleRect = TItutDataConverter::AnyToRect(iDataMgr->RequestData(ESplitIndiPaneRect));
+    iSplitIndiBubble = CBubbleCtrl::NewL(bubbleRect,iLayoutOwner,ECtrlIdSplitIndiBubble);
+    iSplitIndiBubble->SetTextFormat(TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(ESplitIndiTextLine)));
+    iSplitIndiBubble->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
+    iSplitIndiBubble->SetBitmapParam(NULL,
+                            NULL,
+                            KAknsIIDQsnFrInputPreviewSideL,
+                            KAknsIIDQsnFrInputPreviewMiddle,
+                            KAknsIIDQsnFrInputPreviewSideR);
+    AddControlL(iSplitIndiBubble);  
     }
  
     
@@ -809,6 +834,7 @@ void CSplitItutWindow::ConstructL()
     CreateAllButtonL();
     CreateItutKeypadL();
     CreateICFL();
+	CreateSplitIndiBubbleL();
     }
 
 // ---------------------------------------------------------------------------
@@ -948,6 +974,7 @@ TInt CSplitItutWindow::SizeChanged()
     {
     // resize all controls
     SetCtrlRect(iStandardItutKp, EKeypadRect);
+    SetCtrlRect(iSplitIndiBubble, ESplitIndiPaneRect);
 
     iStandardItutKp->SetTextLineLayout(
         TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadLeftTextLine)),
@@ -961,6 +988,13 @@ TInt CSplitItutWindow::SizeChanged()
     iStandardItutKp->SetTextLineLayout(
         TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine3)),
         EPosRight3);
+    
+    TRect* iconRect = static_cast<TRect*>( iDataMgr->RequestData( EStarIconRect ));
+    // Set the star icon rect
+    iStandardItutKp->SetStarIconRect( *iconRect );
+    iconRect = static_cast<TRect*>( iDataMgr->RequestData( EShiftIconRect ));
+    // Set the shift icon rect
+    iStandardItutKp->SetShiftIconRect( *iconRect );
     
     RPointerArray<CVirtualKey>& keys = 
         const_cast<RPointerArray<CVirtualKey>&>(iStandardItutKp->KeyArray());
@@ -1456,9 +1490,44 @@ void CSplitItutWindow::SetUnicodesForHardKey1L(CVirtualKey* aKey, const TDesC& a
 
     }
 
-void CSplitItutWindow::UpdateIndiBubbleL( TUint8* aData )
+void CSplitItutWindow::UpdateSplitIndiBubbleL( TUint8* aData )
     {  
-	// if icf is hidden, not call updateindibubblel
+    RDesReadStream readStream;
+    TFepIndicatorInfo indicatorData;
+
+    TPtr8 countPtr( aData, 4*sizeof(TInt), 4*sizeof(TInt) );            
+    readStream.Open(countPtr);
+    CleanupClosePushL(readStream);
+
+    indicatorData.iIndicatorImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorMaskID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextImgID = readStream.ReadInt32L();
+    indicatorData.iIndicatorTextMaskID = readStream.ReadInt32L();
+
+    CleanupStack::PopAndDestroy(&readStream);
+
+    if ( indicatorData.iIndicatorImgID != 0 && 
+         indicatorData.iIndicatorMaskID != 0 && 
+         indicatorData.iIndicatorTextImgID != 0 &&
+         indicatorData.iIndicatorTextMaskID != 0)
+        {
+        iDataMgr->SetSplitIndicatorData(indicatorData);
+        iImDimensionSet = ETrue;
+
+        SetBubbleImageL(*iSplitIndiBubble, TItutDataConverter::AnyToRect(
+                iDataMgr->RequestData(ESplitIndiIconRect)),
+                indicatorData.iIndicatorImgID,
+                indicatorData.iIndicatorMaskID,
+                indicatorData.iIndicatorTextImgID,
+                indicatorData.iIndicatorTextMaskID);
+        iSplitIndiBubble->Hide(EFalse);
+        }
+    
+    }
+
+void CSplitItutWindow::UpdateSpellIndiBubbleL( TUint8* aData )
+    {  
+    // if icf is hidden, not call updateindibubblel
     if( iICF->Hiden() )     
     	{
         return;
@@ -1482,13 +1551,16 @@ void CSplitItutWindow::UpdateIndiBubbleL( TUint8* aData )
          indicatorData.iIndicatorTextImgID != 0 &&
          indicatorData.iIndicatorTextMaskID != 0)
         {
-        iDataMgr->SetIndicatorData( indicatorData );
+        iDataMgr->SetSpellIndicatorData( indicatorData );
         iImDimensionSet = ETrue;
 
-        SetIndiBubbleImageL( indicatorData.iIndicatorImgID,
-                             indicatorData.iIndicatorMaskID,
-                             indicatorData.iIndicatorTextImgID,
-                             indicatorData.iIndicatorTextMaskID );
+        SetBubbleImageL(*iICF->MsgBubbleCtrl(),
+                        TItutDataConverter::AnyToRect( 
+                                iDataMgr->RequestData( ESpellIndiIconWithoutTextRect )),
+                        indicatorData.iIndicatorImgID,
+                        indicatorData.iIndicatorMaskID,
+                        indicatorData.iIndicatorTextImgID,
+                        indicatorData.iIndicatorTextMaskID );
             
 		TBuf<KTextLength> text;	
         iICF->MsgBubbleCtrl()->GetText( text );
@@ -1602,10 +1674,12 @@ void CSplitItutWindow::SetPromptTextL( TUint8* aData )
     }
 
 // ---------------------------------------------------------------------------
-// CSplitItutWindow::SetIndiBubbleImageL
+// CSplitItutWindow::SetBubbleImageL
 // ---------------------------------------------------------------------------
 //
-void CSplitItutWindow::SetIndiBubbleImageL( const TInt aImgID1,
+void CSplitItutWindow::SetBubbleImageL( CBubbleCtrl& aBubble,
+                                            const TRect& aRect,
+                                            const TInt aImgID1,
                                             const TInt aMaskID1,
                                             const TInt aImgID2,
                                             const TInt aMaskID2 )
@@ -1650,10 +1724,7 @@ void CSplitItutWindow::SetIndiBubbleImageL( const TInt aImgID1,
     
     AknIconUtils::GetContentDimensions( bmp2, iIndicatorTextSize );
     
-    TRect boundRect;
-    boundRect = TItutDataConverter::AnyToRect(
-                iDataMgr->RequestData( EIndiIconWithoutTextRect ));
-    
+    TRect boundRect = aRect;
     TRect imgrect, textrect;
     
     CalIndicatorRect( boundRect, imgrect, textrect, EIndiAlignCenter );
@@ -1665,11 +1736,11 @@ void CSplitItutWindow::SetIndiBubbleImageL( const TInt aImgID1,
     CFbsBitmap* bmp3 = AknPenImageUtils::CombineTwoImagesL(bmp1, bmp2, EColor256);
     CFbsBitmap* mask3 = AknPenImageUtils::CombineTwoImagesL(mask1, mask2, EGray256);
     
-    iICF->MsgBubbleCtrl()->SetBitmapParam( bmp3, mask3, 
-                    KAknsIIDQsnFrInputPreviewSideL,
-                    KAknsIIDQsnFrInputPreviewMiddle,
-                    KAknsIIDQsnFrInputPreviewSideR );
-    
+    aBubble.SetBitmapParam( bmp3, mask3, 
+                            KAknsIIDQsnFrInputPreviewSideL,
+                            KAknsIIDQsnFrInputPreviewMiddle,
+                            KAknsIIDQsnFrInputPreviewSideR );
+       
     CleanupStack::PopAndDestroy( mask2 );
     CleanupStack::PopAndDestroy( bmp2 );
     CleanupStack::PopAndDestroy( mask1 );
@@ -1677,17 +1748,43 @@ void CSplitItutWindow::SetIndiBubbleImageL( const TInt aImgID1,
     }
 
 // ---------------------------------------------------------------------------
-// CSplitItutWindow::SetIndiBubble
+// CSplitItutWindow::SetSplitIndiBubble
 // ---------------------------------------------------------------------------
 //
-void CSplitItutWindow::SetIndiBubble()
+void CSplitItutWindow::SetSplitIndiBubble()
     {
-    if ( iICF )
+    if (iSplitIndiBubble)
+        {
+        TAknTextLineLayout textLine = TItutDataConverter::AnyToTextLine(
+                iDataMgr->RequestData(ESplitIndiTextLine));
+        TRect bubbleRect = TItutDataConverter::AnyToRect(
+                iDataMgr->RequestData(ESplitIndiPaneRect));
+        TRect iconRect = TItutDataConverter::AnyToRect(
+                iDataMgr->RequestData(ESplitIndiIconRect));
+        TSize offset;
+        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
+        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
+        TSize size(iconRect.Width(), iconRect.Height());
+    
+        iSplitIndiBubble->SetRect(bubbleRect);
+        iSplitIndiBubble->SetIconOffsetAndSize(offset, size);
+        iSplitIndiBubble->SetTextFormat(textLine);
+        iSplitIndiBubble->SetTextColorIndex(EAknsCIQsnTextColorsCG67);
+        }
+    }
+
+// ---------------------------------------------------------------------------
+// CSplitItutWindow::SetSpellIndiBubble
+// ---------------------------------------------------------------------------
+//
+void CSplitItutWindow::SetSpellIndiBubble()
+    {
+    if (iICF)
         {
         TRect bubbleRect = TItutDataConverter::AnyToRect( 
-                iDataMgr->RequestData( EIndiPaneWithoutTextRect ));
+                iDataMgr->RequestData( ESpellIndiPaneWithoutTextRect ));
         TRect iconRect = TItutDataConverter::AnyToRect( 
-                iDataMgr->RequestData( EIndiIconWithoutTextRect ));
+                iDataMgr->RequestData( ESpellIndiIconWithoutTextRect ));
         
         TSize offset;
         offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;

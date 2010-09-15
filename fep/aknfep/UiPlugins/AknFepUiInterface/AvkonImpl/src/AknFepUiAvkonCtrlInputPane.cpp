@@ -41,6 +41,7 @@
 #include "aknfepchineseuidataconv.h"
 #include "aknfepuilayoutdatamgr.h"
 
+
 CAknFepUICtrlInputPane* CAknFepUICtrlInputPane::NewL(RWindow& aParent, 
                                                      TInputPaneLayout aPaneLayout,
                                                      CAknFepUiLayoutDataMgr* aLafDataMgr )
@@ -70,7 +71,7 @@ void CAknFepUICtrlInputPane::SetText(const TDesC& aDes)
     // make sure that we only copy as many characters as we can show
     if(iLayout == ELayoutPhraseInputPane)
         {
-        TPtrC newText = aDes.Right(CalculateMaxTextLength(aDes));        
+        TPtrC newText = aDes.Right( EMaxInputCharsInputPane );        
         TPtr ptr = iBuffer->Des();
 
         if(ptr != newText)
@@ -116,7 +117,7 @@ void CAknFepUICtrlInputPane::SetHighlighted(TBool aHighlighted)
         iHighlighted = aHighlighted;
         // need to change highlight colors
         LayoutContainedControls();
-        DrawDeferred();
+        DrawNow();
         }
     }
 
@@ -198,12 +199,27 @@ void CAknFepUICtrlInputPane::MakeTextVisible(TBool aVisible)
 
 TInt CAknFepUICtrlInputPane::LabelTextWidthInPixels() const
     {
-    TAknLayoutText layoutText = 
-            CAknFepChineseUIDataConv::AnyToLayoutText( iLafDataMgr->RequestData( ELayoutInputPaneText ));
+    TAknTextLineLayout textLayout;
+    if ( iLayout == ELayoutPhraseInputPane )
+		{
+		textLayout = 
+		        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EEEPTextLine ));
+        
+        }
+    else if( iLayout == ELayoutPhrasePinyinPopupPane ) 
+		{
+		textLayout = 
+		        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EInputTextLayout ));
+		}
+    
+    TAknLayoutText layoutText;
+    layoutText.LayoutText( Rect(), textLayout );
+    
+    // Get the text font
     const CFont* font = layoutText.Font();
 
     TInt labelWidthInPixels = 0;
-    if(font)
+    if ( font )
         {
         TBufC<EMaxInputCharsInputPane> buf1;
         TPtr ptr1 = buf1.Des();
@@ -214,8 +230,6 @@ TInt CAknFepUICtrlInputPane::LabelTextWidthInPixels() const
         labelWidthInPixels = font->TextWidthInPixels(ptr1); 
         labelWidthInPixels += font->TextWidthInPixels(ptr2);
         }
-    TInt maxWidth = layoutText.TextRect().Width(); 
-    labelWidthInPixels = labelWidthInPixels > maxWidth? maxWidth:labelWidthInPixels;
     return labelWidthInPixels;
     }
 
@@ -268,18 +282,20 @@ void CAknFepUICtrlInputPane::Draw(const TRect& /*aRect*/) const
     CWindowGc& gc = SystemGc();
 
     MAknsSkinInstance* skin = AknsUtils::SkinInstance();
-    if(iHighlighted)
+    TRect outerRect;
+    TRect innerRect;
+    CalculateFrameRects(outerRect, innerRect);
+    if ( iHighlighted )
         {
-        TRect outerRect;
-        TRect innerRect;
-        CalculateFrameRects(outerRect, innerRect);
-        skinnedDraw = AknsDrawUtils::DrawFrame(
-            skin, gc, outerRect, innerRect, KAknsIIDQsnFrList, KAknsIIDQsnFrListCenter); // or KAknsIIDDefault?
+		// Highlight state
+        skinnedDraw = AknsDrawUtils::DrawFrame( skin, gc, outerRect, innerRect, 
+												KAknsIIDQsnFrKeypadButtonFrPressed, KAknsIIDDefault ); // or KAknsIIDDefault?
         }
     else
         {
-        MAknsControlContext* cc = AknsDrawUtils::ControlContext(this);
-        skinnedDraw = AknsDrawUtils::Background(skin, cc, this, gc, Rect());
+		// Normal state
+        skinnedDraw = AknsDrawUtils::DrawFrame( skin, gc, outerRect, innerRect, 
+												KAknsIIDQsnFrKeypadButtonFrNormal, KAknsIIDDefault );
         }
 
     if(!skinnedDraw)
@@ -344,28 +360,20 @@ void CAknFepUICtrlInputPane::UpdateLabelContents()
     combinedPtr.Copy(*iBuffer);
     combinedPtr.Append(iToneMarkBuffer);
 
-    TRect rect = Rect();
-    if(iLayout == ELayoutPhrasePinyinPopupPane)
-        {
-        TAknLayoutRect layoutLineRectEntryPane = 
-                CAknFepChineseUIDataConv::AnyToLayoutRect( iLafDataMgr->RequestData( ELayoutLineRectEntryPane ));
-        rect = layoutLineRectEntryPane.Rect();
-        }
-    // avoid accessing text layout member data
-    TAknLayoutRect labelRect;
+    TRect layoutRect = CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectCandatate ));
+    TAknWindowLineLayout layoutLineRectEntryPane = 
+                    CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEntryCLayout ));
+    TAknLayoutRect layoutRectEntryPane;
+    layoutRectEntryPane.LayoutRect( layoutRect, layoutLineRectEntryPane );
     
-    TAknWindowLineLayout layoutEntryItem = 
-            CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData(ELayoutEntryItem));
-    labelRect.LayoutRect(rect, layoutEntryItem);
+    TAknTextLineLayout layoutLineText = 
+                        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EEEPTextLine ));    
+   
     TAknLayoutText layoutText;
-    TAknTextLineLayout entryTextLine = 
-        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData(EEntryTextLayout));
-    layoutText.LayoutText(labelRect.Rect(),entryTextLine);
-    TInt maxWidth = layoutText.TextRect().Width(); 
+    layoutText.LayoutText( layoutRectEntryPane.Rect(), layoutLineText );
     
-    TAknLayoutText layoutText1 = 
-            CAknFepChineseUIDataConv::AnyToLayoutText( iLafDataMgr->RequestData( ELayoutInputPaneText ));
-    const CFont* font = layoutText1.Font();
+    TInt maxWidth = layoutText.TextRect().Width();    
+    const CFont* font = layoutText.Font();
 
     TInt labelWidthInPixels = 0;
     if(font)
@@ -407,36 +415,42 @@ void CAknFepUICtrlInputPane::UpdateLabelContents()
 void CAknFepUICtrlInputPane::LayoutContainedControls()
     {
     TRect rect = Rect();
+    TAknWindowLineLayout layoutEntryItem;
+    TAknTextLineLayout textLayout;
     if(iLayout == ELayoutPhraseInputPane)
 		{
-	    TAknWindowLineLayout layoutEntryItem = 
-	            CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData(ELayoutEntryItem));
-        iUnselectedStringHighlight.LayoutRect(rect, layoutEntryItem);
+		layoutEntryItem = 
+	            CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEntryCLayout ));
+		
+		textLayout = 
+		        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EEEPTextLine ));
+        
         }
     else if(iLayout == ELayoutPhrasePinyinPopupPane) 
 		{
-        iUnselectedStringHighlight.LayoutRect(rect, AKN_LAYOUT_WINDOW_Input_highlight_Line_1(rect));
-        }
-
-    // layout spelling label    
-    TAknTextLineLayout textLayout = 
-        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData(EEntryTextLayout));
+		layoutEntryItem = 
+    	            CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EInputLayout ));
+		textLayout = 
+		        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EInputTextLayout ));
+		}
+    
+    iUnselectedStringHighlight.LayoutRect(rect, layoutEntryItem);
+    
     TAknLayoutText layoutText;
-    TRect rectHighlight = iUnselectedStringHighlight.Rect();
     TRect textRect;
     
-    layoutText.LayoutText(rectHighlight,textLayout);
+    layoutText.LayoutText(rect,textLayout);
     textRect = layoutText.TextRect();
     TRgb labelTextColor = layoutText.Color();
 
     TInt labelWidth = LabelTextWidthInPixels();
-    if(textRect.Width() > labelWidth)
+    if ( textRect.Width() < labelWidth )
         {
-        textRect.SetWidth(labelWidth);
+        textRect.SetWidth( labelWidth );
         }
-    iLabel->SetRect(textRect);
+    iLabel->SetRect( textRect );
     const CFont* font = layoutText.Font();
-    iLabel->SetFont(font);
+    iLabel->SetFont( font );
     
     // layout tone mark label
     TRgb labelToneMarkTextColor = labelTextColor;
@@ -449,8 +463,8 @@ void CAknFepUICtrlInputPane::LayoutContainedControls()
     toneMarkRect.iTl.iY = textRect.iTl.iY;
     toneMarkRect.iBr.iY = textRect.iBr.iY;
     toneMarkRect.SetWidth(labelWidth - toneMarkOffset);
-    iLabelToneMark->SetRect(toneMarkRect);
-    iLabelToneMark->SetFont(font);
+    iLabelToneMark->SetRect( toneMarkRect );
+    iLabelToneMark->SetFont( font );
     
     // once we have layed out the labels from LAF, override the colours from the skin if necessary
     // as the skin utils will only return RGB values, not colour ids.
@@ -486,23 +500,22 @@ void CAknFepUICtrlInputPane::LayoutContainedControls()
 void CAknFepUICtrlInputPane::CalculateFrameRects(TRect& aOuterRect, TRect& aInnerRect) const
     {
     TRect windowRect = Rect();
-    TRect entryRect = 
-        CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData(EEntryPaneRect));
-    
-    windowRect.SetHeight(entryRect.iBr.iY - entryRect.iTl.iY);
-    
-    TAknLayoutRect topLeft;
-    topLeft.LayoutRect(windowRect,SkinLayout::Submenu_skin_placing_Line_2());
-
-    TAknLayoutRect bottomRight;
-    bottomRight.LayoutRect(windowRect, SkinLayout::Submenu_skin_placing_Line_5());
-
-    aOuterRect = TRect(topLeft.Rect().iTl, bottomRight.Rect().iBr);
-    aInnerRect = TRect(topLeft.Rect().iBr, bottomRight.Rect().iTl);
-    if (aInnerRect.Width() <= 4)
-        {
-        aInnerRect.SetWidth(5);
+    TAknTextLineLayout textLayout;
+    if ( iLayout == ELayoutPhraseInputPane )
+		{
+		textLayout = 
+		        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EEEPTextLine ));
+        
         }
+    else if( iLayout == ELayoutPhrasePinyinPopupPane ) 
+		{
+		textLayout = 
+		        CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EInputTextLayout ));
+		}
+    TAknLayoutText layoutInputPaneText;
+    layoutInputPaneText.LayoutText( windowRect, textLayout );
+    aInnerRect = layoutInputPaneText.TextRect();
+    aOuterRect = windowRect;
     }
 
 TInt CAknFepUICtrlInputPane::CalculateMaxTextLength(const TDesC& aDes) const

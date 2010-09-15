@@ -722,12 +722,48 @@ RESOURCE AKN_FEP_MULTIPLE_MODE_BUTTON r_peninput_layout_vkb_shift_capslock
 		        rangeid=0;
 		        modeid=ECaseUpper;
 		        },
-		   AKN_FEP_BUTTON_MODE
+		    AKN_FEP_BUTTON_MODE
 		        {
 		        modeimage = r_peninput_layout_vkb_range_case_capslock;
 		        rangeid=0;
 		        modeid=ECaseText;
-		        }    
+		        },    
+            AKN_FEP_BUTTON_MODE
+                {
+                modeimage = r_peninput_layout_vkb_range_case_paging_11;
+                rangeid=0;
+                modeid=ECaseNumberSpecialPaging11;
+                } ,   
+            AKN_FEP_BUTTON_MODE
+                 {
+                 modeimage = r_peninput_layout_vkb_range_case_paging_12;
+                 rangeid=0;
+                 modeid=ECaseNumberSpecialPaging12;
+                 },
+            AKN_FEP_BUTTON_MODE
+                 {
+                 modeimage = r_peninput_layout_vkb_range_case_paging_22;
+                 rangeid=0;
+                 modeid=ECaseNumberSpecialPaging22;
+                 },                 		        
+            AKN_FEP_BUTTON_MODE
+                {
+                 modeimage = r_peninput_layout_vkb_range_case_paging_arabic_11;
+                 rangeid=0;
+                 modeid=ECaseNumberSpecialPagingArabic11;
+                },   
+            AKN_FEP_BUTTON_MODE
+                {
+                modeimage = r_peninput_layout_vkb_range_case_paging_arabic_12;
+                rangeid=0;
+                modeid=ECaseNumberSpecialPagingArabic12;
+                },
+            AKN_FEP_BUTTON_MODE
+                {
+                modeimage = r_peninput_layout_vkb_range_case_paging_arabic_22;
+                rangeid=0;
+                modeid=ECaseNumberSpecialPagingArabic22;
+                }	    
 		    };    
 		}
 		
@@ -888,6 +924,138 @@ RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_hwr
     disablemsk=EMbmPeninputgenericvkbQgn_indi_input_switcher_mask;
     disableskinid=EAknsMinorGenericQgnIndiFepButtonSwitch;
     }
+
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_range_case_paging_11
+    {
+    bmpfile=PENINPUT_LAYOUT_VKB_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputgenericvkbQgn_indi_input_page;
+    nactivemsk=EMbmPeninputgenericvkbQgn_indi_input_page_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiInputPage;
+
+    nactivep=EMbmPeninputgenericvkbQgn_indi_input_page;
+    nactivepmsk=EMbmPeninputgenericvkbQgn_indi_input_page_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiInputPage;
+    
+    active=EMbmPeninputgenericvkbQgn_indi_input_page;
+    activemsk=EMbmPeninputgenericvkbQgn_indi_input_page_mask;
+    activeskinid=EAknsMinorGenericQgnIndiInputPage;
+    
+    activep=EMbmPeninputgenericvkbQgn_indi_input_page;
+    activepmsk=EMbmPeninputgenericvkbQgn_indi_input_page_mask;
+    activepskinid=EAknsMinorGenericQgnIndiInputPage;
+    }       
+
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_range_case_paging_12
+    {
+    bmpfile=PENINPUT_LAYOUT_VKB_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputgenericvkbQgn_indi_input_page1;
+    nactivemsk=EMbmPeninputgenericvkbQgn_indi_input_page1_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiInputPage1;
+    
+    nactivep=EMbmPeninputgenericvkbQgn_indi_input_page1;
+    nactivepmsk=EMbmPeninputgenericvkbQgn_indi_input_page1_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiInputPage1;
+    
+    active=EMbmPeninputgenericvkbQgn_indi_input_page1;
+    activemsk=EMbmPeninputgenericvkbQgn_indi_input_page1_mask;
+    activeskinid=EAknsMinorGenericQgnIndiInputPage1;
+    
+    activep=EMbmPeninputgenericvkbQgn_indi_input_page1;
+    activepmsk=EMbmPeninputgenericvkbQgn_indi_input_page1_mask;
+    activepskinid=EAknsMinorGenericQgnIndiInputPage1;
+    }       
+
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_range_case_paging_22
+    {
+    bmpfile=PENINPUT_LAYOUT_VKB_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputgenericvkbQgn_indi_input_page2;
+    nactivemsk=EMbmPeninputgenericvkbQgn_indi_input_page2_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiInputPage2;
+    
+    nactivep=EMbmPeninputgenericvkbQgn_indi_input_page2;
+    nactivepmsk=EMbmPeninputgenericvkbQgn_indi_input_page2_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiInputPage2;
+    
+    active=EMbmPeninputgenericvkbQgn_indi_input_page2;
+    activemsk=EMbmPeninputgenericvkbQgn_indi_input_page2_mask;
+    activeskinid=EAknsMinorGenericQgnIndiInputPage2;
+    
+    activep=EMbmPeninputgenericvkbQgn_indi_input_page2;
+    activepmsk=EMbmPeninputgenericvkbQgn_indi_input_page2_mask;
+    activepskinid=EAknsMinorGenericQgnIndiInputPage2;
+    }       
+
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_range_case_paging_arabic_11
+    {
+    bmpfile=PENINPUT_LAYOUT_VKB_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah;
+    nactivemsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiInputQwertyPage11Ah;
+
+    nactivep=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah;
+    nactivepmsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiInputQwertyPage11Ah;
+    
+    active=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah;
+    activemsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah_mask;
+    activeskinid=EAknsMinorGenericQgnIndiInputQwertyPage11Ah;
+    
+    activep=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah;
+    activepmsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_1_ah_mask;
+    activepskinid=EAknsMinorGenericQgnIndiInputQwertyPage11Ah;
+    }       
+
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_range_case_paging_arabic_12
+    {
+    bmpfile=PENINPUT_LAYOUT_VKB_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah;
+    nactivemsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiInputQwertyPage12Ah;
+    
+    nactivep=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah;
+    nactivepmsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiInputQwertyPage12Ah;
+    
+    active=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah;
+    activemsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah_mask;
+    activeskinid=EAknsMinorGenericQgnIndiInputQwertyPage12Ah;
+    
+    activep=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah;
+    activepmsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page1_2_ah_mask;
+    activepskinid=EAknsMinorGenericQgnIndiInputQwertyPage12Ah;
+    }       
+
+RESOURCE AKN_FEP_BUTTON_IMAGE r_peninput_layout_vkb_range_case_paging_arabic_22
+    {
+    bmpfile=PENINPUT_LAYOUT_VKB_BMP;
+    imgmajorskinid=EAknsMajorGeneric;
+    
+    nactive=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah;
+    nactivemsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah_mask;
+    nactiveskinid=EAknsMinorGenericQgnIndiInputQwertyPage22Ah;
+    
+    nactivep=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah;
+    nactivepmsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah_mask;
+    nactivepskinid=EAknsMinorGenericQgnIndiInputQwertyPage22Ah;
+    
+    active=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah;
+    activemsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah_mask;
+    activeskinid=EAknsMinorGenericQgnIndiInputQwertyPage22Ah;
+    
+    activep=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah;
+    activepmsk=EMbmPeninputgenericvkbQgn_indi_input_qwerty_page2_2_ah_mask;
+    activepskinid=EAknsMinorGenericQgnIndiInputQwertyPage22Ah;
+    }       
 
 RESOURCE LBUF r_peninput_vkb_accent1
     {

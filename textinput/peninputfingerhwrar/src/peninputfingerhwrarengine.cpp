@@ -23,7 +23,7 @@
 #include <e32property.h>
 #include <peninputcommonlayoutglobalenum.h>
 
-#include "ptidefs.h"
+#include "PtiDefs.h"
 
 //USER INCLUDES
 #include "peninputfingerhwrarengine.h"

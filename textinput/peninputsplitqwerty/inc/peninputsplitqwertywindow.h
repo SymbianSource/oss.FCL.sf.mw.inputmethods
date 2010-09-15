@@ -33,6 +33,7 @@ class CPeninputSplitQwertyLafMgr;
 class CPeninputSyncBitmapRotator;
 class CRepository;
 class CFepLayoutScrollableList;
+class CPopupBubbleCtrl;
 
 // Constants
 const TInt KMaxFileLength = 80;
@@ -61,6 +62,13 @@ public:
  */
 class CPeninputSplitQwertyWindow : public CPeninputLayoutWindowExt
     {
+private:
+    enum TIndicatorAlign
+        {
+        EIndiAlignLeft,
+        EIndiAlignCenter,
+        EIndiAlignRight 
+        };    
 public:
     /**
      * Symbian constructor
@@ -290,6 +298,15 @@ public:
      */
     TBool HandleVirtualKeyUpEvent( TInt aEventType, CFepUiBaseCtrl* aCtrl,
                                    const TDesC& aEventData );
+    
+    /**
+     * Handle virtual key down event
+     *
+     * @since S60 v5.0
+     * @param None
+     * @return None
+     */
+    void HandleVirtualKeyDownEvent();
 
     /**
      * Submit dead key
@@ -367,7 +384,70 @@ public:
      */
     void UpdateLayoutPosAndSize();
 
+    /**
+     * Set split indicator bubble size with text
+     * 
+     * @return None
+     */
+    void SetSplitIndiBubbleSizeWithText();
 
+    /**
+     * Set split indicator bubble size without text
+     * 
+     * @return None
+     */    
+    void SetSplitIndiBubbleSizeWithoutText();
+
+    /**
+     * Update split indicator bubble
+     * 
+     * @param aData text
+     * @return None
+     */
+    void UpdateSplitIndiBubbleL( TUint8* aData );
+    
+    /** 
+     * Set bubble image
+     *
+     * @param aImgID1 image ID1
+     * @param aMaskID1 mask image id1
+     * @param aImgID2 image ID2
+     * @param aMaskID2 mask image id2
+     * @return None
+     */    
+    void SetSplitIndiBubbleImageL( const TInt aImgID1,
+                            const TInt aMaskID1,
+                            const TInt aImgID2,
+                            const TInt aMaskID2 );
+
+    /**
+     * Calculate indicator bubble rect
+     *
+     * @param aBoundRect
+     * @param aRealRect1
+     * @param aRealRect2
+     * @param aAlign
+     * @return None
+     */     
+    void CalIndicatorRect(const TRect& aBoundRect,
+                          TRect& aRealRect1,
+                          TRect& aRealRect2,
+                          TIndicatorAlign aAlign);    
+    /**
+     * Get indicator data
+     * 
+     * @return TFepIndicatorInfo indicator info
+     */
+    inline TFepIndicatorInfo SplitIndicatorData();
+
+    /**
+     * Set indicator data
+     * 
+     * @param aIndicatorData Indicator Data
+     * @return None
+     */
+    inline void SetSplitIndicatorData( const TFepIndicatorInfo& aIndicatorData );  
+    
 protected: //from base class CPeninputLayoutWindowExt
     /**
      * Set laf layout type
@@ -631,6 +711,12 @@ private: // Data
     CPeninputCommonChoiceList* iPopupWnd;
 
     /**
+     * Indicator bubble
+     * Not own
+     */
+    CPopupBubbleCtrl* iSplitIndiBubble;
+    
+    /**
      * The resource file name
      */
     TBuf<KMaxFileLength> iResourceFilename;
@@ -739,6 +825,21 @@ private: // Data
     RArray<CFepLayoutChoiceList::SItem> iAccentCmdList;
 
     /**
+     * Indicator bubble size
+     */
+    TSize iSplitIndicatorSize;
+
+    /**
+     * Indicator text size
+     */
+    TSize iSplitIndicatorTextSize;
+
+    /**
+     * Indicator data
+     */
+    TFepIndicatorInfo iSplitIndicatorData;
+    
+    /**
      * Range labels for range list
      */
     TAllRangeLabels iRangeLabels;
@@ -758,6 +859,20 @@ inline TBool CPeninputSplitQwertyWindow::IsRtoLLanguage( TInt aLanguage )
 inline TBool CPeninputSplitQwertyWindow::IsValidLanguage( TInt aLanguage )
     {
     return ( aLanguage != ELangTest && aLanguage != ELangNone );
+    }
+
+inline void CPeninputSplitQwertyWindow::SetSplitIndicatorData( 
+        const TFepIndicatorInfo& aIndicatorData )
+    {
+    iSplitIndicatorData.iIndicatorImgID = aIndicatorData.iIndicatorImgID;
+    iSplitIndicatorData.iIndicatorMaskID = aIndicatorData.iIndicatorMaskID;
+    iSplitIndicatorData.iIndicatorTextImgID = aIndicatorData.iIndicatorTextImgID;
+    iSplitIndicatorData.iIndicatorTextMaskID = aIndicatorData.iIndicatorTextMaskID;
+    }
+    
+inline TFepIndicatorInfo CPeninputSplitQwertyWindow::SplitIndicatorData()
+    {
+    return iSplitIndicatorData;
     }
 
 inline CAknFepCtrlEventButton* CPeninputSplitQwertyWindow::EventButtonCtrl(

@@ -55,7 +55,6 @@ TBool TAknFepInputStateCandidateQwertyBaseChinesePhrase::HandleKeyL(TInt aKey, T
 
     else if(!( HandleVerticalNavigation(aKey) || HandleHorizontalNavigation(aKey) ))
         {
-        TInt index = 0;
 #ifdef RD_INTELLIGENT_TEXT_INPUT
         // it may be one of the 'valid' numbers..
         TPtiKeyboardType keyboardtype = iOwner->FepMan()->KeyboardLayout();
@@ -86,7 +85,6 @@ TBool TAknFepInputStateCandidateQwertyBaseChinesePhrase::HandleKeyL(TInt aKey, T
                     
                        &&(aKey == numKeyBind.iKey))
                     	{
-                    	index = numKeyBind.iChar - EPtiKey0 -1;
                     	validnumkey = ETrue;
                     	break;
                     	}
@@ -101,16 +99,10 @@ TBool TAknFepInputStateCandidateQwertyBaseChinesePhrase::HandleKeyL(TInt aKey, T
             	}
                 
             }
-        else
-            {
-#endif
-            index = MapKeyToIndex(aKey);
-#ifdef RD_INTELLIGENT_TEXT_INPUT
-            }             
 #endif
         MAknFepUICtrlCandidatePane* candidatePane = UIContainer()->CandidatePane();
 
-        if(candidatePane->SelectIndex(index) || aKey == EStdKeyDevice3 || aKey == EStdKeyEnter)
+        if( aKey == EStdKeyDevice3 || aKey == EStdKeyEnter)
             {
             TPtrC text = candidatePane->CurrentPhraseCandidate();
             if(text.Length())

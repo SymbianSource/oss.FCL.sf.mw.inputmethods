@@ -1692,13 +1692,34 @@ TKeyResponse CAknFepManager::HandleKeyEventL(TUint aCode, TKeyPressLength aLengt
                     //This condition is added for Hindi language in case of multitapping of EKey1 to get 
                     //a numeral value "1" because of a clasical case of Halant and ZWS getting added 
                     //before numeral 1 which may affect incase of limited space in editor   
-                        
-                    if (( EditorHasFreeSpace()
-                        || (!WesternPredictive() && !EditorHasFreeSpace() && 
-                           (TAknFepUiIndicInputManager::IsIndicLangauge(
-                            TLanguage(iLanguageCapabilities.iInputLanguageCode)))) 
-                        || IsFlagSet(EFlagInsideMultitapInlineEditingTransaction)
-                        || (IsFlagSet(EFlagInsideInlineEditingTransaction) && aLength == ELongKeyPress)))
+                    
+
+
+
+
+                    // Is the language Indic?
+                    TBool isIndicLanguage = TAknFepUiIndicInputManager::IsIndicLangauge(
+                                               TLanguage(iLanguageCapabilities.iInputLanguageCode)); 
+
+                    // Is the state in Multitap of the Inline Text   
+                    TBool  isFlagInsideMultitapInlineEditingTransaction = 
+                                                 IsFlagSet(EFlagInsideMultitapInlineEditingTransaction);
+
+                    // Is the state of the text inline when long pressing key event occurs
+                    TBool  isInlineEditorTransactionLongKeyPress = IsFlagSet(EFlagInsideInlineEditingTransaction)
+                                                               && ( aLength == ELongKeyPress );
+
+                    // Is the state of the text inline when current mode is Koeran.
+                    TBool isInlineEditorTranscationKoreanMode = IsFlagSet(EFlagInsideInlineEditingTransaction)
+                                                                && ( iMode == EHangul ); 
+
+                    // Don't check the free space of the editor 
+                    // when current mode is Hangul and current editor state is inline state.
+                    if ( EditorHasFreeSpace()
+                        || (!WesternPredictive() && !EditorHasFreeSpace() && isIndicLanguage )
+                        || isFlagInsideMultitapInlineEditingTransaction
+                        || isInlineEditorTransactionLongKeyPress  
+                        || isInlineEditorTranscationKoreanMode )
                         {
                         ClearFlag(EFlagEditorFull);
 
@@ -5578,6 +5599,29 @@ void CAknFepManager::AddInputOptionsMenuItemL( CAknFepUiInterfaceMenuPane* aMenu
         AddInputLanguageItemL(aMenuPane, posToInsertItem);
         }
     }
+
+// -----------------------------------------------------------------------------
+// To check if the menu with the CascadeId exist in menupane
+// -----------------------------------------------------------------------------
+TBool CAknFepManager::MenuItemExistL( CAknFepUiInterfaceMenuPane* aMenuPane, 
+									 TInt aCascadeId, TInt &aPosition )
+    {
+    TInt numOfMenuItems = aMenuPane->NumberOfItemsInPane();
+    CEikMenuPane* menuPane = aMenuPane->GetMenuPane();
+
+    TInt index;
+    for( index = 0; index < numOfMenuItems ; ++index )
+        {
+        CEikMenuPaneItem::SData& itemData = menuPane->ItemDataByIndexL( index );
+        if( itemData.iCascadeId == aCascadeId )
+            {
+            aPosition = index;
+            return ETrue;
+            }
+        }
+    return EFalse;
+    }
+
 #endif // RD_INTELLIGENT_TEXT_INPUT
 
 
@@ -5614,7 +5658,10 @@ void CAknFepManager::AddEditSubmenuL(CAknFepUiInterfaceMenuPane* aMenuPane)
     if (iRememberLength > 0 || (iEditorCcpuStatus & ECcpuStatusFlagCanPaste))
         {
 		if (aMenuPane->MenuItemExists(EAknCmdEditItemPlaceHolder, index) ||
-				aMenuPane->MenuItemExists(EAknCmdInputLanguage, index) ||
+#ifdef RD_INTELLIGENT_TEXT_INPUT
+            MenuItemExistL( aMenuPane, R_AKNFEP_PRED_INPUT_OPTIONS_SUBMENU, index ) ||
+#endif //RD_INTELLIGENT_TEXT_INPUT 
+            aMenuPane->MenuItemExists(EAknCmdInputLanguage, index) ||
 		    aMenuPane->MenuItemExists(EAknCmdHelp, index) || 
             aMenuPane->MenuItemExists(EAknCmdExit, index))  
             {
@@ -20007,7 +20054,19 @@ TKeyResponse CAknFepManager::HandleFnKeyEventL( const TKeyEvent& aKeyEvent, TEve
 			switch(aEventCode)
 				{
 				case EEventKeyDown:
-					ActivateFnkeyPressMonitor();
+					{
+					  //if current state of fn key is EFnKeyNone or EFnKeyNext..., EFnKeyLock will be set;
+					  //otherwise, EFnKeyNone will be set.
+				      if ( iFnKeyManager->FnKeyState() ==  CAknFepFnKeyManager::EFnKeyLock )
+				    	  {
+			                ClearExtendedFlag( EExtendedFlagFnKeyNeedLockMode );
+				    	  }
+				      else
+				    	  {
+			                SetExtendedFlag( EExtendedFlagFnKeyNeedLockMode );
+				    	  }
+					  ActivateFnkeyPressMonitor();
+					}
 					break;
 				case EEventKeyUp:
 					{
@@ -20015,6 +20074,10 @@ TKeyResponse CAknFepManager::HandleFnKeyEventL( const TKeyEvent& aKeyEvent, TEve
 					   {
 					    //when long pressing event occurrs,
                         //event has been already handled in HandleFnKeyPressMonitorCallback()
+						if ( !IsExtendedFlagSet ( EExtendedFlagFnKeyNeedLockMode ))
+							{
+							 iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyNone);
+							}
 						return EKeyWasConsumed;
 					   }
 					//when short pressing event occurs, 
@@ -20807,7 +20870,7 @@ TBool CAknFepManager::NumericResourceMultiTapTimerTimeoutL()
     	}       
     return EFalse;    
     }    
-void CAknFepManager::ChangeMfneAmPm()
+void CAknFepManager::ChangeMfneAmPmL()
     {
 	//trigger when touch at "AM" or "PM" in ICF
     if (iInputCapabilities.FepAwareTextEditor() && IsMfneEditor() )
@@ -20978,6 +21041,47 @@ void CAknFepManager::HideExactWordPopUp()
 	iExactWordPopupContent->HidePopUp();
 	TRAP_IGNORE( SendEventsToPluginManL( EPluginHideTooltip ));
 	}
+
+//========================================================================
+//
+// This function judge whether the texts inputted exceed 
+// the max length of the editor. 
+// 
+//========================================================================
+TBool CAknFepManager::IsTextExceedLeghthEditor( TInt aNewInlineTextLenght )
+	{
+    
+    // Get the length of the newest text that contains uncommitted texts 
+	TInt curPos = iUncommittedText.iAnchorPos + aNewInlineTextLenght;
+    
+    // Get the length of the text that is newly increased in uncommitted texts.
+	TInt deltaCur = curPos - iUncommittedText.iCursorPos;
+	
+    // Get the max length of the editor
+	TInt maxEdSize = iInputCapabilities.FepAwareTextEditor()->DocumentMaximumLengthForFep();
+
+    // Get the length of current the texts in the editor. The texts contain committed and uncomitted.    
+	TInt docLength = iInputCapabilities.FepAwareTextEditor()->DocumentLengthForFep();
+	
+      // DeltaCur is greater than zero.
+      if((maxEdSize > 0) && ( deltaCur > 0 ) 
+							&& (( docLength + deltaCur) > maxEdSize ) )
+         {
+         return ETrue;
+         }
+      // DeltaCur is negative. For example uncommitted texts contain candidate words.
+      else if ( (maxEdSize > 0) && (curPos > maxEdSize) )
+          {
+          return ETrue;
+          }
+        else
+          {
+
+          // Not exceeding the max length of editor
+          return EFalse;
+          }
+	}
+
 
 TBool CAknFepManager::IsExactWordPopUpShown()
 	{
@@ -21247,23 +21351,12 @@ TInt CAknFepManager::HandleFnKeyPressMonitorCallback(TAny* aObj)
 // ---------------------------------------------------------------------------
 //
 void CAknFepManager::HandleFnKeyPressMonitor()
-	{
-	DeactivateFnkeyPressMonitor();
-	
-	//if previous state of fn key is EFnKeyNone or EFnKeyNext, EFnKeyLock will be set;
-	//otherwise, if previous state is EFnKeyLock, EFnKeyNone will be set.
-	switch(iFnKeyManager->FnKeyState())
-		{
-		case CAknFepFnKeyManager::EFnKeyPressed:
-		case CAknFepFnKeyManager::EFnKeyPressedAgain:
-			 iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyLock);
-			break;
-		case CAknFepFnKeyManager::EFnKeyDown:
-			 iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyNone);
-			 break;
-		default:
-			break;
-		}
+	{	
+	 DeactivateFnkeyPressMonitor();
+	 if (IsExtendedFlagSet ( EExtendedFlagFnKeyNeedLockMode ) )
+		 {
+	      iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyLock);
+		 }
 	}
 
 // ---------------------------------------------------------------------------
@@ -21274,7 +21367,12 @@ void CAknFepManager::HandleFnKeyPressMonitor()
 void CAknFepManager::ActivateFnkeyPressMonitor()
 	{
 	 if( iFnKeypressMonitor )
-		 {
+		 {	      
+	      if ( iFnKeypressMonitor->IsActive() )
+	    	  {
+	           iFnKeypressMonitor->Cancel();
+	    	  }
+	      
 		  iFnKeypressMonitor->Start(KFnKeyLongPressTimeout, KFnKeyLongPressTimeout, 
 							   TCallBack(HandleFnKeyPressMonitorCallback, this));
 		 }

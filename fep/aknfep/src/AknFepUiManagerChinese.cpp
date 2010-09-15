@@ -123,6 +123,9 @@
 #include <avkon.rsg>        //phrase creation
 #include <aknfep.rsg>
 
+#include "aknfepuiinputminiqwertysogoupinyinphraseplugin.h"
+#include "aknfepuiinputminiqwertysogoustrokephraseplugin.h"
+
 // CONSTANTS
 const TInt16 KStrokeHorizontalValue = 0x4e00; 
 const TInt16 KStrokeVerticalValue = 0x4e28;
@@ -140,6 +143,9 @@ const TInt16 KChineseTone2 = 0x02ca;
 const TInt16 KChineseTone3 = 0x02c7; 
 const TInt16 KChineseTone4 = 0x02cb;
 const TInt16 KChineseTone0 = 0x02d9;
+
+const TUid KPtiSogouCoreUid = { 0x20031DD6 };
+
 /**
 *  CAknFepUIManagerChinese class.
 * 
@@ -1168,6 +1174,11 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
 #ifdef RD_INTELLIGENT_TEXT_INPUT        
     TPtiKeyboardType kbdType = iFepMan->KeyboardLayout();    
 #endif    
+    
+    // Get current core id. It is used to judge whether sogou core is in use.
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+
     switch(aState)
         {
         case EQwerty:
@@ -1300,6 +1311,14 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                             {
                             iFepUiState = TAknFepInputStateEntryMiniQwertyStrokePhrase(
                                                                   this, iContainerPane);
+                            // If sogou core is in use, set plugin to the state
+                            // machine and enable the plugin.
+                            if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                                {
+                                TAknFepInputMiniQwertySogouStrokePhrasePlugin plugin( this, iContainerPane, EEntry );
+                                plugin.Enable( ETrue );
+                                iFepUiState.SetStrokePlugin( plugin );
+                                }
                         	}
                         else if (EPtiKeyboardHalfQwerty == kbdType)
                             {
@@ -1402,7 +1421,15 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                              EPtiKeyboardCustomQwerty == kbdType)                    	
                         	{
                             iFepUiState = TAknFepUiInputStateCandidateMiniQwertyStrokePhrase(this, iContainerPane);
-                            }
+                            // If sogou core is in use, set plugin to the state
+                            // machine and enable the plugin.
+                            if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                                {
+                                TAknFepInputMiniQwertySogouStrokePhrasePlugin plugin( this, iContainerPane, ECandidate );
+                                plugin.Enable( ETrue );
+                                iFepUiState.SetStrokePlugin( plugin );
+                                }                        
+                        	}
                         else if ( EPtiKeyboardHalfQwerty == kbdType )
                             {
                             iFepUiState=TAknFepUiInputStateCandidateHalfQwertyChinesePhrase( this, iContainerPane);
@@ -1469,6 +1496,15 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                         {
                         iFepUiState = TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase(
                                                                              this, iContainerPane);
+
+                        // If sogou core is in use, set plugin to the state
+                        // machine and enable the plugin.                        
+                        if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                            {
+                            TAknFepInputMiniQwertySogouPinyinPhrasePlugin plugin( this, iContainerPane, EPredictiveCandidate );
+                            plugin.Enable( ETrue );
+                            iFepUiState.SetPlugin( plugin );
+                            }                       
                         }
 #ifdef __HALF_QWERTY_KEYPAD
                     else if( EPtiKeyboardHalfQwerty == kbdType )
@@ -1490,6 +1526,14 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                             iFepUiState = 
                                    TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase(
                                                                           this, iContainerPane);
+                            // If sogou core is in use, set plugin to the state
+                            // machine and enable the plugin.
+                            if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                                {
+                                TAknFepInputMiniQwertySogouStrokePhrasePlugin plugin( this, iContainerPane, EPredictiveCandidate );
+                                plugin.Enable( ETrue );
+                                iFepUiState.SetStrokePlugin( plugin );
+                                }                   	
                         	}
 #ifdef __HALF_QWERTY_KEYPAD
                     else if( EPtiKeyboardHalfQwerty == kbdType )
@@ -1530,6 +1574,15 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                              EPtiKeyboardCustomQwerty == kbdType)                    	
                             {
                             iFepUiState = TAknFepInputStatePredictiveInputMiniQwertyChinesePhrase/*TAknFepInputStatePredictiveInputQwertyPinyinPhrase*/(this, iContainerPane);
+                            
+                            // If sogou core is in use, set plugin to the state
+                            // machine and enable the plugin.                            
+                            if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                                {
+                                TAknFepInputMiniQwertySogouPinyinPhrasePlugin plugin( this, iContainerPane, EPredictiveInput );
+                                plugin.Enable( ETrue );
+                                iFepUiState.SetPlugin( plugin );
+                                }                         
                             }
                         else
                             {
@@ -1557,7 +1610,15 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                       	   {
                            iFepUiState = TAknFepInputStatePredictiveInputMiniQwertyChinesePhrase(
                                                                              this, iContainerPane);
-                       	   }
+                           // If sogou core is in use, set plugin to the state
+                           // machine and enable the plugin.
+                           if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                               {
+                               TAknFepInputMiniQwertySogouStrokePhrasePlugin plugin( this, iContainerPane, EPredictiveInput );
+                               plugin.Enable( ETrue );
+                               iFepUiState.SetStrokePlugin( plugin );
+                               }                      	   
+                      	   }
                         else
          	               {
 #endif
@@ -1672,6 +1733,15 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                                 TAknFepInputStateEditingMiniQwertyStrokePhrase(
                                                               this, 
                                                               iContainerPane);
+
+                            // If sogou core is in use, set plugin to the state
+                            // machine and enable the plugin.
+                            if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                                {
+                                TAknFepInputMiniQwertySogouStrokePhrasePlugin plugin( this, iContainerPane, EMiniQwertyEdit );
+                                plugin.Enable( ETrue );
+                                iFepUiState.SetStrokePlugin( plugin );
+                                }                             
                             }
 #endif
                         }

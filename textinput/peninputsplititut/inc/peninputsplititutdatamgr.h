@@ -205,21 +205,34 @@ public:
     inline void SetSpellMode(TBool aSpellMode);
     
     /**
-     * Set Indicator Data
+     * Set Spell Indicator Data
      *
-     * @since S60 v5.0
      * @param aIndicatorData Indicator Data
      * @return void
      */
-    inline void SetIndicatorData(TFepIndicatorInfo &aIndicatorData);
+    inline void SetSpellIndicatorData(TFepIndicatorInfo &aIndicatorData);
     
     /**
-     * Get Indicator Data
+     * Get Spell Indicator Data
      *
-     * @since S60 v5.0
      * @return TFepIndicatorInfo
      */
-    inline TFepIndicatorInfo IndicatorData();
+    inline TFepIndicatorInfo SpellIndicatorData();
+    
+    /**
+     * Set Split Indicator Data
+     *
+     * @param aIndicatorData Indicator Data
+     * @return void
+     */
+    inline void SetSplitIndicatorData(TFepIndicatorInfo &aIndicatorData);
+    
+    /**
+     * Get Split Indicator Data
+     *
+     * @return TFepIndicatorInfo
+     */
+    inline TFepIndicatorInfo SplitIndicatorData();    
     
     /**
      * Set update flag
@@ -353,8 +366,22 @@ public:
      */
     inline TBool IsNumericOnly() const;
 	
+    /**
+     * Get the size of the screen
+     *
+     * @since S60 v5.0
+     * @param none
+     * @return the size of the screen
+     */
+    TRect screenSize();
+    
 	TRect iShiftIconRect;
 	TRect iStarIconRect;
+	
+    /**
+     * The star icon rect under number mode
+     */
+	TRect iStarIconRectInNumMode;
 	
 private:
     /**
@@ -563,13 +590,18 @@ private: // data member
 	TRect iSpellArrowRightRectInner;
 	
     //TRect iIndiPaneRectWithTextForPrtWest;
-    TRect iIndiPaneRectWithoutTextForPrtWest;
+    TRect iSpellIndiPaneRectWithoutTextForPrtWest;
     //TRect iIndiIconRectWithTextForPrtWest;
-    TRect iIndiIconRectWithoutTextForPrtWest;
-    TAknTextLineLayout iIndiTextForPrtWest;
+    TRect iSpellIconRectWithoutTextForPrtWest;
+    TAknTextLineLayout iSpellTextForPrtWest;
+    
+    TRect iSplitIndiPaneRect;
+    TRect iSplitIndiIconRect;    
+    TAknTextLineLayout iSplitIndiText;
 
 	TAknTextLineLayout iSpellBtnTextFormat;
-	TFepIndicatorInfo iIndicatorData;
+	TFepIndicatorInfo iSpellIndicatorData;
+	TFepIndicatorInfo iSplitIndicatorData;
     };
 
 // ---------------------------------------------------------------------------
@@ -636,26 +668,46 @@ inline void CSplitItutDataMgr::SetSpellMode(TBool aSpellMode)
     }
  
 // ---------------------------------------------------------------------------
-// CSplitItutDataMgr::SetIndicatorData
+// CSplitItutDataMgr::SetSpellIndicatorData
 // ---------------------------------------------------------------------------
 //
-inline void CSplitItutDataMgr::SetIndicatorData(TFepIndicatorInfo &aIndicatorData)
+inline void CSplitItutDataMgr::SetSpellIndicatorData(TFepIndicatorInfo &aIndicatorData)
     {
-    iIndicatorData.iIndicatorImgID = aIndicatorData.iIndicatorImgID;
-    iIndicatorData.iIndicatorMaskID = aIndicatorData.iIndicatorMaskID;
-    iIndicatorData.iIndicatorTextImgID = aIndicatorData.iIndicatorTextImgID;
-    iIndicatorData.iIndicatorTextMaskID = aIndicatorData.iIndicatorTextMaskID;
+    iSpellIndicatorData.iIndicatorImgID = aIndicatorData.iIndicatorImgID;
+    iSpellIndicatorData.iIndicatorMaskID = aIndicatorData.iIndicatorMaskID;
+    iSpellIndicatorData.iIndicatorTextImgID = aIndicatorData.iIndicatorTextImgID;
+    iSpellIndicatorData.iIndicatorTextMaskID = aIndicatorData.iIndicatorTextMaskID;
     }
  
 // ---------------------------------------------------------------------------
-// CSplitItutDataMgr::IndicatorData
+// CSplitItutDataMgr::SplitIndicatorData
 // ---------------------------------------------------------------------------
 //
-inline TFepIndicatorInfo CSplitItutDataMgr::IndicatorData()
+inline TFepIndicatorInfo CSplitItutDataMgr::SplitIndicatorData()
     {
-    return iIndicatorData;
+    return iSplitIndicatorData;
     } 
 
+// ---------------------------------------------------------------------------
+// CSplitItutDataMgr::SetSplitIndicatorData
+// ---------------------------------------------------------------------------
+//
+inline void CSplitItutDataMgr::SetSplitIndicatorData(TFepIndicatorInfo &aIndicatorData)
+    {
+    iSplitIndicatorData.iIndicatorImgID = aIndicatorData.iIndicatorImgID;
+    iSplitIndicatorData.iIndicatorMaskID = aIndicatorData.iIndicatorMaskID;
+    iSplitIndicatorData.iIndicatorTextImgID = aIndicatorData.iIndicatorTextImgID;
+    iSplitIndicatorData.iIndicatorTextMaskID = aIndicatorData.iIndicatorTextMaskID;
+    }
+ 
+// ---------------------------------------------------------------------------
+// CSplitItutDataMgr::SpellIndicatorData
+// ---------------------------------------------------------------------------
+//
+inline TFepIndicatorInfo CSplitItutDataMgr::SpellIndicatorData()
+    {
+    return iSpellIndicatorData;
+    } 
 
 // ---------------------------------------------------------------------------
 // CSplitItutDataMgr::IsValidLanguage

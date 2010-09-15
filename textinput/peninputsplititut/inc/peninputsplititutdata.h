@@ -89,9 +89,14 @@ enum TItutDataType
     EImIndicatorRect,
     ESpellBackSpcae,
     ESpellBackSpcaeInner,    
-    EIndiPaneWithoutTextRect, 
-    EIndiIconWithoutTextRect,
-    EIndiTextLine
+    ESpellIndiPaneWithoutTextRect, 
+    ESpellIndiIconWithoutTextRect,
+    ESpellIndiTextLine,
+    ESplitIndiPaneRect,
+    ESplitIndiIconRect,
+    ESplitIndiTextLine,
+    EStarIconRect,
+    EShiftIconRect    
     };
 
 enum TControlId
@@ -113,7 +118,8 @@ enum TControlId
     ECtrlIdICF,
     ECtrlIdOkBtn,
     ECtrlIdCancelBtn,
-    ECtrlIdLastStdCtrl = ECtrlIdCancelBtn+ 1
+    ECtrlIdSplitIndiBubble,
+    ECtrlIdLastStdCtrl
     };
 
 enum TItutCommand

@@ -168,6 +168,15 @@ private:
     void HandleVirtualKeyUpL(TInt aEventType, CFepUiBaseCtrl* aCtrl, const TDesC& aEventData);
 
     /**
+     * Handle virtual key down event
+     *
+     * @since S60 v5.0
+     * @param None
+     * @return None
+     */
+    void HandleVirtualKeyDown();
+    
+    /**
      * Handle show tooltip command
      *
      *     

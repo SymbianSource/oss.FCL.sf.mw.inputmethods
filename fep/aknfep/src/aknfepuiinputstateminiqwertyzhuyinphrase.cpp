@@ -688,9 +688,10 @@ TAknFepInputStateSpellingMiniQwertyZhuyin::TAknFepInputStateSpellingMiniQwertyZh
     iState = EZhuyinSpelling;
 
     MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+    
     uiContainer->FocusCandidatePane( EFalse );
-    uiContainer->CandidatePane()->ShowCandidateOrdinals( EFalse );
     uiContainer->CandidatePane()->SelectFirstPhrase();
+    uiContainer->CandidatePane()->ShowCandidateOrdinals( EFalse );
     uiContainer->ShowVerticalScrollArrows( ETrue );
     uiContainer->ShowHorizontalScrollArrows( EFalse );
     uiContainer->InputPane()->SetOverrideFontId( 0 );
@@ -879,6 +880,114 @@ void TAknFepInputStateSpellingMiniQwertyZhuyin::RefreshUI()
     RefreshSpellingPane( needClearDeliberateSelection );
     }
 
+void TAknFepInputStateSpellingMiniQwertyZhuyin::SubmitTextL( const TDesC& /*aText*/ )
+	{
+    MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+    MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
+    editPane->SetChangeState( EFalse );
+    editPane->SetNeedClearDeliberateSelection( ETrue );
+    CommitCandidateL();
+     }
+
+
+void TAknFepInputStateSpellingMiniQwertyZhuyin::CommitCandidateL()
+    {
+    CDesCArrayFlat* keyStrokeArray = UIContainer()->EditPaneWindow()->KeystrokeArray();
+    CDesCArrayFlat* phraseKeyStrokeArray = UIContainer()->EditPaneWindow()->PhraseShowKeyStrokeArray();
+    CDesCArrayFlat* phraseArray = UIContainer()->EditPaneWindow()->PhraseArray();
+    CDesCArrayFlat* phraseZhuYinSpellingArray = UIContainer()->EditPaneWindow()->PhraseZhuYinSpellingArray();
+    TPtrC candidate = UIContainer()->CandidatePane()->CurrentPhraseCandidate();
+    
+    RArray<TInt>* keyCodeArray = UIContainer()->EditPaneWindow()->KeycodeArray();
+    RArray<TInt>* keyCodePhraseArray = UIContainer()->EditPaneWindow()->PhraseKeycodeArray();
+    TBuf<KMaxKeystrokeCount> spellingText;
+    
+    UIContainer()->InputPane()->GetText( spellingText );
+    
+    //phraseZhuYinSpellingArray must keep same count with phraseArray
+    TInt delCount = phraseZhuYinSpellingArray->Count()-phraseArray->Count();//we can sure delCount>=0,impossible <0
+	if(delCount>0)
+		{
+		phraseZhuYinSpellingArray->Delete(phraseArray->Count(),delCount);//delete from tail 
+		}
+	phraseZhuYinSpellingArray->AppendL(spellingText); 
+    phraseArray->AppendL( candidate );
+    
+    TBuf<KMaxKeystrokeCount> keyStoke;
+    TInt replaceCount = 0;
+    TInt delimiterIndex = spellingText.Find( KDelimiter );
+    if ( KErrNotFound ==delimiterIndex )
+        {
+        delimiterIndex = -1;
+        }
+    TInt indexOfToneMark = GetIndexOfToneMark( spellingText );
+    if ( delimiterIndex != KErrNotFound && indexOfToneMark >= 0 )
+        {
+        replaceCount = Min( delimiterIndex, indexOfToneMark );
+        if ( delimiterIndex > indexOfToneMark )
+            {
+            replaceCount++;
+            }
+        }
+    else if ( delimiterIndex != KErrNotFound && indexOfToneMark == -1 )
+        {
+        replaceCount = delimiterIndex;
+        }
+    else if ( delimiterIndex == KErrNotFound && indexOfToneMark != -1 )
+        {
+        replaceCount = indexOfToneMark + 1;
+        }
+    else
+        {
+        replaceCount = spellingText.Length();
+        } 
+    for (TInt i = 0; i < replaceCount; i++ )
+        {
+        TPtrC ptr = keyStrokeArray->MdcaPoint( 0 );
+        keyStoke.Append( ptr );
+        keyStrokeArray->Delete( 0 );
+        // added for the keycode
+        TInt keyCodeValue = ( *keyCodeArray )[0];
+        keyCodePhraseArray->AppendL( keyCodeValue );
+        keyCodeArray->Remove( 0 );
+        }
+    phraseKeyStrokeArray->AppendL( keyStoke );
+
+    if ( GetValidKeystroke() )
+        {
+        iOwner->ChangeState( EZhuyinSpelling );
+        }
+    else
+        {
+        iOwner->ChangeState( EMiniQwertyEdit );
+        }
+    UIContainer()->EditPaneWindow()->SetChangeState(ETrue);
+    RefreshSpellingPane();
+    RefreshCandidatePane();
+    ChangeCbaL();
+    }
+
+
+TInt TAknFepInputStateSpellingMiniQwertyZhuyin::GetIndexOfToneMark( const TDesC& aText)
+    {
+    TInt indexOfToneMark = -1;
+    TInt num = sizeof(ZhuyinToneMap )/( sizeof(ZhuyinToneMap[0]));
+    TInt len = aText.Length();
+    for( TInt j = 0; j< len ;j++ )
+        {
+        indexOfToneMark = j;
+        TBuf<1> keyStorkeBuf = aText.Mid( j ,1 );
+        for (TInt i = 0; i<num; i++ )
+            {
+            if (  keyStorkeBuf[0] == ZhuyinToneMap[i].iValue  )
+                {
+                return indexOfToneMark;
+                }
+            }
+        }
+    return -1;
+    }
+
 // ---------------------------------------------------------
 // TAknFepInputStateSpellingMiniQwertyZhuyin::RefreshUI
 // Refresh vaild key stroke length
@@ -899,6 +1008,7 @@ void TAknFepInputStateSpellingMiniQwertyZhuyin::RefreshVaildKeyStroke()
     TInt currentLength = ptr.Length();
     editPane->SetEffictiveLength( currentLength );
     }
+
 // ---------------------------------------------------------------------------
 // TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::TAknFepInputStateCanindateSelectingMiniQwertyZhuyin
 // C++ default constructor
@@ -1044,17 +1154,8 @@ TBool TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::HandleKeyL(
                 iOwner->FepMan()->PlaySound(EAvkonSIDDefaultSound);
                 break;
                 }
-            if ( SelectCandidate( aKey ) ) // is 1-6 key 
-                {
-                editPane->SetNeedClearDeliberateSelection( ETrue );
-                CommitCandidateL();
-                }
-            else
-                {
-                return TAknFepInputMiniQwertyZhuyinPhraseBase::HandleKeyL(
+            return TAknFepInputMiniQwertyZhuyinPhraseBase::HandleKeyL(
                     aKey, aLength );
-                }
-            break;
         }
     return ret;
     }
@@ -1205,6 +1306,16 @@ TBool TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::SelectCandidate(
     keybinding.Reset();
     return validnumkey;
     }
+
+void TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::SubmitTextL( const TDesC& /*aText*/ )
+	{
+    MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+    MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
+    editPane->SetChangeState( EFalse );
+    editPane->SetNeedClearDeliberateSelection( ETrue );
+    CommitCandidateL();
+	}
+
 // ---------------------------------------------------------------------------
 // TAknFepInputStateEditingMiniQwertyZhuyinPhrase::HandleCommandL
 // Handling Command
@@ -1240,6 +1351,118 @@ void TAknFepInputStateEditingMiniQwertyZhuyinPhrase::HandleCommandL(
             TAknFepInputStateChineseBase::HandleCommandL( aCommandId );
             break;
         }
+    }
+
+void TAknFepInputStateEditingMiniQwertyZhuyinPhrase::SubmitTextL( const TDesC& aText )
+	{
+    MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+    MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
+    editPane->SetChangeState( EFalse );
+	CDesCArrayFlat* phraseZhuYinSpellingArray = UIContainer()->EditPaneWindow()->PhraseZhuYinSpellingArray();
+	if( phraseZhuYinSpellingArray->Count() >= 7 )
+		{
+		HandleCommitL();
+		return;
+		}
+    editPane->SetNeedClearDeliberateSelection( ETrue );
+    CommitCandidateL();
+	}
+
+void TAknFepInputStateEditingMiniQwertyZhuyinPhrase::CommitCandidateL()
+    {
+    CDesCArrayFlat* keyStrokeArray = UIContainer()->EditPaneWindow()->KeystrokeArray();
+    CDesCArrayFlat* phraseKeyStrokeArray = UIContainer()->EditPaneWindow()->PhraseShowKeyStrokeArray();
+    CDesCArrayFlat* phraseArray = UIContainer()->EditPaneWindow()->PhraseArray();
+    CDesCArrayFlat* phraseZhuYinSpellingArray = UIContainer()->EditPaneWindow()->PhraseZhuYinSpellingArray();
+    TPtrC candidate = UIContainer()->CandidatePane()->CurrentPhraseCandidate();
+    
+    RArray<TInt>* keyCodeArray = UIContainer()->EditPaneWindow()->KeycodeArray();
+    RArray<TInt>* keyCodePhraseArray = UIContainer()->EditPaneWindow()->PhraseKeycodeArray();
+    TBuf<KMaxKeystrokeCount> spellingText;
+    
+    UIContainer()->InputPane()->GetText( spellingText );
+    
+    //phraseZhuYinSpellingArray must keep same count with phraseArray
+    TInt delCount = phraseZhuYinSpellingArray->Count()-phraseArray->Count();//we can sure delCount>=0,impossible <0
+	if(delCount>0)
+		{
+		phraseZhuYinSpellingArray->Delete(phraseArray->Count(),delCount);//delete from tail 
+		}
+	phraseZhuYinSpellingArray->AppendL(spellingText); 
+    phraseArray->AppendL( candidate );
+    
+    TBuf<KMaxKeystrokeCount> keyStoke;
+    TInt replaceCount = 0;
+    TInt delimiterIndex = spellingText.Find( KDelimiter );
+    if ( KErrNotFound ==delimiterIndex )
+        {
+        delimiterIndex = -1;
+        }
+    TInt indexOfToneMark = GetIndexOfToneMark( spellingText );
+    if ( delimiterIndex != KErrNotFound && indexOfToneMark >= 0 )
+        {
+        replaceCount = Min( delimiterIndex, indexOfToneMark );
+        if ( delimiterIndex > indexOfToneMark )
+            {
+            replaceCount++;
+            }
+        }
+    else if ( delimiterIndex != KErrNotFound && indexOfToneMark == -1 )
+        {
+        replaceCount = delimiterIndex;
+        }
+    else if ( delimiterIndex == KErrNotFound && indexOfToneMark != -1 )
+        {
+        replaceCount = indexOfToneMark + 1;
+        }
+    else
+        {
+        replaceCount = spellingText.Length();
+        } 
+    for (TInt i = 0; i < replaceCount; i++ )
+        {
+        TPtrC ptr = keyStrokeArray->MdcaPoint( 0 );
+        keyStoke.Append( ptr );
+        keyStrokeArray->Delete( 0 );
+        // added for the keycode
+        TInt keyCodeValue = ( *keyCodeArray )[0];
+        keyCodePhraseArray->AppendL( keyCodeValue );
+        keyCodeArray->Remove( 0 );
+        }
+    phraseKeyStrokeArray->AppendL( keyStoke );
+
+    if ( GetValidKeystroke() )
+        {
+        iOwner->ChangeState( EZhuyinSpelling );
+        }
+    else
+        {
+        iOwner->ChangeState( EMiniQwertyEdit );
+        }
+    UIContainer()->EditPaneWindow()->SetChangeState(ETrue);
+    RefreshSpellingPane();
+    RefreshCandidatePane();
+    ChangeCbaL();
+    }
+
+TInt TAknFepInputStateEditingMiniQwertyZhuyinPhrase::GetIndexOfToneMark( const TDesC& aText)
+    {
+    TInt indexOfToneMark = -1;
+    TInt num = sizeof(ZhuyinToneMap )/( sizeof(ZhuyinToneMap[0]));
+    TInt len = aText.Length();
+    for( TInt j = 0; j< len ;j++ )
+        {
+        indexOfToneMark = j;
+        TBuf<1> keyStorkeBuf = aText.Mid( j ,1 );
+        for (TInt i = 0; i<num; i++ )
+            {
+            if (  keyStorkeBuf[0] == ZhuyinToneMap[i].iValue  )
+                {
+                return indexOfToneMark;
+                }
+            }
+        }
+    return -1;
     }
 
 // ---------------------------------------------------------------------------

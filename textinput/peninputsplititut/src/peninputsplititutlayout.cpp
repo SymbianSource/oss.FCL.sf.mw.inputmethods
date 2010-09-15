@@ -30,7 +30,7 @@
 //#include <peninputdropdownlist.h>
 
 #include <s32mem.h>
-//#include <peninputlayoutbubblectrl.h>
+#include <peninputlayoutbubblectrl.h>
 
 #include <peninputdataprovider.h>      
 #include <peninputcommonlayoutglobalenum.h>
@@ -433,6 +433,16 @@ void CSplitItutUiLayout::SetInputLanguageL(TInt aLanguage)
 //
 void CSplitItutUiLayout::OnDeActivate()
     {
+    CBubbleCtrl* bubble = static_cast<CBubbleCtrl *>(Control(ECtrlIdSplitIndiBubble));
+    if (bubble && NotDrawToLayoutDevice())
+        {
+        TBool flag = EFalse;
+        HandleCommand(ECmdPeninputEnableOwnBitmap,reinterpret_cast<TUint8*>(&flag));
+        bubble->Draw();
+        flag = ETrue;
+        HandleCommand(ECmdPeninputEnableOwnBitmap,reinterpret_cast<TUint8*>(&flag));
+        }
+    
     TRAP_IGNORE(UiMgr()->HandleCommandL(ECmdPenInputDeActive, NULL));
 
     CFepUiLayout::OnDeActivate();

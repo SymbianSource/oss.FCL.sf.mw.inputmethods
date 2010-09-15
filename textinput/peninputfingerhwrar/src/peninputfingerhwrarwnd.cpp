@@ -24,7 +24,7 @@
 #include <AknLayoutDef.h>
 #include <AknUtils.h>
 #include <AknsUtils.h>
-#include <akniconutils.h>
+#include <AknIconUtils.h>
 #include <AknFepGlobalEnums.h>
 #include <aknfeppeninputenums.h>
 

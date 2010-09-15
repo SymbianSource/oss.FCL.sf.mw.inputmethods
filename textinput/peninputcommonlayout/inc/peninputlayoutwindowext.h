@@ -565,6 +565,25 @@ private:
     HBufC* GetKeyMappingStringL( TInt aKeyMapping, const TInt aLang );
     
     void ResetLastColRow();
+
+    /**
+     * Handle paging button in number and special character mode
+     *     
+     * @param aShifted Indicates whether case is shifted.
+     * @return None.
+	 */    
+    void HandleNumberModePagingL( TBool aShifted );
+    
+    /**
+     *  Gets the button mode id by current language and shift button state
+     *
+     *  @param aShifted current shift key state, press down or not
+     *  @param aLanguage current writing language
+     *  @param aPagingPermitted shift key is dimmed or not
+     *  @return mode id 
+     */
+    TInt CurrentNumberModeId( TBool aShifted, TInt aLanguage, TBool aPagingPermitted );
+     
 protected: // data
 
     /**
@@ -667,5 +686,6 @@ protected: // data
      * Vowel char flag for Viet
      */
     TBool iVowelChar;
+    
     };
 #endif // C_CPeninputLayoutWindowExt_H

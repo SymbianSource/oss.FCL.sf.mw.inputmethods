@@ -162,7 +162,6 @@ TBool TAknFepInputStateEntryMiniQwertyCangJie::HandleKeyL(TInt aKey, TKeyPressLe
         {
         if ( candidatePane->VisibleCandidateCount() != 1 )
 	        {
-	        iOwner->ChangeState( ECandidate );  
 	    	candidatePane->SelectNext(); 	
 	    	UpdateIndicator();
 	        }    	
@@ -171,8 +170,7 @@ TBool TAknFepInputStateEntryMiniQwertyCangJie::HandleKeyL(TInt aKey, TKeyPressLe
     	{
     	if ( candidatePane->VisibleCandidateCount()!= 1 )
 	    	{
-	    	iOwner->ChangeState( ECandidate );  
-	        candidatePane->SelectLastPhrase();	
+	        candidatePane->SelectPrev();	
 	        UpdateIndicator();
 	    	}
     	}     
@@ -260,4 +258,24 @@ void TAknFepInputStateEntryMiniQwertyCangJie::HandleCommandL( TInt aCommandId )
             break;
         }
     }
+void TAknFepInputStateEntryMiniQwertyCangJie::SubmitTextL( const TDesC& aText )
+	{
+	MAknFepManagerUIInterface* fepMan = iOwner->FepMan( );
+	if ( aText.Length( ) )
+	   {
+	   fepMan->NewTextL( aText );
+	   fepMan->CommitInlineEditL( );
+	   iOwner->PtiEngine()->SetPredictiveChineseChar( aText );
+	   if ( fepMan->IsFlagSet( CAknFepManager::EFlagEditorFull ) )
+	      {
+	      fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
+	      iOwner->FepMan()->TryCloseUiL( );
+	      }
+	   else
+	       {
+	       iOwner->ChangeState( EPredictiveCandidate );
+	       }
+	    }
+	}
+
 // End of file

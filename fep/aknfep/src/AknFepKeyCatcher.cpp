@@ -456,7 +456,8 @@ TKeyResponse CAknFepKeyCatcher::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEven
 	// block the subsequent long key press also	
 	if ( length == EShortKeyPress && !iFepMan.EditorHasFreeSpace() 
 		&& iFepMan.PtiEngine()->IsValidKey((TPtiKey)aKeyEvent.iScanCode)   
-		&& !iFepMan.IsFlagSet(CAknFepManager::EFlagInsideMultitapInlineEditingTransaction) ) 
+		&& !iFepMan.IsFlagSet(CAknFepManager::EFlagInsideMultitapInlineEditingTransaction)
+        && (iFepMan.InputMode() != EHangul ) ) 
     	{
     	SetFlag(EFlagBlockAllLongKeyPressEvents); // block the subsequent long key press also
     	return EKeyWasNotConsumed;

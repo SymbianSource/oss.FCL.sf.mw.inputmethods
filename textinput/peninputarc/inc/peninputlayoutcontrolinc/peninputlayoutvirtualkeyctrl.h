@@ -174,7 +174,7 @@ private:
      *
      * @since S60 V5.0     
      */            
-    void DrawKeyText(CFbsBitGc* aGc);
+    void DrawKeyText(CFbsBitGc* aGc, const TRect& aRect);
     
     /**
      * Redraw and update the key

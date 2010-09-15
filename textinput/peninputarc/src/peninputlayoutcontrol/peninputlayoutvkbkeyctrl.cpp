@@ -122,7 +122,7 @@ void CVirtualKeyCtrl::ConstructL()
 // (other items were commented in a header).
 // ---------------------------------------------------------------------------
 //        
-void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)  
+void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc, const TRect& aRect)  
     {
     TBool textlineset = EFalse;
 
@@ -136,7 +136,7 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
             if (iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) != KNullDesC)
                 {
                 TAknLayoutText textLayout;
-                textLayout.LayoutText(GetRect(), 
+                textLayout.LayoutText(aRect, 
                                       iKeyboard->TextLineLayout(TVirtualKeyTextPos(i)));
 				TRgb color( KRgbBlack );  // sane default for nonskinned case			    
 			    if ( AknsUtils::AvkonSkinEnabled() )
@@ -151,10 +151,12 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
 				if( iKeyboard->ShiftIcon() &&
 					iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyShiftCharacter )
 					{
-					//CFbsBitGc* gc = GetGc();//static_cast<CFbsBitGc*>(BitGc());
+				    // Get the rect of the shift icon
+					TRect shiftIconDrawRect = iKeyboard->ShiftIconRect();
+					shiftIconDrawRect.Move( iKeyboard->Rect().iTl );
 					AknPenInputDrawUtils::DrawColorIcon( iKeyboard->ShiftIcon(),
 														 *aGc,
-														 textLayout.TextRect() );	
+														 shiftIconDrawRect );	
 					}
 				else if(iKeyboard->StarIcon() &&
 						iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyStarCharacter )
@@ -162,7 +164,9 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
 					// Get the size of the icon
 					TSize starIconSize = iKeyboard->StarIcon()->Bitmap()->SizeInPixels();
 					// Get the rect of draw icon area
-					TRect drawIconRect = textLayout.TextRect();
+					TRect drawIconRect = iKeyboard->StarIconRect();
+					drawIconRect.Move( iKeyboard->Rect().iTl );
+					
 					// When the size of icon is different with the size of draw icon area,
 					// because the icon is drew from the left top coordinate of the draw
 					// icon area, so the icon will not be drew in the center. In this case,
@@ -195,7 +199,7 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc)
     if (!textlineset)
         {
 		TAknLayoutText textLayout;
-		textLayout.LayoutText(GetRect(), iKeyboard->iVKBTextLineLayout);
+		textLayout.LayoutText(aRect, iKeyboard->iVKBTextLineLayout);
 	    
 	    //CFbsBitGc* gc = static_cast<CFbsBitGc*>(BitGc());    
 	    
@@ -323,7 +327,8 @@ void CVirtualKeyCtrl::DrawDimKey()
     gc->SetPenColor(KRgbBlack);
     gc->SetBrushStyle( CGraphicsContext::ENullBrush );    
     //Draw text again.
-    DrawKeyText(gc); 
+    
+    DrawKeyText(gc,GetRect()); 
     }
 
 // ---------------------------------------------------------------------------
@@ -458,7 +463,7 @@ void CVirtualKeyCtrl::DrawNormalStateKey()
     gc->SetPenColor( KRgbBlack );
     gc->SetBrushStyle( CGraphicsContext::ENullBrush );    
     gc->SetFaded(EFalse);            
-    DrawKeyText(gc);        
+    DrawKeyText(gc,Rect());        
     }
 
 CFbsBitGc* CVirtualKeyCtrl::GetGc()
@@ -526,11 +531,6 @@ void CVirtualKeyCtrl::DrawHighlightKey()
         TBool bHasDrawn = EFalse;
         if(UiLayout()->NotDrawToLayoutDevice())
             {
-            /*TBool ret = iKeyboard->PrepareKeyBmp(iKeyboard->HighightKeyBmp(),
-                                    iKeyboard->HighlightKeyDev(),
-                                    rect,innerrect,
-                                    iKeyboard->KeySkinId(EKeyBmpHighlight), 
-                                    KAknsIIDDefault,Rect());*/
             TBool ret = iKeyboard->PrepareHighlightKeyBmp(rect,innerrect,Rect());                                    
             if(ret)
                 {
@@ -588,12 +588,12 @@ void CVirtualKeyCtrl::DrawHighlightKey()
     gc->SetFaded(EFalse);       
     if(UiLayout()->NotDrawToLayoutDevice())
         {
-		DrawKeyText(Keyboard()->HighlightGc());
+        DrawKeyText(Keyboard()->HighlightGc(), GetRect());
         UpdateChangedArea(ETrue);
 		}
     else
         {
-		DrawKeyText(gc);
+        DrawKeyText(gc, Rect());
 		}   
 
     }
@@ -629,7 +629,19 @@ void CVirtualKeyCtrl::Draw()
         }
     
     if(iKeyInfo->Latched()||(PointerDown()&&!iKeyInfo->IsLatchKey()))
-        {        
+        { 
+        // If some layout initializes a RootCtrl redraw operation when the key was in a highlighted state, the normal key would not be seen
+        // after key was returned to the normal state, that's because the layout device has been cleaned and redrawn again so when it comes to draw
+        // this highlighted virtual key, it just draws the bitmap on its own device, so the area the highlighted key occupied on the layout device
+        // is totally undrawn with the normal state key bitmap.
+        // So we have to redraw the normal state key first to make sure the normal key was drawn on the layout bitmap.
+        // [use case: Open the chinse VITUT, input some pinyin letter to bring the candidate list to the forground by clicking the virtual key ctrl
+        //  ==> select some chinese words in the candidate list ==> then click and release the virtual key agian]
+        if(UiLayout()->NotDrawToLayoutDevice())
+            {
+            DrawNormalStateKey();
+            }
+        
         DrawHighlightKey();
         
 // remove DrawBubble() into HandlePointerDownEventL()
@@ -714,9 +726,15 @@ CFepUiBaseCtrl* CVirtualKeyCtrl::HandlePointerUpEventL(const TPoint& aPoint)
         }     
     if(UiLayout()->NotDrawToLayoutDevice())
         {
-        //no need to draw again, just remove the highlight bitmap
-        UpdateChangedArea(EFalse);
-		Draw();
+        if(!iKeyInfo->Latched())
+        	{
+        	//no need to draw again, just remove the highlight bitmap
+            UpdateChangedArea(EFalse);
+        	}
+        
+        // no need to draw the normal key to layout bitmap since the highlighted key bitmap is drawn in a seperate device instead of layout device
+        // so just notify the PEN UI to simply remove the highlighted key bitmap. It will somehow improve the performance and decrease the CPU usage
+		//Draw();
         }
     else
         {

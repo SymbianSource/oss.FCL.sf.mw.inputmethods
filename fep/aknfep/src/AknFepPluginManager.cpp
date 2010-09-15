@@ -221,6 +221,7 @@ CAknFepPluginManager::~CAknFepPluginManager()
     
     if( iPenInputSvrConnected )
         {
+        iPenInputServer.RemovePenUiActivationHandler( this );
         iPenInputServer.Close();
         iPenInputSvrConnected = EFalse;
         }
@@ -531,7 +532,7 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 break;  
             case ESignalChangeAmPm:
                 {
-                iFepMan.ChangeMfneAmPm();
+                iFepMan.ChangeMfneAmPmL();
                 }
                 break;
             case ESignalSetAppEditorCursor:
@@ -1006,6 +1007,12 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
             {
             iForegroundChange = ETrue;   
             iLaunchHelp = EFalse;    
+
+            // Remove pen ui activation observer
+            if (iPenInputSvrConnected && !aEventData )
+                {
+                iPenInputServer.RemovePenUiActivationHandler( this );
+                }            
             
             if (!aEventData && IsInGlobleNoteEditor())
                 {
@@ -1402,6 +1409,15 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
                 }
             }
         }
+    else if( aSuggestMode == EPluginInputModePortraitFSQ  )
+    	{
+		// If current input languge is Chinese or Korean, use EPluginInputModeItut instead.
+		if ( iPortraitFSQEnabled && 
+				( iFepMan.IsChineseInputLanguage() || iFepMan.IsKoreanInputLanguage() ))
+			{
+			  aSuggestMode = EPluginInputModeItut;
+			}
+    	}
     else if ( iOrientationChanged )
         {
         iFepMan.SetNotifyPlugin( EFalse );
@@ -1409,6 +1425,9 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         iFepMan.SetNotifyPlugin( ETrue );
         iOrientationChanged = EFalse;
         }
+    
+    // Add pen ui activation observer
+    iPenInputServer.AddPenUiActivationHandler( this, EPluginInputModeAll );    
     
     TBool isSplit = IsEditorSupportSplitIme();
     TInt inputLang = iFepMan.InputLanguageCapabilities().iInputLanguageCode;
@@ -1593,6 +1612,8 @@ void CAknFepPluginManager::ClosePluginInputModeL( TBool aRestore )
 //
 void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
     {
+    iInitiateCloseInputUi = ETrue;
+    
     // For addition of ITI features on FSQ, 
     // need to restore some values stored before opening FSQ    
     
@@ -1617,6 +1638,7 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
                 }
             else
                 {
+                NotifyAppUiImeTouchWndStateL( EFalse ); //this change is under testing 
                 iCurrentPluginInputFepUI->CloseUI();
                 }
             if( aResetState )
@@ -1659,13 +1681,15 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
         } 
         
     // Notify editor the touch window has been closed
-    NotifyAppUiImeTouchWndStateL( EFalse );
+    //NotifyAppUiImeTouchWndStateL( EFalse );//this change is under testing
     
     iCharStartPostion = KInvalidValue;
     
     // Set the KAknFepTouchInputActive PS to 0, 
     // it means that touch input is inactive now.
     RProperty::Set( KPSUidAknFep, KAknFepTouchInputActive, 0 );
+    
+    iInitiateCloseInputUi = EFalse;    
     }
 
 // ---------------------------------------------------------------------------
@@ -1874,19 +1898,25 @@ void CAknFepPluginManager::ProcessMenuCommandL(TInt aCommandId)
                     }
                     break;
                 case EPeninputCmdFSQ:
+                	{
+                	if ( iPortraitFSQEnabled )
+                		{
+                        TPixelsTwipsAndRotation size; 
+                        CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
+                        TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
+                        ProcessChangingInputModeCmdL( landscape ? EPluginInputModeFSQ : EPluginInputModePortraitFSQ );
+                		}
+                	else
+                		{
+                	    ProcessChangingInputModeCmdL(EPluginInputModeFSQ);
+                		}
+                	}
+                	break;
                 // "Edit portrait" menu - switch to portrait FSQ
                 case EPeninputCmdPortraitEditor:
                     {
-                    if ( iPortraitFSQEnabled )
-                        {
-                        ProcessChangingInputModeCmdL(EPluginInputModePortraitFSQ);          
-                        }
-                    else 
-                        {
-                        ProcessChangingInputModeCmdL(EPluginInputModeFSQ);
-                        }
+                    ProcessChangingInputModeCmdL(EPluginInputModePortraitFSQ);          
                     }
-
                     break;
                 // "Edit landscape" menu - switch to landscape FSQ
                 case EPeninputCmdLandscapeEditor:
@@ -2295,17 +2325,30 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
         {
         // "QWERTY keyboard" - EPeninputCmdFSQ menu is shown in these conditions
         // if portrait FSQ feature flag is enabled
-        // 1) Non-Chinese language
-        // 2) Current input mode is not portrait FSQ and also the mode is not disabled
-        // 3) Current orientation is portrait
-        if ( !isKorean && !isChinese
-            && ( curInputMode != EPluginInputModePortraitFSQ ) 
-            && !( disabledInputMode & EPluginInputModePortraitFSQ ) 
-            && isPortrait )
-        {
-        aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
-        }
-        
+        if ( !isKorean && !isChinese )
+        	{
+            // 1) Non-Chinese language and non-Korean language   
+            if ( isPortrait )
+            	{
+                // 2) On portrait screen, current input mode is not portrait FSQ 
+                //    and also the mode is not disabled
+                if ( curInputMode != EPluginInputModePortraitFSQ 
+                	 && !( disabledInputMode & EPluginInputModePortraitFSQ ) )
+                	{
+                    aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
+                	}                	
+            	}
+            else
+            	{
+                // 3) On landscape screen, current input mode is not FSQ 
+                // and also the mode is not disabled
+                if ( curInputMode != EPluginInputModeFSQ 
+                   	 && !( disabledInputMode & EPluginInputModeFSQ ) )
+                	{
+                    aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
+                	}
+            	}        
+        	}
         }
     else
         {
@@ -6057,7 +6100,8 @@ TBool CAknFepPluginManager::IsSupportITIOnFSQ()
          && iFepMan.InputLanguageCapabilities().iSupportsWesternQwertyPredictive
          && !iSharedData.QwertyInputMode()
          // No need to support in dialer application.
-         && RProcess().SecureId().iId != KPhoneSecureId )
+         && RProcess().SecureId().iId != KPhoneSecureId && 
+         !iFepMan.IsNoT9Editor() )
         {
         return ETrue;
         }        
@@ -6509,6 +6553,29 @@ void CAknFepPluginManager::ProcessChangingInputModeCmdL(TInt aInputMode)
     iCurMFNECap = 0;
     iCurEditor = NULL;
     }
+
+// -----------------------------------------------------------------------------
+// CAknFepPluginManager::OnPeninputUiDeactivated
+// Called when pen input UI is about to be closed
+// -----------------------------------------------------------------------------
+//
+void CAknFepPluginManager::OnPeninputUiDeactivated()
+    {
+    if( !iInitiateCloseInputUi )
+        {
+        TRAP_IGNORE( ClosePluginInputUiL( ETrue ) );
+        }
+    }
+
+// -----------------------------------------------------------------------------
+// CAknFepPluginManager::OnPeninputUiActivated
+// Called when pen input UI is about to be open
+// -----------------------------------------------------------------------------
+//
+void CAknFepPluginManager::OnPeninputUiActivated()
+    {
+    }
+
 
 CConnectAo::CConnectAo(CAknFepPluginManager* aClient) 
                 : CActive(CActive::EPriorityStandard),

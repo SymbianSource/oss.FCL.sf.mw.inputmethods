@@ -50,58 +50,85 @@ void CAknFepUiLayoutDataMgr::ConstructL()
     }
 
 void CAknFepUiLayoutDataMgr::ReadLafInfo()
-    {
-    // Screen
+    {	
+	// Screen
     TRect rect;
-    AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EScreen, rect);
+    AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EScreen, rect );
     iScreenSize = rect.Size();
 
     iLandScape = iScreenSize.iWidth < iScreenSize.iHeight ? EFalse : ETrue;
     
-    TAknWindowLineLayout layoutLineEntry, layoutLineCandidate, layoutLineEEP;
-    TAknLayoutRect layoutRectEntry, layoutRectCandidate, layoutRectEEP;
-    
-    layoutLineEntry = AKN_LAYOUT_WINDOW_popup_fep_china_uni_window(0,0);
-    layoutRectEntry.LayoutRect(iScreenSize,layoutLineEntry);
-    iPopupRectEntry = layoutLineEntry.Rect();
+    // 1. Container With Candidate list
+    TAknWindowLineLayout layoutLineEntry;
+    TAknLayoutRect layoutRectEntry;
+      
+    // Get container Rect & height
+    layoutLineEntry = AknLayoutScalable_Avkon::popup_hyb_candi_window(0);
+    layoutRectEntry.LayoutRect( rect, layoutLineEntry );    
+    iPopupRectEntry = layoutRectEntry.Rect();
     iPopupHeightEntry = layoutLineEntry.iH;
     
-    //PinyinPopupWindowRect
-    iEntryPaneWindowLine = AKN_LAYOUT_WINDOW_fep_china_uni_entry_pane;
-    iLayoutEntryItem = AKN_LAYOUT_WINDOW_fep_entry_item_pane;
+    // Candidate layout
+    iCandidate = AknLayoutScalable_Avkon::grid_hyb_candi_pane(0);
     
-    iLayoutLineRectEntryPane.LayoutRect(iPopupRectEntry, iEntryPaneWindowLine);
+    // Scroll layout
+    iScrollLayout = AknLayoutScalable_Avkon::cell_hyb_candi_scroll_pane(0); 
+   
+    // Up arrow & down arrow & close in scroll pane
+    iUpArrowLayout = AknLayoutScalable_Avkon::cell_hyb_candi_scroll_pane_g1_aid(0);   
+    iDownArrowLayout = AknLayoutScalable_Avkon::cell_hyb_candi_scroll_pane_g2_aid(0);    
+    iCloseLayout = AknLayoutScalable_Avkon::cell_hyb_candi_scroll_pane_g3(0);
     
-    layoutLineCandidate = AKN_LAYOUT_WINDOW_popup_fep_china_uni_window(0,1);
-    layoutRectCandidate.LayoutRect(iScreenSize,layoutLineCandidate);
-    iPopupRectCandidate = layoutLineCandidate.Rect();
+    // Character in candidate pane
+    iCharacterLineLayout = AknLayoutScalable_Avkon::cell_hyb_candi_pane(0);    
+    iCharacterTextLayout = AknLayoutScalable_Avkon::cell_hyb_candi_pane_t1(0);
+    iEntryPaneWindowLine = AknLayoutScalable_Avkon::input_focus_pane_cp06( 0 );
+    iEntryPaneWindowLine.il = 3;
+    iEntryPaneWindowLine.it = 3;
+    iEntryPaneWindowLine.ir = 5;
+    iEntryPaneWindowLine.iH = 30;
+    iLayoutEntryItem = AKN_LAYOUT_WINDOW_fep_entry_item_pane;    
+    iLayoutLineRectEntryPane.LayoutRect( iPopupRectEntry, iEntryPaneWindowLine );
     
-    layoutLineEEP = AKN_LAYOUT_WINDOW_popup_fep_china_uni_window(0,2);//need updated
-    layoutRectEEP.LayoutRect(iScreenSize,layoutLineEEP);
-    iPopupRectEEP = layoutLineEEP.Rect();
+    // 2. EC( With Candidate list & Entry )
+    TAknWindowLineLayout layoutLineCandidate;
+    TAknLayoutRect layoutRectCandidate, layoutEC;
+    
+    // Container Rect & height
+    layoutLineCandidate = AknLayoutScalable_Avkon::popup_hyb_candi_window(1);
+    layoutRectCandidate.LayoutRect( rect,layoutLineCandidate );
+    iPopupRectCandidate = layoutRectCandidate.Rect();
+    iPopupRectCandidateHeight = layoutLineCandidate.iH;
+    
+    // Candidate layout
+    iECandidate = AknLayoutScalable_Avkon::grid_hyb_candi_pane(1);    
+    iEntryCLayout = AknLayoutScalable_Avkon::entry_hyb_candi_pane(0);
+    
+    // Phrase pane layout
+    iECWindowLayout = AknLayoutScalable_Avkon::grid_hyb_phrase_pane(0);     
+       
+    // 3. ECP( With Candidate list & Entry & PopUp )
+    TAknWindowLineLayout layoutLineEEP;
+    TAknLayoutRect layoutEEP, layoutRectEEP;
+    
+    // Container Rect & height
+    layoutLineEEP = AknLayoutScalable_Avkon::popup_hyb_candi_window(2);
+    layoutRectEEP.LayoutRect(rect,layoutLineEEP);
+    iPopupRectEEP = layoutRectEEP.Rect();
     iPopupHeightEEP = layoutLineEEP.iH;
     
+    //Entry
+    iEntryCPLayout = AknLayoutScalable_Avkon::entry_hyb_candi_pane(1);
+    iEntryWithCandidateAndPopUp = AknLayoutScalable_Avkon::grid_hyb_phrase_pane(1);
+
+    // Candidate layout
+    iEPCandidate = AknLayoutScalable_Avkon::grid_hyb_candi_pane(2);
+       
+    //EEP
+    iEEPWindowLayout = AknLayoutScalable_Avkon::grid_hyb_phrase_pane(1);     
+    layoutEEP.LayoutRect( iPopupRectEEP, iEEPWindowLayout );
+    iEEPWindowRect = layoutEEP.Rect();
     
-    iCandidatePaneWindowLine = AKN_LAYOUT_WINDOW_fep_china_uni_candidate_pane( 0 );
-    
-    //Candidate
-    
-    iCandidatePaneTextLine = AKN_LAYOUT_TEXT_Chinese_universal_FEP_candidate_pane_texts_Line_1;
-    iOrdinalCandidateTextLayout = AKN_LAYOUT_TEXT_Chinese_universal_FEP_candidate_pane_texts_Line_3;
-    iCandidateWindowLine1 = AKN_LAYOUT_WINDOW_Chinese_universal_FEPcandidate_pane_elements_Line_1;
-    iCandidateWindowLine2 = AKN_LAYOUT_WINDOW_Chinese_universal_FEPcandidate_pane_elements_Line_2;
-    iCandidateWindowLine3 = AKN_LAYOUT_WINDOW_Chinese_universal_FEPcandidate_pane_elements_Line_3;
-    iCandidateWindowLine4 = AKN_LAYOUT_WINDOW_Chinese_universal_FEPcandidate_pane_elements_Line_4;
-    
-    iLayoutCandidateItem = AKN_LAYOUT_WINDOW_fep_candidate_item_pane;
-    
-    //EEP   
-    TAknWindowComponentLayout EEPWindowComponentLayout = AknLayoutScalable_Avkon::fep_china_uni_eep_pane();     
-    iEEPWindowLayout = EEPWindowComponentLayout.LayoutLine();
-    TAknLayoutRect EEPLayout;
-    EEPLayout.LayoutRect( iPopupRectEEP, iEEPWindowLayout );
-    iEEPWindowRect = EEPLayout.Rect();
-    //
     iRectCoverMainPaneInputEntry.LayoutRect(iPopupRectEntry, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_1(iPopupRectEntry));
     iRectFirstShadowInputEntry.LayoutRect(iPopupRectEntry, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_2(iPopupRectEntry));
     iRectOutlineFrameInputEntry.LayoutRect(iPopupRectEntry, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_3(iPopupRectEntry));
@@ -116,59 +143,53 @@ void CAknFepUiLayoutDataMgr::ReadLafInfo()
     iRectInsideAreaInputCandidate.LayoutRect(iPopupRectCandidate, 
                                              AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_4(iPopupRectCandidate));
     
+  
     iRectCoverMainPaneInputEEP.LayoutRect(iPopupRectEEP, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_1(iPopupRectEEP));
     iRectFirstShadowInputEEP.LayoutRect(iPopupRectEEP, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_2(iPopupRectEEP));
     iRectOutlineFrameInputEEP.LayoutRect(iPopupRectEEP, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_3(iPopupRectEEP));
     iRectInsideAreaInputEEP.LayoutRect(iPopupRectEEP, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_4(iPopupRectEEP));    
-       
-    //HorizLine
-
+    
     iEntryHorizLineWindow = AknLayoutScalable_Avkon::popup_fep_china_uni_window_g(0,0).LayoutLine();
     iEEPSecondHorizLineWindow = AknLayoutScalable_Avkon::popup_fep_china_uni_window_g(0,1).LayoutLine();
     iEEPFirstHorizLineWindow = AknLayoutScalable_Avkon::popup_fep_china_uni_window_g(1,0).LayoutLine();
     iHorizLine.LayoutRect(iPopupRectEntry, iEntryHorizLineWindow);
     iEEPFirstHorizLine.LayoutRect(iPopupRectEEP, iEEPFirstHorizLineWindow);
     iEEPSecondHorizLine.LayoutRect(iPopupRectEEP, iEEPSecondHorizLineWindow);
-
     iEntryPaneRect = iLayoutLineRectEntryPane.Rect( );
-    iEntryTextLayout
-        = AKN_LAYOUT_TEXT_Chinese_universal_FEP_entry_pane_texts_Line_1(0);
+
     TAknLayoutRect labelRect;
-    labelRect.LayoutRect( iEntryPaneRect,
-        AKN_LAYOUT_WINDOW_fep_entry_item_pane );
+    labelRect.LayoutRect( iEntryPaneRect, AknLayoutScalable_Avkon::entry_hyb_candi_pane(0));
+    iEntryTextLayout = AknLayoutScalable_Avkon::entry_hyb_candi_pane_t1( 0 );
     iLayoutInputPaneText.LayoutText( labelRect.Rect( ), iEntryTextLayout );
 
     TRect windowRect = layoutRectEntry.Rect();    
     TInt height = windowRect.Height();
     TInt width = windowRect.Width();
+    
     windowRect.iTl.iY = 0;
     windowRect.iTl.iX = 0;
     windowRect.SetHeight(height);
     windowRect.SetWidth(width);
-    
+      
     TAknLayoutRect layoutLineRectEntryPane;
     layoutLineRectEntryPane.LayoutRect(windowRect, iEntryPaneWindowLine);
     TRect entryPane = layoutLineRectEntryPane.Rect();
-    // left and right arrow
-    TAknWindowLineLayout leftArrowLayoutLine, rithgArrowLayoutLine;	
-    leftArrowLayoutLine = AKN_LAYOUT_WINDOW_Chinese_universal_FEP_entry_pane_elements_Line_1;
-    iIndiFepArrowLeft.LayoutRect(entryPane,leftArrowLayoutLine);
-    rithgArrowLayoutLine = AKN_LAYOUT_WINDOW_Chinese_universal_FEP_entry_pane_elements_Line_2;
-    iIndiFepArrowRight.LayoutRect(entryPane,rithgArrowLayoutLine);   	
-    
+     
     iRectCoverMainPaneInput.LayoutRect(windowRect, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_1(windowRect));
     iRectFirstShadowInput.LayoutRect(windowRect, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_2(windowRect));
     iRectOutlineFrameInput.LayoutRect(windowRect, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_3(windowRect));
     iRectInsideAreaInput.LayoutRect(windowRect, AKN_LAYOUT_WINDOW_Chinese_universal_FEP_pop_up_window_graphics_Line_4(windowRect));
-    
+      
     //eep text
-    TAknTextComponentLayout textLayout = AknLayoutScalable_Avkon::fep_china_uni_eep_pane_t1();
+    TAknTextComponentLayout textLayout = AknLayoutScalable_Avkon::entry_hyb_candi_pane_t1(0);
     iEEPTextLine = textLayout.LayoutLine();
     TAknLayoutText eepTextLayout;
     eepTextLayout.LayoutText( iEEPWindowRect, iEEPTextLine );
     iEEPTextColor = eepTextLayout.Color();
     const CFont* font = AknLayoutUtils::FontFromId(iEEPTextLine.FontId());
     iEEPCursorHeight = font->HeightInPixels();    
+    iInputLayout = AknLayoutScalable_Avkon::cell_hyb_phrase_pane(0);
+    iInputTextLayout = AknLayoutScalable_Avkon::cell_hyb_phrase_pane_t1(0);
     }
 
 TAny* CAknFepUiLayoutDataMgr::RequestData(TInt aDataType)
@@ -189,22 +210,8 @@ TAny* CAknFepUiLayoutDataMgr::RequestData(TInt aDataType)
             return &iEntryPaneWindowLine;
         case ECandidatePaneWindowLine:
             return &iCandidatePaneWindowLine;
-        case ECandidatePaneTextLine:
-            return &iCandidatePaneTextLine;
-        case ECandidateWindowLine1:
-            return &iCandidateWindowLine1;
-        case ECandidateWindowLine2:
-            return &iCandidateWindowLine2;
-        case ECandidateWindowLine3:
-            return &iCandidateWindowLine3;
-        case ECandidateWindowLine4:
-            return &iCandidateWindowLine4;
-        case ELayoutCandidateItem:
-            return &iLayoutCandidateItem;
         case ELayoutEntryItem:
             return &iLayoutEntryItem;
-        case EOrdinalCandidateTextLayout:
-            return &iOrdinalCandidateTextLayout;
         case EEEPWindowRect:
             return &iEEPWindowRect;
         case EEEPWindowLayout:
@@ -241,10 +248,6 @@ TAny* CAknFepUiLayoutDataMgr::RequestData(TInt aDataType)
             return &iEntryTextLayout;
         case EEntryPaneRect:
             return &iEntryPaneRect;
-        case EIndiFepArrowLeft:
-            return &iIndiFepArrowLeft;
-        case EIndiFepArrowRight:
-            return &iIndiFepArrowRight;
         case ERectCoverMainPaneInput:
             return &iRectCoverMainPaneInput;
         case ERectFirstShadowInput:
@@ -271,6 +274,38 @@ TAny* CAknFepUiLayoutDataMgr::RequestData(TInt aDataType)
             return &iEEPFirstHorizLineWindow;
         case EEEPTextColor:
             return &iEEPTextColor;
+        case EECPLayout:
+        	return &iEntryWithCandidateAndPopUp;//Rect;
+        case ECandidateLayout:
+        	return &iCandidate;
+        case EECandidateLayout:
+        	return &iECandidate;
+        case EEPCandidateLayout:
+        	return &iEPCandidate;
+        case ECharacterLayout:
+        	return &iCharacterLineLayout;
+        case ECharacterTextLayout:
+        	return &iCharacterTextLayout;
+        case EPopupHeightEP:
+        	return &iPopupRectCandidateHeight;
+        case EUpArrowLayout:
+        	return &iUpArrowLayout;
+        case EDownArrowLayout:
+        	return &iDownArrowLayout;
+        case EScrollLayout:
+        	return &iScrollLayout;
+        case EEntryCLayout:
+        	return &iEntryCLayout;
+        case EEntryCPLayout:
+        	return &iEntryCPLayout;
+        case EECWindowLayout:
+        	return &iECWindowLayout;
+        case ECloseLayout:
+        	return &iCloseLayout;
+        case EInputLayout:
+        	return &iInputLayout;
+        case EInputTextLayout:
+        	return &iInputTextLayout;
         default:
             break;
         }

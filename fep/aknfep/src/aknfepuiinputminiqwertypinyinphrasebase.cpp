@@ -121,6 +121,8 @@ const TMiniQwertyToneMap PinyinToneMap[] =
     {0x02D9, 5}
     };
 
+const TUid KPtiSogouCoreUid = { 0x20031DD6 };
+
 // ---------------------------------------------------------------------------
 // TAknFepInputStateStrokePhraseCreationBase::TAknFepInputStateStrokePhraseCreationBase
 // C++ default constructor
@@ -139,6 +141,18 @@ TAknFepInputMiniQwertyPinyinPhraseBase::TAknFepInputMiniQwertyPinyinPhraseBase(
     MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
     TBool multiplePages = !(uiContainer->CandidatePane()->IsLastPage() && uiContainer->CandidatePane()->IsFirstPage());
     uiContainer->ShowVerticalScrollArrows(multiplePages);
+    
+    // If sogou core is in use, set plugin to the state
+    // machine and enable the plugin.
+    // Get current core id. It is used to judge whether sogou core is in use.
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        TAknFepInputMiniQwertySogouPinyinPhrasePlugin plugin( aOwner, aUIContainer, iState );
+        plugin.Enable( ETrue );
+        SetPlugin( plugin );
+        }
     }
 
 // ---------------------------------------------------------------------------
@@ -386,11 +400,42 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::CheckFirstGroupStroke()
                 }
             }
         GetKeystrokeCode(keyCode, showKeystroke->MdcaPoint(i) );
-        stringBeforeLength = getCurrentLeastDLTSpell().Length();
+        
+        // dltBeforeCount is the dlt count before append the key.
+        // dltAfterCount is the dlt count after append the key.
+        // In sogou core, after appending a new key, the spell length
+        // may be the same, but the dlt count will change.
+        // In this situation, the appended key is valid.
+        TInt dltBeforeCount = 0;
+        TInt dltAfterCount = 0;
+        TPtrC stringBefore = getCurrentLeastDLTSpell();
+        stringBeforeLength = stringBefore.Length();
+        for ( TInt k = 0; k < stringBefore.Length(); k++ )
+            {
+            if ( CheckSpellingDLT( stringBefore.Mid( k )))
+                {
+                dltBeforeCount++;
+                }
+            }
+        
+        // Append the key.
         ptiengine->AppendKeyPress((TPtiKey)keyCode).Length();
-        stringAfterLength = getCurrentLeastDLTSpell().Length();
-        //the keystroke is invalid.
-        if (stringBeforeLength == stringAfterLength)
+        
+        // Get the dlt count after appending the key.
+        TPtrC stringAfter = getCurrentLeastDLTSpell();
+        stringAfterLength = stringAfter.Length();
+        for ( TInt l = 0; l < stringAfter.Length(); l++ )
+            {
+            if ( CheckSpellingDLT( stringAfter.Mid( l )))
+                {
+                dltAfterCount++;
+                }
+            }
+
+        // If the spell length is the same and the dlt count is 
+        // the same, the keystroke is invalid
+        if (( stringBeforeLength == stringAfterLength ) &&
+            ( dltAfterCount == dltBeforeCount ))
             {
             return EFalse;
             }
@@ -415,7 +460,23 @@ TInt TAknFepInputMiniQwertyPinyinPhraseBase::GetCursorPos()
     TInt count = 0;
     TBuf<1> autoDLT;
     autoDLT.Append(KAutoDLT);
-
+    
+    // If this method is called in construction of the state machine,
+    // the plugin is not set. If sogou core is in use now, the phraseCount
+    // should be the same as the phrase characters count.
+    // For Sogou core, maybe one element of PhraseArray() contains two or more characters.
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        CDesCArrayFlat* phraseArray = editPane->PhraseArray();
+        phraseCount = 0;
+        for ( TInt i = 0; i < phraseArray->Count(); i++ )
+            {
+            phraseCount += (*phraseArray)[i].Length();
+            }
+        }
+    
     if ( 0 == index)
         {
         pos = phraseCount;
@@ -516,6 +577,26 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandlSpaceKeyL()
     TBuf<1> autoDLT;
     manualDLT.Append( KManualDLT );
     autoDLT.Append( KAutoDLT );
+    
+    // Get the current core id
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        CDesCArrayFlat* phrase = editPane->PhraseArray();
+        phraseCount = 0;
+        for ( TInt j = 0;  j < phrase->Count(); j++ )
+            {
+            phraseCount += phrase->MdcaPoint(j).Length();;
+            }
+        }
+    
+    if ( phraseCount + showKeystrokeCount >= KMaxKeystrokeCount )
+        {
+        iOwner->FepMan()->PlaySound(EAvkonSIDErrorTone);
+        return;
+        }
     
     TBool firstGroup = CheckFirstGroupStroke();
 
@@ -873,6 +954,12 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseSpellingAddKeyL(
 //
 void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseL()
     {
+    // If sogou core is actived, use the plugin.
+    if ( iPlugin.IsEnable())
+        {
+        iPlugin.AnalyseL();
+        return;
+        }
     CPtiEngine* ptiengine = iOwner->PtiEngine();
     MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
     MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
@@ -978,7 +1065,7 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandleCommitL()
         if ( ( showKeyCount > 0 ) && (cdtCount > 0 ) )
             {
             UIContainer()->EditPaneWindow()->SetChangeState(ETrue);
-            iOwner->ChangeState(ECandidate);
+            iOwner->ChangeState(EEntry);
             return;
             }
 
@@ -1049,17 +1136,15 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandleCommitL()
                 {
                 editPane->SetAutoChangeStateFlag(EAutoChangeStateFromCandidate);
                 }
+            //stroke to be shown
+            if ( iPlugin.IsEnable())
+                {
+                iPlugin.AnalyseL();
+                }
             iOwner->ChangeState(EMiniQwertyEdit);
             return;
             }
-        else
-            {
-            if ( iState == EEntry )
-                {
-                UIContainer()->EditPaneWindow()->SetChangeState( ETrue );
-                iOwner->ChangeState( ECandidate );
-                }
-            }
+
         AnalyseL();
         RefreshUI();
         }
@@ -1220,9 +1305,31 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::ShowInfoOnEEPPane()
     CDesCArrayFlat* phrase = editPane->PhraseArray();
     TBuf<KMaxKeystrokeCount> showInfo;
     TBuf<KMaxKeystrokeCount> keyBuf;
+    
+    // Get the current core id
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    TInt phraseCount = 0;
+    
     for (TInt i = 0; i < phrase->Count(); ++i)
         {
-        showInfo.Append(phrase->MdcaPoint(i) );
+        // If this method is called in construction of the state machine,
+        // the plugin is not set. If sogou core is in use now, we should append 
+        // each characters to showInfo.
+        // For Sogou core, maybe one element of PhraseArray() contains two or more characters.
+        if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+            {
+            for ( TInt k = 0; k < phrase->MdcaPoint(i).Length(); k++ )
+                {
+                showInfo.Append( phrase->MdcaPoint(i)[k] );
+                }
+            phraseCount += phrase->MdcaPoint(i).Length();
+            }
+        else
+            {
+            // If cpicore is in use, just append the element of phrase
+            showInfo.Append(phrase->MdcaPoint(i) );
+            }
         }
 
     for (TInt ii = 0; ii < showKeystroke->Count(); ++ii)
@@ -1234,9 +1341,22 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::ShowInfoOnEEPPane()
         {
         keyBuf.Append(keystrokeArray->MdcaPoint(j) );
         }
-
-    editPane->SetTextForZhuyin(showInfo, GetCursorPos(), phrase->Count(),
+    
+    // If this method is called in construction of the state machine,
+    // the plugin is not set. If sogou core is in use now, the phraseCount
+    // should be the same as the phrase characters count.
+    // For Sogou core, maybe one element of PhraseArray() contains two or more characters.
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        editPane->SetTextForZhuyin(showInfo, GetCursorPos(), phraseCount,
+                        keyBuf, editPane->GetCursorIndexOfKeystroke() );
+        }
+    else
+        {
+        // If cpicore is in use, phraseCount is the same as phrase->Count()
+        editPane->SetTextForZhuyin(showInfo, GetCursorPos(), phrase->Count(),
         keyBuf, editPane->GetCursorIndexOfKeystroke() );
+        }
 
     if (iState == ECandidate)
         {
@@ -1536,6 +1656,11 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::DeleteKeystrokeL()
 void TAknFepInputMiniQwertyPinyinPhraseBase::AddPhraseToDB(
     const TDesC& aPhraseAdd)
     {
+    if ( iPlugin.IsEnable())
+        {
+        iPlugin.AddPhrasePinyinToPti();
+        return;
+        }
     TPtiUserDictionaryEntry addUdbEntry(aPhraseAdd);
     //Add the phrase to the DB by PTI Engine
     iOwner->PtiEngine()->AddUserDictionaryEntry(addUdbEntry);
@@ -1588,6 +1713,12 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::CheckKeyNeedRepeat(
 TBool TAknFepInputMiniQwertyPinyinPhraseBase::CommitInlineEEPL(
     const TDesC& aDes)
     {
+    // If sogou core is actived, use the plugin.
+    if ( iPlugin.IsEnable())
+        {
+        return iPlugin.CommitInlineEEPL( aDes );
+        }
+
     TInt charCount = aDes.Length();
     MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
     MAknFepUICtrlEditPane* editpane = UIContainer()->EditPaneWindow();
@@ -1695,6 +1826,20 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::AddKeystrokeL(TInt aKey)
     TInt index = editPane->GetCursorIndexOfKeystroke();
     TBuf<1> keystroke;
     
+    // Get the current core id
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        CDesCArrayFlat* phrase = editPane->PhraseArray();
+        phraseCount = 0;
+        for ( TInt j = 0;  j < phrase->Count(); j++ )
+            {
+            phraseCount += phrase->MdcaPoint(j).Length();;
+            }
+        }
+    
     if ( phraseCount + showKeystrokeCount >= KMaxKeystrokeCount )
         {
         return EFalse;
@@ -1707,6 +1852,7 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::AddKeystrokeL(TInt aKey)
         {
         return EFalse;
         }
+    
     if ( index >= keystrokeArray->Count() )
         {
         keystrokeArray->AppendL(keystroke);
@@ -1839,6 +1985,12 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::AddToneMarkL()
 //
 void TAknFepInputMiniQwertyPinyinPhraseBase::GetCandidateL()
     {
+    if ( iPlugin.IsEnable())
+        {
+        iPlugin.GetCandidateL();
+        return;
+        }
+    
     CPtiEngine* ptiengine = iOwner->PtiEngine();
     MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
     MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
@@ -1860,7 +2012,7 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::GetCandidateL()
         return;
         }
 
-    if ( CheckAllGroupStroke() && ( phraseCount == 0 ) )
+    if (( phraseCount == 0 ) && CheckAllGroupStroke())
         {
         getCurrentLeastDLTSpell();
         ptiengine->GetChinesePhraseCandidatesL( *phraseCandidates ); 
@@ -1975,7 +2127,13 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::RevertPhraseToKeystrokeL()
     keystrokeArray->Compress();
     phrase->Compress();
     phraseStroke->Compress();
-
+    
+    TInt coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID );
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        // Notify sogoucore that last phrase is cancelled
+        iOwner->PtiEngine()->HandleCommandL( EPtiCommandCancelSelectElement );
+        }
     }
 
 // ---------------------------------------------------------
@@ -2001,6 +2159,11 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::SetWarningColor(
         {
         editPane->SetHighlight(aPhraseCount + aIndex, aPhraseCount
                 + aIndex + aCount - 1 );
+        if ( iPlugin.IsEnable())
+            {
+            iPlugin.CanConvertAll( EFalse );
+            iPlugin.ConvertCount( aIndex );
+            }
         }
     else
         {
@@ -2025,6 +2188,11 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::SetWarningColor(
             {
             editPane->SetHighlight( aPhraseCount + aIndex, aPhraseCount
                     + aIndex + aCount - 1);
+            if ( iPlugin.IsEnable())
+                {
+                iPlugin.CanConvertAll( EFalse );
+                iPlugin.ConvertCount( aIndex );
+                }
             }
         }
     ClearPtiEngineKeystroke();
@@ -2049,26 +2217,68 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::SetWarningColor()
     TInt start = 0;
     TInt keyCode = 0;
     TInt toneMark = KInvalidToneMark;
+    
+    if ( iPlugin.IsEnable())
+        {
+        iPlugin.CanConvertAll( ETrue );
+        }
+    // Get the current core id
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        CDesCArrayFlat* phrase = editPane->PhraseArray();
+        phraseCount = 0;
+        for ( TInt j = 0;  j < phrase->Count(); j++ )
+            {
+            phraseCount += phrase->MdcaPoint(j).Length();;
+            }
+        }
 
     if (showKeystroke->Count() == 0)
         {
         return;
         }
 
-    if (CheckAllGroupStroke() )
+    if ( TUid::Uid( coreID ) != KPtiSogouCoreUid )
         {
-        return;
+        if ( CheckAllGroupStroke())
+            {
+            return;
+            }
         }
+
     ClearPtiEngineKeystroke();
     if (CheckSpellingDLT(showKeystroke->MdcaPoint( 0) ) || (KInvalidToneMark
             != ToneMark(showKeystroke->MdcaPoint( 0) ) ))
         {
         start = 1;
         editPane->SetHighlight(phraseCount, phraseCount);
+
+        if ( iPlugin.IsEnable())
+            {
+            iPlugin.CanConvertAll( EFalse );
+            iPlugin.ConvertCount( index );
+            }
+        
         index = 1;
         }
+    
+    TInt end = showKeystroke->Count();
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        for ( TInt j = showKeystroke->Count() - 1; j >= 0; j-- )
+            {
+            if ( KAutoDLT == showKeystroke->MdcaPoint(j)[0] )
+                {
+                end = j + 1;
+                break;
+                }
+            }
+        }
 
-    for ( TInt i = start; i < showKeystroke->Count(); ++i )
+    for ( TInt i = start; i < end; ++i )
         {
         count = count + 1;
         // tone mark
@@ -2096,6 +2306,11 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::SetWarningColor()
                     {
                     editPane->SetHighlight(phraseCount + index, phraseCount
                             + index + count - 1);
+                    if ( iPlugin.IsEnable())
+                        {
+                        iPlugin.CanConvertAll( EFalse );
+                        iPlugin.ConvertCount( index );
+                        }
                     }
                 ClearPtiEngineKeystroke();
                 index = i + 1;
@@ -2107,10 +2322,42 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::SetWarningColor()
                 if ( valid )
                     {
                     GetKeystrokeCode(keyCode, showKeystroke->MdcaPoint(i) );
-                    stringBeforeLength = getCurrentLeastDLTSpell().Length();
-                    ptiengine->AppendKeyPress((TPtiKey)keyCode).Length();
-                    stringAfterLength = getCurrentLeastDLTSpell().Length();
-                    if ( stringBeforeLength == stringAfterLength )//the keystroke is invalid
+                    
+                    // dltBeforeCount is the dlt count before append the key.
+                    // dltAfterCount is the dlt count after append the key.
+                    // In sogou core, after appending a new key, the spell length
+                    // may be the same, but the dlt count will change.
+                    // In this situation, the appended key is valid.
+                    TInt dltBeforeCount = 0;
+                    TInt dltAfterCount = 0;
+                    TPtrC stringBefore = getCurrentLeastDLTSpell();
+                    stringBeforeLength = stringBefore.Length();
+                    for ( TInt j = 0; j < stringBefore.Length(); j++ )
+                        {
+                        if ( CheckSpellingDLT( stringBefore.Mid( j )))
+                            {
+                            dltBeforeCount++;
+                            }
+                        }
+                    
+                    // Append the key.
+                    ptiengine->AppendKeyPress(( TPtiKey )keyCode ).Length();
+                    
+                    // Get the dlt count after appending the key.
+                    TPtrC stringAfter = getCurrentLeastDLTSpell();
+                    stringAfterLength = stringAfter.Length();
+                    for ( TInt k = 0; k < stringAfter.Length(); k++ )
+                        {
+                        if ( CheckSpellingDLT( stringAfter.Mid( k )))
+                            {
+                            dltAfterCount++;
+                            }
+                        }
+                    
+                    // If the spell length is the same and the dlt count is 
+                    // the same, the keystroke is invalid
+                    if (( stringBeforeLength == stringAfterLength ) && 
+                        ( dltAfterCount == dltBeforeCount ))
                         {
                         ClearPtiEngineKeystroke();
                         valid = EFalse;
@@ -2123,6 +2370,13 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::SetWarningColor()
             editPane->SetHighlight(
                                 phraseCount + index, 
                                 phraseCount + index + count - 1 );
+
+            if ( iPlugin.IsEnable())
+                {
+                iPlugin.CanConvertAll( EFalse );
+                iPlugin.ConvertCount( index );
+                }
+
             ClearPtiEngineKeystroke();
             }
         }
@@ -2178,8 +2432,28 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::MoveCursorLeft()
     CDesCArrayFlat* showKeyStoke = editPane->ShowKeystrokeArray();
     TInt showKeyStokeCount = editPane->ShowKeystrokeArray()->Count();
     TInt indexOfKeystroke = editPane->GetCursorIndexOfKeystroke();
-    TInt cursorPos = editPane->GetCursor() - editPane->PhraseArray()->Count();
-
+    
+    TInt cursorPos = 0;
+    // Get the current core id
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    TInt phraseCount = 0;
+    
+    // For Sogou core, maybe on element of PhraseArray() contains two or 
+    // more characters.
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        for ( TInt l = 0; l < editPane->PhraseArray()->Count(); l++ )
+            {
+            phraseCount += editPane->PhraseArray()->MdcaPoint( l ).Length();
+            }
+        cursorPos = editPane->GetCursor() - phraseCount;
+        }
+    else
+        {
+        cursorPos = editPane->GetCursor() - editPane->PhraseArray()->Count();
+        }
+    
     TBuf<1> autoDLT;
     autoDLT.Append(KAutoDLT);
     const TInt offset = 2;
@@ -2233,7 +2507,28 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::MoveCursorRight()
     CDesCArrayFlat* showKeyStoke = editPane->ShowKeystrokeArray();
     TInt showKeyStokeCount = editPane->ShowKeystrokeArray()->Count();
     TInt indexOfKeystroke = editPane->GetCursorIndexOfKeystroke();
-    TInt cursorPos = editPane->GetCursor() - editPane->PhraseArray()->Count();
+     
+    TInt cursorPos = 0;
+    // Get the current core id
+    TInt coreID = 0;
+    TRAP_IGNORE( coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID ));
+    TInt phraseCount = 0;
+    
+    // For Sogou core, maybe on element of PhraseArray() contains two or 
+    // more characters.
+    if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+        {
+        for ( TInt l = 0; l < editPane->PhraseArray()->Count(); l++ )
+            {
+            phraseCount += editPane->PhraseArray()->MdcaPoint( l ).Length();
+            }
+        cursorPos = editPane->GetCursor() - phraseCount;
+        }
+    else
+        {
+        cursorPos = editPane->GetCursor() - editPane->PhraseArray()->Count();
+        }
+    
     TBuf<1> autoDLT;
     autoDLT.Append(KAutoDLT);
     const TInt offset = 2;
@@ -2484,7 +2779,6 @@ TInt TAknFepInputMiniQwertyPinyinPhraseBase::CheckSpellingAddKeyToPTIL(
 void TAknFepInputMiniQwertyPinyinPhraseBase::HandleKeyFromCandidateL(
     TInt aKey, TKeyPressLength /*aLength*/)
     {
-    TInt index = 0;
 #ifdef RD_INTELLIGENT_TEXT_INPUT
     // it may be one of the 'valid' numbers..
     TPtiKeyboardType keyboardtype = iOwner->FepMan()->KeyboardLayout();
@@ -2512,7 +2806,6 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandleKeyFromCandidateL(
                 if ( (numKeyBind.iChar >= 0x31 && numKeyBind.iChar <= 0x36)
                         &&(aKey == numKeyBind.iKey))
                     {
-                    index = numKeyBind.iChar - EPtiKey0 -1;
                     validnumkey = ETrue;
                     break;
                     }
@@ -2526,16 +2819,10 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandleKeyFromCandidateL(
             return;
             }
         }
-    else
-        {
-#endif
-        index = MapKeyToIndex(aKey);
-#ifdef RD_INTELLIGENT_TEXT_INPUT
-        }
 #endif
     MAknFepUICtrlCandidatePane* candidatePane = UIContainer()->CandidatePane();
 
-    if (candidatePane->SelectIndex(index) || aKey == EStdKeyDevice3 || aKey
+    if ( aKey == EStdKeyDevice3 || aKey
             == EStdKeyEnter)
         {
         TPtrC text = candidatePane->CurrentPhraseCandidate();
@@ -2632,10 +2919,42 @@ TBool TAknFepInputMiniQwertyPinyinPhraseBase::CheckAllGroupStroke()
                 return EFalse;
                 }
             GetKeystrokeCode(keyCode, keystroke->MdcaPoint(i) );
-            stringBeforeLength = getCurrentLeastDLTSpell().Length();
-            ptiengine->AppendKeyPress((TPtiKey)keyCode).Length();
-            stringAfterLength = getCurrentLeastDLTSpell().Length();
-            if ( stringBeforeLength == stringAfterLength )
+            
+            // dltBeforeCount is the dlt count before append the key.
+            // dltAfterCount is the dlt count after append the key.
+            // In sogou core, after appending a new key, the spell length
+            // may be the same, but the dlt count will change.
+            // In this situation, the appended key is valid.
+            TInt dltBeforeCount = 0;
+            TInt dltAfterCount = 0;
+            TPtrC stringBefore = getCurrentLeastDLTSpell();
+            stringBeforeLength = stringBefore.Length();
+            for ( TInt k = 0; k < stringBefore.Length(); k++ )
+                {
+                if ( CheckSpellingDLT( stringBefore.Mid( k )))
+                    {
+                    dltBeforeCount++;
+                    }
+                }
+
+            // Append the key.
+            ptiengine->AppendKeyPress(( TPtiKey )keyCode );
+            
+            // Get the dlt count after appending the key.
+            TPtrC stringAfter = getCurrentLeastDLTSpell();
+            stringAfterLength = stringAfter.Length();
+            for ( TInt l = 0; l < stringAfter.Length(); l++ )
+                {
+                if ( CheckSpellingDLT( stringAfter.Mid( l )))
+                    {
+                    dltAfterCount++;
+                    }
+                }
+            
+            // If the spell length is the same and the dlt count is 
+            // the same, the keystroke is invalid
+            if (( stringBeforeLength == stringAfterLength ) && 
+                ( dltAfterCount == dltBeforeCount ))
                 {
                 return EFalse;
                 }
@@ -2690,8 +3009,27 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::DoActionAfterCommitL()
             }
         else
             {
+            // For sogou core, the predictive is not endless, so when there
+            // is no predictive candidates, we should call TryCloseUiL().
+            TBool noCandidates = EFalse;
+            
+            TInt coreID = iOwner->PtiEngine()->HandleCommandL( EPtiCommandGetCoreID );
+            if ( TUid::Uid( coreID ) == KPtiSogouCoreUid )
+                {
+                // Get the predictive candidates.
+                CDesCArrayFlat* phraseCandidates = new(ELeave) CDesCArrayFlat( 1 );
+                CleanupStack::PushL ( phraseCandidates );
+                phraseCandidates->Reset();
+                iOwner->PtiEngine()->GetChinesePhraseCandidatesL( *phraseCandidates );
+                if ( phraseCandidates->Count() == 0 )
+                    {
+                    noCandidates = ETrue;
+                    }
+                CleanupStack::PopAndDestroy( phraseCandidates );
+                }
+        
             UIContainer()->EditPaneWindow()->ResetAllArray();
-            if ( !UIContainer()->EditPaneWindow()->GetPhraseCreationFlag() )
+            if ( !UIContainer()->EditPaneWindow()->GetPhraseCreationFlag() && !noCandidates )
                 {
                 UIContainer()->EditPaneWindow()->SetPhraseCreationFlag(EFalse);
                 UIContainer()->EditPaneWindow()->SetChangeState(ETrue);

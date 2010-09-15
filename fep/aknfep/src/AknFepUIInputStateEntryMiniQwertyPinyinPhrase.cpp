@@ -57,8 +57,8 @@ TAknFepInputStateEntryMiniQwertyPinyinPhrase::TAknFepInputStateEntryMiniQwertyPi
     iOwner->PtiEngine()->SetInputMode( EPtiEnginePinyinPhraseQwerty );
     iOwner->PtiEngine()->SetCase( EPtiCaseLower );
     UIContainer()->SetLayout( MAknFepUICtrlContainerChinese::ELayoutKeystroke );
-    UIContainer()->FocusCandidatePane( ETrue );
     UIContainer()->CandidatePane()->SelectFirstPhrase();
+    UIContainer()->FocusCandidatePane( ETrue );    
     UIContainer()->CandidatePane()->ShowCandidateOrdinals( EFalse );
     UIContainer()->EditPaneWindow()->DeactiveCursor();
     UIContainer()->SetFepMan( iOwner->FepMan() );
@@ -124,7 +124,6 @@ TBool TAknFepInputStateEntryMiniQwertyPinyinPhrase::HandleKeyL( TInt aKey,
             {
             if ( candidatePane->VisibleCandidateCount()!= 1 )
                 {
-                iOwner->ChangeState( ECandidate );
                 candidatePane->SelectNext();
                 UpdateIndicator();
                 }
@@ -134,9 +133,7 @@ TBool TAknFepInputStateEntryMiniQwertyPinyinPhrase::HandleKeyL( TInt aKey,
             {
             if ( candidatePane->VisibleCandidateCount()!= 1 )
                 {
-                iOwner->ChangeState( ECandidate );
-                TInt numbertotal = UIContainer()->CandidatePane()->VisibleCandidateCount();
-                UIContainer()->CandidatePane()->SelectIndex( numbertotal - 1 );
+                UIContainer()->CandidatePane()->SelectPrev();
                 UpdateIndicator();
                 }
             break;
@@ -259,7 +256,7 @@ TBool TAknFepInputStateEditinigMiniQwertyPinyinPhrase::HandleKeyL( TInt aKey ,TK
             if ( 0 != candidatePane->VisibleCandidateCount() )
                 {
                 uiContainer->EditPaneWindow()->SetChangeState( ETrue );
-                iOwner->ChangeState( ECandidate );
+                iOwner->ChangeState( EEntry );
                 }
             break;
             }
@@ -308,6 +305,40 @@ TBool TAknFepInputStateEditinigMiniQwertyPinyinPhrase::HandleKeyL( TInt aKey ,TK
         }
     return ret;
     }
+
+void TAknFepInputStateEditinigMiniQwertyPinyinPhrase::SubmitTextL( const TDesC& aText )
+	{
+	 if ( aText.Length() )
+		 {
+		 if ( !CommitInlineEEPL( aText ) )
+			{
+			DoActionAfterCommit();
+			}
+		else
+			{
+			if ( CheckFirstGroupStroke() )
+				{
+				//stroke to be shown
+                if ( iPlugin.IsEnable())
+                    {
+                    iPlugin.AnalyseL();
+                    }
+				RefreshUI( EFalse );
+				UIContainer()->CandidatePane()->SelectFirstPhrase();
+				}
+			else
+				{
+				//stroke to be shown
+                if ( iPlugin.IsEnable())
+                    {
+                    iPlugin.AnalyseL();
+                    }
+				UIContainer()->EditPaneWindow()->SetAutoChangeStateFlag( EAutoChangeStateFromCandidate );
+				iOwner->ChangeState( EMiniQwertyEdit );
+				}
+			}
+		}
+	}
 // ---------------------------------------------------------------------------
 // TAknFepInputStateEntryMiniQwertyPinyinPhrase::HandleCommandL
 // Handling Command
@@ -354,5 +385,42 @@ void TAknFepInputStateEditinigMiniQwertyPinyinPhrase::HandleCommandL(
     {
     TAknFepInputMiniQwertyPinyinPhraseBase::HandleCommandL( aCommandId );
     }
+
+void TAknFepInputStateEntryMiniQwertyPinyinPhrase::SubmitTextL( const TDesC& aText  )
+	{
+    MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+    if ( aText.Length() )
+        {
+        if ( !CommitInlineEEPL( aText ) )
+            {
+            DoActionAfterCommit();
+            }
+        else
+            {
+            if ( CheckFirstGroupStroke() )
+               {
+                //stroke to be shown
+                if ( iPlugin.IsEnable())
+                    {
+                    iPlugin.AnalyseL();
+                    }
+               RefreshUI();
+               uiContainer->CandidatePane()->SelectFirstPhrase();
+               }
+           else
+               {
+               //stroke to be shown
+               if ( iPlugin.IsEnable())
+                   {
+                   iPlugin.AnalyseL();
+                   }
+               uiContainer->EditPaneWindow()->SetAutoChangeStateFlag(
+                            EAutoChangeStateFromCandidate );
+               iOwner->ChangeState( EMiniQwertyEdit );
+               }
+            }
+       }
+	}
+
 // End Of File
 

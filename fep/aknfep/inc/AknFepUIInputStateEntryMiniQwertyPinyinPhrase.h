@@ -69,6 +69,10 @@ public:
       * @param aCommandId Command ID value
       */
      void HandleCommandL( TInt aCommandId );
+     
+     
+     void SubmitTextL( const TDesC& aText );
+
     };
 
 /**
@@ -107,6 +111,9 @@ public:
      * @param aCommandId Command ID value
      */
     void HandleCommandL( TInt aCommandId );
+    
+    void SubmitTextL( const TDesC& aText );
+    
     };
 
 #endif __AKN_FEP_UI_INPUT_STATE_ENTRY_MINIQWERTY_PINYINPHRASE_H__

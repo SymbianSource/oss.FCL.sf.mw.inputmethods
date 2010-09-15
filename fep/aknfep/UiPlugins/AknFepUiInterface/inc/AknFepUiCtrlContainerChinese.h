@@ -36,7 +36,7 @@ class MAknFepUICtrlCandidatePane;
 class MAknFepUICtrlPinyinPopup;
 class MAknFepUICtrlEditPane;
 class MAknFepManagerUIInterface;
-
+class MAknFepUiStateCtrl;
 class MAknFepUICtrlContainerChinese
 {
 
@@ -181,6 +181,8 @@ public:
      * @return if not enabled, return EFalse
      */
     virtual void SetFepMan( MAknFepManagerUIInterface* aFepMan ) = 0;
+    
+    virtual void SetFepUiStateCtrl( MAknFepUiStateCtrl* aFepUiState ) = 0;
 
 	};
 #endif  // __AKN_FEP_UI_CONTAINER_CHINESE_H__

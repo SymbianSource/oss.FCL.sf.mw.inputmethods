@@ -104,7 +104,17 @@ protected:
      */
     TInt RunError(TInt aError);
 private:
-    virtual TBool HandleServerEventL(TInt aEventId);	
+    virtual TBool HandleServerEventL(TInt aEventId);
+
+    /**
+     * Stop the server
+     *
+     * @since Symbian^3
+     *
+     * @param none
+     * @return void
+     */
+    void HandleServerTerminatedL();
 
 public:
     /**

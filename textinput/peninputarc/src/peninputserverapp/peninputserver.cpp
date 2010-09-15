@@ -62,6 +62,14 @@ const TInt KInvalidValue = -1;
 // is used for both orientation in Pen Input server side code.
 const TInt KPenInputSrvPrtFsqUiId = 0x20026837;
 
+// The UID of the PopupClock application
+const TInt KBigClockUid =  0x2000FDC3;
+
+// The UID of the SreenSaver application
+const TInt KScreenSaverUid =  0x100056CF;
+
+// The UID of the AutoLock application
+const TInt KAutoLockUid = 0x100059B5;
 
 enum TActivationFlag
 	{
@@ -2575,7 +2583,13 @@ void CPeninputServer::HandleWsEventL(const TWsEvent &aEvent,
                         {			  
                         //fix for fast swap case
                         iInGlobalNotesState = EFalse;                        
-                        if(iPreNonGloebalNotesWndGrpId != focusApp.iUid )
+
+                        // Don't handle switching focus group 
+                        // when current focus of the application is screen saver, auto lock or popup clock.
+                        if ( iPreNonGloebalNotesWndGrpId != focusApp.iUid && 
+                             focusApp.iUid != KScreenSaverUid && 
+                             focusApp.iUid != KAutoLockUid && 
+                             focusApp.iUid != KBigClockUid )
                             {                            
                             iPreNonGloebalNotesWndGrpId = focusApp.iUid;
                             DeactivateSprite(ETrue);//hide pen ui immediately if switched to another application

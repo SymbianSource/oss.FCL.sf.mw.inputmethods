@@ -92,6 +92,9 @@ PRJ_EXPORTS
 
 ../inc/peninputlayoutcontrolinc/peninputaknvkbpreviewbubblerenderer.h   |../../../inc/peninputaknvkbpreviewbubblerenderer.h
 ../inc/peninputlayoutcontrolinc/peninputvkbpreviewbubblerenderer.h      |../../../inc/peninputvkbpreviewbubblerenderer.h
+
+../inc/peninputlayoutcontrolinc/peninputpopupbubble.h                   |../../../inc/peninputpopupbubble.h
+
 //inline file
 ../inc/peninputlayoutcontrolinc/peninputlayout.inl                      |../../../inc/peninputlayout.inl
 ../inc/peninputlayoutcontrolinc/peninputlayoutbasecontrol.inl           |../../../inc/peninputlayoutbasecontrol.inl

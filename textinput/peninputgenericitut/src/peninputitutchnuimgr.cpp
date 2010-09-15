@@ -350,9 +350,16 @@ void CChnItutUiMgr::SetCurrentStateL(TUiState aNewStateType)
     if(DataMgr()->IsUpdate())  
     	{
     	DataMgr()->SetUpdate(EFalse);
-    	CGenericItutUiLayout* itutLayout = 
-			static_cast<CGenericItutUiLayout*>( LayoutContext()->UiLayout() );
-		itutLayout->SizeChanged( NULL );
+    	
+    	// Get the screen rect
+    	TRect screenRect = DataMgr()->screenSize();
+    	// If the screen is in portrait mode
+    	if ( screenRect.Width() < screenRect.Height())
+    		{
+			CGenericItutUiLayout* itutLayout = 
+				static_cast<CGenericItutUiLayout*>( LayoutContext()->UiLayout());
+			itutLayout->SizeChanged( NULL );
+    		}
     	}
     
     iCurrentState->OnEntryL();

@@ -643,9 +643,11 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
     	
     iLeadingEdge = icfdata.iLeadingEdge;
 
+    TInt draw = icfdata.iCmd == EPeninputICFSetCurSel ? 0 : 1;
+    
     if (icfdata.iFlag != EFepICFDataInlineNoMatch && iNoMatchState)
         {
-        UpdateNoMatchTextL(iPreInlineEndPos, KNullDesC, EFalse);
+        draw += UpdateNoMatchTextL(iPreInlineEndPos, KNullDesC, EFalse);
         }
 
     switch (icfdata.iCmd)
@@ -683,7 +685,7 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
             RecalcualteTextPositionL();
             //SetMsgBubbleRect();
             SetMsgBubbleRectAccordingToLanguage();
-            Draw();
+//            Draw();
             }
             break;
         case EPeninputICFReplace:
@@ -744,13 +746,13 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
             }
         }
         
-    UpdateTextL(icfdata);    
+    draw += UpdateTextL(icfdata);    
     
     // Need to set selection visible before set selection for textview
     SetCursorSelVisibility( icfdata.iCursorSelVisible );    
     
-    SetSelectionL(icfdata.iCurSel);
-    ResetViewHeightL();
+    draw += SetSelectionL(icfdata.iCurSel);
+    draw += ResetViewHeightL();
     
     if (icfdata.iMidPos == 0)
         {
@@ -759,13 +761,13 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
         // set to inline state
         if (icfdata.iText.Locate(KParagraphSeperator) == KErrNotFound)
             {
-            SetAutoCompleteStateL(EFalse);
+            draw += SetAutoCompleteStateL(EFalse);
             icfdata.iFlag == EFepICFDataInlineNoMatch ? 
-                                                      SetInlineStateL(ETrue, icfdata.iStartPos, 
-                                                                      icfdata.iCurSel.iCursorPos, 
-                                                                      ETrue, icfdata.iText) :
-                                                      SetInlineStateL(ETrue, icfdata.iStartPos, 
-                                                                      icfdata.iCurSel.iCursorPos);
+                    draw += SetInlineStateL( ETrue, icfdata.iStartPos, 
+                                             icfdata.iCurSel.iCursorPos, 
+							                 ETrue, icfdata.iText) :
+                    draw += SetInlineStateL(ETrue, icfdata.iStartPos, 
+                                            icfdata.iCurSel.iCursorPos);
             }
         }
     else if (icfdata.iMidPos > 0)
@@ -773,7 +775,7 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
         // auto complete state
         // Q: does insertion point need to be shown when auto complete?
         // on the assumption that insertion point do not shown
-        SetAutoCompleteStateL( ETrue, icfdata.iStartPos, 
+        draw += SetAutoCompleteStateL( ETrue, icfdata.iStartPos, 
                                icfdata.iStartPos + icfdata.iText.Length() - icfdata.iMidPos, 
                                icfdata.iCurSel.iCursorPos );
         }
@@ -781,47 +783,52 @@ void CFepLayoutMultiLineIcfEditor::SetTextL(const TFepInputContextFieldData& aDa
         {
         // icfdata.iMidPos < 0, normal state
         //
-        SetInlineStateL(EFalse, icfdata.iStartPos, icfdata.iCurSel.iCursorPos);
-        SetAutoCompleteStateL(EFalse);
-        
+        draw += SetInlineStateL(EFalse, icfdata.iStartPos, icfdata.iCurSel.iCursorPos);
+        draw += SetAutoCompleteStateL(EFalse);
         }    
 
     // after inline adjust, cusor position may be updated
     if( bScroll )
         {
-        TryDisplayMaxTextL(iCursorSel.iCursorPos);
+        draw += TryDisplayMaxTextL(iCursorSel.iCursorPos);
         }
-    
-    iTextView->DrawL(iViewRect);    
-    //if(iMsgBubble)    
-//        iMsgBubble->Draw();   
 
     iInsertionPoint->SetVisible( EFalse ); 
 
     SetCursorVisible(icfdata.iCursorVisibility);
     
-    if (AbleToDraw())
+    if ( AbleToDraw() )
         {
-        UpdateAreaImmed(Rect(),EFalse);    
+        if(draw > 0)
+        	{
+            iTextView->DrawL(iViewRect);        	
+        	}
+        	
+        UpdateAreaImmed(iViewRect,EFalse);    
         }
     }
 
-void CFepLayoutMultiLineIcfEditor::SetSelectionL(TCursorSelection aCurSel)
+TBool CFepLayoutMultiLineIcfEditor::SetSelectionL(TCursorSelection aCurSel)
     {
+    TBool changed = EFalse;
+    
     if ( !IsTextPosValid(aCurSel.LowerPos()) || 
          !IsTextPosValid(aCurSel.HigherPos()) )
         {
-        return;
+        return changed;
         }
     
-    AdjustSelectionL( aCurSel );
+    changed = AdjustSelectionL( aCurSel );
     
     if ( iLayout->FirstLineInBand() != 0 && iLineMaxCount > 1 &&
         iPromptTextLen > 0 && aCurSel.iCursorPos == iPromptTextLen )
     	{
-        iTextView->SetViewLineAtTopL( 1 );	
+        if ( iTextView->SetViewLineAtTopL( 1 ) != TPoint( 0, 0 ) )
+            {
+            changed = ETrue;
+            }
     	}
-        
+
     RecalcualteTextPositionL();
     
     if ( iCursorSel.Length() > 0 )
@@ -841,7 +848,9 @@ void CFepLayoutMultiLineIcfEditor::SetSelectionL(TCursorSelection aCurSel)
         //SetMsgBubbleRect();
 		SetMsgBubbleRectAccordingToLanguage();
         SetInfoBubbleRect();
-        }    
+        }   
+    
+    return changed;
     }
 
 TBool CFepLayoutMultiLineIcfEditor::HighlightOverlapWithBubble( const TRect& aRect )
@@ -892,11 +901,11 @@ void CFepLayoutMultiLineIcfEditor::HideBubbleTemp()
     }
     
 // for secret editor
-void CFepLayoutMultiLineIcfEditor::UpdateTextL(const TFepInputContextFieldData& aData)
+TBool CFepLayoutMultiLineIcfEditor::UpdateTextL(const TFepInputContextFieldData& aData)
     {
     if (!iTextIsSecret)
         {
-        return;
+        return EFalse;
         }
 
     switch (aData.iCmd)
@@ -915,7 +924,7 @@ void CFepLayoutMultiLineIcfEditor::UpdateTextL(const TFepInputContextFieldData& 
             iTextView->HandleInsertDeleteL
                 ( TCursorSelection( iRichText->DocumentLength(), iPromptTextLen ), 0 );
             }
-            break;
+            return ETrue;
         case EPeninputICFReplace:
             {                    
             if (iSecretTextTimer->IsActive())
@@ -961,13 +970,15 @@ void CFepLayoutMultiLineIcfEditor::UpdateTextL(const TFepInputContextFieldData& 
                                  aData.iText.Length()>1?KSecretInstantShowTimer:KSecretUpdateTimer,
                                  KSecretUpdateTimer, TCallBack(UpdateSecretTextL, this));
             }
-            break;
+            return ETrue;
         case EPeninputICFSetCurSel:
         default:
             {
             break;
             }
         }
+    
+    return EFalse;
     }
 
 TInt CFepLayoutMultiLineIcfEditor::UpdateSecretTextL(TAny* aEditArea)
@@ -1333,20 +1344,21 @@ void CFepLayoutMultiLineIcfEditor::SetRectL(const TRect& aRect)
     SetMsgBubbleRectAccordingToLanguage();
     }
 
-void CFepLayoutMultiLineIcfEditor::ResetViewHeightL()
+TBool CFepLayoutMultiLineIcfEditor::ResetViewHeightL()
     {
-    const TInt height = iLayout->FormattedHeightInPixels();
     const TInt lineCount=iLayout->NumFormattedLines();
+
     if ( lineCount <= 0 )
         {
-        return;
+        return EFalse;
         }
         
+    const TInt height = iLayout->FormattedHeightInPixels();
     TInt lineHeight = (height+lineCount-1) / lineCount;
     
     if ( iFormatLineHeight == lineHeight )
         {
-        return;
+        return EFalse;
         }
         
     if ( lineHeight > iMaxIcfEditorHeight )
@@ -1380,6 +1392,8 @@ void CFepLayoutMultiLineIcfEditor::ResetViewHeightL()
     	iViewRect.iBr.iY -= margin;
     	}
     iTextView->SetViewRect(iViewRect);
+    
+    return ETrue;
     }
 
 void CFepLayoutMultiLineIcfEditor::SetMsgBubbleRectAccordingToLanguage()
@@ -2512,12 +2526,12 @@ TBool CFepLayoutMultiLineIcfEditor::IsTextPosValid(TInt aPos)
     return (aPos >= 0 && aPos <= iRichText->DocumentLength());
     }
 
-void CFepLayoutMultiLineIcfEditor::UpdateNoMatchTextL(TInt aPos, const TDesC& aNoMatchText, 
+TBool CFepLayoutMultiLineIcfEditor::UpdateNoMatchTextL(TInt aPos, const TDesC& aNoMatchText, 
                                                       TBool aNoMatchState)
     {
     if ( iNoMatchState == aNoMatchState )
         {
-        return;
+        return EFalse;
         }
         
     if (aNoMatchState)
@@ -2534,7 +2548,9 @@ void CFepLayoutMultiLineIcfEditor::UpdateNoMatchTextL(TInt aPos, const TDesC& aN
         iRichText->DeleteL(aPos, 1);
         iTextView->HandleInsertDeleteL(TCursorSelection(aPos, aPos),1);
         SetSelectionL( TCursorSelection( aPos - 1, aPos - 1 ) );
-        }         
+        }     
+    
+    return ETrue;
     }
 
 void CFepLayoutMultiLineIcfEditor::SetPromptTextFormatL(TInt aPromptTextLen)
@@ -2643,35 +2659,54 @@ void CFepLayoutMultiLineIcfEditor::SetSpecialStateL(TBool aStateOn,
         }
     }
 
-void CFepLayoutMultiLineIcfEditor::SetInlineStateL(TBool aInline, 
+TBool CFepLayoutMultiLineIcfEditor::SetInlineStateL(TBool aInline, 
                                              TInt aStartPos, 
                                              TInt aEndPos, 
                                              TBool aNoMatchState, 
                                              const TDesC& aNoMatchText)
     {
-    if (aInline)
+    TInt oldState = iState;
+    
+    if ( aInline )
+        {
         iState = CFepLayoutMultiLineIcf::EIcfInline;
+        }
     else
         {
         iState = CFepLayoutMultiLineIcf::EIcfNormal;
-        UpdateNoMatchTextL(iPreInlineEndPos, KNullDesC, EFalse);
         }
+    
+    TBool changed = ( oldState != iState );
+    
+    if ( changed )
+        {
+        if ( iState == CFepLayoutMultiLineIcf::EIcfNormal )
+            {
+            UpdateNoMatchTextL(iPreInlineEndPos, KNullDesC, EFalse);
+            }
 
-    SetSpecialStateL(aInline, 
-                     aStartPos, 
-                     aEndPos, 
-                     iPreInlineStartPos, 
-                     iPreInlineEndPos, 
-                     EAttFontUnderline, 
-                     aNoMatchState, 
-                     aNoMatchText);
+        SetSpecialStateL(aInline, 
+                         aStartPos, 
+                         aEndPos, 
+                         iPreInlineStartPos, 
+                         iPreInlineEndPos, 
+                         EAttFontUnderline, 
+                         aNoMatchState, 
+                         aNoMatchText);
+        }
+    
+    return changed;
     }
 
-void CFepLayoutMultiLineIcfEditor::SetAutoCompleteStateL(TBool aAutoComplete, 
+TBool CFepLayoutMultiLineIcfEditor::SetAutoCompleteStateL(TBool aAutoComplete, 
                                                    TInt aStartPos, 
                                                    TInt aMidPos,
                                                    TInt aEndPos)
     {
+    TBool changed = ( iAutoComplete != aAutoComplete );
+    // If auto is on, we need draw every time, as grey part is not making the text changed
+    // if we use traditional way to check change, auto part is not turn to black when grey part is there.
+    changed = iAutoComplete; 
     iAutoComplete = aAutoComplete;
     
     if ( aAutoComplete )
@@ -2683,19 +2718,24 @@ void CFepLayoutMultiLineIcfEditor::SetAutoCompleteStateL(TBool aAutoComplete,
         iState = CFepLayoutMultiLineIcf::EIcfNormal;
         }
         
-    SetSpecialStateL(aAutoComplete, 
-                     aStartPos, 
-                     aMidPos, 
-                     iPreInlineStartPos, 
-                     iPreInlineEndPos, 
-                     EAttFontUnderline);
-                     
-    SetSpecialStateL(aAutoComplete, 
-                     aMidPos, 
-                     aEndPos, 
-                     iPreAutoStartPos, 
-                     iPreAutoEndPos, 
-                     EAttColor);
+    if ( changed )
+        {
+        SetSpecialStateL(aAutoComplete, 
+                         aStartPos, 
+                         aMidPos, 
+                         iPreInlineStartPos, 
+                         iPreInlineEndPos, 
+                         EAttFontUnderline);
+                         
+        SetSpecialStateL(aAutoComplete, 
+                         aMidPos, 
+                         aEndPos, 
+                         iPreAutoStartPos, 
+                         iPreAutoEndPos, 
+                         EAttColor);
+        }
+    
+    return changed;
     }
 
 TAknsItemID CFepLayoutMultiLineIcfEditor::BgImgSkinId() const
@@ -2831,8 +2871,10 @@ void CFepLayoutMultiLineIcfEditor::ResetApplyFont()
     TRAP_IGNORE(SetFontL(font));
     }
 
-void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
+TBool CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
     {
+    TBool scrolled = EFalse;
+    
     iTextView->FinishBackgroundFormattingL();
     TInt lineIndex = iLayout->GetLineNumber( aCursorPos );
 
@@ -2843,10 +2885,12 @@ void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
         CalculateCursorPos(cursorPt);
         if ( !iViewRect.Contains( cursorPt ) && ( lineIndex + 1 ) > ( iLineMaxCount - 1 ) )
             {
-            iTextView->SetViewLineAtTopL(( lineIndex + 1 ) - ( iLineMaxCount - 1 ));
-            RecalcualteTextPositionL();
-            //SetMsgBubbleRect();
-            SetMsgBubbleRectAccordingToLanguage();
+            if ( iTextView->SetViewLineAtTopL(( lineIndex + 1 ) - ( iLineMaxCount - 1 )) != TPoint( 0, 0 ) )
+                {
+                scrolled = ETrue;
+                RecalcualteTextPositionL();
+                SetMsgBubbleRectAccordingToLanguage();
+                }
             }
         }
     
@@ -2860,15 +2904,18 @@ void CFepLayoutMultiLineIcfEditor::TryDisplayMaxTextL( TInt aCursorPos )
                             - iViewRect.iTl.iY) / iFormatLineHeight + 1;
         if( lineCursor < pageCount )
             {
-            
-            iTextView->SetViewLineAtTopL( 
-                                   lineCount - pageCount + 1 < 1 ? 1 : lineCount - pageCount + 1 );
-            
-            RecalcualteTextPositionL();
-            //SetMsgBubbleRect();
-            SetMsgBubbleRectAccordingToLanguage();
+            if ( iTextView->SetViewLineAtTopL(
+                    lineCount - pageCount + 1 < 1 ? 1 : lineCount - pageCount + 1 ) 
+                    != TPoint( 0, 0 ) )
+                {
+                scrolled = ETrue;
+                RecalcualteTextPositionL();
+                SetMsgBubbleRectAccordingToLanguage();
+                }
             }
         }
+    
+    return scrolled;
     }
     
 void CFepLayoutMultiLineIcfEditor::DrawIcfBackground( CFbsBitGc& /*aGc*/, const TRect& aDrawnRect, 
@@ -2892,14 +2939,18 @@ void CFepLayoutMultiLineIcfEditor::ExtractText(TDes &aBuf, TInt aPos, TInt aLeng
     iRichText->Extract( aBuf, aPos + iPromptTextLen, aLength);
     } 
 
-void CFepLayoutMultiLineIcfEditor::AdjustSelectionL( const TCursorSelection& aCurSel )
+TBool CFepLayoutMultiLineIcfEditor::AdjustSelectionL( const TCursorSelection& aCurSel )
     {
     if (!IsTextPosValid(aCurSel.LowerPos()) || 
     !IsTextPosValid(aCurSel.HigherPos()) )
 		{
-		return;
+		return EFalse;
 		}
-
+    if (iCursorSel.iAnchorPos == aCurSel.iAnchorPos
+        && iCursorSel.iCursorPos == aCurSel.iCursorPos)
+        {
+        return EFalse;
+        }
     iCursorSel = aCurSel;   
    
     if ( BelongToPromptText(aCurSel.iCursorPos) )
@@ -2917,6 +2968,8 @@ void CFepLayoutMultiLineIcfEditor::AdjustSelectionL( const TCursorSelection& aCu
  
     iTextView->SetSelectionL( iCursorSel );
     iTextView->SetSelectionVisibilityL( iCursorSelVisible );
+	
+	return ETrue;
     }  
 
 void CFepLayoutMultiLineIcfEditor::ReDrawRect(const TRect& aRect)

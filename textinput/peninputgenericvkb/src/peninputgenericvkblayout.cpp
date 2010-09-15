@@ -377,6 +377,13 @@ void CPeninputGenericVkbLayout::HandleControlEvent(
             SignalOwner(ESignalKeyEvent, KDisplaySpace);            
             }
         	break;
+        case EEventVirtualKeyDown:
+        	{
+        	HandleVirtualKeyDown();
+        	CPeninputCommonLayoutExt::HandleControlEvent( aEventType, 
+        			aCtrl, aEventData );
+        	break;
+        	}
         default:
             {
             CPeninputCommonLayoutExt::HandleControlEvent(aEventType, aCtrl, aEventData);
@@ -532,6 +539,21 @@ void CPeninputGenericVkbLayout::HandleVirtualKeyUpL(TInt aEventType,
         delete number;
         }
     }
+
+// ---------------------------------------------------------------------------
+// Handle virtual key down event
+// ---------------------------------------------------------------------------
+//
+void CPeninputGenericVkbLayout::HandleVirtualKeyDown()
+	{
+	CPeninputGenericVkbWindow* window = 
+			static_cast<CPeninputGenericVkbWindow*>( iLayoutWindow );
+	
+	if ( window )
+		{
+		window->HandleVirtualKeyDownEvent();
+		}
+	}
 
 TBool CPeninputGenericVkbLayout::TranslateMirrorUnicode( TUint16 aInputCode, TUint16& aOutputCode )
     {

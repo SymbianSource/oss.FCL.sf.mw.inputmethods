@@ -49,14 +49,15 @@ TAknFepInputStatePredictiveInputQwertyChinesePhrase(
     TPoint baseLine = TPoint(0,0);
     TInt height = 0;
     TInt ascent = 0;
+
+    uiContainer->FocusCandidatePane(ETrue);
+    uiContainer->SetLayout(MAknFepUICtrlContainerChinese::ELayoutCandidate);
+    
     TRAPD(ret,iOwner->FepMan()->GetScreenCoordinatesL(baseLine,height,ascent));
     if (ret == KErrNone)
         {
         uiContainer->SetContainerPosition(baseLine, height);    
         }
-
-    uiContainer->FocusCandidatePane(ETrue);
-    uiContainer->SetLayout(MAknFepUICtrlContainerChinese::ELayoutCandidate);
 
     CPtiEngine* ptiengine = iOwner->PtiEngine();
     MAknFepUICtrlCandidatePane* candidatePane = uiContainer->CandidatePane();

@@ -1928,6 +1928,22 @@ EXPORT_C TInt CAknFepCtrlMultiModeButton::GetRealCaseByMode(TInt aModeIndex) con
     return KErrNotFound;    
     }
 
+// ------------------------------------------------
+// CAknFepCtrlMultiModeButton::ModeIndexByModeId
+// ------------------------------------------------
+EXPORT_C TInt CAknFepCtrlMultiModeButton::ModeIndexByModeId( TInt aModeId )
+    {
+    TInt count = NumberOfModes();
+    for ( TInt i = 0; i < count; i++ )
+         {
+         if (iModesList[i]->iModeId == aModeId )
+             {
+             return i;
+             }
+        }
+    return KErrNotFound;
+    }
+
 // -----------------------------------------------------------------------------
 // CAknFepCtrlMultiModeButton::GetRangeListL()
 // (other items were commented in a header).

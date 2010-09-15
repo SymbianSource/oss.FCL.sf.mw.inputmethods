@@ -89,8 +89,22 @@ TAknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::TAknFepUiInputStateCandidate
     uiContainer->CandidatePane()->ShowCandidateOrdinals( ETrue );
     uiContainer->CandidatePane()->SelectFirstPhrase();
     UpdateIndicator();
-
+    RefreshUI( ETrue );
     }
+
+void TAknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::RefreshUI( TBool aRefresh )
+	{
+    MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+    // get cursor position
+    TPoint baseLine;
+    TInt height(0);
+    TInt ascent(0);
+    TRAPD(ret,iOwner->FepMan()->GetScreenCoordinatesL(baseLine,height,ascent));
+    if (ret == KErrNone)
+        {
+        uiContainer->SetContainerPosition(baseLine, height);    
+        }    
+	}
 
 // ---------------------------------------------------------------------------
 // AknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::HandleKeyL
@@ -443,6 +457,19 @@ TBool TAknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::HandleKeyForMiniQwerty
         {
         return ETrue;
         }
+	else if ( iOwner->FepMan()->IsFlagSet( CAknFepManager::EFlagShiftKeyDepressed )
+        || iOwner->FepMan()->IsFlagSet( CAknFepManager::EFlagQwertyChrKeyDepressed )
+        || ((aKey == EStdKeyLeftFunc) && aLength == EShortKeyPress) )
+        {
+        iOwner->FepMan()->TryCloseUiL();
+        return EFalse;
+        }
+    else if ( aKey == EKeyLeftShift || aKey ==EKeyLeftCtrl || aKey
+        == EKeyRightCtrl || aKey ==EKeyRightFunc )
+        {
+        iOwner->FepMan()->TryCloseUiL();
+        return EFalse;
+        } 
     else if ( aKey == EStdKeyDevice1 )
         {
         iOwner->FepMan()->TryCloseUiL();
@@ -519,11 +546,10 @@ TBool TAknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::HandleKeyForMiniQwerty
         }
     else
         {
-        TInt index = 0;
-        TBool isIndex = MapKeyToIndexSelectCandidate( aKey, index );
+        //TInt index = 0;
+        //TBool isIndex = MapKeyToIndexSelectCandidate( aKey, index );
         if ( aLength == EShortKeyPress && 
-            ( ( isIndex && UIContainer()->CandidatePane()->SelectIndex( index ) ) ||
-                aKey == EStdKeyDevice0 || 
+            (   aKey == EStdKeyDevice0 || 
                 aKey == EStdKeyDevice3 ) )
             {
             editPane->SetNeedClearDeliberateSelection( ETrue );
@@ -574,5 +600,25 @@ void TAknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::HandleCommandL(
             break;
         }
     }
+
+void TAknFepUiInputStateCandidateMiniQwertyZhuyinPhrase::SubmitTextL( const TDesC& aText )
+	{
+	if ( aText.Length( ) )
+	   {
+	   MAknFepManagerUIInterface* fepMan = iOwner->FepMan( );
+	   fepMan->NewTextL( aText );
+	   fepMan->CommitInlineEditL( );
+	   iOwner->PtiEngine()->SetPredictiveChineseChar( aText );
+	   if ( fepMan->IsFlagSet( CAknFepManager::EFlagEditorFull ) )
+	      {
+	      fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
+	      iOwner->FepMan()->TryCloseUiL( );
+	      }
+	   else
+	      {
+	      iOwner->ChangeState( EPredictiveCandidate );
+	      }
+	    }
+	}
 
 // End of file

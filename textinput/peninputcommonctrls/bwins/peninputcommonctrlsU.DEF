@@ -359,3 +359,4 @@ EXPORTS
 	??1CAknFepCtrlLongPressButton@@UAE@XZ @ 358 NONAME ; CAknFepCtrlLongPressButton::~CAknFepCtrlLongPressButton(void)
 	?HandleTimerOut@CAknFepCtrlLongPressButton@@UAEXPBVCAknFepTimer@@@Z @ 359 NONAME ; void CAknFepCtrlLongPressButton::HandleTimerOut(class CAknFepTimer const *)
 	?CancelTimer@CAknFepCtrlLongPressButton@@QAEXXZ @ 360 NONAME ; void CAknFepCtrlLongPressButton::CancelTimer(void)
+	?ModeIndexByModeId@CAknFepCtrlMultiModeButton@@QAEHH@Z @ 361 NONAME ; int CAknFepCtrlMultiModeButton::ModeIndexByModeId(int)

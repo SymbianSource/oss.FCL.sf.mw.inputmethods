@@ -145,6 +145,8 @@ public: // Functions from base classes
      * @since 2.6
      */
     void CloseUI();
+    
+    void CloseUIIn();
 
     /**
      * From MAknFepManagerInterface

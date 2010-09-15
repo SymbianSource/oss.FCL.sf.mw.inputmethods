@@ -741,4 +741,18 @@ EXPORTS
 	_ZN14CFepUiBaseCtrl9BkMaskBmpEv @ 740 NONAME
 	_ZN16CVirtualKeyboard20HandleResourceChangeEi @ 741 NONAME
 	_ZN18CFepLayoutPopupWnd20HandleResourceChangeEi @ 742 NONAME
+	_ZN16CPopupBubbleCtrl13SetTextFormatE18TAknTextLineLayout @ 743 NONAME
+	_ZN16CPopupBubbleCtrl15SetBitmapParamLEP10CFbsBitmapS1_11TAknsItemIDS2_S2_ @ 744 NONAME
+	_ZN16CPopupBubbleCtrl4DrawEv @ 745 NONAME
+	_ZN16CPopupBubbleCtrl4HideEi @ 746 NONAME
+	_ZN16CPopupBubbleCtrl4MoveERK6TPoint @ 747 NONAME
+	_ZN16CPopupBubbleCtrl4NewLERK5TRectP12CFepUiLayouti @ 748 NONAME
+	_ZN16CPopupBubbleCtrl8SetTextLERK7TDesC16 @ 749 NONAME
+	_ZN16CPopupBubbleCtrlC1ERK5TRectP12CFepUiLayouti @ 750 NONAME
+	_ZN16CPopupBubbleCtrlC2ERK5TRectP12CFepUiLayouti @ 751 NONAME
+	_ZN16CPopupBubbleCtrlD0Ev @ 752 NONAME
+	_ZN16CPopupBubbleCtrlD1Ev @ 753 NONAME
+	_ZN16CPopupBubbleCtrlD2Ev @ 754 NONAME
+	_ZTI16CPopupBubbleCtrl @ 755 NONAME
+	_ZTV16CPopupBubbleCtrl @ 756 NONAME
 

@@ -80,9 +80,9 @@ LIBRARY estor.lib
 
 LIBRARY aknlayout.lib
 LIBRARY aknlayout2.lib
-LIBRARY aknlayout2scalable.lib
-LIBRARY aknicon.lib 
-LIBRARY aknskins.lib
+LIBRARY AknLayout2Scalable.lib
+LIBRARY AknIcon.lib
+LIBRARY AKNSKINS.lib
 LIBRARY avkon.lib
 
 LIBRARY centralrepository.lib 
@@ -93,6 +93,6 @@ LIBRARY peninputlayoutcontrol.lib
 LIBRARY peninputpluginutils.lib
 LIBRARY peninputcommonctrls.lib
 LIBRARY peninputcommonlayout.lib
-LIBRARY ptiengine.lib
+LIBRARY PtiEngine.lib
 
 // End Of File

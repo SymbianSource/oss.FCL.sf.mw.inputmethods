@@ -249,6 +249,14 @@ public:
     IMPORT_C TInt GetRealCaseByMode(TInt aModeIndex) const; 
     
     /**
+     * Gets the button mode index by button mode id
+     *
+     * @param aModeId button mode id 
+     * @return mode index
+     */
+    IMPORT_C TInt ModeIndexByModeId( TInt aModeId );
+    
+    /**
      * Get range list
      *
      * @since S60 v3.2

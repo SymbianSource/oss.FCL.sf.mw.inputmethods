@@ -148,6 +148,50 @@ inline void CVirtualKeyboard::SetTextLineLayout(TAknTextLineLayout aTextLine, TV
         }
     }
 
+// ---------------------------------------------------------------------------
+// CVirtualKeyboard::SetStarIconRect
+// Set the rect of the star icon
+// (other items were commented in a header).
+// ---------------------------------------------------------------------------
+//
+inline void CVirtualKeyboard::SetStarIconRect( const TRect& aRect )
+	{
+	iStarIconRect = aRect;
+	}
+
+// ---------------------------------------------------------------------------
+// CVirtualKeyboard::SetShiftIconRect
+// Set the rect of the shift icon
+// (other items were commented in a header).
+// ---------------------------------------------------------------------------
+//
+inline void CVirtualKeyboard::SetShiftIconRect( const TRect& aRect )
+	{
+	iShiftIconRect = aRect;
+	}
+
+// ---------------------------------------------------------------------------
+// CVirtualKeyboard::StarIconRect
+// Get the rect of the star icon
+// (other items were commented in a header).
+// ---------------------------------------------------------------------------
+//
+inline TRect CVirtualKeyboard::StarIconRect()
+	{
+	return iStarIconRect;
+	}
+
+// ---------------------------------------------------------------------------
+// CVirtualKeyboard::ShiftIconRect
+// Get the rect of the shift icon
+// (other items were commented in a header).
+// ---------------------------------------------------------------------------
+//
+inline TRect CVirtualKeyboard::ShiftIconRect()
+	{
+	return iShiftIconRect;
+	}
+
 inline TAknTextLineLayout CVirtualKeyboard::TextLineLayout(TVirtualKeyTextPos aPos)
     {
     if (aPos >= 0 && aPos <= EPosLast)

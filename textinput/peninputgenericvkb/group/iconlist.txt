@@ -40,6 +40,12 @@
 -c8,8 qgn_indi_fep_button_capslock.svg
 -c8,8 qgn_indi_fep_button_capslock_sel.svg
 -c8,8 qgn_indi_fep_button_shift.svg
+-c8,8 qgn_indi_input_page.svg
+-c8,8 qgn_indi_input_page1.svg
+-c8,8 qgn_indi_input_page2.svg
+-c8,8 qgn_indi_input_qwerty_page1_1_ah.svg
+-c8,8 qgn_indi_input_qwerty_page1_2_ah.svg
+-c8,8 qgn_indi_input_qwerty_page2_2_ah.svg
 -c8,8 qgn_indi_fep_button_shift_sel.svg
 -c8,8 qgn_indi_fep_button_hwr.svg
 -c8,8 qgn_indi_fep_button_hwr_sel.svg

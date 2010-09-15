@@ -174,6 +174,18 @@ public:
       * @return None.
       */
      void ShowEEPInfo();
+     
+     /**
+       * Submit text
+       * @param aText text
+       */
+     void SubmitTextL( const TDesC& aText );
+     
+protected:
+     void CommitCandidateL();
+     
+     TInt GetIndexOfToneMark( const TDesC& aText);
+
     };
 
 /**
@@ -206,8 +218,18 @@ public:
      * @param aCommandId Command ID value
      */
     void HandleCommandL( TInt aCommandId );
-
+    
+    /**
+      * Submit text
+      * @param aText text
+      */
+    void SubmitTextL( const TDesC& aText );
+    
 private:
+    
+    void CommitCandidateL();
+    
+    TInt GetIndexOfToneMark( const TDesC& aText);
     /**
      * From TAknFepInputStateCandidateBasePhrase
      * Handle system key press
@@ -288,6 +310,12 @@ public:
      * @since S60 v3.2
      */
     TInt GetIndexOfToneMark( const TDesC& aText);
+    
+    /**
+      * Submit text
+      * @param aText text
+      */
+    void SubmitTextL( const TDesC& aText );
     };
 
 #endif /*AKNFEPUIINPUTSTATEMINIQWERTYZHUYINPHRASE_H_*/

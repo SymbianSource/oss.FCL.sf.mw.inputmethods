@@ -102,7 +102,9 @@ EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
 		
     iForgroundBmp = aBmpId;
     iForgroundBmpMask = aMaskBmpId;
-    iBgSkinId = aBgSkinId;    
+    iBgSkinId = aBgSkinId;
+    
+    iNeedRedraw = ETrue;
     }
 
 EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
@@ -276,7 +278,9 @@ EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
     iForgroundBmpMask = aMaskBmpId;
     iFirstBmpId = aFirstBmpId;
     iMiddleBmpId =  aMiddleBmpId;
-    iLastBmpId = aLastBmpId;    
+    iLastBmpId = aLastBmpId;
+    
+    iNeedRedraw = ETrue;    
     }
 
 EXPORT_C void CBubbleCtrl::Close()

@@ -31,6 +31,7 @@
 #include <s32mem.h>
 
 #include <peninputrangebar.h>
+#include <peninputpopupbubble.h>
 
 // User includes
 #include "peninputsplitqwerty.hrh"
@@ -203,6 +204,14 @@ TInt CPeninputSplitQwertyLayout::HandleCommand( TInt aCmd, TUint8* aData )
             iITIEnabled = CPeninputDataConverter::AnyToInt( aData );
             }            
             break;
+        case ECmdPenInputFingerMatchIndicator:
+            {
+            if ( iLayoutType == EPluginInputModeFSQ )
+                {
+                TRAP_IGNORE( vkbWindow->UpdateSplitIndiBubbleL( aData ));
+                }
+            }
+            break;            
         default:
             {
             }
@@ -227,6 +236,13 @@ void CPeninputSplitQwertyLayout::HandleControlEvent( TInt aEventType,
             TRAP_IGNORE( HandleVirtualKeyUpL( aEventType, aCtrl, aEventData ) );
             }
             break;
+        case EEventVirtualKeyDown:
+        	{
+        	HandleVirtualKeyDown();
+        	CPeninputCommonLayoutExt::HandleControlEvent( aEventType, 
+        			aCtrl, aEventData );
+        	break;
+        	}
         default:
             {
             CPeninputCommonLayoutExt::HandleControlEvent( aEventType, 
@@ -243,15 +259,6 @@ void CPeninputSplitQwertyLayout::HandleControlEvent( TInt aEventType,
 TInt CPeninputSplitQwertyLayout::OnAppEditorTextComing( 
                                       const TFepInputContextFieldData& aData )
     {
-    CPeninputSplitQwertyWindow* 
-        win = static_cast<CPeninputSplitQwertyWindow*>(iLayoutWindow);
-        
-    //Suppress ICF related actions
-    if ( win )
-        {
-        return KErrNone;
-        }
-    
     return CPeninputCommonLayoutExt::OnAppEditorTextComing( aData );
     }
 
@@ -278,10 +285,30 @@ TInt CPeninputSplitQwertyLayout::SizeChanged( const TAny* aData )
 // Inform UI that application infomation changed
 // ---------------------------------------------------------------------------
 //
-void CPeninputSplitQwertyLayout::HandleAppInfoChange( const TDesC& /*aInfo*/, 
-                                                      TPeninputAppInfo /*aType*/ )
+void CPeninputSplitQwertyLayout::HandleAppInfoChange( const TDesC& aInfo, 
+                                                      TPeninputAppInfo aType )
     {
-    //Suppress ICF related actions
+    if ( LayoutWindow() )
+        {
+        CPopupBubbleCtrl* splitIndibubble = static_cast<CPopupBubbleCtrl*> 
+                                    (LayoutWindow()->Control(EPeninputWindowCtrlIdSplitIndiBubble)) ;         
+
+        if ( splitIndibubble && ( aType == EAppIndicatorMsg ) && (iLayoutType == EPluginInputModeFSQ) )
+            {
+            CPeninputSplitQwertyWindow* window = static_cast<CPeninputSplitQwertyWindow*>(iLayoutWindow);           
+            if ( aInfo.Length() > 0 && !iInEditWordQueryDlg)
+                {
+                TRAP_IGNORE(splitIndibubble->SetTextL(aInfo));
+                window->SetSplitIndiBubbleSizeWithText();                
+                }
+            else
+                {
+                TRAP_IGNORE(splitIndibubble->SetTextL(KNullDesC));
+                window->SetSplitIndiBubbleSizeWithoutText();                 
+                }
+            splitIndibubble->Draw();           
+            }
+        }
     }
 
 // ---------------------------------------------------------------------------
@@ -424,5 +451,20 @@ void CPeninputSplitQwertyLayout::HandleVirtualKeyUpL( TInt aEventType,
         delete number;
         }
     }
+
+// ---------------------------------------------------------------------------
+// Handle virtual key down event
+// ---------------------------------------------------------------------------
+//
+void CPeninputSplitQwertyLayout::HandleVirtualKeyDown()
+	{
+	CPeninputSplitQwertyWindow* window = 
+			static_cast<CPeninputSplitQwertyWindow*>( iLayoutWindow );
+	
+	if ( window )
+		{
+		window->HandleVirtualKeyDownEvent();
+		}
+	}
 
 // End Of File

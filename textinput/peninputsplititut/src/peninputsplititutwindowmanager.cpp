@@ -259,8 +259,18 @@ TBool CSplitItutWindowManager::HandleCommandL(TInt aCmd, TUint8* aData)
         	break;
         case ECmdPenInputFingerMatchIndicator:
         	{
-        	iWindow->UpdateIndiBubbleL( aData );
-        	handle = ETrue;
+            if ( iLayoutOwner->UiMgr()->CurrentState() )
+                {
+                if (iLayoutOwner->UiMgr()->CurrentState()->StateType() == CSplitItutUiMgrBase::EStateSpelling )
+                    {
+                    iWindow->UpdateSpellIndiBubbleL( aData );
+                    }
+                else
+                    {
+                    iWindow->UpdateSplitIndiBubbleL( aData );
+                    }
+                handle = ETrue;
+                }
         	}
         	break;
         default:
@@ -328,8 +338,31 @@ CFepUiLayout* CSplitItutWindowManager::UiLayout()
 // CSplitItutWindowManager::HandleAppInfoChangeL
 // ---------------------------------------------------------------------------
 //
-void CSplitItutWindowManager::HandleAppInfoChangeL(const TDesC& /*aInfo*/)
+void CSplitItutWindowManager::HandleAppInfoChangeL(const TDesC& aInfo)
     {
+    if ( iWindow )
+        {
+        CBubbleCtrl* splitIndibubble = static_cast<CBubbleCtrl*> 
+                                    (iWindow->Control(ECtrlIdSplitIndiBubble)) ;
+
+        if ( splitIndibubble )
+            { 
+            if ( aInfo.Length() > 0 && !iInEditWordQueryDlg)
+                {
+                TRAP_IGNORE(splitIndibubble->SetTextL(aInfo));
+                }
+            else
+                {
+                TRAP_IGNORE(splitIndibubble->SetTextL(KNullDesC));
+                }
+            iWindow->SetSplitIndiBubble();
+            if (splitIndibubble->IsShowing())//make sure we redraw if visible
+                {
+                splitIndibubble->Popup(splitIndibubble->Rect());
+                }
+            }
+        }
+        
     }
 
 // ---------------------------------------------------------------------------

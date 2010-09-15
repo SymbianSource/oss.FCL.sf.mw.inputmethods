@@ -104,7 +104,9 @@ enum TItutDataType
     ESpellArrowLeft,
     ESpellArrowLeftInner,
     ESpellArrowRight,
-    ESpellArrowRightInner
+    ESpellArrowRightInner,
+    EStarIconRect,
+    EShiftIconRect
     };
 
 enum TControlId

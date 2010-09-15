@@ -2,3 +2,4 @@
 /c8,1 qgn_indi_fep_arrow_right.bmp
 /c8,1 qgn_indi_fep_arrow_up.bmp
 /c8,1 qgn_indi_fep_arrow_down.bmp
+/c8,8 qgn_indi_input_candi_list_close.svg

@@ -39,6 +39,14 @@
 
 #include <PtiObserver.h> // MPtiObserver
 
+class MAknFepUiStateCtrl 
+	{
+public:
+    virtual void SubmitTextL( const TDesC& aText ) = 0;
+    
+    virtual void CloseUI() = 0;
+	};
+
 // CONSTANTS
 
 // MACROS
@@ -58,7 +66,8 @@ class MAknFepUIManagerStateInterface;
  *  @lib AknFep.lib
  *  @since 2.6
  */
-class TAknFepInputStateBase : public MPtiObserver
+class TAknFepInputStateBase : public MPtiObserver,
+							  public MAknFepUiStateCtrl
     {
 public: // Constructors and destructor
     /**
@@ -93,6 +102,10 @@ public: // Functions from base classes
      * @since 2.6
      */
     virtual void FirstWordInSelectionList();
+    
+    virtual void SubmitTextL( const TDesC& aText );
+    
+    virtual void CloseUI();
 
 public: // New functions
     /**
@@ -123,11 +136,6 @@ public: // New functions
      */
     virtual TUIState State() const;
 
-    /**
-     * Processing of Closeing UI
-     * @since 2.6
-     */
-    virtual void CloseUI();
 
     /**
      * Initialize state

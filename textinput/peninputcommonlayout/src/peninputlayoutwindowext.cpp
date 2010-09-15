@@ -406,6 +406,46 @@ EXPORT_C void CPeninputLayoutWindowExt::SetEditorTextL(
                 }
             }
         }
+    else
+    	{
+        // If in virtual QWERTY mode
+		if ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
+			{
+			TInt lang = CPeninputDataConverter::AnyToInt
+					( iLayoutContext->RequestData( EPeninputDataTypeInputLanguage ));
+			TInt curRange = CPeninputDataConverter::AnyToInt
+					( iLayoutContext->RequestData( EPeninputDataTypeCurrentRange ));
+					
+			// When writing language is Vietnamese and range is English
+			if ( lang == ELangVietnamese && curRange == ERangeEnglish )  
+				{
+				TBuf<1> charData;
+				// Get the input character
+				charData.Append( aData.iText );
+				iVowelChar = EFalse;
+				
+                if ( KNullDesC() != charData )
+                    {
+                    // Check whether the input char is in the list of VietVowelList
+                    for ( TUint i = 0; i < sizeof( VietVowelList ) / sizeof( TText ); ++i )
+                        {
+                        TBuf<1> buf;
+                        buf.Append( VietVowelList[i] );
+                        if ( charData == buf )
+                            {
+                            iVowelChar = ETrue;
+                            break;
+                            }
+                        }
+                    }
+                
+                CPeninputVkbCtrlExt* vkbCtrl = static_cast<CPeninputVkbCtrlExt*>
+                    ( Control( EPeninutWindowCtrlIdVkbCtrl ));
+                // Set the dim status of the tone keys
+                vkbCtrl->DimKeySet( iToneSet, !iVowelChar );
+				}
+			}
+    	}
     }  
 
 // ---------------------------------------------------------------------------
@@ -1260,6 +1300,7 @@ EXPORT_C void CPeninputLayoutWindowExt::HandleShiftAndCapslockBtnClicked()
     	}
     else
     	{
+        if ( permittedRange != ERangeNumber )
         ChangeVkbLayout( vkbLayout );
     	}
     
@@ -1440,6 +1481,18 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeMergedButtonStatus(
         {
         return;
         }
+
+    const TInt range = CPeninputDataConverter::AnyToInt(
+            iLayoutContext->RequestData(EPeninputDataTypeCurrentRange));
+
+    TBool shiftDown = ( aIsShiftCase > 0 );
+
+    if ( range == ERangeNumber || range == ERangeNativeNumber )
+        {
+        TRAP_IGNORE(HandleNumberModePagingL( shiftDown ));
+        }
+    else
+        {
     switch ( aIsCapslockCase * 2 + aIsShiftCase )
         {
         case 1: // text case        
@@ -1460,6 +1513,7 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeMergedButtonStatus(
         	button->SetHighlight( EFalse );
             }
             break;
+            }   
 	    }
 	}    								 	
 // ---------------------------------------------------------------------------
@@ -1936,5 +1990,93 @@ EXPORT_C void CPeninputLayoutWindowExt::SetTextAlignmentL( TInt aAlignment )
 		icf->SetTextAlignmentL( aAlignment, ConfigInfo()->Language() );
 		}
 	}
-	
+
+// ------------------------------------------------
+// CPeninputLayoutWindowExt::CurrentNumberModeId
+// ------------------------------------------------
+TInt CPeninputLayoutWindowExt::CurrentNumberModeId(TBool aShifted,
+        TInt aLanguage, TBool aPagingPermitted)
+    {
+    TInt ret = 0;
+    if (aPagingPermitted)
+        {
+        if (aLanguage == ELangArabic || aLanguage == ELangFarsi || aLanguage
+                == ELangUrdu)
+            {
+            if (aShifted)
+                {
+                ret = ECaseNumberSpecialPagingArabic22;
+                }
+            else
+                {
+                ret = ECaseNumberSpecialPagingArabic12;
+                }
+            }
+        else if (aLanguage == ELangThai)
+            {
+            if (aShifted)
+                {
+                ret = ECaseNumberSpecialPaging12;
+                }
+            else
+                {
+                ret = ECaseNumberSpecialPaging22;
+                }
+            }
+        else
+            {
+             if ( aShifted )
+                {
+                ret = ECaseNumberSpecialPaging22;
+                }
+             else
+                {
+                ret = ECaseNumberSpecialPaging12;
+                }            
+            }
+        }
+    else
+        {
+        if (aLanguage == ELangArabic || aLanguage == ELangFarsi || aLanguage
+                == ELangUrdu)
+            {
+            ret = ECaseNumberSpecialPagingArabic11;
+            }
+        else
+            {
+            ret = ECaseNumberSpecialPaging11;
+            }
+        }
+    return ret;
+    }
+
+void CPeninputLayoutWindowExt::HandleNumberModePagingL( TBool aShifted )
+    {
+    CAknFepCtrlMultiModeButton* button = static_cast<CAknFepCtrlMultiModeButton*> (ControlById( EPeninutWindowCtrlIdShiftBtn ) );
+    
+    if ( !button )
+        {
+        return;
+        }
+    
+    const TInt lang = CPeninputDataConverter::AnyToInt( iLayoutContext->RequestData( EPeninputDataTypeInputLanguage ) );
+    TInt permittedRange = CPeninputDataConverter::AnyToInt
+                     ( iLayoutContext->RequestData( EPeninputDataTypePermittedRange ));
+    TBool isPagingPermitted = EFalse;
+    if ( permittedRange == ERangeNumber || permittedRange == ERangeNativeNumber )
+       {
+       //if latin number only or native number only is permitted do not allow paging
+       isPagingPermitted = EFalse;
+       }
+    else
+       {
+       isPagingPermitted = !button->IsDimmed();
+       }
+          
+    TInt modeId = CurrentNumberModeId( aShifted, lang, isPagingPermitted );
+    TInt index = button ->ModeIndexByModeId( modeId );
+
+    button->SetCurrentModeL( EBtnBmpActive, index );    
+    button->SetHighlight( EFalse );
+    }
 //End Of File

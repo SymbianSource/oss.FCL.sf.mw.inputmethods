@@ -63,6 +63,8 @@ public:
      */
     void HandleCommandL( TInt aCommandId );
     
+    void SubmitTextL( const TDesC& aText );
+    
 protected:
 
     /**
@@ -117,6 +119,8 @@ protected:
      * 
      */
     TInt GetIndexOfToneMark( const TDesC& aText);
+    
+    void RefreshUI( TBool aRefresh );
     };
 
 #endif __AKN_FEP_UI_INPUT_STATE_CANDIDATE_MINIQWERTY_ZHUYINPHRASE_H__

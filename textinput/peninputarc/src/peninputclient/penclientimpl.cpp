@@ -992,6 +992,16 @@ void RPeninputServerImpl::OnServerReady( TBool aFlag)
 TInt RPeninputServerImpl::AddPenUiActivationHandler(
                       MPenUiActivationHandler* aHandler,TInt aType)
     {
+    // To avoid add repeatedly
+    for (TInt i=0; i<iPenUiNotificationHandler.Count(); i++)
+        {
+        TUiNotificationHandler handler = iPenUiNotificationHandler[ i ];
+        if( handler.iHandler == aHandler )
+            {
+            return KErrNone;
+            }
+        }
+    
     iPenUiNotificationHandler.Append(TUiNotificationHandler(aHandler,aType));
     return KErrNone;            
     }
@@ -1262,6 +1272,15 @@ void CPeninputServerObserver::RunL()
     
     if(iStatus.Int() < 0)
         {
+        
+        // the pen input server has been terminated, so there is no need to post message again
+        // just notify the handler the message of ESignalServerExit      
+        if ( iStatus.Int() == KErrServerTerminated )
+            {
+            HandleServerTerminatedL();
+            return;
+            }
+        
         //check server status
         RThread srvThread;
         TInt err = srvThread.Open(iSrvThreadId);
@@ -1274,9 +1293,7 @@ void CPeninputServerObserver::RunL()
             }
         if(err != KErrNone || exitReason != 0) //server has exited
             {
-            iServerExit  = ETrue;
-            iPeninputServer->HandleServerExit();             
-            iHandler->HandleServerEventL(ESignalServerExit);
+            HandleServerTerminatedL();
             return;
             }
         }
@@ -1300,6 +1317,26 @@ void CPeninputServerObserver::RunL()
         }
     }
 
+// ---------------------------------------------------------------------------
+// CPeninputServerObserver::HandleServerTerminatedL()
+// ---------------------------------------------------------------------------
+//    
+void CPeninputServerObserver::HandleServerTerminatedL()
+    {
+    iServerExit  = ETrue;
+        
+    if ( iPeninputServer )
+        {
+        iPeninputServer->HandleServerExit();                 
+        }
+        
+    if ( iHandler )
+        {
+        iHandler->HandleServerEventL( ESignalServerExit ); 
+        }
+
+    }    
+    
 // ---------------------------------------------------------------------------
 // CPeninputServerObserver::RunError
 // ---------------------------------------------------------------------------

@@ -136,9 +136,16 @@ void CWesternSplitItutUiMgr::SetCurrentStateL(TUiState aNewState)
     if ( DataMgr()->IsUpdate() )  
         {
         DataMgr()->SetUpdate( EFalse );
-        CSplitItutUiLayout* itutLayout = 
-            static_cast<CSplitItutUiLayout*>( LayoutContext()->UiLayout() );
-        itutLayout->SizeChanged( NULL );
+        
+		CSplitItutUiLayout* itutLayout = 
+			static_cast<CSplitItutUiLayout*>( LayoutContext()->UiLayout());
+    	// Get the screen rect
+    	TRect screenRect = DataMgr()->screenSize();
+    	// If the screen is in portrait mode
+    	if ( screenRect.Width() < screenRect.Height())
+    		{
+			itutLayout->SizeChanged( NULL );
+    		}
 
         iCurrentState->OnEntryL();
         

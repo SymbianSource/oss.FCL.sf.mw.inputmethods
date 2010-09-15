@@ -491,4 +491,5 @@ EXPORTS
 	_ZTI26CAknFepCtrlLongPressButton @ 490 NONAME
 	_ZTV26CAknFepCtrlLongPressButton @ 491 NONAME
 	_ZThn804_N26CAknFepCtrlLongPressButton14HandleTimerOutEPK12CAknFepTimer @ 492 NONAME
+	_ZN26CAknFepCtrlMultiModeButton17ModeIndexByModeIdEi @ 493 NONAME
 

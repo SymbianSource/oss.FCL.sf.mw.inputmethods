@@ -397,6 +397,12 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
     iCursorWnd->SetCursorVisible(EFalse);
     if (iResourceChange)
         {
+        TInt curPriority = iWndGroup.OrdinalPriority();
+        if ( curPriority == -1 )
+            {
+            // Make sure pen ui must be seen.
+            LiftUpPriority();
+            }
         ActivateL();
         iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputShow );
         MakeVisible( ETrue );
@@ -533,6 +539,10 @@ void CPenUiWndCtrl::Invalidate(const TRect& aRect,TBool /*aFullUpdate*/)
     // Draw is always full-screen in such case. So I change to DrawNow
     // for temprory solution.
     /*********************************************************************/ 
+    if ( !IsVisible() )
+        {
+        return;
+        }
     
     if(iShowPopup)
         {        

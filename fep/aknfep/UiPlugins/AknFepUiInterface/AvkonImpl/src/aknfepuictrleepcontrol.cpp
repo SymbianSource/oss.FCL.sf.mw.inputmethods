@@ -112,9 +112,8 @@ void CAknFepUICtrlEEPControl::Draw( const TRect& /*aRect*/ ) const
     textrect.SetWidth( Rect().Width( )- Rect().Width( )*KLROffset/KDenominator * 2 ) ;
 
         TAknLayoutText layoutText;
-        TAknTextLineLayout
-            textLayout=
-            AKN_LAYOUT_TEXT_Chinese_universal_FEP_entry_pane_texts_Line_1( 0);
+        TAknTextLineLayout textLayout = 
+                    CAknFepChineseUIDataConv::AnyToTextLine( iLafDataMgr->RequestData( EEEPTextLine ));
         layoutText.LayoutText( textrect, textLayout ) ;
         const CFont* font = layoutText.Font( );
         gc.UseFont( font ) ;
@@ -706,31 +705,9 @@ void CAknFepUICtrlEEPControl::ResetAll( )
 void CAknFepUICtrlEEPControl::CalculateFrameRects( TRect& aOuterRect,
     TRect& aInnerRect ) const
     {
-    TRect windowRect = CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectEEP ));
-    TAknLayoutRect eepFirstHorizLineLayoutRect = CAknFepChineseUIDataConv::AnyToLayoutRect( iLafDataMgr->RequestData( EEEPFirstHorizLine ));
-    TAknLayoutRect eepSecondHorizLineLayoutRect = CAknFepChineseUIDataConv::AnyToLayoutRect( iLafDataMgr->RequestData( EEEPSecondHorizLine ));
-    TRect eepFirstHorizLineRect = eepFirstHorizLineLayoutRect.Rect();
-    TRect eepSecondHorizLineRect = eepSecondHorizLineLayoutRect.Rect();
-    TInt rectHeight = eepFirstHorizLineRect.iTl.iY - windowRect.iTl.iY;
-    //TInt rectHeight = eepSecondHorizLineRect.iTl.iY - windowRect.iTl.iY - 1;
-    TInt rectWidth = windowRect.Width( );
-    windowRect.iTl.iX = 0;
-    windowRect.iTl.iY = 0;
-    windowRect.SetHeight( rectHeight ) ;
-    windowRect.SetWidth( rectWidth ) ;
-    TAknLayoutRect topLeft;
-    topLeft.LayoutRect( windowRect,
-        SkinLayout::Submenu_skin_placing_Line_2( ) ) ;
-
-    TAknLayoutRect bottomRight;
-    bottomRight.LayoutRect( windowRect,
-        SkinLayout::Submenu_skin_placing_Line_5( ) ) ;
-   
-    aOuterRect = TRect( topLeft.Rect().iTl, bottomRight.Rect().iBr ) ;
-    aInnerRect = TRect( topLeft.Rect().iBr, bottomRight.Rect().iTl ) ;
-//    aOuterRect.SetHeight();
-//    aInnerRect = aOuterRect;
-    aInnerRect.iBr.iY = aOuterRect.iBr.iY;
+	aOuterRect = Rect();
+	aInnerRect = aOuterRect;
+	aInnerRect.Shrink( 3, 3 );
     }
 
 // End of file

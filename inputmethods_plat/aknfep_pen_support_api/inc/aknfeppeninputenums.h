@@ -235,7 +235,19 @@ enum TAknFepPenInputCaseMode
     //Abc
     ECaseText = 4,
     //aBC
-    ECaseInverseText = 8
+    ECaseInverseText = 8,
+    // Paging 1/1 for number & special characters
+    ECaseNumberSpecialPaging11 = 0x10,
+    // Paging 1/2 for number & special characters    
+    ECaseNumberSpecialPaging12 = 0x20,
+    // Paging 2/2 for number & special characters
+    ECaseNumberSpecialPaging22 = 0x40,
+    // Paging 1/1 for number & special characters
+    ECaseNumberSpecialPagingArabic11 = 0x80,
+    // Paging 1/2 for number & special characters    
+    ECaseNumberSpecialPagingArabic12 = 0x100,
+    // Paging 2/2 for number & special characters
+    ECaseNumberSpecialPagingArabic22 = 0x200
     };
       
       

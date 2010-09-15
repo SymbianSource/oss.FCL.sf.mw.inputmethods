@@ -506,13 +506,19 @@ private:    // Methods
                            
     inline TBool TextSelectionOn();
 
-    void SetInlineStateL(TBool aInline, 
+    /**
+     * @return ETrue if redraw is required.
+     */
+    TBool SetInlineStateL(TBool aInline, 
                          TInt aStartPos = 0, 
                          TInt aEndPos = 0, 
                          TBool aNoMatchState = EFalse, 
                          const TDesC& aNoMatchText = KNullDesC);
 
-    void SetAutoCompleteStateL(TBool aAutoComplete, 
+    /**
+     * @return ETrue if redraw is required.
+     */
+    TBool SetAutoCompleteStateL(TBool aAutoComplete, 
                                TInt aStartPos = 0, 
                                TInt aMidPos = 0,
                                TInt aEndPos = 0);
@@ -562,13 +568,22 @@ private:    // Methods
     
     TBool IsTextPosValid(TInt aPos);
     
-    void UpdateTextL(const TFepInputContextFieldData& aData);
+    /**
+     * @return ETrue if text was updated.
+     */
+    TBool UpdateTextL(const TFepInputContextFieldData& aData);
     
     static TInt UpdateSecretTextL(TAny* aEditArea);
     
-    void SetSelectionL(TCursorSelection aCurSel);
+    /**
+     * @return ETrue if redraw is required.
+     */
+    TBool SetSelectionL(TCursorSelection aCurSel);
 
-    void UpdateNoMatchTextL(TInt aPos, const TDesC& aNoMatchText, TBool aNoMatchState);
+    /**
+     * @return ETrue if text was modified.
+     */
+    TBool UpdateNoMatchTextL(TInt aPos, const TDesC& aNoMatchText, TBool aNoMatchState);
     
     void RemoveOverlappedCtrlIfNeeded();
 
@@ -604,11 +619,19 @@ private:    // Methods
     
     void ResetApplyFont();
     
-    void TryDisplayMaxTextL(TInt aCursorPos);
+    /**
+     * Scrolls text so that cursor becomes visible.
+     * 
+     * @return ETrue if text was scrolled.
+     */
+    TBool TryDisplayMaxTextL(TInt aCursorPos);
     
     TBool MoveCursorL( const TPoint& aPt, TInt& aCursorPos );
     
-    void ResetViewHeightL();
+    /**
+     * @return ETrue if redraw is required.
+     */
+    TBool ResetViewHeightL();
     
     void SetMfneTextL(const TFepInputContextFieldData& aData);
     
@@ -624,7 +647,7 @@ private:    // Methods
     
     TBool HighlightOverlapWithBubble( const TRect& aRect );
     
-    void AdjustSelectionL( const TCursorSelection& aCurSel );
+    TBool AdjustSelectionL( const TCursorSelection& aCurSel );
     
     void ApplyLineSpaceFormatL( TInt aLineHeight );
     void CalcPromptTextRectL();        

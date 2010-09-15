@@ -71,6 +71,8 @@ public:
      */
     void HandleCommandL( TInt aCommandId );
     
+    void SubmitTextL( const TDesC& aText );
+
 protected:
 
     /**

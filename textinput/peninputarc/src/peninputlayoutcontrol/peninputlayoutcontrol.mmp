@@ -59,6 +59,7 @@ SOURCE                  peninputfloatctrl.cpp
 SOURCE                  peninputfloatbubble.cpp 
 SOURCE                  peninputaknvkbpreviewbubblerenderer.cpp
 SOURCE                  peninputtapsettingmanager.cpp
+SOURCE                  peninputpopupbubble.cpp
 
 userinclude             ../../inc/peninputlayoutcontrolinc
 

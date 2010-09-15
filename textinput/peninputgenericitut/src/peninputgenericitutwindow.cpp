@@ -235,6 +235,13 @@ void CGenericItutWindow::ConstructItutKeypadFromResourceL(TInt aResId)
         TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine3)),
         EPosRight3);
 
+    TRect* iconRect = static_cast<TRect*>( iDataMgr->RequestData( EStarIconRect ));
+    // Set the star icon rect
+    iStandardItutKp->SetStarIconRect( *iconRect );
+    iconRect = static_cast<TRect*>( iDataMgr->RequestData( EShiftIconRect ));
+    // Set the shift icon rect
+    iStandardItutKp->SetShiftIconRect( *iconRect );
+    
     TResourceReader reader;
     CCoeEnv::Static()->CreateResourceReaderLC(reader, aResId);
 
@@ -1583,6 +1590,13 @@ TInt CGenericItutWindow::SizeChanged(TBool aIcfOverlap)
         TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine3)),
         EPosRight3);
     
+    TRect* iconRect = static_cast<TRect*>( iDataMgr->RequestData( EStarIconRect ));
+    // Set the star icon rect
+    iStandardItutKp->SetStarIconRect( *iconRect );
+    iconRect = static_cast<TRect*>( iDataMgr->RequestData( EShiftIconRect ));
+    // Set the shift icon rect
+    iStandardItutKp->SetShiftIconRect( *iconRect );
+    
     RPointerArray<CVirtualKey>& keys = 
         const_cast<RPointerArray<CVirtualKey>&>(iStandardItutKp->KeyArray());
     RArray<TRect>& cellRects = 
@@ -1778,6 +1792,13 @@ void CGenericItutWindow::ApplyVariantLafDataL(TBool aResolutionChange)
     iStandardItutKp->SetTextLineLayout(
         TItutDataConverter::AnyToTextLine(iDataMgr->RequestData(EKeypadRightTextLine3)),
         EPosRight3);
+    
+    TRect* iconRect = static_cast<TRect*>( iDataMgr->RequestData( EStarIconRect ));
+    // Set the star icon rect
+    iStandardItutKp->SetStarIconRect( *iconRect );
+    iconRect = static_cast<TRect*>( iDataMgr->RequestData( EShiftIconRect ));
+    // Set the shift icon rect
+    iStandardItutKp->SetShiftIconRect( *iconRect );
     
     RPointerArray<CVirtualKey>& keys = 
         const_cast<RPointerArray<CVirtualKey>&>(iStandardItutKp->KeyArray());

@@ -113,7 +113,8 @@ class CAknFepPluginManager :
     public CBase,
     public MAknFepPenSupportInterface,
     public MPeninputServerEventHandler,
-    public MEikEdwinObserver
+    public MEikEdwinObserver,
+    public MPenUiActivationHandler
     { 
 public:
 	
@@ -1139,6 +1140,28 @@ private:    // Data
      * Indicate whether portrait FSQ feature is enabled
      */    
     TBool iPortraitFSQEnabled;
+
+    private:
+    // From MPenUiActivationHandler
+        
+        /** 
+         * From MPenUiActivationHandler
+         * Called when pen input UI is about to be closed
+         */    
+        void OnPeninputUiDeactivated();
+        
+        /** 
+         * From MPenUiActivationHandler
+         * Called when pen input UI is about to be open
+         */        
+        void OnPeninputUiActivated();  
+    private:
+        /**
+         * Indicate if plugin manager initiate to close input ui.
+         * This flag is used to avoid incursive calling 
+         */                 
+        TBool iInitiateCloseInputUi;
+    
     };
 
 class CConnectAo : public CActive

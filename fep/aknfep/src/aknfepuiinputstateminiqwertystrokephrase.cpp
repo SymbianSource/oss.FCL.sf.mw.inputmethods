@@ -127,7 +127,6 @@ TBool TAknFepInputStateEntryMiniQwertyStrokePhrase::HandleKeyL( TInt aKey,
             if ( candidatePane->VisibleCandidateCount()!= 1 )
                 {
                 uiContainer->EditPaneWindow()->SetCandidateRefreshFlag( ETrue );
-                iOwner->ChangeState( ECandidate );
                 candidatePane->SelectNext();
                 }
             break;
@@ -137,9 +136,7 @@ TBool TAknFepInputStateEntryMiniQwertyStrokePhrase::HandleKeyL( TInt aKey,
             if ( candidatePane->VisibleCandidateCount()!= 1 )
                 {
                 uiContainer->EditPaneWindow()->SetCandidateRefreshFlag( ETrue );
-                iOwner->ChangeState( ECandidate );
-                TInt numbertotal = UIContainer()->CandidatePane()->VisibleCandidateCount();
-                UIContainer()->CandidatePane()->SelectIndex( numbertotal-1 );
+                candidatePane->SelectPrev();
                 }
             break;
             }
@@ -157,7 +154,7 @@ TBool TAknFepInputStateEntryMiniQwertyStrokePhrase::HandleKeyL( TInt aKey,
                     {
                     if ( CheckFirstGroupStroke() )
                         {
-                        iOwner->ChangeState( ECandidate );
+                        iOwner->ChangeState( EEntry );
                         }
                     else
                         {
@@ -190,6 +187,31 @@ TBool TAknFepInputStateEntryMiniQwertyStrokePhrase::HandleKeyL( TInt aKey,
         }
     return ret;
     }
+
+void TAknFepInputStateEntryMiniQwertyStrokePhrase::SubmitTextL( const TDesC& aText )
+	{
+	MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+
+	if ( aText.Length())
+	   {
+	   if ( !CommitInlineEEPL( aText ) )
+	      {
+	      DoActionAfterCommit();
+	      }
+	      else
+	          {
+	          if  ( CheckFirstGroupStroke() )
+	              {
+	              iOwner->ChangeState( EEntry );
+	              }
+	          else
+	              {
+	              uiContainer->EditPaneWindow()->SetAutoChangeStateFlag( EAutoChangeStateFromInput );
+	              iOwner->ChangeState( EMiniQwertyEdit );
+	              }
+	          }
+	     }
+	}
 
 // ---------------------------------------------------------------------------
 // TAknFepInputStateEditingMiniQwertyStrokePhrase::TAknFepInputStateEditingMiniQwertyStrokePhrase
@@ -263,7 +285,7 @@ TBool TAknFepInputStateEditingMiniQwertyStrokePhrase::HandleKeyL( TInt aKey,
             if ( 0 != candidatePane->VisibleCandidateCount() )
                 {
                 uiContainer->EditPaneWindow()->SetChangeState( ETrue );
-                iOwner->ChangeState( ECandidate );
+                iOwner->ChangeState( EEntry );
                 }
             break;
             }
@@ -317,9 +339,10 @@ TAknFepUiInputStateCandidateMiniQwertyStrokePhrase::TAknFepUiInputStateCandidate
     {
     iState = ECandidate;
     MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+    uiContainer->CandidatePane()->SelectFirstPhrase();
     uiContainer->FocusCandidatePane( ETrue );
     uiContainer->CandidatePane()->ShowCandidateOrdinals( ETrue );
-    uiContainer->CandidatePane()->SelectFirstPhrase();
+    
     if ( uiContainer->EditPaneWindow()->GetCandidateRefreshFlag() )
         {
         uiContainer->EditPaneWindow()->DisableCursor();
@@ -480,6 +503,31 @@ void TAknFepInputStateEditingMiniQwertyStrokePhrase::HandleCommandL(
         }
     }
 
+void TAknFepInputStateEditingMiniQwertyStrokePhrase::SubmitTextL( const TDesC& aText )
+	{
+	MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+	if ( aText.Length() )
+	    {
+	    if ( !CommitInlineEEPL( aText ) )
+	        {
+	        DoActionAfterCommit();
+	        }
+	    else
+	        {
+	        if ( CheckFirstGroupStroke() )
+	           {
+	           RefreshUI();
+	           uiContainer->CandidatePane()->SelectFirstPhrase();
+	           }
+	       else
+	           {
+	           uiContainer->EditPaneWindow()->SetAutoChangeStateFlag(
+	                        EAutoChangeStateFromCandidate );
+	           iOwner->ChangeState( EMiniQwertyEdit );
+	           }
+	        }
+	   }
+	}
 
 // ---------------------------------------------------------------------------
 // TAknFepInputStateEntryMiniQwertyStrokePhrase::HandleCommandL
@@ -505,7 +553,7 @@ void TAknFepInputStateEntryMiniQwertyStrokePhrase::HandleCommandL(
                     {
                     if ( CheckFirstGroupStroke() )
                         {
-                        iOwner->ChangeState( ECandidate );
+                        iOwner->ChangeState( EMiniQwertyEdit );
                         }
                     else
                         {
@@ -563,3 +611,29 @@ void TAknFepUiInputStateCandidateMiniQwertyStrokePhrase::HandleCommandL(
             break;
         }
     }
+
+void TAknFepUiInputStateCandidateMiniQwertyStrokePhrase::SubmitTextL( const TDesC& aText )
+	{
+	MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
+	if ( aText.Length() )
+	    {
+	    if ( !CommitInlineEEPL( aText ) )
+	        {
+	        DoActionAfterCommit();
+	        }
+	    else
+	        {
+	        if ( CheckFirstGroupStroke() )
+	           {
+	           RefreshUI();
+	           uiContainer->CandidatePane()->SelectFirstPhrase();
+	           }
+	           else
+	               {
+	               uiContainer->EditPaneWindow()->SetAutoChangeStateFlag(
+	                            EAutoChangeStateFromCandidate );
+	               iOwner->ChangeState( EMiniQwertyEdit );
+	               }
+	            }
+	   }
+	}

@@ -104,6 +104,6 @@ PRJ_EXTENSIONS
 START EXTENSION s60/mifconv
 OPTION TARGETFILE aknfepuictrls.mif
 OPTION HEADERFILE aknfepuictrls.mbg
-OPTION SOURCES -c8,1 qgn_indi_fep_arrow_left.bmp -c8,1 qgn_indi_fep_arrow_right.bmp -c8,1 qgn_indi_fep_arrow_up.bmp -c8,1 qgn_indi_fep_arrow_down.bmp
+OPTION SOURCEFILE iconlist.txt
 END
 // End of file

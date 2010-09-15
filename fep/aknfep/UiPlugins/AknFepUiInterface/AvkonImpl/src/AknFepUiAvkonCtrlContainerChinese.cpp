@@ -42,6 +42,8 @@
 #include <AknsFrameBackgroundControlContext.h>
 #include <skinlayout.cdl.h>
 #include <AknDef.h>
+#include <coemain.h>
+#include "AknFepUiInputStateBase.h"
 
 #include "AknFepUiInterfacePanic.h"
 #include "AknFepUIAvkonCtrlContainerChinese.h"
@@ -110,6 +112,9 @@ void CAknFepUICtrlContainerChinese::Enable(TBool aEnable)
             Window().SetOrdinalPosition(0, ECoeWinPriorityFep); // right at the front
             // make sure we are not faded even if a query has appeared
             Window().SetFaded(EFalse, RWindowTreeNode::EFadeIncludeChildren); 
+            ClaimPointerGrab(ETrue);
+            // Set enable to capture outside pointer down event to close UI.
+            SetPointerCapture( ETrue );
             }
         else
             {
@@ -118,6 +123,9 @@ void CAknFepUICtrlContainerChinese::Enable(TBool aEnable)
             iPinyinPopupWindow->Enable(aEnable);
             iEditPane->Enable(aEnable);
             iCandidatePane->Enable(aEnable);
+            ClaimPointerGrab(EFalse);
+        	// Set disable to capture outside pointer event
+            SetPointerCapture( EFalse );
             }
         MakeVisible(aEnable);
         }
@@ -139,6 +147,10 @@ void CAknFepUICtrlContainerChinese::Enable(TBool aEnable)
 	    iEditPane->SetChangeState( EFalse );
 #endif
         }
+    else
+    	{
+		Window().Invalidate();
+    	}
     }  
   
 void CAknFepUICtrlContainerChinese::ConstructL()
@@ -146,6 +158,9 @@ void CAknFepUICtrlContainerChinese::ConstructL()
     CreateWindowL();
     SetNonFocusing();
     RWindow& window=Window();
+        
+    // Need receive drag events.
+    window.PointerFilter( EPointerFilterDrag, 0 );
     window.SetOrdinalPosition(0, ECoeWinPriorityFep); // right at the front
     MakeVisible(EFalse);
 
@@ -153,7 +168,7 @@ void CAknFepUICtrlContainerChinese::ConstructL()
 
     iLafDataMgr = CAknFepUiLayoutDataMgr::NewL();
     iInputPane = CAknFepUICtrlInputPane::NewL(window, CAknFepUICtrlInputPane::ELayoutPhraseInputPane, iLafDataMgr);
-    iCandidatePane = CAknFepUICtrlCandidatePane::NewL(window, iLafDataMgr);
+    iCandidatePane = CAknFepUICtrlCandidatePane::NewL(window, iLafDataMgr, this );
     iPinyinPopupWindow = CAknFepUICtrlPinyinPopup::NewL(window , iLafDataMgr);
     iEditPane = CAknFepUICtrlPinyinEEP::NewL( window, iLafDataMgr );
     iInputPane->SetMopParent(this);
@@ -163,6 +178,7 @@ void CAknFepUICtrlContainerChinese::ConstructL()
     iInputPane->SetSizeChangedObserver(this);
     iPinyinPopupWindow->SetSizeChangedObserver(this);
     iPinyinPopupWindow->MakeVisible(EFalse);
+    iPinyinPopupWindow->SetMopParent( this );
     iEditPane->Enable(EFalse);
 
     iCandidatePane->SetPaneLayout(iPaneLayout); // set pane layout
@@ -190,7 +206,7 @@ void CAknFepUICtrlContainerChinese::ConstructL()
 
 CAknFepUICtrlContainerChinese::~CAknFepUICtrlContainerChinese()
     {
-    iEikonEnv->EikAppUi()->RemoveFromStack(this);
+    iEikonEnv->EikAppUi()->RemoveFromStack( this );
     delete iLafDataMgr;
     delete iInputPane;
     delete iCandidatePane;
@@ -372,7 +388,7 @@ void CAknFepUICtrlContainerChinese::SetLayout(TPaneLayout aPaneLayout)
 
 void CAknFepUICtrlContainerChinese::FocusCandidatePane(TBool aValue)
     {
-    iInputPane->SetHighlighted(!aValue);
+    //iInputPane->SetHighlighted(!aValue);
     iCandidatePane->SetHighlighted(aValue);
     }
 
@@ -397,56 +413,40 @@ void CAknFepUICtrlContainerChinese::SelectionPopupSizeChanged(TInt /*aNumLines*/
 
 void CAknFepUICtrlContainerChinese::LayoutPinyinPopupWindow()
     {
-    TRect popupRect(Position(), Size()); 
-    TRect pinyinRect = popupRect;
-    TAknWindowLineLayout entryHorizLine = 
-        CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEntryHorizLineWindow ));
-    TAknWindowLineLayout entryPaneLine = 
-        CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEntryPaneWindowLine ));
-    TAknWindowLineLayout eepFirstHorizLine = 
-        CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEEPFirstHorizLineWindow ));
-    TAknWindowLineLayout eepSecondHorizLine = 
-        CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEEPSecondHorizLineWindow ));
-    TAknLayoutRect layoutLineEntry, layoutLineEntryPane, layoutLineFirstHorizEEP, layoutLineSecondHorizEEP;
-    TRect layoutLineRectEntry, layoutLineRectEntryPane, layoutLineRectFirstHorizEEP, layoutLineRectSecondHorizEEP;
-    TInt index = ConvertLayoutToIndex();
-    if ( 2 == index )
+	// Use the same rect in Zhuyin input & Phrase creation mode.
+	TRect rect = Rect();
+	TAknWindowLineLayout popupRect;
+	TInt index = ConvertLayoutToIndex();
+    switch ( index )
         {
-        layoutLineFirstHorizEEP.LayoutRect( popupRect, eepFirstHorizLine );
-        layoutLineRectFirstHorizEEP = layoutLineFirstHorizEEP.Rect();
-        layoutLineSecondHorizEEP.LayoutRect( popupRect, eepSecondHorizLine );
-        layoutLineRectSecondHorizEEP = layoutLineSecondHorizEEP.Rect();
-        
-        pinyinRect.iTl.iY = layoutLineRectFirstHorizEEP.iBr.iY;
-        pinyinRect.iBr.iY = layoutLineRectSecondHorizEEP.iTl.iY;
+        case 0:
+        	popupRect = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EECWindowLayout ));
+            break;
+        case 2:
+        	popupRect = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EECPLayout ));
+            break;
+        default:        	
+            break;
         }
-    else
-        {
-        layoutLineEntry.LayoutRect( popupRect, entryHorizLine );
-        layoutLineRectEntry = layoutLineEntry.Rect();
-        layoutLineEntryPane.LayoutRect( popupRect, entryPaneLine );
-        layoutLineRectEntryPane = layoutLineEntryPane.Rect();
-        pinyinRect.iTl.iY = layoutLineRectEntryPane.iTl.iY;
-        pinyinRect.SetHeight(layoutLineRectEntry.iTl.iY - pinyinRect.iTl.iY);
-        }
-    iPinyinPopupWindow->SetRect(pinyinRect);
+	
+    AknLayoutUtils::LayoutControl( iPinyinPopupWindow, rect, popupRect );
     }
 
 void CAknFepUICtrlContainerChinese::LayoutPinyinEEPWindow()
     {
     TRect rect = Rect();  
-    TAknWindowLineLayout EEPWindowLayout;
+    TAknWindowLineLayout layoutEEPWindow;
     if ( iPaneLayout == ELayoutPhraseCreation )
     	{
-    	EEPWindowLayout =
-    	    CAknFepChineseUIDataConv::AnyToWindowLine(iLafDataMgr->RequestData(EEEPWindowLayout));
+		layoutEEPWindow =
+    	    CAknFepChineseUIDataConv::AnyToWindowLine(iLafDataMgr->RequestData(EEntryCPLayout));
     	}
     else
     	{
-    	EEPWindowLayout =
-    	    	    CAknFepChineseUIDataConv::AnyToWindowLine(iLafDataMgr->RequestData(EEntryPaneWindowLine));
+		layoutEEPWindow =
+    	    	    CAknFepChineseUIDataConv::AnyToWindowLine(iLafDataMgr->RequestData(EEntryCLayout));
     	}       
-    AknLayoutUtils::LayoutControl(iEditPane, rect, EEPWindowLayout);
+    AknLayoutUtils::LayoutControl(iEditPane, rect, layoutEEPWindow);
     }
 
 void CAknFepUICtrlContainerChinese::SetControlVisibility()
@@ -496,40 +496,35 @@ void CAknFepUICtrlContainerChinese::SetIsShownWithPopupWindows(TBool aValue)
 
 void CAknFepUICtrlContainerChinese::SetContainerPosition(TPoint aCurPos, TInt aHeight)
     {
-    TRect parentRect;
-    AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EMainPane, parentRect);
+    TRect rect;
+    AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EScreen, rect);
     TInt windowHeight = 0;
     TInt index = ConvertLayoutToIndex();
-    
-    if ( index != 2 )
+    switch ( index )
         {
-        windowHeight = 
-            CAknFepChineseUIDataConv::AnyToInt( iLafDataMgr->RequestData( EPopupHeightEntry ));
-        isPCLPosed = EFalse;
+    	// Zhuyin input & phrase creation use the same rect
+        case 2:
+        	windowHeight = CAknFepChineseUIDataConv::AnyToInt( iLafDataMgr->RequestData( EPopupHeightEEP ));
+        	isPCLPosed = ETrue;
+            break;
+        case 1:
+        	windowHeight = CAknFepChineseUIDataConv::AnyToInt( iLafDataMgr->RequestData( EPopupHeightEntry ));
+        	isPCLPosed = EFalse;
+            break;
+        default:
+        	windowHeight = CAknFepChineseUIDataConv::AnyToInt( iLafDataMgr->RequestData( EPopupHeightEP ));
+        	isPCLPosed = EFalse;
+            break;
         }
+    // If cursor is covered by the container, move it to the top
+    if( aCurPos.iY > rect.iBr.iY - windowHeight )
+    	{
+        iContainerPosition.iY = aCurPos.iY - windowHeight - aHeight;
+    	}
     else
-        {
-        windowHeight = CAknFepChineseUIDataConv::AnyToInt( iLafDataMgr->RequestData( EPopupHeightEEP ));
-        isPCLPosed = ETrue;
-        }
-    // Laf comments: In case there is enough space on the main pane to show the window under the entry,
-    // the window is placed 3 pixels below the text baseline of the entry. In case there is no space on 
-    // the main pane to show the window fully under the entry, the window is placed 17(16 pixel font) or
-    // 13(12 pixel font) pixels above the baseline of the entry.
-    if(aCurPos.iY + 3 + windowHeight < parentRect.iBr.iY) 
-        {
-        iContainerPosition.iY = aCurPos.iY + 3; 
-        }
-    else
-        {
-        iContainerPosition.iY = aCurPos.iY - windowHeight - (aHeight + 1); 
-        }
-    if ((( iContainerPosition.iY + windowHeight ) > parentRect.iBr.iY ) ||
-        ( iContainerPosition.iY < parentRect.iTl.iY ))
-    {
-    iContainerPosition.iY = parentRect.iBr.iY - ( parentRect.iBr.iY - 
-                            parentRect.iTl.iY ) / 2 - windowHeight / 2;
-    }
+    	{
+        iContainerPosition.iY = rect.iBr.iY - windowHeight ;
+    	}
     LayoutContainer();
     }
 
@@ -546,47 +541,62 @@ void CAknFepUICtrlContainerChinese::ShowVerticalScrollArrows(TBool aValue)
 void CAknFepUICtrlContainerChinese::LayoutInputPane()
     {
     TRect rect = Rect();
-    TAknWindowLineLayout entryPaneWindowLine = 
-        CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEntryPaneWindowLine ));
+    TAknWindowLineLayout entryPaneWindowLine;
     TInt index = ConvertLayoutToIndex();
-    if ( index == 2)
+    switch ( index )
         {
-        TInt eepPopupHeight = CAknFepChineseUIDataConv::AnyToInt( iLafDataMgr->RequestData( EPopupHeightEEP ));
-        TInt entryPopupHeight = CAknFepChineseUIDataConv::AnyToInt( iLafDataMgr->RequestData( EPopupHeightEntry ));
-        rect.iTl.iY = rect.iTl.iY + eepPopupHeight - entryPopupHeight;
+        case 2:
+        	entryPaneWindowLine = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EECPLayout ));
+            break;
+        case 1:
+        	entryPaneWindowLine = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EECWindowLayout ));
+            break;
+        default:
+        	entryPaneWindowLine = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EECWindowLayout ));
+            break;
         }
-    AknLayoutUtils::LayoutControl(iInputPane, rect, entryPaneWindowLine);
+    AknLayoutUtils::LayoutControl(iInputPane, rect, entryPaneWindowLine );
     }
 
 void CAknFepUICtrlContainerChinese::LayoutContainedControls()
     {
     LayoutInputPane();
     // layout candidate pane
-    TAknWindowLineLayout candidatePaneWindowLine = 
-                CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( ECandidatePaneWindowLine ));
-    TInt index = ConvertLayoutToIndex();
+    TAknWindowLineLayout candidatePaneWindowLine ;    
+    TInt index = ConvertLayoutToIndex();    
+    switch ( index )
+        {
+        case 2:
+        	candidatePaneWindowLine = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EEPCandidateLayout ));
+            break;
+        case 1:
+        	candidatePaneWindowLine = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( ECandidateLayout ));
+            break;
+        default:
+        	candidatePaneWindowLine = CAknFepChineseUIDataConv::AnyToWindowLine( iLafDataMgr->RequestData( EECandidateLayout ));
+            break;
+        }
+    // Layout candidate pane.
+    AknLayoutUtils::LayoutControl( iCandidatePane, Rect(), candidatePaneWindowLine );
+    
     if (index == 2)
         {
         if ( isPCLPosed )
             {
-            iEditPane->Enable( ETrue );      
-            AknLayoutUtils::LayoutControl( iCandidatePane, Rect(), candidatePaneWindowLine );
+            iEditPane->Enable( ETrue ); 
             LayoutPinyinPopupWindow();
             LayoutPinyinEEPWindow();
             }
         }
     else if ( index == 0 || index == 1 ) 
         {
-        TRect rect = Rect();
         iEditPane->Enable(EFalse);
-        AknLayoutUtils::LayoutControl(iCandidatePane, rect, candidatePaneWindowLine);
         LayoutPinyinPopupWindow();
         }
     else
         {
         iEditPane->Enable(ETrue);
         iPinyinPopupWindow->Enable(EFalse);
-        AknLayoutUtils::LayoutControl(iCandidatePane, Rect(), candidatePaneWindowLine);
         LayoutPinyinEEPWindow();
         }
     }
@@ -601,15 +611,16 @@ void CAknFepUICtrlContainerChinese::LayoutContainer()
             rect = CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectEEP ));
             break;
         case 1:
-            rect = CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectCandatate ));
-            break;
-        default:
             rect = CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectEntry ));
             break;
+        default:
+            rect = CAknFepChineseUIDataConv::AnyToRect( iLafDataMgr->RequestData( EPopupRectCandatate ));
+            break;
         }
-    TInt rectHeight = rect.iBr.iY - rect.iTl.iY;
-    rect.iTl.iY = iContainerPosition.iY;
-    rect.iBr.iY = iContainerPosition.iY + rectHeight;
+
+    // Set container rect.
+    rect.iBr.iY = iContainerPosition.iY + rect.Height();
+    rect.iTl.iY = iContainerPosition.iY;    
     SetRect(rect); 
     }
 
@@ -690,3 +701,58 @@ void CAknFepUICtrlContainerChinese::SetFepMan( MAknFepManagerUIInterface* aFepMa
     {
     iFepMan = aFepMan;
     }
+
+void CAknFepUICtrlContainerChinese::HandlePointerEventL(const TPointerEvent& aPointerEvent)
+	{	
+	CCoeControl::HandlePointerEventL(aPointerEvent);
+	TRect rect = Rect();
+	// If click out of the container, close container.
+	if (( aPointerEvent.iType == TPointerEvent::EButton1Down )  
+	 && ( !rect.Contains( aPointerEvent.iPosition )))
+		{
+		CloseUI();
+		// simulation pointer event to application.
+		Window().SetOrdinalPosition(-1);
+		User::After(50000);
+		TRawEvent eventDown;   
+		eventDown.Set( TRawEvent::EButton1Down, 
+				       aPointerEvent.iParentPosition.iX, 
+				       aPointerEvent.iParentPosition.iY );
+		CCoeEnv::Static()->WsSession().SimulateRawEvent( eventDown );
+		User::After(1000);
+		TRawEvent eventUp; 
+		eventUp.Set( TRawEvent::EButton1Up, 
+				     aPointerEvent.iParentPosition.iX, 
+				     aPointerEvent.iParentPosition.iY );
+		CCoeEnv::Static()->WsSession().SimulateRawEvent( eventUp );		
+		}	
+	return;
+	}
+
+void CAknFepUICtrlContainerChinese::CloseUI()
+	{
+	// Hide container
+	if( iFepUiState )
+		{
+		iFepUiState->CloseUI();
+		}
+	}
+
+void CAknFepUICtrlContainerChinese::SetFepUiStateCtrl( MAknFepUiStateCtrl* aFepUiState )
+    {
+    iFepUiState = aFepUiState;
+    }
+
+void CAknFepUICtrlContainerChinese::SubmitSelectedTextL(const TDesC& aText)
+    {
+	// Commit text
+    if ( iFepUiState )
+        {
+		iFepUiState->SubmitTextL( aText );
+        }
+    }
+
+void CAknFepUICtrlContainerChinese::CloseContainer()
+	{
+	CloseUI();
+	}

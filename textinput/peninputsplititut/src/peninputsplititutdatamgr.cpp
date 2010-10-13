@@ -165,20 +165,9 @@ void CSplitItutDataMgr::ReadLafInfo()
     splitpanerect.LayoutRect(spliwndtrect.Rect(), splitpane);   
     
     iLayoutRect = spliwndtrect.Rect();
-
-    // split indi layout
-    TAknWindowLineLayout indiPane = AknLayoutScalable_Avkon::icf_edit_indi_pane(2).LayoutLine();
-    TAknWindowLineLayout indiIconPane = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(2).LayoutLine();    
-
-    TAknLayoutRect indiRect, indiIconRect;
-    indiRect.LayoutRect(spliwndtrect.Rect(), indiPane);
-    indiIconRect.LayoutRect(spliwndtrect.Rect(), indiIconPane);
-    
-    iLayoutRect.iTl.iY -= indiRect.Rect().Height();//include non ifc indi bubble
-    
     // spell layout rect
     iLayoutRectSpell = rect;
-    iLayoutOffset = spliwndtrect.Rect().iTl - TPoint(0,indiRect.Rect().Height());//include split indi bubble
+    iLayoutOffset = spliwndtrect.Rect().iTl;
     iBackgroundRect = iLayoutRect;
     iBackgroundRect.Move(-iLayoutOffset);
     
@@ -224,19 +213,13 @@ void CSplitItutDataMgr::ReadLafInfo()
                 }
             
             // read star icon rect
-            if( i == 3 &&  j == 0 )
+            if( i == 3 &&  j == 2 )
                 {
                 TAknWindowLineLayout starIcon =  AknLayoutScalable_Avkon::
                                 cell_ituss_key_pane_g2( 0 ).LayoutLine();
                 TAknLayoutRect starIconRect;
                 starIconRect.LayoutRect( keyrect, starIcon );                
-                iStarIconRect = starIconRect.Rect();  
-                
-                // Get the star icon rect under number mode
-				starIcon = AknLayoutScalable_Avkon::
-						cell_ituss_key_pane_g2(4).LayoutLine();
-				starIconRect.LayoutRect( keyrect, starIcon );
-				iStarIconRectInNumMode = starIconRect.Rect();
+                iStarIconRect = starIconRect.Rect();          
                 }            
             
             }
@@ -279,9 +262,7 @@ void CSplitItutDataMgr::ReadLafInfo()
     iCloseInnerRect = funcinnerrect.Rect();
     iCloseInnerRect.Move(0, iKeypadRect.iBr.iY );
     iCloseInnerRect.Move(-iLayoutOffset);
-      
-    iCloseInnerRect.Move(-TPoint(0,indiRect.Rect().Height())); //include split indi bubble            
-        
+    
     // arrow left button
     iArrowLeftRect = iCloseRect;     
     iArrowLeftRect.Move(btnWidth, 0);
@@ -413,24 +394,16 @@ void CSplitItutDataMgr::ReadLafInfo()
 	
 	icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
 	icfIndiPaneRectWithoutText.LayoutRect( focuspaneRect.Rect(), icfIndiPaneWithoutText );
-	iSpellIndiPaneRectWithoutTextForPrtWest = icfIndiPaneRectWithoutText.Rect();
+	iIndiPaneRectWithoutTextForPrtWest = icfIndiPaneRectWithoutText.Rect();
 	
 	TAknWindowLineLayout spellIndiIcon;
 	TAknLayoutRect spellIndiIconRect;
 	spellIndiIcon = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(0).LayoutLine();
 	spellIndiIconRect.LayoutRect( icfIndiPaneRectWithoutText.Rect(), spellIndiIcon );
-	iSpellIconRectWithoutTextForPrtWest = spellIndiIconRect.Rect();
+	iIndiIconRectWithoutTextForPrtWest = spellIndiIconRect.Rect();
 	
 	indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
-    iSpellTextForPrtWest = indiTextLayout;
-	
-    // split indicator
-    iSplitIndiPaneRect = indiRect.Rect();
-    iSplitIndiIconRect = indiIconRect.Rect();
-    iSplitIndiIconRect.Move(0, -iSplitIndiPaneRect.iTl.iY + iKeypadRect.iTl.iY - iSplitIndiPaneRect.Height());
-    iSplitIndiPaneRect.Move(0, -iSplitIndiPaneRect.iTl.iY + iKeypadRect.iTl.iY - iSplitIndiPaneRect.Height());
-    indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(1).LayoutLine();
-    iSplitIndiText = indiTextLayout;  
+	iIndiTextForPrtWest = indiTextLayout;  
     
 	// ICF text line info
     TAknTextLineLayout icftextT1, icftextT2, icftextT3;    
@@ -637,21 +610,6 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
         		{
 				return &iVkNumText;
         		}
-        case EStarIconRect:
-        	{
-        	if ( iInputMode == ENumber || iInputMode == ENativeNumber )
-				{
-				return &iStarIconRectInNumMode;
-				}
-        	else
-        		{
-				return &iStarIconRect;
-        		}
-        	}
-        case EShiftIconRect:
-        	{
-        	return &iShiftIconRect;
-        	}
         case EKeypadRightTextLine1:
 			if ( iInputMode == ENumber || iInputMode == ENativeNumber )
 				{
@@ -804,18 +762,12 @@ TAny* CSplitItutDataMgr::RequestData(TInt aDataType)
         	return &iSpellBackSpcace;
         case ESpellBackSpcaeInner:
         	return &iSpellBackSpcaceInner;
-        case ESpellIndiPaneWithoutTextRect:
-            return &iSpellIndiPaneRectWithoutTextForPrtWest;
-        case ESpellIndiIconWithoutTextRect:
-            return &iSpellIconRectWithoutTextForPrtWest;
-        case ESpellIndiTextLine:
-            return &iSpellTextForPrtWest;
-        case ESplitIndiPaneRect:
-            return &iSplitIndiPaneRect;
-        case ESplitIndiIconRect:
-            return &iSplitIndiIconRect;            
-        case ESplitIndiTextLine:
-            return &iSplitIndiText;            
+        case EIndiPaneWithoutTextRect:
+            return &iIndiPaneRectWithoutTextForPrtWest;
+        case EIndiIconWithoutTextRect:
+            return &iIndiIconRectWithoutTextForPrtWest;
+        case EIndiTextLine:
+            return &iIndiTextForPrtWest;
         default:
             break;
         }
@@ -1268,16 +1220,5 @@ TBool CSplitItutDataMgr::IsExistPlusChar()
     	}
     return EFalse;
     }
-
-// ---------------------------------------------------------------------------
-// Get the size of the screen
-// ---------------------------------------------------------------------------
-//
-TRect CSplitItutDataMgr::screenSize()
-	{
-	TRect rect;
-	AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EScreen, rect );
-	return rect;
-	}
 
 // End Of File

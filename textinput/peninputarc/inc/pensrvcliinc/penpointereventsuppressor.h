@@ -85,9 +85,8 @@ public:
 	* @param aPointerEvent the pointer event which may need to be suppressed.
 	* @return ETrue if the pointer event should be suppressed, or EFalse if it should be handled.
 	*/
-
-    TBool SuppressPointerEvent( TPointerEvent& aPointerEvent );
-
+	TBool SuppressPointerEvent( TPointerEvent& aPointerEvent );
+	
 	/**
 	* Set the maximum time period that drag events should be
 	* ignored during a pointer interaction.
@@ -111,23 +110,23 @@ public:
 	*/
 	void SetMinInterDragInterval(TTimeIntervalMicroSeconds aInterval);
 
-    /**
-     * Set the maximum pointer movement for up events.
-     * All up events within maximum movement and timeout are moved to the down position.
-     * 
-     * @since Symbian^3
-     * @param aMaxDownUpMove maximum movement(in pixel) of up event
-     */
-    void SetMaxDownUpMove( TSize aMaxDownUpMove );
-
-    /**
-     * Set the maximum time between up and down events.
-     * All up events within maximum movement and timeout are moved to the down position.
-     * 
-     * @since Symbian^3
-     * @param aDuration time between down and up events. 
-     */
-    void SetMaxDownUpDuration( TTimeIntervalMicroSeconds aDuration );
+	/**
+	 * Set the maximum pointer movement for up events.
+	 * All up events within maximum movement and timeout are moved to the down position.
+	 * 
+	 * @since Symbian^3
+	 * @param aMaxDownUpMove maximum movement(in pixel) of up event
+	 */
+	void SetMaxDownUpMove( TSize aMaxDownUpMove );
+	
+	/**
+	 * Set the maximum time between up and down events.
+	 * All up events within maximum movement and timeout are moved to the down position.
+	 * 
+	 * @since Symbian^3
+	 * @param aDuration time between down and up events. 
+	 */
+	void SetMaxDownUpDuration( TTimeIntervalMicroSeconds aDuration );
 
 private:
 	CPenPointerEventSuppressor();
@@ -141,18 +140,18 @@ private:
 	TBool iTap;
 	TTime iLastEventTime;
 	
+	/**
+	 * The maximum pointer movement for up events.
+	 * All up events within maximum movement and timeout are moved to the down position.
+	 */
+	TSize iMaxDownUpMove;
+	
+	/**
+	 * The maximum time between up and down events.
+	 * All up events within maximum movement and timeout are moved to the down position.
+	 */
+	TTimeIntervalMicroSeconds iMaxDownUpDuration;
 
-    /**
-     * The maximum pointer movement for up events.
-     * All up events within maximum movement and timeout are moved to the down position.
-     */
-    TSize iMaxDownUpMove;
-
-    /**
-     * The maximum time between up and down events.
-     * All up events within maximum movement and timeout are moved to the down position.
-     */
-    TTimeIntervalMicroSeconds iMaxDownUpDuration;
-    };
+	};
 
 #endif

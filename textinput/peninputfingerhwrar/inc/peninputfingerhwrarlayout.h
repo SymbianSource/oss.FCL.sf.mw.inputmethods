@@ -30,6 +30,8 @@ class CPeninputFingerHwrArStateManagerBase;
 class CPeninputFingerHwrArDataStore;
 class CRepository;
 class CPeninputFingerHwrArWnd;
+class CPeninputFingerHwrArCallBack;
+
 // class DECLARATIONS
 
 /**
@@ -509,11 +511,18 @@ private:
      */
     CRepository* iRepositorySetting;
     
+    /**
+     * repository object.
+     */
+//    CRepository* iCommonEngineRepository;    
+    
 	/**
 	 * Check if the stroke of drawing the character on the 
 	 * HWR box is started
 	 */
 	TBool iIsStrokeOfDrawingCharacerStarted;
+	
+	CPeninputFingerHwrArCallBack* iCallBack;
 	
 	/**
 	 * Check if the editor is MFNE

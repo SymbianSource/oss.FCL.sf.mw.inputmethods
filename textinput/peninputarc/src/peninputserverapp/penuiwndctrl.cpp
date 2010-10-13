@@ -72,10 +72,10 @@ CPenUiWndCtrl::~CPenUiWndCtrl()
         iAutoRefreshTimer->Cancel();
         }
     delete iAutoRefreshTimer; 
-    
-
-	Clean();
-
+	iPopRegion.Close();
+	iBubblesArea.Close();
+    iBubblesMaskArea.Close();
+	iBubblesPos.Close();
     
 	delete iCursorWnd;   
 }
@@ -126,7 +126,7 @@ void CPenUiWndCtrl::Draw(const TRect& aRect) const
         gc.BitBlt(pos, iBitmap, rect);
 #ifdef FIX_FOR_NGA
         //draw bubble
-        for ( TInt i = 0; i < iBubblesCtrl.Count(); ++i )
+        for (TInt i = 0; i < iBubblesArea.Count(); ++i)
             {
             gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
             }
@@ -138,7 +138,7 @@ void CPenUiWndCtrl::Draw(const TRect& aRect) const
 #ifdef FIX_FOR_NGA
     gc.BitBlt(TPoint(0, 0), iBitmap, Rect());
     //draw bubble
-    for ( TInt i = 0; i < iBubblesCtrl.Count(); ++i )
+    for (TInt i = 0; i < iBubblesArea.Count(); ++i)
         {
         gc.BitBlt(iBubblesPos[i].iTl, iBubblesArea[i]);
         }
@@ -168,9 +168,8 @@ void CPenUiWndCtrl::RefreshUI()
 void CPenUiWndCtrl::Clean()
     {
     iCursorBmp = NULL;
-    iBubblesArea.Close();
-    iBubblesCtrl.Close();
-    iBubblesPos.Close();
+    iBubblesArea.Reset();
+    iBubblesPos.Reset();
 	iBubblesMaskArea.Close();
 	iPopRegion.Close();
     iChangedBmp= NULL;
@@ -276,29 +275,16 @@ void CPenUiWndCtrl::UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,cons
         }
     iCursorWnd->SetCursorVisible(aOnFlag);
     }
-
-// ---------------------------------------------------------------------------
-// CPenUiWndCtrl::UpdateBubble
-// ---------------------------------------------------------------------------
-//
-void CPenUiWndCtrl::UpdateBubble( const TUint32 aCtrl, 
-		                          const CFbsBitmap* aBmp,
-		                          const CFbsBitmap* aMask,
-                                  const TRect& aPos,
-                                  TBool aFlag )
+	
+void CPenUiWndCtrl::UpdateBubble(const CFbsBitmap* aBmp,const CFbsBitmap* aMask,
+                                                const TRect& aPos,TBool aFlag)
     {
-
-	// Check whether the Ctrl address is exist
-	TInt idx = iBubblesCtrl.Find( aCtrl );
-
+    TInt idx = iBubblesArea.Find(aBmp);
     
     if(aFlag)
         {
         if(KErrNotFound == idx)
             {
-
-            iBubblesCtrl.Append( aCtrl );
-
             iBubblesArea.Append(aBmp);
             iBubblesMaskArea.Append(aMask);
             iBubblesPos.Append(aPos);
@@ -314,9 +300,6 @@ void CPenUiWndCtrl::UpdateBubble( const TUint32 aCtrl,
         //remove
         if(idx != KErrNotFound)
             {
-
-            iBubblesCtrl.Remove( idx );
-
             iBubblesArea.Remove(idx);
             iBubblesMaskArea.Remove(idx);
             iBubblesPos.Remove(idx);            
@@ -330,20 +313,13 @@ void CPenUiWndCtrl::UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos)
     iIcfPos = aPos;
     Invalidate(Rect(), ETrue);   
     }
-
-
-// ---------------------------------------------------------------------------
-// CPenUiWndCtrl::UpdateChangedArea
-// ---------------------------------------------------------------------------
-//
-void CPenUiWndCtrl::UpdateChangedArea( const TUint32 aCtrl, 
-		const CFbsBitmap* aBmp,const TRect& aPos,TBool aFlag)
+void CPenUiWndCtrl::UpdateChangedArea(const CFbsBitmap* aBmp,const TRect& aPos,TBool aFlag)
     {
-    UpdateBubble( aCtrl, aBmp, 0, aPos, aFlag );
-    return;    
+    UpdateBubble(aBmp,0,aPos,aFlag);
+    return;
+
+    
     }
-
-
 void CPenUiWndCtrl::SetPopupArea(const TRect& aRect, TBool aFlag)
     {
     if(aFlag) //add pop area
@@ -397,12 +373,6 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
     iCursorWnd->SetCursorVisible(EFalse);
     if (iResourceChange)
         {
-        TInt curPriority = iWndGroup.OrdinalPriority();
-        if ( curPriority == -1 )
-            {
-            // Make sure pen ui must be seen.
-            LiftUpPriority();
-            }
         ActivateL();
         iIncallBubble->SetIncallBubbleFlagsL( EAknStatusBubbleInputShow );
         MakeVisible( ETrue );
@@ -425,9 +395,8 @@ void CPenUiWndCtrl::ShowPenUiL(TBool /*aDimmed*/)
 	
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS      
 	
-    if ( iEnableGfxTransEffect && GfxTransEffect::IsRegistered( this ) && !IsVisible())
+    if ( GfxTransEffect::IsRegistered( this ) && !IsVisible())
         {
-        iEnableGfxTransEffect = EFalse;
         this->MakeVisible(EFalse);
         GfxTransEffect::NotifyExternalState( ENotifyGlobalAbort ); 
 
@@ -470,9 +439,9 @@ void CPenUiWndCtrl::ClosePenUi(TBool aResChanging)
         return;
         }
 #ifdef RD_UI_TRANSITION_EFFECTS_POPUPS           
-    if ( iEnableGfxTransEffect && GfxTransEffect::IsRegistered( this ) )
+    if ( GfxTransEffect::IsRegistered( this ))
         {
-        iEnableGfxTransEffect = EFalse;
+
         GfxTransEffect::NotifyExternalState( ENotifyGlobalAbort ); 
 
         //If still visible, do a transition to invisible state.
@@ -754,27 +723,25 @@ void CPenUiWndCtrl::HandleNGASpecificSignal(TInt aEventType, const TDesC& aEvent
             {
             struct SData
                 {
-            	TUint32 ctrl;
                 TBool flag;
                 TRect pos;
                 CFbsBitmap* bmp;
                 CFbsBitmap* mask;
                 } data;
             data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateBubble( data.ctrl, data.bmp, data.mask, data.pos, data.flag );
+            UpdateBubble(data.bmp,data.mask,data.pos,data.flag);
             }
             break;
         case ESignalUpdateChangedArea:
             {
             struct SData
                 {
-            	TUint32 ctrl;
                 TBool flag;
                 CFbsBitmap* bmp;
                 TRect pos;
                 } data;
             data = * (reinterpret_cast<SData*>( const_cast<TUint16*>( aEventData.Ptr() )));
-            UpdateChangedArea( data.ctrl, data.bmp, data.pos, data.flag );
+            UpdateChangedArea(data.bmp,data.pos,data.flag);
             }
             break;
         case ESignalRegisterBkControl:

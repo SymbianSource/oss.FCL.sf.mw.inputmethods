@@ -60,6 +60,7 @@
 #include <AknFepGlobalEnums.h>
 #include <AknFepInternalCRKeys.h>
 #include <AknFepInternalPSKeys.h>
+#include <aknFepVietnameseInputTables.h>
 
 // User includes
 #include "AknFepManagerInterface.h" // MAknFepManagerInterface
@@ -221,7 +222,6 @@ CAknFepPluginManager::~CAknFepPluginManager()
     
     if( iPenInputSvrConnected )
         {
-        iPenInputServer.RemovePenUiActivationHandler( this );
         iPenInputServer.Close();
         iPenInputSvrConnected = EFalse;
         }
@@ -317,10 +317,7 @@ void CAknFepPluginManager::ActivatePenInputL()
     if( !iPenInputSvrConnected || !iPenInputServer.IsVisible() || iPenInputServer.IsDimmed() )
         {
         if( iFepMan.FepAwareTextEditor() )
-            {
-            // Enable transition effect when close pen ui 
-            // by pressing close button.
-            iPenInputServer.EnableGfxTransEffect( ETrue );
+            {            
   			iPreferredUiMode = ETrue;	
             TryChangePluginInputModeByModeL((TPluginInputMode)(iSharedData.PluginInputMode()),
                                             EPenInputOpenManually,
@@ -532,7 +529,7 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 break;  
             case ESignalChangeAmPm:
                 {
-                iFepMan.ChangeMfneAmPmL();
+                iFepMan.ChangeMfneAmPm();
                 }
                 break;
             case ESignalSetAppEditorCursor:
@@ -578,8 +575,6 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 }
                 break;
             case ESignalLayoutClosed:
-            	// Enable transition effect when close pen ui by pressing close button.
-            	iPenInputServer.EnableGfxTransEffect( ETrue );
                 if(iPluginInputMode == EPluginInputModeItut)
                 	{
 					iFepMan.PtiEngine()->CancelTimerActivity();
@@ -679,17 +674,21 @@ TBool CAknFepPluginManager::HandleServerEventL(TInt aEventId)
                 TInt activeIdx = 0;
                 CDesCArray* candidates = new (ELeave) CDesCArrayFlat
                                                  ( KDefaultCandidateArraySize );
-        		CleanupStack::PushL( candidates );
-        		iFepMan.GetCandidatesL(*candidates, activeIdx);
+                CleanupStack::PushL( candidates );
+                iFepMan.GetCandidatesL(*candidates, activeIdx);
 
-        		TFepITICandidateList candidateListData;
-        		candidateListData.iItemArray = candidates;
-        		candidateListData.iActiveIndex 
-        		            = ( candidates->Count() >= 2 ) ? 1 : activeIdx;  
-        		candidateListData.iLangCode = iFepMan.CurrentInputLangCode();
-        		
-        		ShowCandidateListL( candidateListData );        		
-        		CleanupStack::PopAndDestroy( candidates );                
+                TFepITICandidateList candidateListData;
+                candidateListData.iItemArray = candidates;
+                candidateListData.iActiveIndex 
+                            = ( candidates->Count() >= 2 ) ? 1 : activeIdx;  
+                candidateListData.iLangCode = iFepMan.CurrentInputLangCode();
+                if ( iLangMan.IsSplitView() )
+                    {
+                    candidateListData.iRect = iFepMan.InitRectForSplitCandL();
+                    }
+                
+                ShowCandidateListL( candidateListData );                
+                CleanupStack::PopAndDestroy( candidates );                
                 }
                 break;
                 
@@ -924,7 +923,7 @@ CAknEdwinState* CAknFepPluginManager::EdwinState()
 	
 	return edwinState;
 	}
-
+	
 // -----------------------------------------------------------------------------
 // CAknFepPluginManager::HandleEventsFromFepL
 // Handle events from FEP
@@ -1007,12 +1006,6 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
             {
             iForegroundChange = ETrue;   
             iLaunchHelp = EFalse;    
-
-            // Remove pen ui activation observer
-            if (iPenInputSvrConnected && !aEventData )
-                {
-                iPenInputServer.RemovePenUiActivationHandler( this );
-                }            
             
             if (!aEventData && IsInGlobleNoteEditor())
                 {
@@ -1339,21 +1332,6 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
             }
         }
 
-    if(aSuggestMode == EPluginInputModeFingerHwr 
-            && iSharedData.InputTextLanguage() == ELangArabic)
-        {
-        if(IsEditorSupportSplitIme())
-            {
-            if(landscape)
-                {
-                aSuggestMode = EPluginInputModeFSQ;
-                }
-            else
-                {
-                aSuggestMode = iSharedData.PluginPortraitInputMode();                
-                }
-            }
-        }
 
     if ( aSuggestMode == EPluginInputModeFSQ)
         {
@@ -1409,15 +1387,6 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
                 }
             }
         }
-    else if( aSuggestMode == EPluginInputModePortraitFSQ  )
-    	{
-		// If current input languge is Chinese or Korean, use EPluginInputModeItut instead.
-		if ( iPortraitFSQEnabled && 
-				( iFepMan.IsChineseInputLanguage() || iFepMan.IsKoreanInputLanguage() ))
-			{
-			  aSuggestMode = EPluginInputModeItut;
-			}
-    	}
     else if ( iOrientationChanged )
         {
         iFepMan.SetNotifyPlugin( EFalse );
@@ -1425,9 +1394,6 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
         iFepMan.SetNotifyPlugin( ETrue );
         iOrientationChanged = EFalse;
         }
-    
-    // Add pen ui activation observer
-    iPenInputServer.AddPenUiActivationHandler( this, EPluginInputModeAll );    
     
     TBool isSplit = IsEditorSupportSplitIme();
     TInt inputLang = iFepMan.InputLanguageCapabilities().iInputLanguageCode;
@@ -1515,6 +1481,15 @@ TBool CAknFepPluginManager::TryChangePluginInputModeByModeL
 		
         // Notify application touch window state
         NotifyAppUiImeTouchWndStateL( ETrue );
+        if (iPluginInputMode == EPluginInputModeItut)
+            {
+            RProperty::Set( KPSUidAknFep, KAknFepVirtualKeyboardType, EPtiKeyboard12Key );
+            if(iFepMan.PtiEngine())
+                {
+                iFepMan.PtiEngine()->SetKeyboardType(EPtiKeyboard12Key);
+                }
+            iFepMan.SetQwertyMode( EFalse );    
+            }
 
         rtn = ETrue;
         }
@@ -1612,8 +1587,6 @@ void CAknFepPluginManager::ClosePluginInputModeL( TBool aRestore )
 //
 void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
     {
-    iInitiateCloseInputUi = ETrue;
-    
     // For addition of ITI features on FSQ, 
     // need to restore some values stored before opening FSQ    
     
@@ -1638,7 +1611,6 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
                 }
             else
                 {
-                NotifyAppUiImeTouchWndStateL( EFalse ); //this change is under testing 
                 iCurrentPluginInputFepUI->CloseUI();
                 }
             if( aResetState )
@@ -1681,15 +1653,13 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
         } 
         
     // Notify editor the touch window has been closed
-    //NotifyAppUiImeTouchWndStateL( EFalse );//this change is under testing
+    NotifyAppUiImeTouchWndStateL( EFalse );
     
     iCharStartPostion = KInvalidValue;
     
     // Set the KAknFepTouchInputActive PS to 0, 
     // it means that touch input is inactive now.
     RProperty::Set( KPSUidAknFep, KAknFepTouchInputActive, 0 );
-    
-    iInitiateCloseInputUi = EFalse;    
     }
 
 // ---------------------------------------------------------------------------
@@ -1898,24 +1868,17 @@ void CAknFepPluginManager::ProcessMenuCommandL(TInt aCommandId)
                     }
                     break;
                 case EPeninputCmdFSQ:
-                	{
-                	if ( iPortraitFSQEnabled )
-                		{
-                        TPixelsTwipsAndRotation size; 
-                        CCoeEnv::Static()->ScreenDevice()->GetDefaultScreenSizeAndRotation(size);
-                        TBool landscape = size.iPixelSize.iWidth > size.iPixelSize.iHeight;
-                        ProcessChangingInputModeCmdL( landscape ? EPluginInputModeFSQ : EPluginInputModePortraitFSQ );
-                		}
-                	else
-                		{
-                	    ProcessChangingInputModeCmdL(EPluginInputModeFSQ);
-                		}
-                	}
-                	break;
                 // "Edit portrait" menu - switch to portrait FSQ
                 case EPeninputCmdPortraitEditor:
                     {
-                    ProcessChangingInputModeCmdL(EPluginInputModePortraitFSQ);          
+                    if ( iPortraitFSQEnabled )
+                        {
+                        ProcessChangingInputModeCmdL(EPluginInputModePortraitFSQ);          
+                        }
+                    else 
+                        {
+                        ProcessChangingInputModeCmdL(EPluginInputModeFSQ);
+                        }
                     }
                     break;
                 // "Edit landscape" menu - switch to landscape FSQ
@@ -2282,9 +2245,6 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
     	TInt disabledInputMode = iPenInputServer.DisabledLayout();
     	TInt curInputMode = iLangMan.CurrentImePlugin()->CurrentMode();
     	TBool isChinese = iFepMan.IsChineseInputLanguage();
-    	TBool isKorean = iFepMan.IsKoreanInputLanguage();
-    	// similar with chinese layout, there is a switching button,so when writing language is korean
-    	// no need to insert 'Qwerty' or 'Alphabet keypad' item into option menu 
     	
     /* US2/US4/US5
     1. Orientation sensor off
@@ -2325,34 +2285,21 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
         {
         // "QWERTY keyboard" - EPeninputCmdFSQ menu is shown in these conditions
         // if portrait FSQ feature flag is enabled
-        if ( !isKorean && !isChinese )
-        	{
-            // 1) Non-Chinese language and non-Korean language   
-            if ( isPortrait )
-            	{
-                // 2) On portrait screen, current input mode is not portrait FSQ 
-                //    and also the mode is not disabled
-                if ( curInputMode != EPluginInputModePortraitFSQ 
-                	 && !( disabledInputMode & EPluginInputModePortraitFSQ ) )
-                	{
-                    aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
-                	}                	
-            	}
-            else
-            	{
-                // 3) On landscape screen, current input mode is not FSQ 
-                // and also the mode is not disabled
-                if ( curInputMode != EPluginInputModeFSQ 
-                   	 && !( disabledInputMode & EPluginInputModeFSQ ) )
-                	{
-                    aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
-                	}
-            	}        
-        	}
+        // 1) Non-Chinese language
+        // 2) Current input mode is not portrait FSQ and also the mode is not disabled
+        // 3) Current orientation is portrait
+        if ( !isChinese
+            && ( curInputMode != EPluginInputModePortraitFSQ ) 
+            && !( disabledInputMode & EPluginInputModePortraitFSQ ) 
+            && isPortrait )
+        {
+        aMenuPane->SetItemDimmed( EPeninputCmdFSQ, EFalse );
+        }
+        
         }
     else
         {
-        if ( !isKorean && !isChinese && ( curInputMode != EPluginInputModeFSQ ) 
+        if ( !isChinese && ( curInputMode != EPluginInputModeFSQ ) 
             && !( disabledInputMode & EPluginInputModeFSQ ) 
             && FeatureManager::FeatureSupported( KFeatureIdVirtualFullscrQwertyInput ) )
             {
@@ -2364,7 +2311,7 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
     // 1) Non-Chinese language
     // 2) Current input mode is not ITU-T and also the mode is not disabled
     // 3) ITU-T feature flag is enabled
-    if ( !isKorean && !isChinese 
+    if ( !isChinese 
         && ( curInputMode != EPluginInputModeItut ) 
         && !( disabledInputMode & EPluginInputModeItut ) 
         && FeatureManager::FeatureSupported( KFeatureIdVirtualItutInput ) )
@@ -2377,7 +2324,7 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
     // 3) Current input mode is not portrait FSQ and also the mode is not disabled
     // 4) Current orientation is landscape
     if ( iPortraitFSQEnabled
-        && !isKorean && !isChinese 
+        && !isChinese 
         && ( curInputMode != EPluginInputModePortraitFSQ ) 
         && !( disabledInputMode & EPluginInputModePortraitFSQ ) 
         && !isPortrait )
@@ -2394,7 +2341,7 @@ void CAknFepPluginManager::InitMenuPaneL( CAknEdwinState* aEditorState,
     // 5) Current orientation is portrait
     if ( iPortraitFSQEnabled
         && FeatureManager::FeatureSupported( KFeatureIdVirtualFullscrQwertyInput ) 
-        && !isKorean && !isChinese 
+        && !isChinese 
         && ( curInputMode != EPluginInputModeFSQ ) 
         && !( disabledInputMode & EPluginInputModeFSQ ) 
         && isPortrait )
@@ -2464,31 +2411,15 @@ void CAknFepPluginManager::InitMenuItemForArabicFingerHwrL(CAknFepUiInterfaceMen
 	//Show number mode menu item.
 	if(iFepMan.InputMode() == ENumber || iFepMan.InputMode() == ENativeNumber)
 	    {
-        CAknEdwinState* editorState = iFepMan.EditorState();
-        TUint permittedInputModes;
-        if( editorState )
+        if(iSharedData.DefaultArabicNumberMode())
             {
-            permittedInputModes= editorState->PermittedInputModes();
+            aMenuPane->SetItemDimmed(EAknCmdEditModeNumber, EFalse);
             }
         else
             {
-            permittedInputModes = EAknEditorNumericInputMode;
-            }   
-        TBool IsOnlyNumericPermitted = !(permittedInputModes 
-                &(EAknEditorTextInputMode | EAknEditorSecretAlphaInputMode));
-        if(IsOnlyNumericPermitted)
-            {
-            if(iSharedData.DefaultArabicNumberMode())
-                {
-                aMenuPane->SetItemDimmed(EAknCmdEditModeNumber, EFalse);
-                }
-            else
-                {
-                aMenuPane->SetItemDimmed(EAknCmdEditModeArabicIndicNumber, EFalse);
-                }
+            aMenuPane->SetItemDimmed(EAknCmdEditModeArabicIndicNumber, EFalse);
             }
 	    }
-
 	// add the writing speed menu
 	index = 0;
 	if(aMenuPane->MenuItemExists(EPenInputCmdWritingSpeed, index))
@@ -2543,11 +2474,8 @@ void CAknFepPluginManager::OnFocusChangedL( TBool aGainForeground )
         return;
         }
         
-    // if pen ui is being opened on a non-global editor, which popped by capserver or notify server,    
-    // and also other global notes from capserver or notify server pop up at the moment,
-    // pen ui should be dimmed as the definitino of dim feature.
-    // Set bClose = EFalse is used to prevent from closing pen ui later.  
-	if( !iLaunchMenu && IsGlobalNotesApp(focusAppId) && !IsInGlobleNoteEditor() )
+    if( !iLaunchMenu && IsGlobalNotesApp(focusAppId)) 
+
         {
         if ( iPluginInputMode == EPluginInputModeItut ||
              iPluginInputMode == EPluginInputModeFSQ ||
@@ -2770,6 +2698,11 @@ void CAknFepPluginManager::SendIcfDataL(  TPluginSync aSyncType )
             icfData.iCmd = EPeninputICFInitial;
     	    icfData.iText.Set(*iLastEditorContentBuf);
     	    icfData.iCurSel = iCurSelPre;
+    	    // special case for vietnamese, we need en/disable tone marker
+    	    // when the text in editor changes, 
+    	    // by checking whether the character before insertion point is vowel or not
+    	    VietSyncToneMarkerL(*iLastEditorContentBuf, icfData.iCurSel);
+    	    
     	    if ( iFepMan.IsFlagSet(CAknFepManager::EFlagNoMatches) )
                 {
                 icfData.iFlag = EFepICFDataInlineNoMatch;
@@ -2893,16 +2826,16 @@ void CAknFepPluginManager::SendIcfDataL(  TPluginSync aSyncType )
     HBufC* currentEditorContentBuf = HBufC::NewLC( editContentLen );
     TPtr16 currentEditorContent = currentEditorContentBuf->Des();
 	edit->GetEditorContentForFep( currentEditorContent, 0, editContentLen ); 
-	
+    // special case for vietnamese, we need en/disable tone marker
+    // when the text in editor changes, 
+    // by checking whether the character before insertion point is vowel or not
+	VietSyncToneMarkerL(currentEditorContent, icfData.iCurSel);
+
 	if (SetSyncIcfDataL( icfData, lastEditorContent, currentEditorContent))
     	{
 		iCurrentPluginInputFepUI->HandleCommandL
 			(ECmdPenInputSendEditorTextAndCurPos, reinterpret_cast<TInt>(&icfData));
-		if ( icfData.iMidPos >= 0 )
-			{
-		    // icfData.iMidPos >= 0 means the text which will be sent to ICF is inline text.
-		    iFepMan.TryPopExactWordInICFL();
-			}		
+		iFepMan.TryPopExactWordInICFL();
     	}
 
     if ( secretEditor ) 
@@ -2921,6 +2854,36 @@ void CAknFepPluginManager::SendIcfDataL(  TPluginSync aSyncType )
     iCurSelPre.iAnchorPos = iCurSelCur.iAnchorPos;
     iPreDocumentLengthForFep = editContentLen;
     }
+
+void CAknFepPluginManager::VietSyncToneMarkerL(
+		const TDesC& aEditorContent, const TCursorSelection& aCursorPos)
+	{
+	if(ELangVietnamese != iLangMan.InputLanguage())
+		{
+		return;
+		}
+	
+	TBool bEnable = EFalse;
+	TInt low = aCursorPos.LowerPos();
+	
+	if(low > 0)
+		{
+		ASSERT(aEditorContent.Length() >= low);
+		TBuf<1> buf = aEditorContent.Mid(low - 1, 1);
+		TBuf<1> vowel; 
+		TInt cnt = sizeof(VietVowelList) / sizeof(VietVowelList[0]);
+		
+		for(TInt i = 0; !bEnable && i < cnt; ++i)
+			{
+			const TText* text = &VietVowelList[i];
+			vowel.SetLength(0);
+			vowel.Append(text, 1);
+			bEnable = (buf.Compare(vowel) == 0);
+			}
+		}
+	
+	iCurrentPluginInputFepUI->HandleCommandL(ECmdPeninputVietSyncToneMarker, bEnable);  
+	}
 
 TBool CAknFepPluginManager::SetSyncIcfDataL( TFepInputContextFieldData& aIcfData,
                                             const TDesC& aLastEditorContent,
@@ -4862,15 +4825,19 @@ void CAknFepPluginManager::ShowAllCandidates()
     }
 
 void CAknFepPluginManager::SendMatchListCmd(const RArray<TPtrC>& aList)
-	{
+    {
     TFepITICandidateList list;
     list.iActiveIndex = 0;
     list.iItemArray2 = &aList;
     list.iLangCode = iFepMan.CurrentInputLangCode();
+    if ( iLangMan.IsSplitView() )
+        {
+        TRAP_IGNORE( list.iRect = iFepMan.InitRectForSplitCandL() );
+        }
 
     TRAP_IGNORE(iCurrentPluginInputFepUI->HandleCommandL(ECmdPenInputFingerMatchList, 
                                                          reinterpret_cast<TInt>(&list)));
-	}
+    }
 
 TBool CAknFepPluginManager::GetIndicatorImgID(const TInt IndicatorUID,TInt &aImage, TInt &aMask)
     {
@@ -5140,15 +5107,7 @@ void CAknFepPluginManager::DisplaySpellEditorL(const TInt aEditorFlag,
             {
             editorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_CHINESE;
             }
-        }    
-    else if (FeatureManager::FeatureSupported(KFeatureIdKorean))
-        {
-        // Use the special sct resource file for Korean variant.
-        if (!editorSCTResId || editorSCTResId == R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG)
-            {
-            editorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_KOREAN;
-            }
-        }    
+        }
     else if (!editorSCTResId)
         {
         editorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG;
@@ -6027,8 +5986,7 @@ TBool CAknFepPluginManager::IsChineseIndicator( TAknEditingState aOldState )
          } 
       
      TInt flags = editorState->Flags();         
-     return ( flags & EAknEditorFlagAvkonSecretEditor ) == EAknEditorFlagAvkonSecretEditor; 
-      
+     return ( flags & EEikEdwinAvkonDisableCursor ) == EEikEdwinAvkonDisableCursor; 
      } 
 
 // --------------------------------------------------------------------------- 
@@ -6100,8 +6058,7 @@ TBool CAknFepPluginManager::IsSupportITIOnFSQ()
          && iFepMan.InputLanguageCapabilities().iSupportsWesternQwertyPredictive
          && !iSharedData.QwertyInputMode()
          // No need to support in dialer application.
-         && RProcess().SecureId().iId != KPhoneSecureId && 
-         !iFepMan.IsNoT9Editor() )
+         && RProcess().SecureId().iId != KPhoneSecureId )
         {
         return ETrue;
         }        
@@ -6126,6 +6083,7 @@ TInt CAknFepPluginManager::GetScanCodeFromHwKeymapping( TUint aKeyCode )
         // Change to input mode to EPtiEngineQwertyPredictive, after that
         // qwerty keymapping can be got
         iFepMan.PtiEngine()->SetInputMode( EPtiEngineQwertyPredictive );
+        iFepMan.PtiEngine()->SetKeyboardType(EPtiKeyboardQwerty4x12);
         // Find scancode by keycode from qwerty keymapping
         TInt retKey = keymapping->KeyForCharacter( aKeyCode );
         // Restore the old input mode
@@ -6218,7 +6176,7 @@ TPtiTextCase CAknFepPluginManager::CaseForMappedCharacter(TChar aCharacter)
     if ( oldInputMode != EPtiEngineQwertyPredictive ) 
     	{
         // if current input mode isn't EPtiEngineQwertyPredictive, 
-        // current input mode has been set to EPtiEngineQwertyPredictive temporarily before, 
+        // current input mode is set to EPtiEngineQwertyPredictive temporarily before, 
         // now we need to restore it,
         // because state machine is responsible for changing it practically.
         iFepMan.PtiEngine()->SetInputMode( oldInputMode );
@@ -6553,29 +6511,6 @@ void CAknFepPluginManager::ProcessChangingInputModeCmdL(TInt aInputMode)
     iCurMFNECap = 0;
     iCurEditor = NULL;
     }
-
-// -----------------------------------------------------------------------------
-// CAknFepPluginManager::OnPeninputUiDeactivated
-// Called when pen input UI is about to be closed
-// -----------------------------------------------------------------------------
-//
-void CAknFepPluginManager::OnPeninputUiDeactivated()
-    {
-    if( !iInitiateCloseInputUi )
-        {
-        TRAP_IGNORE( ClosePluginInputUiL( ETrue ) );
-        }
-    }
-
-// -----------------------------------------------------------------------------
-// CAknFepPluginManager::OnPeninputUiActivated
-// Called when pen input UI is about to be open
-// -----------------------------------------------------------------------------
-//
-void CAknFepPluginManager::OnPeninputUiActivated()
-    {
-    }
-
 
 CConnectAo::CConnectAo(CAknFepPluginManager* aClient) 
                 : CActive(CActive::EPriorityStandard),

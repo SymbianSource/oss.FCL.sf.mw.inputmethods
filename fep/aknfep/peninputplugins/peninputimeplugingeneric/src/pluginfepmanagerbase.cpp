@@ -295,6 +295,7 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
                                              + sizeof(TInt) // for langcode
                                              + sizeof(TInt)*( itemArray->Count() ) // For the size of each item
                                              + sumSize// For all of char data 
+                                             + 4*sizeof(TInt) // For the Rect
                                              );
                 TPtr8 buf8Ptr = buf8->Des();
                 RDesWriteStream writeStream;
@@ -309,6 +310,12 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
                     writeStream.WriteInt32L( (*itemArray)[i].Size() );
                     writeStream.WriteL( (*itemArray)[i].Ptr(), (*itemArray)[i].Length() );
                     }
+                
+                writeStream.WriteInt32L( candidatelist->iRect.iTl.iX);
+                writeStream.WriteInt32L( candidatelist->iRect.iTl.iY );
+                writeStream.WriteInt32L( candidatelist->iRect.iBr.iX);
+                writeStream.WriteInt32L( candidatelist->iRect.iBr.iY );
+                
                 writeStream.CommitL();                 
                 CleanupStack::PopAndDestroy( &writeStream );
                 SendCommandToServer( aCommandId, buf8Ptr );

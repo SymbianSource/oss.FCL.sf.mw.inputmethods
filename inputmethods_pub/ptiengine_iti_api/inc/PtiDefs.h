@@ -621,13 +621,7 @@ enum TPtiEngineCommand
     EPtiCommandUserActionSetIndexOfActiveCandidate,
     EPtiCommandAddWordToUDBWithoutPunctMark,
     EPtiCommandGetSecondaryCandidate,   
-    EPtiCommandAutoCompletionOnToOff,        //to signify that autocompletion is set from on to off in between typing  
-    EPtiCommandSelectElement,                // Add for sogou learn word
-    EPtiCommandCancelSelectElement,          // Add for sogou learn word
-    EPtiCommandSetPinyinForLearnWord,        // Add for sogou learn word
-    EPtiCommandGetCoreID,                    // Add for get the current core id
-    EPtiCommandSetFuzzy,                     // Add to set fuzzy pinyin
-    EPtiCommandAddPhonebookEntry             // Add to learn phone book entry
+    EPtiCommandAutoCompletionOnToOff        //to signify that autocompletion is set from on to off in between typing  
     };
 
 /**

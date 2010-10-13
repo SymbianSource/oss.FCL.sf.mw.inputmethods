@@ -567,7 +567,7 @@ public:
     /**
      * Get extra response area of virtual key controls.
      * 
-     * @since Symbian^3
+     * since Symbian^3
      * @param aMargins output the margins around the original response area.
      */
     void GetKeyExtResponseArea( TMargins& aMargins );
@@ -575,11 +575,10 @@ public:
     /**
      * Get extra response area of button controls.
      * 
-     * @since Symbian^3
+     * since Symbian^3
      * @param aMargins  output the margins around the original response area.
      */    
     void GetButtonExtResponseArea( TMargins& aMargins );
-
 protected:
     /**
      * Constructor
@@ -647,13 +646,13 @@ private:
     void SendEditorTextAndCursorPosL(TUint8* aData);
 	void SetSelfBmpDeviceFlag(TBool aFlag);
 
-    /**
-     * Load tap accuracy enhancement settings according to the specified input mode.
-     *  
-     * @since Symbian^3
-     * @param alayoutType specifies the input mode(refer to TPluginInputMode) of this layout.
-     */
-    void LoadTapAccuracySettingsL( TInt alayoutType );
+	/**
+	 * Load tap accuracy enhancement settings according to the specified input mode.
+	 *  
+	 * since Symbian^3
+	 * @param aInputMode specifies the input mode(refer to TPluginInputMode) of this layout.
+	 */
+    void LoadTapAccuracySettings( TInt aInputMode );
 
 private:
     NONSHARABLE_CLASS( CFepUiLayoutExt) : public CBase
@@ -675,26 +674,6 @@ private:
             TBool iDisableDrawing;
             
             /**
-             * PointerMove event suppressor parameter: max movement(in pixel)
-             */
-            TSize iPointerMoveSuppressMaxMovement;
-            
-            /**
-             * PointerMove event suppressor parameter: timeout(in microsecond)
-             */
-            TInt iPointerMoveSuppressTimeout;
-
-            /**
-             * PointerUp event suppressor parameter: max movement(in pixel)
-             */
-            TSize iPointerUpSuppressMaxMovement;
-            
-            /**
-             * PointerUp event suppressor parameter: timeout(in microsecond)
-             */
-            TInt iPointerUpSuppressTimeout;
-            
-            /**
              * extra response area of virtual key controls
              */
             TMargins iKeyExtResponseMargins;
@@ -703,8 +682,6 @@ private:
              * extra response area of virtual button controls
              */
             TMargins iButtonExtResponseMargins;
-
-            
         };
  
 private:  

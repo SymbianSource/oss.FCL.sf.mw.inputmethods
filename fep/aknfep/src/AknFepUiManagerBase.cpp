@@ -1022,7 +1022,6 @@ CAknFepZhuyinAnalyser* CAknFepUIManagerBase::ZhuyinAnalyser()
     {
     return iFepMan->ZhuyinAnalyser();
     }
-
 TBool CAknFepUIManagerBase::MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase) const
     {
     if(iPtiEngine)
@@ -1037,4 +1036,5 @@ TBool CAknFepUIManagerBase::MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, T
         }
     return EFalse;
     }
+
 // End of file

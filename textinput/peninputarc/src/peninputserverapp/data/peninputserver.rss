@@ -26,11 +26,17 @@ NAME    PARC // 4 letter ID
 #include <avkon.rh>
 #include <avkon.mbg>
 
+#include <peninputserver.mbg>
+#include <aknsconstants.hrh>
+#include "peninputcommonlayout.rh"
+#include <peninputcommonctrls.loc>
+
 #ifdef RD_SCALABLE_UI
 #include <appinfo.rh>
 #endif
 
 #include <data_caging_paths_strings.hrh>
+#define AKN_SERVER_BMP "z:\\resource\\apps\\peninputserver.mbm" 
 
 //  CONSTANTS
 
@@ -56,6 +62,45 @@ RESOURCE LOCALISABLE_APP_INFO r_localisable_app_info
         caption = "peninputserver";
     };
 }
+
+RESOURCE TBUF r_peninput_server_finger_spell {buf = qtn_t9_match_selection_list;}
+
+RESOURCE AKN_FEP_SCROLLABLE_LIST_IMAGE r_peninput_server_candidate_list
+    {
+    bmpfile = AKN_SERVER_BMP;
+    imgmajorskinid = EAknsMajorGeneric;
+    pageup = r_peninput_server_candidate_list_pageup;
+    pagedown = r_peninput_server_candidate_list_pagedown;
+    listsep = EMbmPeninputserverQgn_graf_line_primary_horizontal_dashed;
+    listsepmsk = EMbmPeninputserverQgn_graf_line_primary_horizontal_dashed_mask;
+    listspeskinid = EAknsMinorGenericQgnGrafLinePrimaryHorizontalDashed;
+    }
+
+RESOURCE AKN_FEP_COMMON_BUTTON_IMAGE r_peninput_server_candidate_list_pageup
+    {
+    bmpfile = AKN_SERVER_BMP;
+    imgmajorskinid = EAknsMajorGeneric;
+    
+    forground = EMbmPeninputserverQgn_indi_itut_cursor_up;
+    forgroundmsk = EMbmPeninputserverQgn_indi_itut_cursor_up_mask;
+    forgroundskinid = EAknsMinorGenericQgnIndiItutCursorUp;
+    }
+    
+RESOURCE AKN_FEP_COMMON_BUTTON_IMAGE r_peninput_server_candidate_list_pagedown
+    {
+    bmpfile = AKN_SERVER_BMP;
+    imgmajorskinid = EAknsMajorGeneric;
+    
+    forground = EMbmPeninputserverQgn_indi_itut_cursor_down;
+    forgroundmsk = EMbmPeninputserverQgn_indi_itut_cursor_down_mask;
+    forgroundskinid = EAknsMinorGenericQgnIndiItutCursorDown;
+    }
+
+RESOURCE TBUF r_peninput_server_candidate_list_page_num
+    {
+    buf = "%0N/%1N";
+    }
+
 #endif
 
 

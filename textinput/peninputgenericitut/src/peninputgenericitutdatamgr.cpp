@@ -347,13 +347,7 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 								cell_ituss_key_pane_g2( 0 ).LayoutLine();
 				TAknLayoutRect starIconRect;
 				starIconRect.LayoutRect( keyrect, starIcon );                
-				iStarIconRectForPrtWest = starIconRect.Rect();
-				
-				// Get the star icon rect under number mode
-				starIcon = AknLayoutScalable_Avkon::
-						cell_ituss_key_pane_g2(4).LayoutLine();
-				starIconRect.LayoutRect( keyrect, starIcon );
-				iStarIconRectInNumModeForPrtWest = starIconRect.Rect();
+				iStarIconRectForPrtWest = starIconRect.Rect();          
 				}			
 			
 			}
@@ -571,17 +565,6 @@ void CGenericItutDataMgr::ReadLafInfoForPrtWest()
 	iSpellIndiIconWithoutTextForPrtWest = spellIndiIconRect.Rect();
 	}
 
-// ---------------------------------------------------------------------------
-// Get the size of the screen
-// ---------------------------------------------------------------------------
-//
-TRect CGenericItutDataMgr::screenSize()
-	{
-	TRect rect;
-	AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EScreen, rect );
-	return rect;
-	}
-
 void CGenericItutDataMgr::ReadLafInfo()
     {
     // Screen
@@ -747,17 +730,6 @@ void CGenericItutDataMgr::ReadLafInfo()
             	shiftIconRect.LayoutRect( cellrect, shiftIcon );				
             	iShiftIconRect = shiftIconRect.Rect();			
             	}
-            
-            // read star icon rect
-            if ( i == 3 &&  j == 0 )
-            	{
-            	TAknWindowLineLayout starIcon =  AknLayoutScalable_Apps::
-            					cell_vitu2_itu_pane_g1( keypadvariety ).LayoutLine();
-            	TAknLayoutRect starIconRect;
-            	starIconRect.LayoutRect( cellrect, starIcon );				
-            	iStarIconRect = starIconRect.Rect();			
-            	}
-            
             itucellrect.LayoutRect(iKeypadRectCn, itucell);
             cellrect = itucellrect.Rect();
             cellrect.Move(-iKeypadRectCn.iTl.iX, -iKeypadRectCn.iTl.iY);
@@ -1406,35 +1378,6 @@ TAny* CGenericItutDataMgr::RequestDataForPortraitWestUIAndChineseSpellUI(TInt aD
                 return &iKeypadCellRectsForPrtWest;
                 }
             }
-        case EStarIconRect:
-        	{
-        	if ( IsChineseSpellMode())
-        		{
-				return &iStarIconRect;
-        		}
-        	else
-        		{
-				if ( iInputMode == ENumber || iInputMode == ENativeNumber )
-					{
-					return &iStarIconRectInNumModeForPrtWest;
-					}
-				else
-					{
-					return &iStarIconRectForPrtWest;
-					}
-        		}
-        	}
-        case EShiftIconRect:
-        	{
-        	if ( IsChineseSpellMode())
-        		{
-				return &iShiftIconRect;
-        		}
-        	else
-        		{
-				return &iShiftIconRectForPrtWest;
-        		}
-        	}
         case EKeypadLeftTextLine:
             {
             if ( IsChineseSpellMode())
@@ -1877,14 +1820,6 @@ TAny* CGenericItutDataMgr::RequestData(TInt aDataType)
        	        {
        	        return &iImIndiOuterRect;
        	        }
-        case EStarIconRect:
-        	{
-			return &iStarIconRect;
-        	}
-        case EShiftIconRect:
-        	{
-			return &iShiftIconRect;
-        	}
         case EKeypadRect:
         	return IsChinese() ? &iKeypadRectCn : &iKeypadRect;	        	
         case EKeypadCellRects:

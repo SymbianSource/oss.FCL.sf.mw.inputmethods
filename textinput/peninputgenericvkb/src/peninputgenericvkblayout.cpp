@@ -278,6 +278,12 @@ TInt CPeninputGenericVkbLayout::HandleCommand( TInt aCmd, TUint8* aData )
             vkbWindow->DimArrowKeys( IsDimArrowKeys );
             }
             break;
+        case ECmdPeninputVietSyncToneMarker:
+        	{
+        	TBool bDimToneMarker = *aData;
+        	vkbWindow->EnableToneMarker(bDimToneMarker);
+        	}
+        	break;
         case ECmdPenInputDimEnterKey:
             {
             TBool isDimEnterKey = *((TUint16*)( aData ));            
@@ -377,13 +383,6 @@ void CPeninputGenericVkbLayout::HandleControlEvent(
             SignalOwner(ESignalKeyEvent, KDisplaySpace);            
             }
         	break;
-        case EEventVirtualKeyDown:
-        	{
-        	HandleVirtualKeyDown();
-        	CPeninputCommonLayoutExt::HandleControlEvent( aEventType, 
-        			aCtrl, aEventData );
-        	break;
-        	}
         default:
             {
             CPeninputCommonLayoutExt::HandleControlEvent(aEventType, aCtrl, aEventData);
@@ -539,21 +538,6 @@ void CPeninputGenericVkbLayout::HandleVirtualKeyUpL(TInt aEventType,
         delete number;
         }
     }
-
-// ---------------------------------------------------------------------------
-// Handle virtual key down event
-// ---------------------------------------------------------------------------
-//
-void CPeninputGenericVkbLayout::HandleVirtualKeyDown()
-	{
-	CPeninputGenericVkbWindow* window = 
-			static_cast<CPeninputGenericVkbWindow*>( iLayoutWindow );
-	
-	if ( window )
-		{
-		window->HandleVirtualKeyDownEvent();
-		}
-	}
 
 TBool CPeninputGenericVkbLayout::TranslateMirrorUnicode( TUint16 aInputCode, TUint16& aOutputCode )
     {

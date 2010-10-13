@@ -327,16 +327,9 @@ void CChnSplitItutUiMgr::SetCurrentStateL(TUiState aNewStateType)
     if(DataMgr()->IsUpdate())  
     	{
     	DataMgr()->SetUpdate(EFalse);
-    	
-    	// Get the screen rect
-    	TRect screenRect = DataMgr()->screenSize();
-    	// If the screen is in portrait mode
-    	if ( screenRect.Width() < screenRect.Height())
-    		{
-			CSplitItutUiLayout* itutLayout = 
-				static_cast<CSplitItutUiLayout*>( LayoutContext()->UiLayout());
-			itutLayout->SizeChanged( NULL );
-    		}
+    	CSplitItutUiLayout* itutLayout = 
+			static_cast<CSplitItutUiLayout*>( LayoutContext()->UiLayout() );
+		itutLayout->SizeChanged( NULL );
     	}
     
     iCurrentState->OnEntryL();

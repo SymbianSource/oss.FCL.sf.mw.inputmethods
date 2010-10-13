@@ -952,10 +952,10 @@ void CAknFepVkbClientArea::ReorganizeControls(CAknFepVkbImLayout* aImLayout,
     TRect compositionRect;
     TRect innerRect;
     
-	// Get composition area rect from laf
+    // Get composition area rect from laf
 	TRect compositionAreaFromLaf = iLafMgr->compositionLayoutData();
 	TInt GapValue = compositionAreaFromLaf.iTl.iX;
-	
+    
     if (range == ERangeNative)
         {
         if ( layoutType == EAknFepVkbImCnZhuyin )
@@ -1011,14 +1011,14 @@ void CAknFepVkbClientArea::ReorganizeControls(CAknFepVkbImLayout* aImLayout,
             compositionRect.SetSize(TSize(btnWidth * 3 + iCellAidGap - GapValue, 
             		candidateHeight));
             }
-		else
-			{	
-			compositionRect.iTl = Rect().iTl;
-			// move the composition area rect with gap
+	    else
+	        {
+	        compositionRect.iTl = Rect().iTl;
+	        // move the composition area rect with gap
 			compositionRect.iTl.iX += GapValue;
 			compositionRect.SetSize( 
 					TSize( btnWidth * 3 + iCellAidGap - GapValue * 2, candidateHeight ));
-			}
+	        }
         iCompositionField->SetReady(ETrue);
         iCompositionField->Hide(EFalse);
         iCompositionField->SizeChanged(compositionRect);    
@@ -1057,7 +1057,7 @@ void CAknFepVkbClientArea::ReorganizeControls(CAknFepVkbImLayout* aImLayout,
             }
         else
             {
-            // move the gap
+             // move the gap
 			compositionRect.iTl.iX -= GapValue;
             iVkbBoardLeftTop = TPoint(compositionRect.iTl.iX, compositionRect.iBr.iY);
             }
@@ -1080,21 +1080,18 @@ void CAknFepVkbClientArea::ReorganizeControls(CAknFepVkbImLayout* aImLayout,
     vkbCtrl->SetTextFormat( iLafMgr->KeyTextLayout() );  //Read laf 
     
     TInt tempHeightForFSQ = btnHeight;
-    // Modify begin
     //if (UiLayout()->PenInputType() == EPluginInputModeFSQ )
     //	{
     //    tempHeightForFSQ = btnHeight + 3;	
     //	}
     
     TPoint rangeBarRefPoint = TPoint(vkbRect.iTl.iX, vkbRect.iBr.iY);
-    // Modify begin
     //rangeBarRefPoint.iY += yAxisOffset;
     
     if (range != ERangeNative)
         {
         TRect shiftRect;
         shiftRect.iTl = TPoint(Rect().iTl.iX, vkbRect.iBr.iY);
-        // Modify begin
         //shiftRect.iTl.iY += yAxisOffset; 
         shiftRect.SetSize(TSize(btnWidth, tempHeightForFSQ)); 
         AknPenImageUtils::CalculateGraphicRect( shiftRect, innerRect );       

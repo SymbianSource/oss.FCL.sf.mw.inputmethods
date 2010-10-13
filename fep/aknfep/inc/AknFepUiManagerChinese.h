@@ -104,8 +104,6 @@ public: // Functions from base classes
      * @since 2.6
      */
     void CloseUI();
-    
-    void CloseUIIn();
 
     /**
      * From CAknFepUIManagerBase
@@ -276,8 +274,8 @@ private: // New Fanctions
      * @since 2.6
      */
     void ConstructL(TLanguage aLanguage);
-
-	/**
+    
+   /**
 	* Tell whether this key mapped valid zhuyin, pinyin, or cangjie symbol
 	*/
     TBool IsValidChineseInputSymbol(TInt aKey, TPtiEngineInputMode aMode) const;
@@ -286,6 +284,7 @@ private: // New Fanctions
 	* Tell whether this key mapped valid chinese tone mark
 	*/
     TBool IsValidChineseToneMarkKey(TInt aKey, TPtiEngineInputMode aMode) const;
+
 
 private: // Data
     TAknFepInputStateChineseBase iFepUiState;

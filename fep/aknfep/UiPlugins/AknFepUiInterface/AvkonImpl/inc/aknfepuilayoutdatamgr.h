@@ -37,6 +37,13 @@ enum TAknFepChineseUiLafDataType
     ECandidatePaneWindowLine,
     EEEPWindowLayout,
     EEEPWindowRect,
+    ECandidatePaneTextLine,
+    EOrdinalCandidateTextLayout,
+    ECandidateWindowLine1,
+    ECandidateWindowLine2,
+    ECandidateWindowLine3,
+    ECandidateWindowLine4,
+    ELayoutCandidateItem,
     ELayoutEntryItem,
     ERectCoverMainPaneInputEntry,
     ERectFirstShadowInputEntry,
@@ -54,6 +61,8 @@ enum TAknFepChineseUiLafDataType
     ELayoutLineRectEntryPane,
     EEntryTextLayout,
     EEntryPaneRect,
+    EIndiFepArrowLeft,
+    EIndiFepArrowRight,   	
     ERectCoverMainPaneInput,
     ERectFirstShadowInput,
     ERectOutlineFrameInput,
@@ -66,23 +75,8 @@ enum TAknFepChineseUiLafDataType
     EEEPSecondHorizLine,
     EEntryHorizLineWindow,
     EEEPSecondHorizLineWindow,
-    EEEPFirstHorizLineWindow,
-    EECPLayout,
-    ECandidateLayout,
-    EECandidateLayout,
-    EEPCandidateLayout,
-    ECharacterLayout,
-    ECharacterTextLayout,
-    EPopupHeightEP,
-    EUpArrowLayout,
-    EDownArrowLayout,
-    ECloseLayout,
-    EScrollLayout,
-    EEntryCLayout,
-    EEntryCPLayout,
-    EECWindowLayout,
-    EInputLayout,
-    EInputTextLayout
+    EEEPFirstHorizLineWindow
+    
     };
 //class CAknFepUiLayoutDataMgr;
 /**
@@ -111,7 +105,7 @@ public:
      * @return None.
      */
     void ReadLafInfo();
-
+    
     /**
      * Get LAF info 
      */
@@ -144,15 +138,21 @@ private:
     TAknWindowLineLayout iCandidatePaneWindowLine;
     
     TAknWindowLineLayout iEEPWindowLayout;
-    TAknWindowLineLayout iECWindowLayout;
     TRect iEEPWindowRect;
-    TRect iECWindowRect;
     TRect iEntryPaneRect;
-
+    
+    TAknTextLineLayout iCandidatePaneTextLine;
+    TAknWindowLineLayout iCandidateWindowLine1;
+    TAknWindowLineLayout iCandidateWindowLine2;
+    TAknWindowLineLayout iCandidateWindowLine3;
+    TAknWindowLineLayout iCandidateWindowLine4;
+    TAknWindowLineLayout iLayoutCandidateItem;
     TAknWindowLineLayout iLayoutEntryItem;
-
+    
+    TAknTextLineLayout iOrdinalCandidateTextLayout;
     TAknTextLineLayout iEntryTextLayout;
     
+    //
     TAknLayoutRect iRectCoverMainPaneInputEntry;
     TAknLayoutRect iRectFirstShadowInputEntry;
     TAknLayoutRect iRectOutlineFrameInputEntry;
@@ -178,33 +178,17 @@ private:
     TAknLayoutText iLayoutInputPaneText;
     TAknLayoutRect iLayoutLineRectEntryPane;
     
+	TAknLayoutRect iIndiFepArrowLeft;
+    TAknLayoutRect iIndiFepArrowRight;
+    
    	TAknLayoutRect iRectCoverMainPaneInput;
     TAknLayoutRect iRectFirstShadowInput;
     TAknLayoutRect iRectOutlineFrameInput;
     TAknLayoutRect iRectInsideAreaInput;
     
-    TAknWindowLineLayout iEntryWithCandidateAndPopUp;    
-    
-    TAknWindowLineLayout iCandidate;
-    TAknWindowLineLayout iECandidate;
-    TAknWindowLineLayout iEPCandidate;
-    TAknWindowLineLayout iCharacterLineLayout;
-    TAknTextLineLayout iCharacterTextLayout;
-    TAknWindowLineLayout iUpArrowLayout;
-    TAknWindowLineLayout iDownArrowLayout;
-    TAknWindowLineLayout iCloseLayout;
-    TAknWindowLineLayout iScrollLayout;
-    TAknWindowLineLayout iEntryCLayout;
-    TAknWindowLineLayout iEntryCPLayout;
-    
-    TAknTextLineLayout iInputTextLayout;
-    TAknWindowLineLayout iInputLayout;
-    
     TAknTextLineLayout iEEPTextLine;
     TInt iEEPCursorHeight;
     TRgb iEEPTextColor;
-    
-    TInt iPopupRectCandidateHeight;
     };
 
 #endif // C_PHRASECREATIONLAYOUTDATAMGR_H

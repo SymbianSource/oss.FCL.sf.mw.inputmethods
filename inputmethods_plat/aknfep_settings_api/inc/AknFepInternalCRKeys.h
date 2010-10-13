@@ -380,47 +380,6 @@ const TUint32 KAknFepDefaultArabicNumberMode = 0x00000025;
  * and the default value is EPluginInputModeItut.
  */
 const TUint32 KAknFepLastUsedPortraitInput = 0x00000026;
-
-/**
- * following keys are used for tap accuracy enhancement, default input mode
- */
-const TUint32 KAknFepTapAccuracyDefaultButtonExtMargins         = 0x27;
-const TUint32 KAknFepTapAccuracyDefaultKeyCtrlExtMargins        = 0x28;
-const TUint32 KAknFepTapAccuracyDefaultPointerMoveMaxMovement   = 0x29;
-const TUint32 KAknFepTapAccuracyDefaultPointerMoveTimeout       = 0x2a;
-const TUint32 KAknFepTapAccuracyDefaultPointerUpMaxMovement     = 0x2b;
-const TUint32 KAknFepTapAccuracyDefaultPointerUpTimeout         = 0x2c;
-
-/**
- * following keys are used for tap accuracy enhancement, FSQ
- */
-const TUint32 KAknFepTapAccuracyFsqButtonExtMargins             = 0x2d;
-const TUint32 KAknFepTapAccuracyFsqKeyCtrlExtMargins            = 0x2e;
-const TUint32 KAknFepTapAccuracyFsqPointerMoveMaxMovement       = 0x2f;
-const TUint32 KAknFepTapAccuracyFsqPointerMoveTimeout           = 0x30;
-const TUint32 KAknFepTapAccuracyFsqPointerUpMaxMovement         = 0x31;
-const TUint32 KAknFepTapAccuracyFsqPointerUpTimeout             = 0x32;
-
-/**
- * following keys are used for tap accuracy enhancement, Portrait FSQ
- */
-const TUint32 KAknFepTapAccuracyPFsqButtonExtMargins            = 0x33;
-const TUint32 KAknFepTapAccuracyPFsqKeyCtrlExtMargins           = 0x34;
-const TUint32 KAknFepTapAccuracyPFsqPointerMoveMaxMovement      = 0x35;
-const TUint32 KAknFepTapAccuracyPFsqPointerMoveTimeout          = 0x36;
-const TUint32 KAknFepTapAccuracyPFsqPointerUpMaxMovement        = 0x37;
-const TUint32 KAknFepTapAccuracyPFsqPointerUpTimeout            = 0x38;
-
-/**
- * following keys are used for tap accuracy enhancement, Finger HWR
- */
-const TUint32 KAknFepTapAccuracyFhwrButtonExtMargins            = 0x39;
-const TUint32 KAknFepTapAccuracyFhwrKeyCtrlExtMargins           = 0x3a;
-const TUint32 KAknFepTapAccuracyFhwrPointerMoveMaxMovement      = 0x3b;
-const TUint32 KAknFepTapAccuracyFhwrPointerMoveTimeout          = 0x3c;
-const TUint32 KAknFepTapAccuracyFhwrPointerUpMaxMovement        = 0x3d;
-const TUint32 KAknFepTapAccuracyFhwrPointerUpTimeout            = 0x3e;
-
 #endif
 
 // End of file

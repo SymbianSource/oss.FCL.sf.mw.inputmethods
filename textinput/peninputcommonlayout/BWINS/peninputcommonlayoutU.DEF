@@ -203,4 +203,4 @@ EXPORTS
 	?SetPositionFromOutside@CPeninputCommonLayout@@UAEXABVTPoint@@@Z @ 202 NONAME ; void CPeninputCommonLayout::SetPositionFromOutside(class TPoint const &)
 	?SetPositionFromOutside@CPeninputCommonLayoutExt@@UAEXABVTPoint@@@Z @ 203 NONAME ; void CPeninputCommonLayoutExt::SetPositionFromOutside(class TPoint const &)
 	?HandleShiftAndCapslockBtnClicked@CPeninputLayoutWindowExt@@UAEXXZ @ 204 NONAME ; void CPeninputLayoutWindowExt::HandleShiftAndCapslockBtnClicked(void)
-
+	?EnableToneMarker@CPeninputLayoutWindowExt@@QAEXH@Z @ 205 NONAME ; void CPeninputLayoutWindowExt::EnableToneMarker(int)

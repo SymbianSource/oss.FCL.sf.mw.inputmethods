@@ -846,6 +846,9 @@ void CAknFepUICtrlPinyinEEP::Reset()
 //
 void CAknFepUICtrlPinyinEEP::LayoutContainedControls()
     {
+    TRect outerRect;
+    TRect innerRect;
+    CalculateFrameRects( outerRect, innerRect );
     TRect rect = Rect();
     iEditableEntryPane->SetRect( rect );
     }

@@ -30,7 +30,6 @@
 // INCLUDE FILES
 #include "AknFepUiInputStateBase.h"
 #include "AknFepPanic.h"
-#include "AknFepUIManagerStateInterface.h"
 
 // CONSTANTS
 
@@ -122,22 +121,15 @@ TUIState TAknFepInputStateBase::State() const
     {
     return iState;
     }
-void TAknFepInputStateBase::SubmitTextL( const TDesC& /*aText*/ )
-	{
-	
-	}
+
 // ---------------------------------------------------------------------------
 // TAknFepUiInputStateJapaneseBase::CloseUI
 // 
 // ---------------------------------------------------------------------------
 //
 void TAknFepInputStateBase::CloseUI()
-	{
-	if ( iOwner )
-		{
-		TRAP_IGNORE( iOwner->FepMan()->TryCloseUiL());
-		}
-	}
+    {
+    }
 
 // ---------------------------------------------------------------------------
 // TAknFepUiInputStateJapaneseBase::InitializeStateL

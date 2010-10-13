@@ -992,16 +992,6 @@ void RPeninputServerImpl::OnServerReady( TBool aFlag)
 TInt RPeninputServerImpl::AddPenUiActivationHandler(
                       MPenUiActivationHandler* aHandler,TInt aType)
     {
-    // To avoid add repeatedly
-    for (TInt i=0; i<iPenUiNotificationHandler.Count(); i++)
-        {
-        TUiNotificationHandler handler = iPenUiNotificationHandler[ i ];
-        if( handler.iHandler == aHandler )
-            {
-            return KErrNone;
-            }
-        }
-    
     iPenUiNotificationHandler.Append(TUiNotificationHandler(aHandler,aType));
     return KErrNone;            
     }
@@ -1336,7 +1326,7 @@ void CPeninputServerObserver::HandleServerTerminatedL()
         }
 
     }    
-    
+
 // ---------------------------------------------------------------------------
 // CPeninputServerObserver::RunError
 // ---------------------------------------------------------------------------
@@ -1577,18 +1567,6 @@ void RPeninputServerImpl::OnServerStarted(TInt aErr)
 	    	}
         }
     User::RequestComplete(iPendingRequest, aErr);
-    }
-
-// ---------------------------------------------------------------------------
-// Enable or disable transition effect.
-// ---------------------------------------------------------------------------
-//
-void RPeninputServerImpl::EnableGfxTransEffect( TBool aEnable)
-    {
-    TPckg<TBool> msg( aEnable );
-    TIpcArgs arg;
-    arg.Set( KMsgSlot0, &msg );    
-    SendReceive(EPeninputRequestEnableGfxTransEffect, arg );  
     }
 
 CWaitingServerAo::CWaitingServerAo(RPeninputServerImpl* aClient) 

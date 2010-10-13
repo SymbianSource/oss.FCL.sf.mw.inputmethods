@@ -428,7 +428,6 @@ public:
     IMPORT_C TInt ConnectAsyc(TRequestStatus& aStatus);
 	IMPORT_C void SetDataQueryPopped(TBool aFlag);
     IMPORT_C void EnablePriorityChangeOnOriChange(TBool aEnabled);
-    IMPORT_C void EnableGfxTransEffect( TBool aEnable );
 private:    // Data
     /**
      * The singleton client to the input server

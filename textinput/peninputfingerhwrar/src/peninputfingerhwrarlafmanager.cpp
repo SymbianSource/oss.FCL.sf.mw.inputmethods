@@ -156,18 +156,6 @@ void CPeninputFingerHwrArLafManager::RetrieveLafDataForICF()
  	
 	// get font for text
     iIcfFont = const_cast<CFont*>(AknLayoutUtils::FontFromId(icfTextLineLayoutRow1.iFont, NULL));
-    
-    //indicator bubble.
-#ifdef ARABIC_LAF
-    if(iIsLandscape)
-        {
-        iRectIndicatorBubble.SetRect(543,17,624,41);
-        }
-    else
-        {
-        iRectIndicatorBubble.SetRect(263,17,344,41);
-        }
-#endif    
 	}
 
 // ---------------------------------------------------------------------------
@@ -1094,14 +1082,6 @@ TInt CPeninputFingerHwrArLafManager::IcfTextHeight()
     return iIcfTextHeight;
     }
        
-// ---------------------------------------------------------------------------
-// get indicator bubble rect.
-// ---------------------------------------------------------------------------
-// 
-TRect CPeninputFingerHwrArLafManager::IndicatorBubbleRect()
-    {
-    return iRectIndicatorBubble;
-    }
 
 // ---------------------------------------------------------------------------
 // get inner padding of buttons.

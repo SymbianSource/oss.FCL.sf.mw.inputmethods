@@ -75,7 +75,6 @@ enum TPeninputOpcodes
     EPeninputOpLastCommand ,
     EPeninputOpRequestDSAState,
 	EPeninputOpChangeFeedbackType,
-	EPeninputOpUpdatePointerSuppressor,
     EPeninputUserCmdBase = 1000
 
     };
@@ -113,7 +112,8 @@ enum TSignalEvent
     ESignalDisableUpdating,
     ESignalDrawBackground,
     ESignalEnableLayoutRedrawWhenActive,
-    ESignalUpdatePointerSuppressor,
+    ESignalShowServerCandidate,
+    ESignalHideServerCandidate,
     ESignalFepEventBase = 1500,    //Event base for Fep. All fep event
                                     //is re-directed to Fep.
     ESignalKeyEvent = 1501,        //hwr recongition selection event.

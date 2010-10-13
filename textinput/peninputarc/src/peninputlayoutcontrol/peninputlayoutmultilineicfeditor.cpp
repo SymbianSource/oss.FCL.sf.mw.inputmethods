@@ -1064,7 +1064,6 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(const CFont* aFont)
         }    
     
     TFontSpec fontSpec;
-    fontSpec = aFont->FontSpecInTwips();
     fontSpec.iHeight = aFont->HeightInPixels();
     CFont*  font;
     iCoeEnv->ScreenDevice()->ReleaseFont(CONST_CAST(CFont*, iFont));
@@ -1083,7 +1082,6 @@ void CFepLayoutMultiLineIcfEditor::SetFontL(const CFont* aFont)
     iCharFormat.iFontSpec.iHeight = iCoeEnv->ScreenDevice()->VerticalPixelsToTwips(iFontHeight);
     iCharFormat.iFontSpec.iFontStyle.SetStrokeWeight(EStrokeWeightNormal);
     iCharFormat.iFontSpec.iFontStyle.SetBitmapType(EAntiAliasedGlyphBitmap);
-    iCharFormat.iFontSpec.iTypeface = iFont->FontSpecInTwips().iTypeface;
 
     iRichText->ApplyCharFormatL(iCharFormat, iCharFormatMask, 0, iRichText->DocumentLength());    
     if( InlineStateOn() || AutoCompletionStateOn() )
@@ -2703,10 +2701,9 @@ TBool CFepLayoutMultiLineIcfEditor::SetAutoCompleteStateL(TBool aAutoComplete,
                                                    TInt aMidPos,
                                                    TInt aEndPos)
     {
-    TBool changed = ( iAutoComplete != aAutoComplete );
     // If auto is on, we need draw every time, as grey part is not making the text changed
     // if we use traditional way to check change, auto part is not turn to black when grey part is there.
-    changed = iAutoComplete; 
+    TBool changed = ( aAutoComplete || iAutoComplete != aAutoComplete );
     iAutoComplete = aAutoComplete;
     
     if ( aAutoComplete )

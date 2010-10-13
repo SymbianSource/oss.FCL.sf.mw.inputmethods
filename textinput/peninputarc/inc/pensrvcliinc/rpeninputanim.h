@@ -186,16 +186,6 @@ public:
     void GetDSAState(TBool& aState);
 	
     void SetDiscreeptPop(const TRect& aArea);
-    
-    /**
-     * Update parameters of pointer event suppressor.
-     * 
-     * @since Symbian^3
-     * @param aParameters parameters of pointer event suppressor
-     * @return none
-     */
-    void UpdatePointerEventSuppressor( const TPointerEventSuppressorParameters& aParameters );
-
 private:
 
     /**

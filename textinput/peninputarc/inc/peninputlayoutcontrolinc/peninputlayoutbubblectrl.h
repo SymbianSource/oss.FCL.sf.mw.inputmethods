@@ -177,10 +177,7 @@ inline void CBubbleCtrl::SetIconOffsetAndSize(
 
 inline void CBubbleCtrl::GetText( TDes& aText )
     {
-    if (iText)
-        {
-        aText.Copy( *iText );
-        }
+    aText.Copy( *iText );
     }
 
 inline void CBubbleCtrl::SetLangCode( TInt aLangCode )

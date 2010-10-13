@@ -778,6 +778,17 @@ void TAknFepInputStateEntryWesternPredictive::LastWordInSelectionList()
     MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
     
     iIsLastWord = ETrue;
+
+#ifdef RD_SCALABLE_UI_V2 
+    // Because this function is a callback function of ptixt9core, 
+    // this function is called when gets last candidate, but for virtual intput,
+    // cba should not be updated.
+    if ( fepMan && fepMan->PluginUIManager()
+    		&& fepMan->PluginUIManager()->PluginInputMode() == EPluginInputModeItut )
+        {
+        return;
+        }
+#endif
     
     if (iMatchState != EWordMatchAfterLast)
         {

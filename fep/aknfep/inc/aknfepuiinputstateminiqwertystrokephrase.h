@@ -72,9 +72,6 @@ public:
       * @param aCommandId Command ID value
       */
      void HandleCommandL( TInt aCommandId );
-     
-     void SubmitTextL( const TDesC& aText );
-
     };
 
 /**
@@ -115,8 +112,6 @@ public:
      * @param aCommandId Command ID value
      */
     void HandleCommandL( TInt aCommandId );
-    
-    void SubmitTextL( const TDesC& /*aText*/ );
     };
 
 /**
@@ -148,9 +143,6 @@ public:
      * @param aCommandId Command ID value
      */
     void HandleCommandL( TInt aCommandId );
-    
-    void SubmitTextL( const TDesC& aText );
-
 protected:
 
     /**
@@ -163,7 +155,6 @@ protected:
      * @return ETrue if handle, otherwise this class do not handle this key
      */
     TBool HandleKeyL(TInt aKey, TKeyPressLength aLength);
-
     };
 
 #endif /*__AKN_FEP_UI_INPUT_STATE_MINIQWERTY_STROKEPHRASECREATION_H__*/

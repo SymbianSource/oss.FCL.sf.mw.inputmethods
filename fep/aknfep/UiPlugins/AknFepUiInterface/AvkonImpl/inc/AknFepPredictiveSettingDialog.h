@@ -104,8 +104,6 @@ class CAknFepPredictiveSettingDialog : public CAknDialog
 		// From MEikMenuObserver
 		virtual void DynInitMenuPaneL( TInt aResourceId, 
 		                               CEikMenuPane* aMenuPane );
-		// Process the key events
-		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 	    
 	protected:
         /**

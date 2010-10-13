@@ -40,32 +40,6 @@ class CAknFepUICtrlPinyinPopup;
 class CAknFepUICtrlPinyinEEP;
 class MAknFepManagerUIInterface;
 class CAknFepUiLayoutDataMgr;
-class MCoeFocusObserver;
-class MAknFepUiStateCtrl;
-
-class MAknFepUIEventObserver
-	{
-public:
-    /**
-     * Click close pane to close
-     */
-	virtual void FepUIClosePressed() = 0;
-	};
-
-class MAknFepChineseUiMgr
-	{
-public:
-    /**
-     * Submit text
-     * @param aText committed text
-     */
-	virtual void SubmitSelectedTextL( const TDesC& aText ) = 0;
-	
-    /**
-     * Close container
-     */
-	virtual void CloseContainer() = 0;
-	};
 
 class MAknFepUICtrlPinyinPopupSizeChangedObserver
     {
@@ -81,8 +55,7 @@ NONSHARABLE_CLASS(CAknFepUICtrlContainerChinese)
     : 
     public CCoeControl, 
     public MAknFepUICtrlPinyinPopupSizeChangedObserver,
-    public MAknFepUICtrlContainerChinese,
-    public MAknFepChineseUiMgr
+    public MAknFepUICtrlContainerChinese
 {
 public:
     /**
@@ -218,31 +191,6 @@ public:
      * @return if not enabled, return EFalse
      */
     void SetFepMan( MAknFepManagerUIInterface* aFepMan );
-    
-    /**
-     * Handle pointer event
-     * @param aPointerEvent pointer event
-     * 
-     */
-    void HandlePointerEventL(const TPointerEvent& aPointerEvent);
-    
-    /**
-     * Set observer
-     * @param aObserver Obsever object
-     * 
-     */
-    void SetFepUiStateCtrl( MAknFepUiStateCtrl* aFepUiState );
-        
-    /**
-     * Submit text
-     * @param aText committed text
-     */
-    void SubmitSelectedTextL(const TDesC& aText);
-    
-    /**
-     * Close container
-     */
-    void CloseContainer();	
 
 public: // from CCoeControl
 
@@ -276,7 +224,6 @@ public: // from CCoeControl
     virtual void Draw(const TRect& aRect) const;
 
     virtual void HandleResourceChange(TInt aType); 
-   
 	
 protected: // From CCoeControl
     TTypeUid::Ptr MopSupplyObject(TTypeUid aId);
@@ -364,12 +311,6 @@ protected:
      */
 	void CalculateFrameRects(TRect& aOuterRect, TRect& aInnerRect) const;    
 
-    /**
-     * Close UI
-	 *
-     */
-	void CloseUI();
-	
 private:
     CAknFepUiLayoutDataMgr* iLafDataMgr;
     CAknFepUICtrlInputPane* iInputPane;
@@ -377,8 +318,6 @@ private:
 	CAknFepUICtrlPinyinPopup* iPinyinPopupWindow;
 	CAknFepUICtrlPinyinEEP* iEditPane;
 	CAknsFrameBackgroundControlContext* iBgContext; 
-	
-	
 
 private:
 	TBool iEnabled;
@@ -398,7 +337,6 @@ private:
     
     TInt iPhraseCreation;
     MAknFepManagerUIInterface* iFepMan;
-    MAknFepUiStateCtrl* iFepUiState;
 };
 #endif  // __AKN_FEP_UI_AVKON_CONTAINER_CHINESE_H__
 

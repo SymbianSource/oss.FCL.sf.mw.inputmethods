@@ -36,222 +36,18 @@
 #include "AknFepUICtrlCandidatePane.h"
 #include "AknFepUIAvkonCtrlContainerChinese.h"
 
-class CAknFepUICtrlCandidateCharacter;
-class MAknFepUIEventObserver;
-
-/**
- * Pane which displays the preview character.
- */
-NONSHARABLE_CLASS(CAknFepPreview) : public CCoeControl
-	{
-public:
-	/**
-	 * first phase construction
-	 */
-	static CAknFepPreview* NewL( RWindowTreeNode& aParent );
-	
-	/**
-	 * Destruction function
-	 *
-	 */
-	~CAknFepPreview();	
-		
-	/**
-	 * draw
-	 *
-	 * @param aRect rectangle
-	 */
-	virtual void Draw( const TRect& aRect ) const;
-	
-	/**
-	 * size changed
-	 */
-	virtual void SizeChanged();
-	
-	/**
-	 * Show preview lable
-	 * @param aRect rectangle
-	 * @param aCharacter preview text
-	 */
-	void ShowL( TRect& aRect, const TDesC& aCharacter );
-	
-	/**
-	 * Hide preview lable
-	 */
-	void HideL();
-	
-	/**
-	 * count component controls
-	 *
-	 * @return number of contained controls
-	 */
-	TInt CountComponentControls() const;
-
-	/**
-	 * Component control
-	 *
-	 * @param aIndex the control to return, must be between 0 and the number of controls
-	 * @return pointer to contained control, ownership is not passed
-	 */
-	CCoeControl* ComponentControl(TInt aIndex) const;
-	
-protected:
-	/**
-	 * Construction function
-	 *
-	 */
-	CAknFepPreview();
-	
-	/**
-	 * second phase construction
-	 */
-	void ConstructL( RWindowTreeNode& aParent );
-	
-	/**
-	 * layout the background frames
-	 *
-	 * @param aOuterRect filled with outer rect coords
-	 * @param aInnerRect filled with inner rect coords
-	 *
-	 */
-    void CalculateFrameRects(TRect& aOuterRect, TRect& aInnerRect) const;
-
-private:
-    // Preview lable
-	CEikLabel* iPreviewLabel;
-	};
-
-/**
- * Pane which displays the Up arrow & Down arrow & close.
- */
-NONSHARABLE_CLASS(CAknFepUICtrlCandidateScroll) : public CCoeControl
-	{
-public:
-	/**
-	 * first phase construction
-	 */
-	static CAknFepUICtrlCandidateScroll* NewL( RWindowTreeNode& aParent, 
-		                                       MAknFepUIEventObserver* aObserver );
-
-	/**
-	 * destructor
-	 */
-	~CAknFepUICtrlCandidateScroll();
-
-	/**
-	 * size changed
-	 */
-	virtual void SizeChanged();	
-
-	/**
-	 * draw
-	 *
-	 * @param aRect rectangle
-	 */
-	virtual void Draw( const TRect& aRect ) const;	
-	
-    /**
-     * Handle pointer event
-     * @param aPointerEvent pointer event
-     */
-    void HandlePointerEventL( const TPointerEvent & aPointerEvent );
-    
-    /**
-     * enable/disable the rendering of the Up Scroll Arrows. 
-     *
-     * @param aValue if ETrue, enable the arrows
-     *  if EFalse, disable the arrrows
-     */
-	void ShowUpScrollArrows( TBool aValue );
-	
-    /**
-     * enable/disable the rendering of the down Scroll Arrows. 
-     *
-     * @param aValue if ETrue, enable the arrows
-     *  if EFalse, disable the arrrows
-     */
-	void ShowDownScrollArrows( TBool aValue );
-	
-    /**
-     * enable/disable the rendering of the Vertical Scroll Arrows. 
-     *
-     * @param aValue if ETrue, enable the arrows
-     *                          if EFalse, disable the arrrows
-     */
-	void ShowVerticalScrollArrows( TBool aValue );
-	
-    /**
-     * are the Vertical Scroll Arrows enabled
-     *
-     * @return if arrows not enabled, returns EFalse
-     */
-	TBool IsShowVerticalScrollArrows() const;
-		
-    
-protected:
-	/**
-	 * second phase construction
-	 */
-	void ConstructL( RWindowTreeNode& aParent, MAknFepUIEventObserver* aObserver );
-	
-    /**
-     * Construct all the bitmap classes
-     */
-    void ConstructBitmapsL();
-    
-	/**
-	  * constructor
-	  */
-	CAknFepUICtrlCandidateScroll();
-	
-	/**
-	 * layout contained controls
-	 */
-	void LayoutIcon();
-	
-	/**
-	 * Calculate the close rect
-	 *
-	 * @param aOuterRect filled with outer rect coords
-	 * @param aInnerRect filled with inner rect coords
-	 *
-	 */
-	void CalculateCloseRects(TRect& aOuterRect, TRect& aInnerRect) const;
-
-private:
-    CFbsBitmap* iScrollCloseBitmap;
-    CFbsBitmap* iScrollCloseBitmapMask;
-    CFbsBitmap* iNaviArrowBitmapUp;
-    CFbsBitmap* iNaviArrowBitmapUpMask;
-    CFbsBitmap* iNaviArrowBitmapDown;
-    CFbsBitmap* iNaviArrowBitmapDownMask;
-    
-    TAknLayoutRect iIndiFepClose;
-    TAknLayoutRect iIndiFepArrowUp;
-    TAknLayoutRect iIndiFepArrowDown;
-    
-    TBool iShowVerticalScrollArrows;
-    TBool iShowUpScrollArrows;
-    TBool iShowDownScrollArrows;
-    TBool iShowClose;
-    
-    MAknFepUIEventObserver* iObServer;
-	};
+class CAknFepUICtrlCandidateSelected;
 
 /**
  * Pane which displays the Chinese Candidates.
  */
-NONSHARABLE_CLASS(CAknFepUICtrlCandidatePane) : 
-				public CCoeControl,
-				public MAknFepUICtrlCandidatePane,
-				public MAknFepUIEventObserver
+NONSHARABLE_CLASS(CAknFepUICtrlCandidatePane) : public CCoeControl, public MAknFepUICtrlCandidatePane
     {
 public:
     /**
      * first phase construction
      */
-    static CAknFepUICtrlCandidatePane* NewL( RWindow& aParent, CAknFepUiLayoutDataMgr* aLafDataMgr, 
-											 MAknFepChineseUiMgr* aMgr );
+    static CAknFepUICtrlCandidatePane* NewL(RWindow& aParent, CAknFepUiLayoutDataMgr* aLafDataMgr);
     /**
      * destructor
      */
@@ -264,12 +60,6 @@ public:
      * @output the text buffer of the Pane
      */
     const TDesC& TextBuffer() const;
-    
-    /**
-     * Handle pointer event
-     * @param aPointerEvent pointer event
-     */
-    void HandlePointerEventL( const TPointerEvent & aPointerEvent );
 
     /**
      * Allows the client to set a descriptor pointer into an existing buffer of 
@@ -379,7 +169,7 @@ public:
      * @return if arrows not enabled, returns EFalse
      */
     TBool IsShowVerticalScrollArrows() const;
-		
+
     /**
      * enable/disable the rendering of the Vertical Scroll Arrows. 
      *
@@ -387,15 +177,22 @@ public:
      *                          if EFalse, disable the arrrows
      */
     void ShowVerticalScrollArrows(TBool aValue);
-    
+
     /**
-     * This function is not needed.
+     * enable/disable the rendering of the candidate ordinal numbers
      *
      * @param aValue if ETrue, enable the ordinals
      *                          if EFalse, disable the ordinals
      *
      */
-    void ShowCandidateOrdinals(TBool /*aValue*/){};
+    void ShowCandidateOrdinals(TBool aValue);
+
+    /**
+     * enable/disable the rendering of the candidate ordinal numbers
+     *
+     * @return if not shown, return EFalse
+     */
+    TBool IsShowCandidateOrdinals() const;
 
     /**
      * This function returns the number of Candidates that are visible in the pane 
@@ -560,21 +357,6 @@ public:
 	 */
 	TBool NeedGetNewCandidatePage();
 	
-	/**
-	 *	Close button is pressed
-	 */
-	void FepUIClosePressed();
-
-	/**
-	 *	Set MAknFepUiStateCtrl pointer
-	 */
-	void SetFepUiState(MAknFepUiStateCtrl* aFepUiState);	
-	
-	/**
-	 *	Hide preview
-	 */
-	void HidePreviewL();
-
 public: // from CCoeControl
     /**
      * size changed
@@ -596,20 +378,38 @@ public: // from CCoeControl
      * 
      */
     CCoeControl* ComponentControl(TInt aIndex) const;
+
+    /**
+     * draw
+     *
+     * @param aRect rectangle
+     *
+     */
+    virtual void Draw(const TRect& aRect) const;
+    
     
     void Enable(TBool aEnable);
 
 protected:
-    
     /**
      * second phase construction
      */
     void ConstructL(RWindow& aParent);
 
     /**
-     * Construct function
+     * Construct all the bitmap classes
      */
-    CAknFepUICtrlCandidatePane( CAknFepUiLayoutDataMgr* aLafDataMgr, MAknFepChineseUiMgr* aMgr );
+    void ConstructBitmapsL();
+
+    /**
+     * constructor
+     */
+    CAknFepUICtrlCandidatePane( CAknFepUiLayoutDataMgr* aLafDataMgr );
+
+    /**
+     * layout the rectangles
+     */
+    void LayoutRects();
 
     /**
      * layout contained controls
@@ -620,16 +420,22 @@ protected:
      * layout the labels for a single candidate
      */
     void LayoutLabel(TInt aIndex);
-    
+
     /**
      * layout the labels for all the candidates (even those that are not currently visible)
      */
     void LayoutLabels();
 
     /**
-     * layout the scroll pane
+     * layout selected candidate
+     * <p> Note that there is only one instance, as there can 
+     * only be one selected candidate at a time. Therefore, the control
+     * is placed in the position that is correct based on the current selection
+     *
+     * @param aIndex the index of the new position of the selected candidate
+     *
      */
-    void LayoutScroll();
+    void LayoutCandidateSelected();
 
     /**
      * set label vilisibilty, according to the current pane layout
@@ -650,26 +456,44 @@ protected:
      */
     void InternalSpilitPhraseCandidate();
 
+private: // the following are owned
+    CAknFepUICtrlCandidateSelected* iCandidateSelected;
+    CFbsBitmap* iNaviArrowBitmapLeft;
+    CFbsBitmap* iNaviArrowBitmapLeftMask;
+    CFbsBitmap* iNaviArrowBitmapRight;
+    CFbsBitmap* iNaviArrowBitmapRightMask;
+    CFbsBitmap* iNaviArrowBitmapUp;
+    CFbsBitmap* iNaviArrowBitmapUpMask;
+    CFbsBitmap* iNaviArrowBitmapDown;
+    CFbsBitmap* iNaviArrowBitmapDownMask;
 private: // the following need resetting
-    RPointerArray<CAknFepUICtrlCandidateCharacter> iCandidateLabelArray;
+    RPointerArray<CEikLabel> iCandidateLabelArray;
+    RPointerArray<CEikLabel> iOrdinalLabelArray;
     RArray<TCandidateMode> iCandidateModeArray;
 private: // the following are members
     CAknFepUiLayoutDataMgr* iLafDataMgr;
+    TAknLayoutRect iIndiFepArrowLeft;
+    TAknLayoutRect iIndiFepArrowRight;
+    TAknLayoutRect iIndiFepArrowUp;
+    TAknLayoutRect iIndiFepArrowDown;
     TBufC<EMaxCandidates> iBuffer;
     CAknFepUICtrlContainerChinese::TPaneLayout iPaneLayout;
     TInt iVisibleCount;
     TInt iSelected;
     TBool iHighlighted;
+    TBool iShowHorizontalScrollArrows;
+    TBool iShowVerticalScrollArrows;
+    TBool iShowUpScrollArrows;
+    TBool iShowDownScrollArrows;
+    TBool iShowLeftScrollArrows;
+    TBool iShowRightScrollArrows;
+    TBool iShowCandidateOrdinals;
     RArray<TPage> iPages;
     //next paging candidate index
     TInt iUnpagedIndex;
     TInt iCurDisplayPage;
     CDesCArrayFlat* iCandidateArray;
-    MAknFepChineseUiMgr* iChineseUiMgr;
-    MAknFepUiStateCtrl* iFepUiState;
-    CAknFepUICtrlCandidateScroll* iCtrlScroll;
-    CAknFepPreview* iPreview;
-    TBool iPointDown;
+    TInt iOrdinalLableWidth;
     };
 
 #endif //__AKN_FEP_AVKON_CANDIDATE_PANE_H__

@@ -335,15 +335,7 @@ public:
     
     IMPORT_C void CPeninputLayoutWindowExt::SetTextAlignmentL( TInt aAlignment );
        
-    /**
-     * Unlatch the dead key for all kinds of vkb layout
-     *
-     * @since S60 v5.0
-     * @param none
-     * @return void
-     */
-    void CancelDeadKey();
-    
+    IMPORT_C void EnableToneMarker(TBool aEnable);
 protected:
 
     /**

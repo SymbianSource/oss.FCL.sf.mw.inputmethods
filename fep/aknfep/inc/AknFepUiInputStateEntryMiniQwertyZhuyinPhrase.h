@@ -53,9 +53,6 @@ public:
     
     TBool HandleKeyForHalfAndCustomQwertyL( TInt aKey,
         TKeyPressLength aLength );
-
-    void SubmitTextL( const TDesC& aText );
-
 public: // Functions from MPtiObserver interface
     void KeyTimerExpired();
 private:

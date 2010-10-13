@@ -63,6 +63,21 @@ enum TPeninputAppInfo
     EAppMessageTypeChangeMsg
     /* Teleca change begin, 9.09.2009 ssal */
     };
+    
+/**
+ *  The command type of choice canidate list item .
+ */
+enum TPeninputCandItemCommand
+    {
+    ECandItemCmdNone,
+    ECandItemCmdGetNextPage,
+    ECandItemCmdGetPage,
+    ECandItemCmdExisted,
+    ECandItemCmdItemSelected,
+    ECandItemCmdEnterSpellMode,
+    ECandItemCmdArrowUp,
+    ECandItemCmdArrowDown
+    };
         
 //structure for input context field data
 struct TFepInputContextFieldData
@@ -140,6 +155,7 @@ struct TFepITICandidateList
 		};
     TInt iActiveIndex;
     TInt iLangCode;
+    TRect iRect;
     };
 
 class CPtiEngine;
@@ -162,4 +178,23 @@ struct TFepSpellICFDisplayContent
 	TPtrC iICFText;
 	TPtrC iPromptText;
 	};
+    
+/**
+ * Pen input server candidate data
+ */
+struct TPeninputCandidateData
+    {
+    // The alienment of text in candidate
+    TInt iAlign;
+    // The init rect used for the top-left point of candidate
+    TRect iInitRect;
+    // Enable spell functionality of candidate
+    TBool iSpellEnabled;
+    // Enable minimal text width when calculates item width.
+    TBool iTextWidthEnabled;
+    // The contents to be shown in candidate
+    CDesCArray* iItemArray;
+    // The default index
+    TInt iActiveIndex;
+    };
 #endif

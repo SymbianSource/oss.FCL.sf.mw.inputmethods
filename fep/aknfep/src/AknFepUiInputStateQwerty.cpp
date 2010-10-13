@@ -698,6 +698,7 @@ void TAknFepInputStateQwerty::NumericCharacterForQwertyKey(TInt aInScanCode,
 
 		
 		CPtiQwertyKeyMappings* maps = static_cast<CPtiQwertyKeyMappings*>(lang->GetQwertyKeymappings());
+        maps->SetKeyboardType(ptiengine->KeyboardType());
         TBool keyNotMapToNumeric(ETrue);
 #ifdef RD_INTELLIGENT_TEXT_INPUT
         if(maps)
@@ -1196,11 +1197,8 @@ TBool TAknFepInputStateQwerty::CheckForValidNumberEntryForqwerty(TInt aKey)
                     }
                 }
             // Disable UI framewroks's qwerty iCode conversion for simulated event.	
-            numKey.iModifiers |= EModifierSpecial;		
-            
-            //as the editor is a Java number editor, we did not simulate the number key event  
-            if(!(fepMan->IsHybridAplhaEditor() && !fepMan->IsHybridAlphaModeChangedtoAplhanumeric())
-                 && !fepMan->IsSpecialNumericEditor() )
+            numKey.iModifiers |= EModifierSpecial;					
+            if(!(fepMan->IsHybridAplhaEditor() && !fepMan->IsHybridAlphaModeChangedtoAplhanumeric()))
                 {
                 CCoeEnv::Static()->SimulateKeyEventL(numKey, EEventKey);                        
 #ifdef RD_INTELLIGENT_TEXT_INPUT

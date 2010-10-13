@@ -92,9 +92,6 @@ PRJ_EXPORTS
 
 ../inc/peninputlayoutcontrolinc/peninputaknvkbpreviewbubblerenderer.h   |../../../inc/peninputaknvkbpreviewbubblerenderer.h
 ../inc/peninputlayoutcontrolinc/peninputvkbpreviewbubblerenderer.h      |../../../inc/peninputvkbpreviewbubblerenderer.h
-
-../inc/peninputlayoutcontrolinc/peninputpopupbubble.h                   |../../../inc/peninputpopupbubble.h
-
 //inline file
 ../inc/peninputlayoutcontrolinc/peninputlayout.inl                      |../../../inc/peninputlayout.inl
 ../inc/peninputlayoutcontrolinc/peninputlayoutbasecontrol.inl           |../../../inc/peninputlayoutbasecontrol.inl
@@ -149,6 +146,13 @@ START EXTENSION s60/mifconv
 OPTION TARGETFILE gspeninputplugin_aif.mif
 OPTION HEADERFILE gspeninputplugin.mbg
 OPTION SOURCES -c8,8 qgn_prop_cp_dev_pen.svg
+END
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE peninputserver.mif
+OPTION HEADERFILE peninputserver.mbg
+OPTION SOURCEFILE ../src/peninputserverapp/iconlist.txt
 END
 
 // End of file

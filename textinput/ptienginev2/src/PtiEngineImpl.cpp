@@ -747,19 +747,6 @@ void CPtiEngineImpl::OnInputModeChanged(TPtiEngineInputMode /*aOldMode*/, TPtiEn
 			delete oldTextBuf;
 			}
 		}
-     else
-         {
-         // call CPtiKoreanQwertyCore::LoadKeyboards() by OpenLanguageL() again,
-         // make sure that in hardware Qwerty, product keymappings can be used correctly.
-         if ( aNewMode == EPtiEngineQwertyKorean )
-            {    
-              CPtiCore* core = static_cast<CPtiCore*>(iCurrentLanguage->GetCore( aNewMode ));
-              if ( core )
-                  {
-                  TRAP_IGNORE( core->OpenLanguageL( iCurrentLanguage ) );
-                  }
-            }
-          }
 	}
 
 // ---------------------------------------------------------------------------
@@ -781,7 +768,6 @@ TInt CPtiEngineImpl::GetNextWordCandidateListL(CDesCArray& aList)
 
 	return KErrNoSuitableCore;
 	}
-
 // ---------------------------------------------------------------------------
 // Group Unicode is that kind of mapping which one visible character with more 
 // than one unicode submitted.
@@ -803,7 +789,7 @@ void CPtiEngineImpl::IsGroupUnicodeExist(TPtiKey aKey, TDes& aResult, TInt aPosi
         {
         aResult.Append(aKey);
         }    
-    }
+	}
 
 		
 // ---------------------------------------------------------------------------
@@ -895,7 +881,7 @@ TPtrC CPtiEngineImpl::AppendKeyPress(TPtiKey aKey)
 			IsGroupUnicodeExist(aKey, mappings, 0);
 			if(mappings.Length() == 1)
 			    {
-				Core()->AppendKeyPress(aKey);
+			Core()->AppendKeyPress(aKey);
 			    }
 			else
 			    {
@@ -1169,7 +1155,7 @@ TPtrC CPtiEngineImpl::DeleteKeyPress()
 TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirected)
 	{
 	aRedirected = EFalse;
-    TPtiKeyboardType kbdType = KeyboardType();
+    TPtiKeyboardType kbdType = KeyboardType();	
 	TBuf<KMaxName> data;
 	TInt key;
     
@@ -2473,25 +2459,13 @@ void CPtiEngineImpl::SetCandidatePageLength(TInt aLength)
 //
 void CPtiEngineImpl::LoadCoresInDefaultDirL(TBool aUseDefaultUserDictionary)
 	{
-    TUid KPtiSogouCoreUid = { 0x20031DD7 };
-    TInt i = 0;
-    TInt postponed = -1;
-    CArrayFix<TInt>* array = CPtiCore::ListCoresLC();
-    User::LeaveIfNull(array);
-    for (i = 0; i < array->Count(); i++)
-        {
-        if (TUid::Uid(array->At(i)) == KPtiSogouCoreUid )
-            {
-            postponed = i;
-            continue;
-            }
-        AddCoreL(TUid::Uid(array->At(i)), aUseDefaultUserDictionary);
-        }
-    
-    if (postponed >= 0)
-        {
-        AddCoreL(TUid::Uid(array->At(postponed)), aUseDefaultUserDictionary);
-        }
+	TInt i;
+	CArrayFix<TInt>* array = CPtiCore::ListCoresLC();
+	User::LeaveIfNull(array);
+	for (i = 0; i < array->Count(); i++)
+		{
+		AddCoreL(TUid::Uid(array->At(i)), aUseDefaultUserDictionary);
+		}
 
 	CleanupStack::PopAndDestroy(); // array
 	}

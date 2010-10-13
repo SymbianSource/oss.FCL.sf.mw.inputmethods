@@ -202,56 +202,6 @@ TBool MPeninputLafDataCommon::IsValid() const
     }
 
 // ---------------------------------------------------------------------------
-// Get split indicator rect with text
-// ---------------------------------------------------------------------------
-//
-const TRect& MPeninputLafDataCommon::SplitIndiRectWithText() const
-    {
-    ASSERT( IsValid());
-    return iLayoutDataInfo[iLayoutType]->iSplitIndiPaneRectWithText;
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator rect without text
-// ---------------------------------------------------------------------------
-//
-const TRect& MPeninputLafDataCommon::SplitIndiRectWithoutText() const 
-    {
-    ASSERT( IsValid());
-    return iLayoutDataInfo[iLayoutType]->iSplitIndiPaneRectWithoutText;
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator icon rect with text
-// ---------------------------------------------------------------------------
-//
-const TRect& MPeninputLafDataCommon::SplitIndiIconRectWithText() const
-    {
-    ASSERT( IsValid());
-    return iLayoutDataInfo[iLayoutType]->iSplitIndiIconRectWithText;
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator icon rect without text
-// ---------------------------------------------------------------------------
-//
-const TRect& MPeninputLafDataCommon::SplitIndiIconRectWithoutText() const
-    {
-    ASSERT( IsValid());
-    return iLayoutDataInfo[iLayoutType]->iSplitIndiIconRectWithoutText;
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator text layout
-// ---------------------------------------------------------------------------
-//
-const TAknTextLineLayout& MPeninputLafDataCommon::SplitIndiText() const
-    {
-    ASSERT( IsValid());
-    return iLayoutDataInfo[iLayoutType]->iSplitIndiText;
-    }
-
-// ---------------------------------------------------------------------------
 // Symbian constructor
 // ---------------------------------------------------------------------------
 //        
@@ -429,7 +379,7 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
             }
         }
     
-    // Compute the gap between first row key's top line and keyboard's top line
+        // Compute the gap between first row key's top line and keyboard's top line
     gapValue = keypaneRect.Rect().iTl.iY - keypadRect.Rect().iTl.iY;
     // Compute function button's top left Y coordinate
     rectOfButtons.iTl.iY = rectOfButtons.iTl.iY + 
@@ -464,7 +414,7 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
             data->iKeypad.iRects.AppendL( bound );
             
             TRect inner = rectXPane;
-            inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );
+            inner.Move( j * rectXPane.Width(), i * rectXPane.Height() );       
             
             TAknLayoutText keyTextLayout; 
             keyTextLayout.LayoutText( inner, keyText );
@@ -476,10 +426,8 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
 
     //all template rects are relative to TL of buttons row
     rectXPane = keypaneRect.Rect();
-    
     // The key rect without gap
     rectXBorder = RelativeRect( keypaneRect.Rect(), rectXPane.iTl );
-    
     rectXInner = RelativeRect( keylabelRect.Rect(), rectXPane.iTl );
     TRect rect3PicPane = RelativeRect( pic3paneRect.Rect(), rectXPane.iTl );
     rectXPane.Move( - rectXPane.iTl ); 
@@ -543,32 +491,6 @@ CPeninputQwtLayoutDataInfo* CPeninputLafDataFSQ::ReadLC( const TInt aLayoutType,
     data->iPreviewWndText = keyText;
     data->iPreviewWndRect = layoutrect.Rect();
     data->iPreviewWndInnerRect = layoutInnerect.Rect();
-
-    // bubble indicator
-    TAknWindowLineLayout icfIndiPaneWithText, icfIndiPaneWithoutText, 
-        indiIconWithText, indiIconWithoutText;
-    TAknLayoutRect icfIndiPaneRectWithText, icfIndiPaneRectWithoutText,
-        indiIconRectWithText, indiIconRectWithoutText;
-    TAknTextLineLayout indiTextLayout;
-    
-    icfIndiPaneWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane(1).LayoutLine();
-    icfIndiPaneRectWithText.LayoutRect( rectAppWin, icfIndiPaneWithText );
-    data->iSplitIndiPaneRectWithText = icfIndiPaneRectWithText.Rect();
-    
-    icfIndiPaneWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane(0).LayoutLine();
-    icfIndiPaneRectWithoutText.LayoutRect( rectAppWin, icfIndiPaneWithoutText );
-    data->iSplitIndiPaneRectWithoutText = icfIndiPaneRectWithoutText.Rect();
-    
-    indiIconWithText = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(1).LayoutLine();
-    indiIconRectWithText.LayoutRect( icfIndiPaneRectWithText.Rect(), indiIconWithText );
-    data->iSplitIndiIconRectWithText = indiIconRectWithText.Rect();
-    
-    indiIconWithoutText = AknLayoutScalable_Avkon::icf_edit_indi_pane_g2(0).LayoutLine();
-    indiIconRectWithoutText.LayoutRect( icfIndiPaneRectWithoutText.Rect(), indiIconWithoutText );
-    data->iSplitIndiIconRectWithoutText = indiIconRectWithoutText.Rect();
-    
-    indiTextLayout = AknLayoutScalable_Avkon::icf_edit_indi_pane_t1(0).LayoutLine();
-    data->iSplitIndiText = indiTextLayout;    
     
     return data;
     }
@@ -905,55 +827,5 @@ CPeninputSplitQwertyLafMgr::CPeninputSplitQwertyLafMgr()
 //
 void CPeninputSplitQwertyLafMgr::ConstructL()
     {
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator rect with text
-// ---------------------------------------------------------------------------
-//
-const TRect& CPeninputSplitQwertyLafMgr::SplitIndiRectWithText() const
-    {
-    ASSERT(iLafData);
-    return iLafData->SplitIndiRectWithText();
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator pane rect without text
-// ---------------------------------------------------------------------------
-//
-const TRect& CPeninputSplitQwertyLafMgr::SplitIndiRectWithoutText() const
-    {
-    ASSERT(iLafData);
-    return iLafData->SplitIndiRectWithoutText();
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator icon rect with text
-// ---------------------------------------------------------------------------
-//
-const TRect& CPeninputSplitQwertyLafMgr::SplitIndiIconRectWithText() const
-    {
-    ASSERT(iLafData);
-    return iLafData->SplitIndiIconRectWithText();
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator icon rect without text
-// ---------------------------------------------------------------------------
-//
-const TRect& CPeninputSplitQwertyLafMgr::SplitIndiIconRectWithoutText() const
-    {
-    ASSERT(iLafData);
-    return iLafData->SplitIndiIconRectWithoutText();
-    }
-
-// ---------------------------------------------------------------------------
-// Get split indicator text layout
-// ---------------------------------------------------------------------------
-//
-const TAknTextLineLayout& CPeninputSplitQwertyLafMgr::SplitIndiText() const
-    {
-    ASSERT(iLafData);
-    return iLafData->SplitIndiText();
     }
 // End Of File

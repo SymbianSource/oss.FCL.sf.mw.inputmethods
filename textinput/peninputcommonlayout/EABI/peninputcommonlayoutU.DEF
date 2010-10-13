@@ -316,4 +316,4 @@ EXPORTS
 	_ZThn4_N21CPeninputCommonLayout22SetPositionFromOutsideERK6TPoint @ 315 NONAME ; #<thunk>#
 	_ZThn4_N24CPeninputCommonLayoutExt22SetPositionFromOutsideERK6TPoint @ 316 NONAME ; #<thunk>#
 	_ZN24CPeninputLayoutWindowExt32HandleShiftAndCapslockBtnClickedEv @ 317 NONAME
-
+	_ZN24CPeninputLayoutWindowExt16EnableToneMarkerEi @ 318 NONAME

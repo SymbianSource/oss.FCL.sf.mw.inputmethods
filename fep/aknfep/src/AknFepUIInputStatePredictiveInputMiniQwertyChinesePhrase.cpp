@@ -127,25 +127,7 @@ TBool TAknFepInputStatePredictiveInputMiniQwertyChinesePhrase::HandleKeyL(TInt a
             fepMan->NewTextL(text);
             fepMan->CommitInlineEditL();
             iOwner->PtiEngine()->SetPredictiveChineseChar(text);
-            
-            // For sogou core, the predictive is not endless, so when there
-            // is no predictive candidates, we should call TryCloseUiL().
-            TBool noCandidates = EFalse;
-            if ( iPlugin.IsEnable() || iStrokePlugin.IsEnable())
-                {
-                // Get the predictive candidates.
-                CDesCArrayFlat* phraseCandidates = new(ELeave) CDesCArrayFlat(1);
-                CleanupStack::PushL ( phraseCandidates );
-                phraseCandidates->Reset();
-                iOwner->PtiEngine()->GetChinesePhraseCandidatesL( *phraseCandidates );
-                if ( phraseCandidates->Count() == 0 )
-                    {
-                    noCandidates = ETrue;
-                    }
-                CleanupStack::PopAndDestroy( phraseCandidates );
-                }
-            // If no candidates, call TryCloseUiL().
-            if ( fepMan->IsFlagSet(CAknFepManager::EFlagEditorFull) || noCandidates )
+            if (fepMan->IsFlagSet(CAknFepManager::EFlagEditorFull))
                 {
                 fepMan->ClearFlag(CAknFepManager::EFlagEditorFull);
                 iOwner->FepMan()->TryCloseUiL();
@@ -227,44 +209,4 @@ void TAknFepInputStatePredictiveInputMiniQwertyChinesePhrase::HandleCommandL(
         break;
     }
 }
-
-void TAknFepInputStatePredictiveInputMiniQwertyChinesePhrase::SubmitTextL( const TDesC& aText )
-	{
-	MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
-	if ( aText.Length() )
-	   {
-	   fepMan->NewTextL( aText );
-	   fepMan->CommitInlineEditL();
-	   iOwner->PtiEngine()->SetPredictiveChineseChar( aText );
-      
-       // For sogou core, the predictive is not endless, so when there
-       // is no predictive candidates, we should call TryCloseUiL().
-       TBool noCandidates = EFalse;
-       
-       if ( iPlugin.IsEnable() || iStrokePlugin.IsEnable())
-           {
-           // Get the predictive candidates.
-           CDesCArrayFlat* phraseCandidates = new(ELeave) CDesCArrayFlat(1);
-           CleanupStack::PushL ( phraseCandidates );
-           phraseCandidates->Reset();
-           iOwner->PtiEngine()->GetChinesePhraseCandidatesL( *phraseCandidates );
-           if ( phraseCandidates->Count() == 0 )
-               {
-               noCandidates = ETrue;
-               }
-           CleanupStack::PopAndDestroy( phraseCandidates );
-           }
-       
-       if (fepMan->IsFlagSet(CAknFepManager::EFlagEditorFull) || noCandidates )
-	      {
-	      fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
-	      iOwner->FepMan()->TryCloseUiL();
-	      }
-	   else
-	      {
-	      iOwner->ChangeState( EPredictiveCandidate );
-	      }
-	    }
-	}
-	
 // End of file

@@ -584,6 +584,7 @@ public:
      * @param Replace value of KAknFepLastUsedPortraitInput value.
      */
     void SetPluginPortraitInputMode( TPluginInputMode aLastUsedPortraitInputMode );
+
 private:
     /**
      * C++ Constructor

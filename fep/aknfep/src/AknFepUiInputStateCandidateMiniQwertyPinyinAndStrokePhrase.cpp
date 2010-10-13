@@ -30,7 +30,6 @@
 #include <PtiEngine.h>  
 #include <PtiUserDicEntry.h>
 #include <aknnotewrappers.h> //CAknWarningNote 
-#include "AknFepUiManagerBase.h"
 
 const TInt KMinCandidateCount = 1;
 // User includes
@@ -43,7 +42,6 @@ const TInt KMinCandidateCount = 1;
 #include "AknFepUIManagerStateInterface.h"  
 #include "AknFepManager.h" 
 #include <aknfep.rsg>                 
-#include "AknFepUiManagerChinese.h"
 
 // ---------------------------------------------------------------------------
 // AknFepUiInputStateCandidateMiniQwertyPinyinAndStrokePhrase::
@@ -208,21 +206,11 @@ TBool TAknFepUiInputStateCandidateMiniQwertyPinyinAndStrokePhrase::HandleKeyL(TI
                     {
                     if ( CheckFirstGroupStroke() )
                         {
-                        //stroke to be shown
-                        if ( iPlugin.IsEnable())
-                            {
-                            iPlugin.AnalyseL();
-                            }
                         RefreshUI( EFalse );
                         UIContainer()->CandidatePane()->SelectFirstPhrase();
                         }
                     else
                         {
-                        //stroke to be shown
-                        if ( iPlugin.IsEnable())
-                            {
-                            iPlugin.AnalyseL();
-                            }
                         UIContainer()->EditPaneWindow()->SetAutoChangeStateFlag( EAutoChangeStateFromCandidate );
                         iOwner->ChangeState( EMiniQwertyEdit );
                         }
@@ -290,36 +278,5 @@ void TAknFepUiInputStateCandidateMiniQwertyPinyinAndStrokePhrase::HandleCommandL
             break;
         }
     }
-void TAknFepUiInputStateCandidateMiniQwertyPinyinAndStrokePhrase::SubmitTextL( const TDesC& aText )
-	{
-	 if ( aText.Length() )
-		 {
-		 if ( !CommitInlineEEPL( aText ) )
-			{
-			DoActionAfterCommit();
-			}
-		else
-			{
-			if ( CheckFirstGroupStroke() )
-				{
-                //stroke to be shown
-                if ( iPlugin.IsEnable())
-                    {
-                    iPlugin.AnalyseL();
-                    }
-				RefreshUI( EFalse );
-				UIContainer()->CandidatePane()->SelectFirstPhrase();
-				}
-			else
-				{
-                if ( iPlugin.IsEnable())
-			        {
-			        iPlugin.AnalyseL();
-			        }
-				UIContainer()->EditPaneWindow()->SetAutoChangeStateFlag( EAutoChangeStateFromCandidate );
-				iOwner->ChangeState( EMiniQwertyEdit );
-				}
-			}
-		}
-	}
+
 // End of file

@@ -31,7 +31,7 @@
 #include <s32mem.h>
 
 #include <peninputrangebar.h>
-#include <peninputpopupbubble.h>
+#include <peninputcmdparam.h>
 
 // User includes
 #include "peninputsplitqwerty.hrh"
@@ -58,6 +58,9 @@ const TUint16 thaiUnicodeNew[KNumberOfDottedChar] =
     0xF73A,0xF747,0xF748,0xF749,0xF74A,0xF74B,0xF74C,0xF74D
     }; 
 
+// TInt number in command, used to show candidate list
+const TInt KStartIntNumber = 3;
+const TInt KEndIntNumber = 4;
 // ---------------------------------------------------------------------------
 // Symbian constructor
 // ---------------------------------------------------------------------------
@@ -186,6 +189,12 @@ TInt CPeninputSplitQwertyLayout::HandleCommand( TInt aCmd, TUint8* aData )
             vkbWindow->DimArrowKeys( IsDimArrowKeys );
             }
             break;
+        case ECmdPeninputVietSyncToneMarker:
+        	{
+        	TBool bDimToneMarker = *aData;
+        	vkbWindow->EnableToneMarker(bDimToneMarker);
+        	}
+        	break;
         case ECmdPenInputSetPromptText:
             break;
         case ECmdPenInputCharacterPreview:
@@ -198,20 +207,27 @@ TInt CPeninputSplitQwertyLayout::HandleCommand( TInt aCmd, TUint8* aData )
             iInEditWordQueryDlg = *aData;
             }
             break;
+        case ECmdPenInputPopupCandidateList:
+            {
+            TRAP_IGNORE( HandleShowCandidateListCmdL( aData ) );
+            }
+            break;
+        case ECmdPenInputHideCandidateList:
+            {
+            SignalOwner( ESignalHideServerCandidate );
+            }
+            break;
         case ECmdPeninputITIStatus:
             {
             // Set the flag to indicate if FSQ with ITI feature is opened
             iITIEnabled = CPeninputDataConverter::AnyToInt( aData );
-            }            
-            break;
-        case ECmdPenInputFingerMatchIndicator:
-            {
-            if ( iLayoutType == EPluginInputModeFSQ )
-                {
-                TRAP_IGNORE( vkbWindow->UpdateSplitIndiBubbleL( aData ));
-                }
             }
-            break;            
+            break;
+        case ECmdPeninputSelectServerCandidate:
+            {
+            TRAP_IGNORE( HandleSelectServerCandItemL( aData ) );
+            }
+            break;
         default:
             {
             }
@@ -236,13 +252,6 @@ void CPeninputSplitQwertyLayout::HandleControlEvent( TInt aEventType,
             TRAP_IGNORE( HandleVirtualKeyUpL( aEventType, aCtrl, aEventData ) );
             }
             break;
-        case EEventVirtualKeyDown:
-        	{
-        	HandleVirtualKeyDown();
-        	CPeninputCommonLayoutExt::HandleControlEvent( aEventType, 
-        			aCtrl, aEventData );
-        	break;
-        	}
         default:
             {
             CPeninputCommonLayoutExt::HandleControlEvent( aEventType, 
@@ -259,6 +268,15 @@ void CPeninputSplitQwertyLayout::HandleControlEvent( TInt aEventType,
 TInt CPeninputSplitQwertyLayout::OnAppEditorTextComing( 
                                       const TFepInputContextFieldData& aData )
     {
+    CPeninputSplitQwertyWindow* 
+        win = static_cast<CPeninputSplitQwertyWindow*>(iLayoutWindow);
+        
+    //Suppress ICF related actions
+    if ( win )
+        {
+        return KErrNone;
+        }
+    
     return CPeninputCommonLayoutExt::OnAppEditorTextComing( aData );
     }
 
@@ -268,16 +286,6 @@ TInt CPeninputSplitQwertyLayout::OnAppEditorTextComing(
 //
 TInt CPeninputSplitQwertyLayout::SizeChanged( const TAny* aData )
     {
-    CPeninputSplitQwertyWindow* 
-        win = static_cast<CPeninputSplitQwertyWindow*>( iLayoutWindow );
-        
-    if ( win )
-        {      
-        win->UpdateLafData();
-        
-        win->UpdateLayoutPosAndSize();        
-        }
-    
     return CPeninputCommonLayoutExt::SizeChanged( aData );
     }
 
@@ -285,30 +293,10 @@ TInt CPeninputSplitQwertyLayout::SizeChanged( const TAny* aData )
 // Inform UI that application infomation changed
 // ---------------------------------------------------------------------------
 //
-void CPeninputSplitQwertyLayout::HandleAppInfoChange( const TDesC& aInfo, 
-                                                      TPeninputAppInfo aType )
+void CPeninputSplitQwertyLayout::HandleAppInfoChange( const TDesC& /*aInfo*/, 
+                                                      TPeninputAppInfo /*aType*/ )
     {
-    if ( LayoutWindow() )
-        {
-        CPopupBubbleCtrl* splitIndibubble = static_cast<CPopupBubbleCtrl*> 
-                                    (LayoutWindow()->Control(EPeninputWindowCtrlIdSplitIndiBubble)) ;         
-
-        if ( splitIndibubble && ( aType == EAppIndicatorMsg ) && (iLayoutType == EPluginInputModeFSQ) )
-            {
-            CPeninputSplitQwertyWindow* window = static_cast<CPeninputSplitQwertyWindow*>(iLayoutWindow);           
-            if ( aInfo.Length() > 0 && !iInEditWordQueryDlg)
-                {
-                TRAP_IGNORE(splitIndibubble->SetTextL(aInfo));
-                window->SetSplitIndiBubbleSizeWithText();                
-                }
-            else
-                {
-                TRAP_IGNORE(splitIndibubble->SetTextL(KNullDesC));
-                window->SetSplitIndiBubbleSizeWithoutText();                 
-                }
-            splitIndibubble->Draw();           
-            }
-        }
+    //Suppress ICF related actions
     }
 
 // ---------------------------------------------------------------------------
@@ -452,19 +440,130 @@ void CPeninputSplitQwertyLayout::HandleVirtualKeyUpL( TInt aEventType,
         }
     }
 
+
 // ---------------------------------------------------------------------------
-// Handle virtual key down event
+// Handle show candidate list command.
 // ---------------------------------------------------------------------------
 //
-void CPeninputSplitQwertyLayout::HandleVirtualKeyDown()
+void CPeninputSplitQwertyLayout::HandleShowCandidateListCmdL( TUint8* aData )
+    {
+    // Read candidate data from a block of memory staring from aData
+    // The format is activeIndex | count of candiates | 
+    // length 1 | text 1 | length 2 | text 2 |...
+    TPtr8 buf8( aData, sizeof( TInt32 ) * KStartIntNumber, 
+                sizeof( TInt32 ) * KStartIntNumber );
+    RDesReadStream readStream;
+    readStream.Open( buf8 );
+    CleanupClosePushL( readStream );
+    // Get activeIndex
+    TInt activeIndex = readStream.ReadInt32L();
+    // Get coutn of candidates
+    TInt count = readStream.ReadInt32L();    
+    TInt langCode = readStream.ReadInt32L();
+    TBidiText::TDirectionality dir = 
+                    TBidiText::ScriptDirectionality( ( TLanguage )langCode );
+    CGraphicsContext::TTextAlign align = ( dir == TBidiText::ELeftToRight ) ?
+                                           CGraphicsContext::ELeft :
+                                           CGraphicsContext::ERight;
+    CleanupStack::PopAndDestroy( &readStream );
+    
+    CDesCArray* itemArray = NULL;
+    if ( count > 0 )
+        {        
+        TUint8* curPointer = aData + sizeof( TInt ) * KStartIntNumber;
+        itemArray = new ( ELeave ) CDesCArrayFlat( count );
+        CleanupStack::PushL( itemArray );
+        for ( TInt i = 0; i < count; i++ )
+            {
+            // Get length
+            buf8.Set( curPointer, sizeof( TInt32 ), sizeof( TInt32 ) );
+            readStream.Open( buf8 );
+            CleanupClosePushL( readStream );
+            TInt32 textSize = 0;
+            textSize = readStream.ReadInt32L();            
+            CleanupStack::PopAndDestroy( &readStream );
+            if ( textSize > 0 )
+                {
+                // Get text
+                curPointer += sizeof( TInt32 );
+                HBufC* itemText = ReadTextInfoHBufCL
+                                      ( (TUint16*)curPointer, 
+                                        ( textSize + 1 )/ 2 );
+                if ( itemText )
+                    {
+                    CleanupStack::PushL( itemText );
+                    itemArray->AppendL( *itemText );                    
+                    CleanupStack::PopAndDestroy( itemText ); 
+                    }     
+                curPointer += textSize;
+                }
+            }
+        
+        buf8.Set( curPointer, sizeof( TInt32 ) * KEndIntNumber, 
+                  sizeof( TInt32 ) * KEndIntNumber );
+        readStream.Open( buf8 );
+        CleanupClosePushL( readStream );
+        TRect rect;
+        rect.iTl.iX = readStream.ReadInt32L();
+        rect.iTl.iY = readStream.ReadInt32L();
+        rect.iBr.iX = readStream.ReadInt32L();
+        rect.iBr.iY = readStream.ReadInt32L();
+        CleanupStack::PopAndDestroy( &readStream );
+        
+        TPeninputCandidateData cmd;
+        cmd.iAlign = ( TInt ) align;
+        cmd.iInitRect = rect;
+        cmd.iSpellEnabled = EFalse;
+        cmd.iTextWidthEnabled = EFalse;
+        cmd.iItemArray = itemArray;
+        cmd.iActiveIndex = activeIndex;
+        
+    	TPtrC buf( reinterpret_cast<TUint16*>( &cmd ), sizeof( cmd ) );
+        SignalOwner( ESignalShowServerCandidate, buf );
+        
+        CleanupStack::PopAndDestroy( itemArray );
+        }
+    }
+
+
+// ---------------------------------------------------------------------------
+// Read text stored in a block of memory into HBufC.
+// ---------------------------------------------------------------------------
+//
+HBufC* CPeninputSplitQwertyLayout::ReadTextInfoHBufCL( TUint16* aStartPtr, 
+                                                      TInt aLength )
+    {
+    HBufC* itemText = NULL;
+    if ( aLength > 0 )
+        {
+        itemText = HBufC::NewLC( aLength );
+        TPtr itemTextPtr = itemText->Des();
+        itemTextPtr.Copy( aStartPtr, aLength ); 
+        CleanupStack::Pop( itemText ); 
+        }    
+    return itemText;
+    }
+
+// ---------------------------------------------------------------------------
+// Handle select candidate list item command.
+// ---------------------------------------------------------------------------
+//
+void CPeninputSplitQwertyLayout::HandleSelectServerCandItemL( TUint8* aData )
 	{
-	CPeninputSplitQwertyWindow* window = 
-			static_cast<CPeninputSplitQwertyWindow*>( iLayoutWindow );
-	
-	if ( window )
-		{
-		window->HandleVirtualKeyDownEvent();
-		}
+	TPtr8* ptr = reinterpret_cast< TPtr8* > ( aData );
+    RDesReadStream readStream;
+    readStream.Open( *ptr );
+    CleanupClosePushL( readStream );
+    TInt command = readStream.ReadInt32L();
+    TInt focusItem = readStream.ReadInt32L();
+    CleanupStack::PopAndDestroy(&readStream);
+    
+    if ( command == ECandItemCmdItemSelected )
+    	{
+        TPtrC buf( reinterpret_cast< TUint16* >( &focusItem ),
+        		   sizeof( TInt ) );
+        SignalOwner ( ESignalSelectCandidate, buf );       			
+		}	
 	}
 
 // End Of File

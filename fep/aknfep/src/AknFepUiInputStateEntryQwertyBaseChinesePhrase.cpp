@@ -56,10 +56,9 @@ TAknFepInputStateEntryQwertyBaseChinesePhrase::TAknFepInputStateEntryQwertyBaseC
     iOwner->PtiEngine()->SetCandidatePageLength(KMaxPhraseCount);
     uiContainer->ShowHorizontalScrollArrows(showHorizontalScrollArrows); 
     uiContainer->ShowVerticalScrollArrows(multiplePages);
-    candidatePane->SelectFirstPhrase();
     uiContainer->FocusCandidatePane(ETrue);
     candidatePane->SetHighlighted(ETrue);
-    
+    candidatePane->SelectFirstPhrase();
     candidatePane->ShowCandidateOrdinals(ETrue);
     uiContainer->SetLayout(MAknFepUICtrlContainerChinese::ELayoutInput);
     UpdateIndicator();

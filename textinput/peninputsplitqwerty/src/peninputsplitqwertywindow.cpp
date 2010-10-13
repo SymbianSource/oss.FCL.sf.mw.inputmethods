@@ -55,7 +55,6 @@
 #include "peninputsplitqwertylafdatamgr.h"
 #include "peninputsplitqwertylangmeritpair.h"
 #include "peninputsplitqwertylayout.h"
-#include "peninputpopupbubble.h"
 
 #include <peninputaknvkbpreviewbubblerenderer.h>
 #include <peninputlongpressbutton.h>
@@ -216,18 +215,7 @@ void CPeninputSplitQwertyWindow::CreateAllControlsL()
     {
     // Range bar
     AddRangeBarL();
-    
-    // char count bubble   
-    iSplitIndiBubble = CPopupBubbleCtrl::NewL(TRect(),UiLayout(),EPeninputWindowCtrlIdSplitIndiBubble);
-    iSplitIndiBubble->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
-    //Change the ID when ID into release
-    iSplitIndiBubble->SetBitmapParamL(NULL,
-                              NULL,
-                              KAknsIIDQsnFrInputPreviewSideL,
-                              KAknsIIDQsnFrInputPreviewMiddle,
-                              KAknsIIDQsnFrInputPreviewSideR);
-    AddControlL(iSplitIndiBubble);
-   
+
     // Vkb control
     iVkbCtrl = CPeninputVkbCtrlExt::NewL( TRect(), 
                                           UiLayout(), 
@@ -877,24 +865,6 @@ TBool CPeninputSplitQwertyWindow::HandleVirtualKeyUpEvent(TInt aEventType,
     iNewDeadKeyBuf = KNullDesC;
     return EFalse;
     } 
-
-// ---------------------------------------------------------------------------
-// Handle virtual key down event
-// ---------------------------------------------------------------------------
-//
-void CPeninputSplitQwertyWindow::HandleVirtualKeyDownEvent()
-	{
-    // Get DeadKey state
-    TInt latchedFlag = CPeninputDataConverter::AnyToInt(
-				   iLayoutContext->RequestData( EAkninputDataTypeLatchedSet ));
-    
-    if ( latchedFlag )
-    	{
-	    UnLatchDeadKey( iNewDeadKeyBuf );
-	    TBool deadKeyChange = ETrue;
-	    iLayoutContext->SetData( EAkninputDataTypeLatchedSet, &deadKeyChange );
-    	}
-	}
 
 // ---------------------------------------------------------------------------
 // Set dead key
@@ -2134,216 +2104,6 @@ void CPeninputSplitQwertyWindow::HandleRangeButtonShortPress()
         }
     
     TRAP_IGNORE( UpdateRangeCtrlsL() );
-    }
-
-// ---------------------------------------------------------------------------
-// Set split indicator bubble image
-// ---------------------------------------------------------------------------
-//
-void CPeninputSplitQwertyWindow::SetSplitIndiBubbleImageL( const TInt aImgID1,
-                                              const TInt aMaskID1,
-                                              const TInt aImgID2,
-                                              const TInt aMaskID2 )
-    {
-    MAknsSkinInstance* skininstance = AknsUtils::SkinInstance();
-
-    CFbsBitmap* bmp1 = NULL;
-    CFbsBitmap* mask1 = NULL;
-    
-    TInt colorIndex = EAknsCIQsnIconColorsCG30;
-
-    AknsUtils::CreateColorIconL(skininstance,
-                                KAknsIIDQsnIconColors,
-                                KAknsIIDQsnIconColors,
-                                colorIndex,
-                                bmp1,
-                                mask1,
-                                AknIconUtils::AvkonIconFileName(),
-                                aImgID1,
-                                aMaskID1,
-                                KRgbGray);
-    CleanupStack::PushL( bmp1 );
-    CleanupStack::PushL( mask1 );
-                                
-    AknIconUtils::GetContentDimensions(bmp1, iSplitIndicatorSize);
-
-    CFbsBitmap* bmp2 = NULL;
-    CFbsBitmap* mask2 = NULL;
-    AknsUtils::CreateColorIconL(skininstance,
-                                KAknsIIDQsnIconColors,
-                                KAknsIIDQsnIconColors,
-                                colorIndex,
-                                bmp2,
-                                mask2,
-                                AknIconUtils::AvkonIconFileName(),
-                                aImgID2,
-                                aMaskID2,
-                                KRgbGray);
- 
-    CleanupStack::PushL( bmp2 );
-    CleanupStack::PushL( mask2 );
-    
-    AknIconUtils::GetContentDimensions(bmp2, iSplitIndicatorTextSize);
-    
-    TRect boundRect;
-    if (iSplitIndiBubble->HasText())
-        {
-        boundRect = iLafMgr->SplitIndiIconRectWithText();
-        }
-    else
-        {
-        boundRect = iLafMgr->SplitIndiIconRectWithoutText();
-        }
-    TRect imgrect, textrect;
-    
-    CalIndicatorRect(boundRect, imgrect, textrect, EIndiAlignCenter);
-    AknIconUtils::SetSize(bmp1, imgrect.Size(), EAspectRatioNotPreserved);
-    AknIconUtils::SetSize(mask1, imgrect.Size(), EAspectRatioNotPreserved);
-    AknIconUtils::SetSize(bmp2, textrect.Size(), EAspectRatioNotPreserved);
-    AknIconUtils::SetSize(mask2, textrect.Size(), EAspectRatioNotPreserved);
-
-    CFbsBitmap* bmp3 = AknPenImageUtils::CombineTwoImagesL(bmp1, bmp2, bmp1->DisplayMode());
-    CFbsBitmap* mask3 = AknPenImageUtils::CombineTwoImagesL(mask1, mask2, EGray256);
-    
-    iSplitIndiBubble->SetBitmapParamL( bmp3, mask3, 
-                    KAknsIIDQsnFrInputPreviewSideL,
-                    KAknsIIDQsnFrInputPreviewMiddle,
-                    KAknsIIDQsnFrInputPreviewSideR );
-    
-    CleanupStack::PopAndDestroy( mask2 );
-    CleanupStack::PopAndDestroy( bmp2 );
-    CleanupStack::PopAndDestroy( mask1 );
-    CleanupStack::PopAndDestroy( bmp1 );
-    }
-
-// ---------------------------------------------------------------------------
-// Calculate indicator rect
-// ---------------------------------------------------------------------------
-//
-void CPeninputSplitQwertyWindow::CalIndicatorRect(const TRect& aBoundRect,
-                                          TRect& aRealRect1,
-                                          TRect& aRealRect2,
-                                          TIndicatorAlign aAlign) 
-    {
-    TInt imgAspectText = iSplitIndicatorTextSize.iWidth / iSplitIndicatorTextSize.iHeight;
-    TInt imgAspectIndi = iSplitIndicatorSize.iWidth / iSplitIndicatorSize.iHeight;
-    TSize imgSizeText( aBoundRect.Size().iHeight * imgAspectText, 
-                       aBoundRect.Size().iHeight );
-    TSize imgSizeIndi( aBoundRect.Size().iHeight * imgAspectIndi, 
-                               aBoundRect.Size().iHeight );
-    // check if the length of img > bound rect width
-    TInt nTotalWidth = imgSizeText.iWidth + imgSizeIndi.iWidth;
-    if( nTotalWidth > aBoundRect.Size().iWidth )
-        {
-        TReal nAspect = (TReal)imgSizeText.iWidth / nTotalWidth;
-        imgSizeText.iWidth = aBoundRect.Size().iWidth * nAspect;
-        imgSizeIndi.iWidth = aBoundRect.Size().iWidth - imgSizeText.iWidth;
-        imgSizeText.iHeight = imgSizeText.iWidth / imgAspectText;
-        // make sure the height of two rect is equal
-        imgSizeIndi.iHeight = imgSizeText.iHeight;
-        }
-    if( aAlign == EIndiAlignRight )
-        {
-        aRealRect2 = TRect(TPoint( aBoundRect.iBr.iX - imgSizeText.iWidth, aBoundRect.iTl.iY),
-                       imgSizeText);
-        aRealRect1 = TRect(TPoint(aRealRect2.iTl.iX - imgSizeIndi.iWidth, aRealRect2.iTl.iY),
-                       imgSizeIndi);
-        }
-    else if( aAlign == EIndiAlignCenter )
-        {
-        TInt offsetX = ( aBoundRect.Size().iWidth - imgSizeText.iWidth - imgSizeIndi.iWidth ) / 2;
-        TInt offsetY = ( aBoundRect.Size().iHeight - imgSizeText.iHeight ) / 2;
-        aRealRect2 = TRect( TPoint( aBoundRect.iBr.iX - imgSizeText.iWidth - offsetX, 
-                                   aBoundRect.iTl.iY + offsetY),
-                            imgSizeText );
-        aRealRect1 = TRect( TPoint(aRealRect2.iTl.iX - imgSizeIndi.iWidth, aRealRect2.iTl.iY),
-                       imgSizeIndi );
-        }
-    else if( aAlign == EIndiAlignLeft )
-        {
-        aRealRect1 = TRect( aBoundRect.iTl, imgSizeIndi );
-        aRealRect2 = TRect( TPoint( aRealRect1.iBr.iX, aRealRect1.iTl.iY ), imgSizeText );
-        }
-    }
-
-// ---------------------------------------------------------------------------
-// Set split indicator bubble size with text
-// ---------------------------------------------------------------------------
-//
-void CPeninputSplitQwertyWindow::SetSplitIndiBubbleSizeWithText()
-    {
-    if ( iSplitIndiBubble )
-        {
-        TAknTextLineLayout textLine = iLafMgr->SplitIndiText();
-        TRect bubbleRect = iLafMgr->SplitIndiRectWithText();
-        TRect iconRect = iLafMgr->SplitIndiIconRectWithText();
-        TSize offset;
-        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
-        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
-        TSize size( iconRect.Width(), iconRect.Height());
-        
-        iSplitIndiBubble->SetRect( bubbleRect );
-        iSplitIndiBubble->SetIconOffsetAndSize( offset, size );
-        iSplitIndiBubble->SetTextFormat( textLine );
-        iSplitIndiBubble->SetTextColorIndex( EAknsCIQsnTextColorsCG67 );
-        }
-    }
-
-// ---------------------------------------------------------------------------
-// Set split indicator bubble size without text
-// ---------------------------------------------------------------------------
-//
-void CPeninputSplitQwertyWindow::SetSplitIndiBubbleSizeWithoutText()
-    {
-    if ( iSplitIndiBubble )
-        {
-        TRect bubbleRect = iLafMgr->SplitIndiRectWithoutText();
-        TRect iconRect = iLafMgr->SplitIndiIconRectWithoutText();
-        TSize offset;
-        offset.iHeight = iconRect.iTl.iY - bubbleRect.iTl.iY;
-        offset.iWidth = iconRect.iTl.iX - bubbleRect.iTl.iX;
-        TSize size( iconRect.Width(), iconRect.Height());
-        
-        iSplitIndiBubble->SetRect( bubbleRect );
-        iSplitIndiBubble->SetIconOffsetAndSize( offset, size );
-        }
-    }
-
-// ---------------------------------------------------------------------------
-// Update split indicator bubble
-// ---------------------------------------------------------------------------
-//
-void CPeninputSplitQwertyWindow::UpdateSplitIndiBubbleL( TUint8* aData )
-    {
-    RDesReadStream readStream;
-    TFepIndicatorInfo indicatorData;
-
-    TPtr8 countPtr( aData, 4*sizeof(TInt), 4*sizeof(TInt) );            
-    readStream.Open(countPtr);
-    CleanupClosePushL(readStream);
-
-    indicatorData.iIndicatorImgID = readStream.ReadInt32L();
-    indicatorData.iIndicatorMaskID = readStream.ReadInt32L();
-    indicatorData.iIndicatorTextImgID = readStream.ReadInt32L();
-    indicatorData.iIndicatorTextMaskID = readStream.ReadInt32L();
-
-    CleanupStack::PopAndDestroy(&readStream);
-    
-    if ( indicatorData.iIndicatorImgID != 0 && 
-        indicatorData.iIndicatorMaskID != 0 && 
-        indicatorData.iIndicatorTextImgID != 0 &&
-        indicatorData.iIndicatorTextMaskID != 0 )
-        { 
-        SetSplitIndicatorData( indicatorData );
-        
-
-        SetSplitIndiBubbleImageL( indicatorData.iIndicatorImgID,
-                    indicatorData.iIndicatorMaskID,
-                    indicatorData.iIndicatorTextImgID,
-                    indicatorData.iIndicatorTextMaskID );
-                 
-        iSplitIndiBubble->Hide(EFalse);
-        }
     }
 
 // End Of File

@@ -269,7 +269,9 @@ public:
         /* Flag to specify that pointer event type EDrag has happened */ 
         EExtendedFlagPointerEventTypeEDrag                =0x00000040,
         /* Flag to specify that Fn key will be set as lock mode when long press occurs*/ 
-        EExtendedFlagFnKeyNeedLockMode                    =0x00000080
+        EExtendedFlagFnKeyNeedLockMode                    =0x00000080,
+        /* Flag to specify point in editor when EFlagNoMatches flag is set*/ 
+        EExtendedFlagPointInNoMatchEditor                 =0x00000100
     	};		
 
     //public constants
@@ -624,15 +626,6 @@ public: //from MAknFepManagerUIInterface
     */
     virtual void HandleIndicCaseL();
 #endif
-    /*
-     * This function judge whether the texts inputted 
-     * exceed the max length of the editor. 
-     * 
-     * @since Symbian^3
-     * @param aNewInlineTextLenght the length of the current inline texts
-     * @return ETrue if the texts inputted exceed the max length of the editor. 
-     */ 
-    TBool IsTextExceedLeghthEditor(TInt aNewInlineTextLenght);
 
 public: //interface to the key catcher
     /**
@@ -923,6 +916,11 @@ public:
     TBool IsJavaSecretEditor();    
 	
 	void HandleChangeInFocusForSettingFep();
+
+    /**
+    * Returns initial rectangle used for the top-left point of split candidate.
+    */
+    TRect InitRectForSplitCandL();
 
 private:
 
@@ -2474,8 +2472,6 @@ public:
     
     inline TBool IsMfneEditor() const;
     
-    inline TBool IsNoT9Editor() const;
-    
     inline TBool IsFindPaneEditor() const;
     inline TBool IsSupportedAdaptiveSearch() const;
     //for japanese
@@ -2943,7 +2939,7 @@ public:
     /**
     * Notify mfne editor to toggle AM or PM for 12-hour time
     */
-    void ChangeMfneAmPmL();
+    void ChangeMfneAmPm();
 private:        
     TBool NumericResourceMultiTapTimerTimeoutL();    
     
@@ -2977,19 +2973,6 @@ private:
      *      aMenuPane : pointer to the menu pane to be checked for the resource id
      */
     void AddInputOptionsMenuItemL( CAknFepUiInterfaceMenuPane* aMenuPane );
-    
-    /**
-     * CAknFepManager::MenuItemExist
-     * To check if the menuitem with the CascadeId exist in menupane
-     * Params -
-     *      aMenuPane : the current menu pane
-     *      aCascadeId : the menuitem cascadeID
-     *      aPosition : if the menuitem exist, this is the index
-     * return -
-     *      exist : true
-     *      not exist : false
-     */
-    TBool MenuItemExistL( CAknFepUiInterfaceMenuPane* aMenuPane, TInt aCascadeId, TInt &aPosition );
         
 private:        
     CChrMultiTapTimer* iNumericResourceTimer;
@@ -3167,11 +3150,6 @@ inline void CAknFepManager::RemeberEditorState()
 inline TBool CAknFepManager::IsMfneEditor() const
     {
     return EditorType() == CAknExtendedInputCapabilities::EMFNEBased;
-    }
-
-inline TBool CAknFepManager::IsNoT9Editor() const
-    {
-    return iAknEditorFlags & EAknEditorFlagNoT9;
     }
 
 inline TBool CAknFepManager::IsFindPaneEditor() const

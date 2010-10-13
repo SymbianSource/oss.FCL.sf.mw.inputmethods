@@ -320,7 +320,6 @@ TInt CPeninputServerSession::DoServiceL( const RMessage2& aMessage )
         case EPeninputRequestSupportInputMode:
         case EPeninputRequestSetInputLanguage:
 		case EPeninputEnablePriorityChangeOnOriChange:
-		case EPeninputRequestEnableGfxTransEffect:
             ret = iPenInputSvr.HandleMessageL(aMessage);            
             break;
         case EPeninputRequestUpdateAppInfo:            

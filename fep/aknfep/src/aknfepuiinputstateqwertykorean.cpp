@@ -24,9 +24,7 @@
 #include <PtiEngine.h>
 #include <PtiDefs.h>
 #include <PtiKeyMappings.h>
-#include <PtiDefs.h>   
-
-const TInt KMaxPtiTextBufSize = 255;
+#include <PtiDefs.h>        
 
 TAknFepInputStateQwertyKorean::TAknFepInputStateQwertyKorean(
         MAknFepUIManagerStateInterface* aOwner)
@@ -41,113 +39,42 @@ TAknFepInputStateQwertyKorean::~TAknFepInputStateQwertyKorean()
     {
     }
 
-TBool TAknFepInputStateQwertyKorean::HandleKeyL(TInt aKey, TKeyPressLength aLength)
-    {	
-    MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
-    CPtiEngine* ptiengine = iOwner->PtiEngine();
-    TBool ret = ETrue;
-       
-	switch( aKey )
-		{
-		case EKeyDelete:
-		case EStdKeyDelete:
-		case EKeyBackspace:
-		case EStdKeyBackspace:
-			{
-			if (fepMan->IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction))
-				{
-				TPtrC newText = ptiengine->DeleteKeyPress();
-				if( newText.Length() > 0 )
-					{
-					  fepMan->UpdateInlineEditL(newText, newText.Length());
-					}
-				else
-					{
-					fepMan->CancelInlineEdit();
-					ptiengine->ClearCurrentWord();
-					}	      	
-				}
-			else
-				{
-				ret = EFalse;	
-				}
-			}
-			break;
-		case EStdKeyEnter:
-		case EStdKeySpace:
-		case EStdKeyTab:
-		case EStdKeyLeftArrow:
-		case EStdKeyRightArrow:
-		case EStdKeyDownArrow:
-		case EStdKeyUpArrow:
-			{
-			fepMan->CommitInlineEditL();	
-			ptiengine->CommitCurrentWord();
-			ret = EFalse; 
-			}
-			break;
-		default:
-			{
-			//normal character handled here
-			if ( EShortKeyPress == aLength )
-				{
-				if (!(fepMan->IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction)))
-					{ 
-					// start inline edit
-					ptiengine->ClearCurrentWord();
-					fepMan->StartInlineEditL();
-					fepMan->SetInlineEditingCursorVisibilityL(ETrue);
-					}
-										 
-				TPtrC aText = ptiengine->AppendKeyPress((TPtiKey)aKey);
-				if( aText.Length() > 0 )
-					{
-					 fepMan->UpdateInlineEditL(aText, aText.Length());	
-					 if( aText.Length()  >= KMaxPtiTextBufSize )
-						{
-						// force commit 
-						fepMan->CommitInlineEditL();	
-						ptiengine->CommitCurrentWord();
-						}	
-					}	
-				}
-			else // long press
-				{
-				if (!fepMan->IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction))
-					{
-					return ETrue; 			
-					}
-				
-				//delete last input text
-				TPtrC text = ptiengine->DeleteKeyPress();
-				if( text.Length() >0 )
-					{
-				    fepMan->UpdateInlineEditL(text, text.Length());
-					}
-	            
-	            // add new text
-				TPtiTextCase previousCase = ptiengine->Case();
-				switch ( previousCase )
-					{
-					case EPtiCaseLower:
-					case EPtiCaseUpper:
-						ptiengine->SetCase( EPtiCaseFnLower );
-						break;
-					default:
-						break;
-					}
-					   
-				TPtrC newText = ptiengine->AppendKeyPress((TPtiKey)aKey);
-				if( newText.Length() >0 )
-					{
-					 fepMan->UpdateInlineEditL(newText, newText.Length());
-					}
-				ptiengine->SetCase( previousCase );
-				fepMan->CommitInlineEditL();
-				ptiengine->ClearCurrentWord();
-				}
-			}  
-			break;
-		}                                                             	  	                    				   
-    return ret;
+TBool TAknFepInputStateQwertyKorean::HandleKeyL(TInt aKey, TKeyPressLength /*aLength*/)
+    {
+//    LOG2("KO.IS.QWERTY.HandleKeyL %d,%d",aKey,aLength);
+    CPtiEngine& ptiEngine(*(iOwner->PtiEngine()));
+    MAknFepManagerUIInterface& fepMan(*(iOwner->FepMan()));
+    
+    TPtrC text(ptiEngine.AppendKeyPress((TPtiKey)aKey));
+    TBuf<1> chr;            
+    for (TInt jj = 0; jj < text.Length(); jj++)
+        {
+        chr.Zero();
+        chr.Append(text[jj]);
+        fepMan.NewCharacterL(chr);
+        }
+    return ETrue;
     }
+
+void TAknFepInputStateQwertyKorean::KeyTimerExpired()
+    {
+//    LOG1("KO.IS.QWERTY.KeyTimerExpired %d",iData);
+    CPtiEngine& ptiEngine(*(iOwner->PtiEngine()));
+    MAknFepManagerUIInterface& fepMan(*(iOwner->FepMan()));
+    
+    TPtrC text(ptiEngine.CurrentWord());
+    TBuf<1> chr;            
+    for (TInt jj = 0; jj < text.Length(); jj++)
+        {
+        chr.Zero();
+        chr.Append(text[jj]);
+        TRAP_IGNORE( fepMan.NewCharacterL(chr) );
+        }
+    
+    //TRAPD(err, fepMan.CommitInlineEditL())
+    TRAP_IGNORE( fepMan.CommitInlineEditL() )
+    }
+
+//fepMan.StartInlineEditL(text);
+//iFepMan.StartInlineEditL()
+//virtual void SetCursorSelectionL(const TCursorSelection& aCurSel, TBool aSyncCursor) = 0;

@@ -38,7 +38,9 @@ public:
 private:
 
     virtual TBool HandleKeyL(TInt aKey, TKeyPressLength aLength);
-        
+    
+    void KeyTimerExpired();
+    
 private:
     
     };

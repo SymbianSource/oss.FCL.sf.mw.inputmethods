@@ -142,6 +142,13 @@ void CPeninputAnim::ConstructL(TAny* /*aParameters*/)
     
     iFunctions->RegisterForNotifications(EDirectScreenAccess);
     iPointerEventSuppressor = CPenPointerEventSuppressor::NewL();
+    
+    //Setup pointer event suppressor with the parameters provided by UE.
+    //hard code is used here to minimize code changes
+    iPointerEventSuppressor->SetMaxTapMove( TSize( 10, 10 ) );
+    iPointerEventSuppressor->SetMaxTapDuration( 400000 );
+    iPointerEventSuppressor->SetMaxDownUpMove( TSize( 40 , 40 ) );
+    iPointerEventSuppressor->SetMaxDownUpDuration( 400000 );
     }
 
 
@@ -300,7 +307,7 @@ TBool CPeninputAnim::OfferRawEvent(const TRawEvent& aRawEvent)
         default:
             {
             return EFalse;
-            }
+            }            
         }
     }
 
@@ -704,18 +711,6 @@ TInt CPeninputAnim::CommandReplyL( TInt aOpcode, TAny* /*aParams*/)
             SetDiscreeptPop(area); 
             }
             break;
-        case EPeninputOpUpdatePointerSuppressor:
-            {
-            TPointerEventSuppressorParameters parameters;
-            TPckg<TPointerEventSuppressorParameters> msgData( parameters );
-            msg->ReadL( KMsgSlot1, msgData );
-            
-            iPointerEventSuppressor->SetMaxTapMove( parameters.iMoveEventMaxMovement );
-            iPointerEventSuppressor->SetMaxTapDuration( parameters.iMoveEventTimeout );
-            iPointerEventSuppressor->SetMaxDownUpMove( parameters.iUpEventMaxMovement );
-            iPointerEventSuppressor->SetMaxDownUpDuration( parameters.iUpEventTimeout );
-            }
-            break;
         default:
             // unsupported opcode, panic the client
             {                
@@ -1072,7 +1067,7 @@ TBool CPeninputAnim::OnRawKeyEvent(const TRawEvent& aRawEvent)
 // 
 void CPeninputAnim::StartTimer()
     {
-    if ( iIsActive && !iFlushTimer->IsActive())
+    if ( iIsActive && !iFlushTimer->IsActive() )
         {
         iFlushTimer->Start(
             KFlushTimerPeriod, 

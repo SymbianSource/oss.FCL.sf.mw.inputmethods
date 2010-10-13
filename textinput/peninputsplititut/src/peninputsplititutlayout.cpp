@@ -30,10 +30,11 @@
 //#include <peninputdropdownlist.h>
 
 #include <s32mem.h>
-#include <peninputlayoutbubblectrl.h>
+//#include <peninputlayoutbubblectrl.h>
 
 #include <peninputdataprovider.h>      
 #include <peninputcommonlayoutglobalenum.h>
+#include <peninputcmdparam.h>
 
 #include "peninputsplititutlayout.h"
 #include "peninputsplititutdatamgr.h"
@@ -44,6 +45,12 @@
 #include "peninputsplititutconverter.h"
 #include "peninputsplititutwindowmanager.h"
 
+// Buffer size
+const TInt KServerBufferSize = 8;
+
+// TInt number in command, used to show candidate list
+const TInt KStartIntNumber = 3;
+const TInt KEndIntNumber = 4;
 
 // ---------------------------------------------------------------------------
 // CSplitItutUiLayout::NewL
@@ -207,7 +214,6 @@ TInt CSplitItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
         case ECmdPenInputFingerKeyPress:
         case ECmdPenInputFingerLongKeyPress:
         case ECmdPenInputCase:
-        case ECmdPenInputFingerMatchSelection:
         case ECmdPenInputFingerSpelling:
             {
             if (UiMgr())
@@ -218,14 +224,18 @@ TInt CSplitItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
                 }
             }
             break;
+        case ECmdPenInputFingerMatchSelection:
+            {
+            TBool special = *(reinterpret_cast<TBool*>(aData));
+            if( !special )
+                {
+                SignalOwner( ESignalHideServerCandidate );
+                }
+            }
+            break;
         case ECmdPenInputFingerMatchList:
             {
-            if (UiMgr())
-                {
-                TInt handled = KErrNone;
-                TRAP_IGNORE(handled = UiMgr()->HandleCommandL(aCmd, aData));
-                return handled;
-                }
+            TRAP_IGNORE( HandleShowMatchListCmdL( aData ) );
             }
             break;
         case ECmdPenInputNoFreeSpace:
@@ -291,7 +301,11 @@ TInt CSplitItutUiLayout::HandleCommand(TInt aCmd, TUint8* aData)
 //            iWindowMgr->ShowBubble(*aData);    
             }
             break; 
-            
+        case ECmdPeninputSelectServerCandidate:
+        	{
+        	TRAP_IGNORE( HandleSelectServerCandItemL( aData ) );
+        	}
+        	break;
         default:
             break;
         }
@@ -433,16 +447,6 @@ void CSplitItutUiLayout::SetInputLanguageL(TInt aLanguage)
 //
 void CSplitItutUiLayout::OnDeActivate()
     {
-    CBubbleCtrl* bubble = static_cast<CBubbleCtrl *>(Control(ECtrlIdSplitIndiBubble));
-    if (bubble && NotDrawToLayoutDevice())
-        {
-        TBool flag = EFalse;
-        HandleCommand(ECmdPeninputEnableOwnBitmap,reinterpret_cast<TUint8*>(&flag));
-        bubble->Draw();
-        flag = ETrue;
-        HandleCommand(ECmdPeninputEnableOwnBitmap,reinterpret_cast<TUint8*>(&flag));
-        }
-    
     TRAP_IGNORE(UiMgr()->HandleCommandL(ECmdPenInputDeActive, NULL));
 
     CFepUiLayout::OnDeActivate();
@@ -559,5 +563,141 @@ CSplitItutUiMgrBase* CSplitItutUiLayout::ChineseUiManager()
     return iChnUiMgr;
         
     }
+
+// ---------------------------------------------------------------------------
+// Handle show candidate list command.
+// ---------------------------------------------------------------------------
+//
+void CSplitItutUiLayout::HandleShowMatchListCmdL( TUint8* aData )
+    {
+    RDesReadStream readStream;
+    TPtr8 buf8( aData, KStartIntNumber * sizeof( TInt ),
+                KStartIntNumber * sizeof( TInt ) );
+    readStream.Open(buf8);
+    CleanupClosePushL(readStream);
+
+    TInt candcount = readStream.ReadInt32L();
+    TInt totalsize = readStream.ReadInt32L();
+    TInt langcode = readStream.ReadInt32L();
+    TBidiText::TDirectionality dir = 
+                   TBidiText::ScriptDirectionality( ( TLanguage ) langcode );
+    CGraphicsContext::TTextAlign align = ( dir == TBidiText::ELeftToRight ) ?
+                                           CGraphicsContext::ELeft :
+                                           CGraphicsContext::ERight;
     
+    CleanupStack::PopAndDestroy(&readStream);
+
+    CDesCArray* itemArray = NULL;
+    if ( candcount > 0 )
+        {        
+        TUint8* curPointer = aData + sizeof(TInt) * KStartIntNumber;
+        itemArray = new (ELeave) CDesCArrayFlat( candcount );
+        CleanupStack::PushL( itemArray );
+        for ( TInt i = 0; i < candcount; i++ )
+            {
+            // Get length
+            buf8.Set( curPointer, sizeof( TInt32 ), sizeof( TInt32 ) );
+            readStream.Open( buf8 );
+            CleanupClosePushL( readStream );
+            TInt32 textSize = 0;
+            textSize = readStream.ReadInt32L();            
+            CleanupStack::PopAndDestroy( &readStream );
+            if ( textSize > 0 )
+                {
+                // Get text
+                curPointer += sizeof( TInt32 );
+                HBufC* itemText = ReadTextInfoHBufCL
+                                      ( (TUint16*)curPointer, 
+                                        ( textSize + 1 )/ 2 );
+                if ( itemText )
+                    {
+                    CleanupStack::PushL( itemText );
+                    itemArray->AppendL( *itemText );                    
+                    CleanupStack::PopAndDestroy( itemText ); 
+                    }     
+                curPointer += textSize;
+                }
+            }
+        
+        buf8.Set( curPointer, sizeof( TInt32 ) * KEndIntNumber,
+                  sizeof( TInt32 ) * KEndIntNumber );
+        readStream.Open( buf8 );
+        CleanupClosePushL( readStream );
+        TRect rect;
+        rect.iTl.iX = readStream.ReadInt32L();
+        rect.iTl.iY = readStream.ReadInt32L();
+        rect.iBr.iX = readStream.ReadInt32L();
+        rect.iBr.iY = readStream.ReadInt32L();
+        CleanupStack::PopAndDestroy( &readStream );
+ 
+        TPeninputCandidateData cmd;
+        cmd.iAlign = ( TInt ) align;
+        cmd.iInitRect = rect;
+        cmd.iSpellEnabled = ETrue;
+        cmd.iTextWidthEnabled = ETrue;
+        cmd.iItemArray = itemArray;
+        cmd.iActiveIndex = 0;
+        
+    	TPtrC buf( reinterpret_cast<TUint16*>( &cmd ), sizeof( cmd ) );
+        SignalOwner( ESignalShowServerCandidate, buf );
+        
+        CleanupStack::PopAndDestroy( itemArray );
+        }
+    }
+
+// ---------------------------------------------------------------------------
+// Read text stored in a block of memory into HBufC.
+// ---------------------------------------------------------------------------
+//
+HBufC* CSplitItutUiLayout::ReadTextInfoHBufCL( TUint16* aStartPtr, 
+                                                      TInt aLength )
+    {
+    HBufC* itemText = NULL;
+    if ( aLength > 0 )
+        {
+        itemText = HBufC::NewLC( aLength );
+        TPtr itemTextPtr = itemText->Des();
+        itemTextPtr.Copy( aStartPtr, aLength ); 
+        CleanupStack::Pop( itemText ); 
+        }    
+    return itemText;
+    }
+
+// ---------------------------------------------------------------------------
+// Handle select candidate list item command.
+// ---------------------------------------------------------------------------
+//
+void CSplitItutUiLayout::HandleSelectServerCandItemL( TUint8* aData )
+	{
+	TPtr8* ptr = reinterpret_cast< TPtr8* > ( aData );
+    RDesReadStream readStream;
+    readStream.Open( *ptr );
+    CleanupClosePushL( readStream );
+    TInt command = readStream.ReadInt32L();
+    TInt focusItem = readStream.ReadInt32L();
+    CleanupStack::PopAndDestroy(&readStream);
+    
+	switch ( command )
+		{
+		case ECandItemCmdItemSelected:
+			{
+            TBool commit = ETrue;
+            TBuf<KServerBufferSize> buf;
+            buf.Append( reinterpret_cast< TUint16* >( &focusItem ), 
+                         sizeof( TInt ) );
+            buf.Append( reinterpret_cast< TUint16* >( &commit ), 
+                         sizeof( TBool ) );
+        	SignalOwner ( ESignalSelectMatchSelectionText, buf );       			
+			}
+			break;
+		case ECandItemCmdEnterSpellMode:
+			{
+		    SignalOwner ( ESignalEnterSpellMode );
+			}
+			break;
+		default:
+			break;
+		}	
+	}
+
 // End Of File

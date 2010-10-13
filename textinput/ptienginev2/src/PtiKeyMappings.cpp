@@ -19,7 +19,6 @@
 #include "PtiKeyMappings.h"
 #include <PtiKeyMapData.h>
 
-
 // CONSTANTS
 #ifdef _DEBUG
 _LIT(KPtiNoKeyMapDataPanic, "PtiEngine: No ITU-T keymap data set.");

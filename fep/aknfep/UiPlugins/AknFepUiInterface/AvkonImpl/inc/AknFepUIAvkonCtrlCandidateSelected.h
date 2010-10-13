@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:           
-*       Provides the CAknFepUICtrlCandidateCharacter definition.
+*       Provides the CAknFepUICtrlCandidateSelected definition.
 *
 */
 
@@ -27,8 +27,8 @@
 
 
 
-#ifndef __AKN_FEP_CANDIDATE_CHARACTER_PANE_H__
-#define __AKN_FEP_CANDIDATE_CHARACTER_PANE_H__
+#ifndef __AKN_FEP_CANDIDATE_SELECTED_PANE_H__
+#define __AKN_FEP_CANDIDATE_SELECTED_PANE_H__
 
 #include <e32std.h>
 #include <coecntrl.h>
@@ -36,7 +36,6 @@
 #include "AknFepUICtrlCandidatePane.h"
 
 class CEikLabel;
-class MAknFepUIEventObserver;
 
 /**
  * Control representing the selected candidate. Is a window owning control,
@@ -44,7 +43,7 @@ class MAknFepUIEventObserver;
  * beneath. Can be hidden, for example if there is no visible selection, 
  * or if highlighting is disabled.
  */
-NONSHARABLE_CLASS(CAknFepUICtrlCandidateCharacter) : public CCoeControl
+NONSHARABLE_CLASS(CAknFepUICtrlCandidateSelected) : public CCoeControl
     {
 public:
     enum
@@ -57,26 +56,44 @@ public:
     /**
      * first phase construction
      */
-    static CAknFepUICtrlCandidateCharacter* NewL( RWindowTreeNode& aParent, 
-    		                                      MAknFepUIEventObserver* aObserver );
+    static CAknFepUICtrlCandidateSelected* NewL(RWindowTreeNode& aParent);
 
     /**
      * destructor
      */
-    ~CAknFepUICtrlCandidateCharacter();
+    ~CAknFepUICtrlCandidateSelected();
 
     /**
-     * Set the text buffer of the character.
+     * Set the text buffer of the Pane.
      *
      * @param aCharacter, the label will be filled with the characters from aCharacter
      */
-    void SetText( const TDesC& aCharacter );
+    void SetText(TPtrC aCharacter);
+    
+    /**
+     * Set the ordinal of the Pane.
+     *
+     * @param aOrdinal
+     */
+    void SetOrdinal(TInt aOrdinal);
 
     /**
-     * Get the text of the character
+     * This function sets the candidate mode of the pane for rendering purposes.
      *
+     * @param aMode the new mode
      */
-	const TDesC* Text() const;
+    void SetCandidateMode(MAknFepUICtrlCandidatePane::TCandidateMode aMode);
+
+	/**
+	* Set layout
+	* @param aLayout the new layout
+	*/
+	void SetLayout(MAknFepUICtrlContainerChinese::TPaneLayout aLayout);
+	/**
+	* Set ordinal status
+	* @param aValue the new status
+	*/
+	void ShowOrdinal(TBool aValue);
 
 public: // from CCoeControl
     /**
@@ -104,25 +121,18 @@ public: // from CCoeControl
      *
      * @param aRect rectangle
      */
-    virtual void Draw( const TRect& aRect ) const;
-    
-    /**
-     * Set character highlight state
-     *
-     * @param bHighlight highlight or not
-     */
-    void SetHighlight( TBool bHightlight );
+    virtual void Draw(const TRect& aRect) const;
 
 protected:
     /**
      * second phase construction
      */
-    void ConstructL( RWindowTreeNode& aParent, MAknFepUIEventObserver* aObserver );
+    void ConstructL(RWindowTreeNode& aParent);
 
      /**
       * constructor
       */
-    CAknFepUICtrlCandidateCharacter();
+    CAknFepUICtrlCandidateSelected();
 
     /**
      * layout the rectangles
@@ -142,17 +152,25 @@ protected:
      *
      */
     void CalculateFrameRects(TRect& aOuterRect, TRect& aInnerRect) const;
-    
+
+    /**
+     * set label vilisibilty, according to the current pane layout
+     */
+    void UpdateLabelVisibility();
+
 private:
     TAknLayoutRect iRectShadow;
     TAknLayoutRect iRectHighlight;
 	TBufC<EMaxSelectedCandidateLength> iBuffer;
-	
+    MAknFepUICtrlCandidatePane::TCandidateMode iCandidateMode;
+    TInt iIndex;
+    MAknFepUICtrlContainerChinese::TPaneLayout iPaneLayout;
+	TBool iShowOrdinal;
 private: // the following are owned
     CEikLabel* iCandidateLabel;
-	TBool iIsHighligt;
+    CEikLabel* iOrdinalLabel;
     };
 
-#endif //__AKN_FEP_CANDIDATE_CHARACTER_PANE_H__
+#endif //__AKN_FEP_CANDIDATE_SELECTED_PANE_H__
 
 // End of file

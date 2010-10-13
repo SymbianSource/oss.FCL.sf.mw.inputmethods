@@ -372,82 +372,32 @@ EXPORT_C void CPeninputLayoutWindowExt::SetEditorTextL(
             static_cast<CFepLayoutMultiLineIcf*>( Control(EPeninputWindowCtrlIdMultiLineICF));
             
         multiIcf->SetTextL( aData );
-      
-        if ( iLayoutContext->LayoutType() == EPluginInputModeVkb || 
-             iLayoutContext->LayoutType() == EPluginInputModeFSQ )
-            {
-            TInt lang = CPeninputDataConverter::AnyToInt
-                    ( iLayoutContext->RequestData( EPeninputDataTypeInputLanguage ) );
-            TInt curRange = CPeninputDataConverter::AnyToInt
-        		    ( iLayoutContext->RequestData( EPeninputDataTypeCurrentRange ) );
-        		        
-            if ( lang == ELangVietnamese && curRange == ERangeEnglish )  
-                {
-                TBuf<1> preData;
-                multiIcf->ExtractText( preData, aData.iCurSel.LowerPos()-1, 1 );
-                iVowelChar = EFalse;
-                
-                if ( KNullDesC() != preData )
-                    {
-                    for (TUint i = 0; i < sizeof(VietVowelList) / sizeof(TText); ++i)
-                        {
-                        TBuf<1> buf;
-                        buf.Append( VietVowelList[i] );
-                        if (preData == buf)
-                            {
-                            iVowelChar = ETrue;
-                            break;
-                            }
-                        }
-                    }
-                CPeninputVkbCtrlExt* vkbCtrl = static_cast<CPeninputVkbCtrlExt*>
-                    ( Control( EPeninutWindowCtrlIdVkbCtrl ) );
-                vkbCtrl->DimKeySet( iToneSet, !iVowelChar );
-                }
-            }
         }
-    else
-    	{
-        // If in virtual QWERTY mode
-		if ( iLayoutContext->LayoutType() == EPluginInputModeFSQ )
-			{
-			TInt lang = CPeninputDataConverter::AnyToInt
-					( iLayoutContext->RequestData( EPeninputDataTypeInputLanguage ));
-			TInt curRange = CPeninputDataConverter::AnyToInt
-					( iLayoutContext->RequestData( EPeninputDataTypeCurrentRange ));
-					
-			// When writing language is Vietnamese and range is English
-			if ( lang == ELangVietnamese && curRange == ERangeEnglish )  
-				{
-				TBuf<1> charData;
-				// Get the input character
-				charData.Append( aData.iText );
-				iVowelChar = EFalse;
-				
-                if ( KNullDesC() != charData )
-                    {
-                    // Check whether the input char is in the list of VietVowelList
-                    for ( TUint i = 0; i < sizeof( VietVowelList ) / sizeof( TText ); ++i )
-                        {
-                        TBuf<1> buf;
-                        buf.Append( VietVowelList[i] );
-                        if ( charData == buf )
-                            {
-                            iVowelChar = ETrue;
-                            break;
-                            }
-                        }
-                    }
-                
-                CPeninputVkbCtrlExt* vkbCtrl = static_cast<CPeninputVkbCtrlExt*>
-                    ( Control( EPeninutWindowCtrlIdVkbCtrl ));
-                // Set the dim status of the tone keys
-                vkbCtrl->DimKeySet( iToneSet, !iVowelChar );
-				}
-			}
-    	}
     }  
 
+EXPORT_C void CPeninputLayoutWindowExt::EnableToneMarker(TBool aEnable)
+	{
+    if (iLayoutContext->LayoutType() != EPluginInputModeVkb && 
+    	iLayoutContext->LayoutType() != EPluginInputModeFSQ)
+    	{
+		return;
+    	}
+
+    TInt lang = CPeninputDataConverter::AnyToInt
+			( iLayoutContext->RequestData( EPeninputDataTypeInputLanguage ) );
+	TInt curRange = CPeninputDataConverter::AnyToInt
+			( iLayoutContext->RequestData( EPeninputDataTypeCurrentRange ) );
+
+	if ( lang != ELangVietnamese || curRange != ERangeEnglish )  
+		{
+		return;
+		}
+	
+	iVowelChar = aEnable;
+	CPeninputVkbCtrlExt* vkbCtrl = static_cast<CPeninputVkbCtrlExt*>
+		( Control( EPeninutWindowCtrlIdVkbCtrl ) );
+	vkbCtrl->DimKeySet( iToneSet, !iVowelChar );
+	}
 // ---------------------------------------------------------------------------
 // CPeninputLayoutWindowExt::SetEditorTextL
 // (other items were commented in a header)
@@ -530,57 +480,7 @@ TBool CPeninputLayoutWindowExt::CheckResourceExist( const TDesC& aFileName )
         return ETrue;
         }
     }
-
-// ---------------------------------------------------------------------------
-// CPeninputLayoutWindowExt::CancelDeadKey
-// (other items were commented in a header)
-// ---------------------------------------------------------------------------
-//
-void CPeninputLayoutWindowExt::CancelDeadKey()
-	{
-    // Get the dead key status
-	TInt latchedFlag = CPeninputDataConverter::AnyToInt(
-		iLayoutContext->RequestData( EAkninputDataTypeLatchedSet ));
-	// If the DeadKey is latched, cancel it
-	if ( latchedFlag )
-		{
-		RPointerArray<CPeninputVkbLayoutInfo> vkbListInfo;
-		RPointerArray<CPeninputVkbKeyInfo> keyInfoList;
-		
-		// Get the vkb layout list supportted by current writing language
-		vkbListInfo = iVkbLayout->VkbLayoutInfoList();
-		TInt vkbListNum = vkbListInfo.Count();
-		
-		CVirtualKey* pKey;
-		TBool deadKeyChange = EFalse;
-		
-		// Find the latched DeadKey in all kinds of vkb layout 
-		// which supportted by current writing language
-		for ( TInt i = 0; i < vkbListNum && !deadKeyChange ; i++ )
-			{
-			// Get the key info list in one vkb layout
-			keyInfoList = vkbListInfo[i]->KeyInfoList();
-			TInt keyListNum = keyInfoList.Count();
-			for ( TInt j = 0; j < keyListNum && !deadKeyChange ; j++ )
-				{
-				pKey = keyInfoList[j]->Key();
-				// If the Dead key is latched
-				if ( pKey->Latched())
-					{
-					// Unlatch the DeadKey
-					pKey->SetLatched( EFalse );
-					
-					// Set the DeadKey state
-					iLayoutContext->SetData( 
-						EAkninputDataTypeLatchedSet, &deadKeyChange );
-					
-					deadKeyChange = ETrue;
-					} 
-				}
-			}
-		}	
-	}
-
+  
 // ---------------------------------------------------------------------------
 // CPeninputLayoutWindowExt::ChangeInputLanguageL
 // (other items were commented in a header)
@@ -608,9 +508,6 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeInputLanguageL( TInt aLangID )
         
     if ( found ) 
         {
-        // Remove the dead key's latched status
-		CancelDeadKey();
-    
         // Store language
         iLayoutContext->SetData( EPeninputDataTypeInputLanguage, &aLangID );
    
@@ -913,10 +810,45 @@ EXPORT_C void CPeninputLayoutWindowExt::ChangeClientLayout(
 //
 EXPORT_C void CPeninputLayoutWindowExt::ChangeVkbLayout( TInt aVkbLayoutId )
     {
-
-	// Remove the dead key's latched status
-	CancelDeadKey();
-
+    TInt latchedFlag = CPeninputDataConverter::AnyToInt(
+                       iLayoutContext->RequestData(EAkninputDataTypeLatchedSet));
+    // If the DeadKey is latched, cancel it and then change the VKB layout
+    if(latchedFlag)
+        {
+        RPointerArray<CPeninputVkbLayoutInfo> vkbListInfo;
+        RPointerArray<CPeninputVkbKeyInfo> keyInfoList;
+        
+        vkbListInfo = iVkbLayout->VkbLayoutInfoList();
+        TInt vkbListNum = vkbListInfo.Count();
+        
+        CVirtualKey* pKey;
+        TBool deadKeyChange = EFalse;
+        // Find the latched DeadKey in all the Vkb layout
+        for(TInt i = 0; i < vkbListNum; i++)
+            {
+            // Get key info list in one VKB layout
+            keyInfoList = vkbListInfo[i]->KeyInfoList();
+            TInt keyListNum = keyInfoList.Count();
+            for(TInt j = 0; j < keyListNum; j++)
+                {
+                pKey = keyInfoList[j]->Key();
+                if(pKey->Latched())
+                    {
+                    // Unlatch the DeadKey
+                    pKey->SetLatched(EFalse);
+                    
+                    // Set the DeadKey state
+                    iLayoutContext->SetData(EAkninputDataTypeLatchedSet, &deadKeyChange);
+                    deadKeyChange = ETrue;
+                    break;
+                    } 
+                }
+            if(deadKeyChange)
+                {
+                break;
+                }
+            }
+        }
     
     TInt curVkbId = CPeninputDataConverter::AnyToInt
         ( iLayoutContext->RequestData( EPeninputDataTypeVkbLayout ) );

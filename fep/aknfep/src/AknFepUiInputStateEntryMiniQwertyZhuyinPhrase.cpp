@@ -509,7 +509,6 @@ TBool TAknFepInputStateEntryMiniQwertyZhuyinPhrase::HandleKeyForMiniQwertyL( TIn
     MAknFepUICtrlInputPane* inputPane = uiContainer->InputPane();
     MAknFepUICtrlPinyinPopup* popup = uiContainer->PinyinPopupWindow();
     MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
-    MAknFepUICtrlCandidatePane* candidatePane = uiContainer->CandidatePane();
     CDesCArrayFlat* keystroke = editPane->KeystrokeArray();
     RArray<TInt>* keycodeArray = editPane->KeycodeArray();
     TInt keystrokeLength = keystroke->Count();
@@ -678,7 +677,6 @@ TBool TAknFepInputStateEntryMiniQwertyZhuyinPhrase::HandleKeyForMiniQwertyL( TIn
                 {
                 popup->Enable( EFalse );
                 }
-            candidatePane->SelectFirst();
             iOwner->ChangeState( ECandidate );
             }
         else
@@ -1007,43 +1005,5 @@ void TAknFepInputStateEntryMiniQwertyZhuyinPhrase::HandleCommandL(
             break;
         }
     }
-
-void TAknFepInputStateEntryMiniQwertyZhuyinPhrase::SubmitTextL( const TDesC& aText )
-	{
-	MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
-	MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
-	MAknFepUICtrlPinyinPopup* popup = uiContainer->PinyinPopupWindow();
-	CDesCArrayFlat* keystroke = editPane->KeystrokeArray();
-	CPtiEngine* ptiengine = iOwner->PtiEngine();
-    
-    TInt keystrokeLength = keystroke->Count();
-    if ( !(editPane->GetEffictiveLength() == keystroke->Count()
-        && ptiengine->PhoneticSpellingCount() > popup->CurrentSelection())
-        && (!( keystrokeLength > 0 && keystroke->MdcaPoint( 0 )[0] == KSai )))
-        {
-		editPane->SetChangeState( ETrue );
-        ClearDeliberateSelection();
-        editPane->SetNeedClearDeliberateSelection( ETrue );
-        iOwner->ChangeState( EZhuyinSpelling );
-        return;
-        }
-	if ( aText.Length( ) )
-	   {
-	   MAknFepManagerUIInterface* fepMan = iOwner->FepMan( );
-	   fepMan->NewTextL( aText );
-	   fepMan->CommitInlineEditL( );
-	   iOwner->PtiEngine()->SetPredictiveChineseChar( aText );
-	   if ( fepMan->IsFlagSet( CAknFepManager::EFlagEditorFull ) )
-	      {
-	      fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
-	      iOwner->FepMan()->TryCloseUiL( );
-	      }
-	   else
-	      {
-	      iOwner->ChangeState( EPredictiveCandidate );
-	      }
-	    }
-	}
-
 // End of file   
 

@@ -66,8 +66,6 @@ EXPORT_C CBubbleCtrl::CBubbleCtrl(const TRect& aRect,
         
 EXPORT_C CBubbleCtrl::~CBubbleCtrl()
     {
-	Close();
-	
     if ( iText )
         delete iText;
     
@@ -102,9 +100,7 @@ EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
 		
     iForgroundBmp = aBmpId;
     iForgroundBmpMask = aMaskBmpId;
-    iBgSkinId = aBgSkinId;
-    
-    iNeedRedraw = ETrue;
+    iBgSkinId = aBgSkinId;    
     }
 
 EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
@@ -232,14 +228,12 @@ EXPORT_C void CBubbleCtrl::Popup(const TRect& aRect)
             {
             struct SData
                 {
-            	TUint32 ctrl;
                 TBool flag;
                 TRect pos;
                 CFbsBitmap* bmp;
                 CFbsBitmap* mask;
                 } data;
                 
-            data.ctrl = (TUint32)this;
             data.flag = ETrue;
             data.pos = Rect();
             data.bmp = iBitmap;
@@ -278,9 +272,7 @@ EXPORT_C void CBubbleCtrl::SetBitmapParam(CFbsBitmap* aBmpId,
     iForgroundBmpMask = aMaskBmpId;
     iFirstBmpId = aFirstBmpId;
     iMiddleBmpId =  aMiddleBmpId;
-    iLastBmpId = aLastBmpId;
-    
-    iNeedRedraw = ETrue;    
+    iLastBmpId = aLastBmpId;    
     }
 
 EXPORT_C void CBubbleCtrl::Close()
@@ -321,13 +313,11 @@ EXPORT_C void CBubbleCtrl::Close()
             {
             struct SData
                 {
-            	TUint32 ctrl;
                 TBool flag;
                 TRect pos;
                 CFbsBitmap* bmp;
                 } data;
                 
-            data.ctrl = (TUint32)this;
             data.flag = EFalse;
             data.pos = Rect();
             data.bmp = iBitmap;

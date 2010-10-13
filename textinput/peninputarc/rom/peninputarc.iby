@@ -36,6 +36,7 @@ file=ABI_DIR\BUILD_DIR\peninputpluginutils.dll            SHARED_LIB_DIR\peninpu
 
 S60_APP_AIF_RSC(peninputserver)
 data = \EPOC32\DATA\Z\resource\apps\peninputserver.RSC 	"resource\apps\peninputserver.rsc" 
+data = \EPOC32\DATA\Z\resource\apps\peninputserver.mif  "resource\apps\peninputserver.mif"
 
 ECOM_PLUGIN(gspeninputplugin.dll, gspeninputplugin.rsc)
 ECOM_PLUGIN(2000B5E7.dll, 2000B5E7.rss)

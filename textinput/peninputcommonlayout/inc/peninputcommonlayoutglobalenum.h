@@ -123,9 +123,6 @@ enum TPeninputCommonCtrlID
     //candidate list
     EPentinputHwrCandidateList,    
 	EPeninutWindowCtrlIdMultiRangeBtn,
-	
-	EPeninputWindowCtrlIdSplitIndiBubble,
-	
     EPeninputWindowCtrlIdLastOne,
     
     EPeninutWindowCtrlIdRangeBtn //todo split view

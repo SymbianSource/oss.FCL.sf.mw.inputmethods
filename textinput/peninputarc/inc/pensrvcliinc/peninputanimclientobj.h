@@ -231,16 +231,6 @@ public:
      * @return ETrue if command added successfully.
      */	    
     TBool SetDiscreetPopArea(const TRect& aArea);
-    
-    /**
-     * Update parameters of pointer event suppressor.
-     * 
-     * @since Symbian^3
-     * @param aParameters parameters of pointer event suppressor
-     * @return none
-     */
-    void UpdatePointerEventSuppressor( const TPointerEventSuppressorParameters& aParameters );
-
 private:
     /**
      * Default constructor.

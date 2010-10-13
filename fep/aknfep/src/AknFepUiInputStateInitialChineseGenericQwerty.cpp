@@ -117,7 +117,6 @@ TInt TAknFepInputStateInitialChineseGenericQwerty::ToneMark(TInt aKey, TDes& aRe
         }
     return number;
     }
-	
 TBool TAknFepInputStateInitialChineseGenericQwerty::HandleKeyL(TInt aKey, TKeyPressLength aLength)
     {
     CPtiEngine* ptiengine = iOwner->PtiEngine();
@@ -320,11 +319,6 @@ TBool TAknFepInputStateInitialChineseGenericQwerty::IsSCTKey(TInt aKey)
     return response;
     }
 
-//--------------------------------------------------------------------------
-// The gate to decide whether it is a character is whether it has valid mapping
-// If return ETrue, the key will pass to ptiengine.
-//--------------------------------------------------------------------------
-//
 TBool TAknFepInputStateInitialChineseGenericQwerty::IsCharacter(TInt aKey)
     {
     TBool response = EFalse;
@@ -340,8 +334,6 @@ TBool TAknFepInputStateInitialChineseGenericQwerty::IsCharacter(TInt aKey)
         response = ETrue;
             }
         }
-		
-	// exception Z might has no mapping but need to put into ptiengine.
     if(!response && aKey == EPtiKeyQwertyZ)
         {
         response = ETrue;

@@ -67,10 +67,10 @@ SOURCE          AknFepUiAvkonStylusPopUpMenu.cpp
 SOURCE          AknFepUiAvkonCtrlContainerChinese.cpp
 SOURCE          AknFepUiAvkonCtrlInputPane.cpp
 SOURCE          AknFepUiAvkonCtrlCandidatePane.cpp
+SOURCE          AknFepUiAvkonCtrlCandidateSelected.cpp
 SOURCE          AknFepUiAvkonCtrlPinyinPopup.cpp
 SOURCE          aknfepuilayoutdatamgr.cpp
 SOURCE          aknfepchineseuidataconv.cpp
-SOURCE          AknFepUIAvkonCtrlCandidateCharacter.cpp
 // for phrase creation
 SOURCE          aknfepuictrleepcontrol.cpp 
 SOURCE          aknfepuictrlpinyineep.cpp 

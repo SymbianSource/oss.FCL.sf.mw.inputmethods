@@ -89,7 +89,6 @@ public: // Constructer and Destructor
                                          CAknFepCaseManager* aCaseMan,
                                          CAknFepSharedDataInterface* aSharedData = NULL );
 
-
     /**
      * Destructor.
      *
@@ -262,7 +261,7 @@ private: // Data
      * @since S60 v3.2
      */	
     TBool iIsSplitView;
-   
+
     /**
      * Shared data manager
      */

@@ -43,6 +43,8 @@ SOURCE				peninputuilayoutowner.cpp
 SOURCE				penuiwndctrl.cpp
 SOURCE              keyrotator.cpp
 SOURCE              peninputcrpclient.cpp
+SOURCE              penuicandidatewnd.cpp
+SOURCE              penuiwndeventhandler.cpp
 
 USERINCLUDE             . ../../inc/pensrvcliinc
 
@@ -63,6 +65,7 @@ LIBRARY                 bitgdi.lib
 LIBRARY                 gdi.lib
 LIBRARY                 peninputlayouteng.lib
 LIBRARY                 centralrepository.lib
+LIBRARY                 CommonEngine.lib 
 
 LIBRARY         apparc.lib
 LIBRARY         cone.lib

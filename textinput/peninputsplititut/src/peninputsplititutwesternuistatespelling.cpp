@@ -19,7 +19,6 @@
 #include <AknFepGlobalEnums.h>
 #include <peninputsplititutnew.rsg>
 #include <peninputlayoutmultilineicf.h>
-#include <peninputlayoutbubblectrl.h>
 #include <StringLoader.h>
 #include <peninputcommonbutton.h>
 #include <peninputlayout.h>
@@ -53,7 +52,6 @@ CWesternSplitItutUiStateSpelling::CWesternSplitItutUiStateSpelling(CSplitItutUiM
                                                         :CSplitItutUiStateBase(aOwner)
     {
     iICF = static_cast<CFepLayoutMultiLineIcf*>(iOwner->LayoutContext()->Control(ECtrlIdICF));
-    iSplitIndiBubble = static_cast<CBubbleCtrl*>(iOwner->LayoutContext()->Control(ECtrlIdSplitIndiBubble));    
     }
 
 void CWesternSplitItutUiStateSpelling::ConstructL()
@@ -100,8 +98,7 @@ void CWesternSplitItutUiStateSpelling::OnEntryL()
         }
     //hide bubble in the first place.    
     iICF->HideBubble();
-    iSplitIndiBubble->Hide(ETrue);
-    
+
     // update resource id of keypad    
     iOwner->DataMgr()->NotifyChangeControlLayout(
         MItutPropertySubscriber::EItutPropertyKeypadResourceId, keypadResId);
@@ -142,7 +139,6 @@ void CWesternSplitItutUiStateSpelling::OnExit()
     iOwner->DataMgr()->SetSpellMode(EFalse);
     iICF->Hide( ETrue );
     iOwner->LayoutContext()->ShowArrowBtn(0);
-    iSplitIndiBubble->Hide(EFalse); //Show split indi bubble
     }
 
 CSplitItutUiMgrBase::TUiState CWesternSplitItutUiStateSpelling::StateType()

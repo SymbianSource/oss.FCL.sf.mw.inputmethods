@@ -151,27 +151,7 @@ TBool TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase::HandleKeyL(
                 fepMan->NewTextL(text);
                 fepMan->CommitInlineEditL();
                 iOwner->PtiEngine()->SetPredictiveChineseChar(text);
-                
-                // For sogou core, the predictive is not endless, so when there
-                // is no predictive candidates, we should call TryCloseUiL().
-                TBool noCandidates = EFalse;
-                
-                if ( iPlugin.IsEnable() || iStrokePlugin.IsEnable())
-                    {
-                    // Get the predictive candidates.
-                    CDesCArrayFlat* phraseCandidates = new(ELeave) CDesCArrayFlat(1);
-                    CleanupStack::PushL ( phraseCandidates );
-                    phraseCandidates->Reset();
-                    iOwner->PtiEngine()->GetChinesePhraseCandidatesL( *phraseCandidates );
-                    if ( phraseCandidates->Count() == 0 )
-                        {
-                        noCandidates = ETrue;
-                        }
-                    CleanupStack::PopAndDestroy( phraseCandidates );
-                    }
-                
-                // If no candidates, call TryCloseUiL().
-                if ( fepMan->IsFlagSet(CAknFepManager::EFlagEditorFull) || noCandidates )
+                if (fepMan->IsFlagSet(CAknFepManager::EFlagEditorFull))
                     {
                     fepMan->ClearFlag(CAknFepManager::EFlagEditorFull);
                     iOwner->FepMan()->TryCloseUiL();
@@ -185,11 +165,13 @@ TBool TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase::HandleKeyL(
         }
     else if(aKey == EStdKeyRightArrow )
         {
+    	iOwner->ChangeState(EPredictiveInput);  
     	UIContainer()->CandidatePane()->SelectNext(); 
         }
     else if (aKey == EStdKeyLeftArrow)  
     	{
-        UIContainer()->CandidatePane()->SelectPrev();
+    	iOwner->ChangeState(EPredictiveInput);  
+        UIContainer()->CandidatePane()->SelectLastPhrase();
     	}    
     else if(iOwner->IsValidChineseInputKeyQwerty(aKey))
         {
@@ -299,47 +281,4 @@ void TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase::HandleCommandL
             break;
         }
     }
-void TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase::SubmitTextL( const TDesC& aText )
-	{
-	if( aText.Length())
-	    {            
-	    MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
-	    CPtiEngine* engine = iOwner->PtiEngine();
-	    fepMan->NewTextL(aText);
-	    fepMan->CommitInlineEditL();
-	    engine->SetPredictiveChineseChar(aText);
-	                    
-        // For sogou core, the predictive is not endless, so when there
-        // is no predictive candidates, we should call TryCloseUiL().
-        TBool noCandidates = EFalse;
-        
-        if ( iPlugin.IsEnable() || iStrokePlugin.IsEnable())
-            {
-            // Get the predictive candidates.
-            CDesCArrayFlat* phraseCandidates = new(ELeave) CDesCArrayFlat(1);
-            CleanupStack::PushL ( phraseCandidates );
-            phraseCandidates->Reset();
-            iOwner->PtiEngine()->GetChinesePhraseCandidatesL( *phraseCandidates );
-            if ( phraseCandidates->Count() == 0 )
-                {
-                noCandidates = ETrue;
-                }
-            CleanupStack::PopAndDestroy( phraseCandidates );
-            }
-	    
-	    if (fepMan->IsFlagSet(CAknFepManager::EFlagEditorFull) || noCandidates )
-	       {
-	        fepMan->ClearFlag(CAknFepManager::EFlagEditorFull);
-	        fepMan->TryCloseUiL();
-	        }
-	    else
-	        {
-	    if( iOwner )
-	    	{
-	        iOwner->ChangeState(EPredictiveCandidate);
-	    	}
-	        }           
-	    }
-	}
-
 // End of file

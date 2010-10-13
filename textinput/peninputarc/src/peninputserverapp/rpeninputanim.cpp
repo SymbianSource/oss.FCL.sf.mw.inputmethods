@@ -336,19 +336,4 @@ void RPeninputAnim::SetDiscreeptPop(const TRect& aArea)
     args.Set(KMsgSlot1,&msgData);
     CommandReply(EPeninputOpSetDiscreeptPop,KNullDesC8,args);           
     } 
-
-// ---------------------------------------------------------------------------
-// RPeniputAnim::UpdatePointerEventSuppressor()
-// Update parameters of pointer event suppressor.
-// ---------------------------------------------------------------------------
-//
-void RPeninputAnim::UpdatePointerEventSuppressor( 
-        const TPointerEventSuppressorParameters& aParameters )
-    {
-    TIpcArgs args( TIpcArgs::ENothing );        
-    TPckg<TPointerEventSuppressorParameters> msgData( aParameters );
-    args.Set(KMsgSlot1, &msgData );
-    CommandReply( EPeninputOpUpdatePointerSuppressor, KNullDesC8, args );     
-    }
-
 // End of File

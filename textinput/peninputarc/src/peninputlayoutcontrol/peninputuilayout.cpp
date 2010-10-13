@@ -38,7 +38,6 @@
 
 #include <AknFepGlobalEnums.h>
 #include <layoutmetadata.cdl.h>
-#include "peninputtapsettingmanager.h"
 
 // ======== MEMBER FUNCTIONS ========
 
@@ -90,20 +89,20 @@ EXPORT_C void CFepUiLayout::BaseConstructL()
     iExtension->iSkinInstance = AknsUtils::SkinInstance();
     iExtension->iTouchFeedbackInstance = MTouchFeedback::Instance();
 	iExtension->iDisableDrawing = EFalse;
-
-    TInt inputMode = PenInputType();
-    TBool isPortraitFSQEnabled = FeatureManager::FeatureSupported(
-            KFeatureIdFfVirtualFullscrPortraitQwertyInput );
-
-    //detect real type of two qwerty layout
-    if ( inputMode == EPluginInputModeFSQ && isPortraitFSQEnabled
-         && !Layout_Meta_Data::IsLandscapeOrientation() )
-        {
+	
+	TInt inputMode = PenInputType();
+	TBool isPortraitFSQEnabled = FeatureManager::FeatureSupported( 
+	        KFeatureIdFfVirtualFullscrPortraitQwertyInput );
+	
+	//detect real type of two qwerty layout
+	if ( inputMode == EPluginInputModeFSQ && 
+	     isPortraitFSQEnabled && !Layout_Meta_Data::IsLandscapeOrientation() )
+	    {
         inputMode = EPluginInputModePortraitFSQ;
-        }
-
-    //load settings of tap accuracy enhancement
-    LoadTapAccuracySettingsL( inputMode );
+	    }
+	
+	//load settings of tap accuracy enhancement
+	LoadTapAccuracySettings( inputMode );
     }
 
 // ---------------------------------------------------------------------------
@@ -493,22 +492,7 @@ EXPORT_C void CFepUiLayout::OnActivate()
     iRootCtrl->OnActivate();
 #ifdef RD_TACTILE_FEEDBACK  
     iExtension->iTactileSupported = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
-#endif // RD_TACTILE_FEEDBACK
-    
-    //update pointer event suppressor
-    if ( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ) )
-        {
-        TPointerEventSuppressorParameters parameters;
-        parameters.iMoveEventMaxMovement = iExtension->iPointerMoveSuppressMaxMovement;
-        parameters.iMoveEventTimeout = iExtension->iPointerMoveSuppressTimeout;
-        parameters.iUpEventMaxMovement = iExtension->iPointerUpSuppressMaxMovement;
-        parameters.iUpEventTimeout = iExtension->iPointerUpSuppressTimeout;
-        
-        TPtrC data( reinterpret_cast<TUint16*>(&parameters),
-                    sizeof(TPointerEventSuppressorParameters) / 2 );
-        
-        SignalOwner( ESignalUpdatePointerSuppressor, data );
-        }
+#endif // RD_TACTILE_FEEDBACK      
     }
     
 // ---------------------------------------------------------------------------
@@ -979,21 +963,46 @@ void CFepUiLayout::GetButtonExtResponseArea( TMargins& aMargins )
 // Load tap accuracy enhancement settings according to the specified input mode.
 // ---------------------------------------------------------------------------
 //
-void CFepUiLayout::LoadTapAccuracySettingsL( TInt alayoutType )
+void CFepUiLayout::LoadTapAccuracySettings( TInt aInputMode )
     {
-    CPeninputTapSettingManager* manager = CPeninputTapSettingManager::NewL();
-    
-    manager->Load( alayoutType );
-    manager->GetPointerMoveSuppressor( iExtension->iPointerMoveSuppressMaxMovement, 
-                                      iExtension->iPointerMoveSuppressTimeout );
-
-    manager->GetPointerUpSuppressor( iExtension->iPointerUpSuppressMaxMovement, 
-                                      iExtension->iPointerUpSuppressTimeout );
-    
-    manager->GetKeyExtResponseArea( iExtension->iKeyExtResponseMargins );
-    manager->GetButtonExtResponseArea( iExtension->iButtonExtResponseMargins );
-    
-    delete manager;
+    //config tap accuracy enhancement with the parameters provided by UE.
+    //hard code is used here to minimize code changes
+    if ( aInputMode == EPluginInputModeFSQ )
+        {
+        iExtension->iKeyExtResponseMargins.iTop    = 20;
+        iExtension->iKeyExtResponseMargins.iLeft   = 20;
+        iExtension->iKeyExtResponseMargins.iBottom = 20;
+        iExtension->iKeyExtResponseMargins.iRight  = 20;
+        
+        iExtension->iButtonExtResponseMargins.iTop    = 20;
+        iExtension->iButtonExtResponseMargins.iLeft   = 20;
+        iExtension->iButtonExtResponseMargins.iBottom = 20;
+        iExtension->iButtonExtResponseMargins.iRight  = 20;
+        }
+    else if ( aInputMode == EPluginInputModePortraitFSQ )
+        {
+        iExtension->iKeyExtResponseMargins.iTop    = 11;
+        iExtension->iKeyExtResponseMargins.iLeft   = 11;
+        iExtension->iKeyExtResponseMargins.iBottom = 11;
+        iExtension->iKeyExtResponseMargins.iRight  = 11;
+        
+        iExtension->iButtonExtResponseMargins.iTop    = 11;
+        iExtension->iButtonExtResponseMargins.iLeft   = 11;
+        iExtension->iButtonExtResponseMargins.iBottom = 11;
+        iExtension->iButtonExtResponseMargins.iRight  = 11;    
+        }
+    else
+        {
+        iExtension->iKeyExtResponseMargins.iTop    = 10;
+        iExtension->iKeyExtResponseMargins.iLeft   = 10;
+        iExtension->iKeyExtResponseMargins.iBottom = 10;
+        iExtension->iKeyExtResponseMargins.iRight  = 10;
+        
+        iExtension->iButtonExtResponseMargins.iTop    = 10;
+        iExtension->iButtonExtResponseMargins.iLeft   = 10;
+        iExtension->iButtonExtResponseMargins.iBottom = 10;
+        iExtension->iButtonExtResponseMargins.iRight  = 10;     
+        }
     }
 
 //end of file

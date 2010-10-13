@@ -309,7 +309,35 @@ private:
      * @return chinese ui mgr
      */
     CSplitItutUiMgrBase* ChineseUiManager();
-   
+    
+    /**
+     * Handle show candidate list command
+     *
+     *     
+     * @aData pointer is sent from FEP, point to a TPtrC
+     * @return None
+     */    
+    void HandleShowMatchListCmdL( TUint8* aData );    
+
+    /**
+     * Read text stored in a block of memory into HBufC
+     *
+     *     
+     * @aData aStartPtr the starting address of a block of memory with a string in it
+     * @aLength The length of the string
+     * @return pointer of a HBufC storing the string in it
+     */ 
+    HBufC* ReadTextInfoHBufCL( TUint16* aStartPtr, TInt aLength );
+    
+    /**
+     * Handle select candidate list item command
+     *
+     *     
+     * @aData pointer is sent from FEP, point to a TPtrC
+     * @return None
+     */    
+    void HandleSelectServerCandItemL( TUint8* aData );
+    
 private:
     /**
      * data manager.

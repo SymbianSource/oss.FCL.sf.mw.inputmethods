@@ -21,7 +21,6 @@
 #include "peninputsplititutuistatebase.h"
 
 class CFepLayoutMultiLineIcf;
-class CBubbleCtrl;
 class CAknFepCtrlCommonButton;
 
 class CWesternSplitItutUiStateSpelling : public CSplitItutUiStateBase
@@ -54,7 +53,6 @@ protected:
 	void ReCalcLayoutL();
 private:
     CFepLayoutMultiLineIcf* iICF;
-    CBubbleCtrl* iSplitIndiBubble;
     CAknFepCtrlCommonButton* iOk;
     CAknFepCtrlCommonButton* iCancel;
     };

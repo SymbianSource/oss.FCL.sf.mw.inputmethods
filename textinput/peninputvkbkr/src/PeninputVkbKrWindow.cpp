@@ -490,13 +490,6 @@ void CPeninputVkbKrWindow::CreateAllControlsL()
     else
         {
         iVkbCtrl->SetIrregularKeyBoard(EFalse);
-
-
-        //Add Skin id to Vkb Control for 9 piece picture.
-        iVkbCtrl->SetKeySkinId( EKeyBmpNormal, KAknsIIDQsnFrKeypadButtonFrNormal );
-        iVkbCtrl->SetKeySkinId( EKeyBmpHighlight, KAknsIIDQsnFrKeypadButtonFrPressed );
-        iVkbCtrl->SetKeySkinId( EKeyBmpDim, KAknsIIDQsnFrKeypadButtonFrInactive );
-
         iVkbLayout->SetNonIrregularResourceId(R_AKN_FEP_VKB_NONIRREGULAR_BITMAP);
         iVkbLayout->ConstructFromNonIrregularResourceL();        
         }
@@ -628,7 +621,8 @@ void CPeninputVkbKrWindow::ReorganizeControls(
         x = 0;
         y = 0;
         }
-
+        
+        
     for ( TInt i = 0; i < count; i++ )
         {
         controlID = controlList[i]->ControlID();
@@ -693,9 +687,7 @@ void CPeninputVkbKrWindow::ReorganizeControls(
                 TRAP_IGNORE(SetRangeBarSizeL(x, y));
                 }
             }
-        }
-    
-    RootControl()->Draw(); 
+        }    
     }
 
 void CPeninputVkbKrWindow::DoCaseChange( TInt aNewCase )
@@ -1203,6 +1195,7 @@ void CPeninputVkbKrWindow::ReorgnizeTableUpDown()
         {
         iTableUpButton->Hide(EFalse);
         iTableUpButton->SizeChanged( exRect, inRect, ETrue );
+        iTableUpButton->Draw();        
         }
 
     iLafMgr->GetButtonRect(
@@ -1265,6 +1258,7 @@ void CPeninputVkbKrWindow::ReorgnizeTableUpDown()
         {
         iTablePageLabel->Hide(EFalse);
         iTablePageLabel->SizeChanged( exRect, inRect, ETrue );
+        iTablePageLabel->Draw();
         }
 
     iLafMgr->GetButtonRect(
@@ -1281,6 +1275,7 @@ void CPeninputVkbKrWindow::ReorgnizeTableUpDown()
         {
         iTableDownButton->Hide(EFalse);
         iTableDownButton->SizeChanged( exRect, inRect, ETrue );
+        iTableDownButton->Draw();
         }
     
     TRect updateArea;
@@ -1476,7 +1471,7 @@ void CPeninputVkbKrWindow::FakeClientLayoutUpdateL(const TInt& aVkbLayoutId)
         buf.Format(_L("%d/%d"),SymbolTableUtil::FindIndex(vkbLayoutToUpdate)+1,KMaxSymbolTable);
         //iTablePageLabel->SetCaptionL(buf);
         iTablePageLabel->SetTextL(buf);
-        RootControl()->Draw();
+        iTablePageLabel->Draw();
         }
     }
 

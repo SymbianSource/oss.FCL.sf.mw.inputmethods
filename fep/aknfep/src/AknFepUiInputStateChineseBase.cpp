@@ -53,9 +53,7 @@
 TAknFepInputStateChineseBase::
 TAknFepInputStateChineseBase(MAknFepUIManagerStateInterface* aOwner,
                                 MAknFepUICtrlContainerChinese* aUIContainer)
-    :TAknFepInputStateBase(aOwner),
-     iPlugin( NULL, NULL, ENull ),
-     iStrokePlugin( NULL, NULL, ENull )
+    :TAknFepInputStateBase(aOwner)
     {
     iUIContainer = aUIContainer;
 
@@ -85,10 +83,6 @@ void TAknFepInputStateChineseBase::operator=(const TAknFepInputStateBase& aState
 void TAknFepInputStateChineseBase::operator=(const TAknFepInputStateChineseBase& aState)
     {
     Mem::Copy(this, &aState, sizeof(TAknFepInputStateChineseBase));
-    if( UIContainer())
-    	{
-		UIContainer()->SetFepUiStateCtrl( this );
-    	}
     }
 
 // ---------------------------------------------------------------------------
@@ -125,29 +119,4 @@ void TAknFepInputStateChineseBase::HandleCommandL(TInt aCommandId)
 			break;
 		}    	
  	}
-
-// ---------------------------------------------------------------------------
-// TAknFepInputStateChineseBase::SetPlugin
-// Set plugin to state machine
-// ---------------------------------------------------------------------------
-//
-void TAknFepInputStateChineseBase::SetPlugin( 
-            TAknFepInputMiniQwertySogouPinyinPhrasePlugin aPlugin )
-    {
-    iPlugin = aPlugin;
-    iPlugin.Enable( ETrue );
-    }
-
-// ---------------------------------------------------------------------------
-// TAknFepInputStateChineseBase::SetStrokePlugin
-// Set plugin to state machine
-// ---------------------------------------------------------------------------
-//
-void TAknFepInputStateChineseBase::SetStrokePlugin( 
-            TAknFepInputMiniQwertySogouStrokePhrasePlugin aPlugin )
-    {
-    iStrokePlugin = aPlugin;
-    iStrokePlugin.Enable( ETrue );
-    }
-
 // End of file

@@ -105,7 +105,7 @@ protected:
     TInt RunError(TInt aError);
 private:
     virtual TBool HandleServerEventL(TInt aEventId);
-
+    
     /**
      * Stop the server
      *

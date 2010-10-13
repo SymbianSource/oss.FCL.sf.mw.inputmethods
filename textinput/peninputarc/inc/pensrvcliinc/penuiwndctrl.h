@@ -196,37 +196,8 @@ public: // New functions
     void UpdateCursor(TBool aOnFlag,const CFbsBitmap* aCursorBmp,const TRect& aPos);
     void SetPopupArea(const TRect& aRect, TBool aFlag);
     void UpdateICFArea(const CFbsBitmap* aBmp,const TPoint& aPos);
-    
-    /**
-     * Update the bubble area list
-     *
-     * @since S60 v5.0
-     * @param aCtrl the Ctrl's address
-     * @param aBmp the bubble bitmap's address
-     * @param aRect the bubble rect
-     * @param aFlag ETrue means add bubble area and 
-     *              EFalse means remove bubble area
-     * @return void
-     */
-    void UpdateChangedArea( const TUint32 aCtrl, 
-    	const CFbsBitmap* aBmp, const TRect& aRect, TBool aFlag );
-    
-    /**
-     * Update the bubble area list
-     *
-     * @since S60 v5.0
-     * @param aCtrl the Ctrl's address
-     * @param aBmp the bubble bitmap's address
-     * @param aMaskBmp the bubble mask bitmap's address
-     * @param aPos the bubble rect
-     * @param aFlag ETrue means add bubble area and 
-     *              EFalse means remove bubble area
-     * @return void
-     */
-    void UpdateBubble( const TUint32 aCtrl, 
-    	const CFbsBitmap* aBmp, const CFbsBitmap* aMaskBmp, 
-    	const TRect& aPos, TBool aFlag );
-    
+    void UpdateChangedArea(const CFbsBitmap* aBmp,const TRect& aRect,TBool aFlag);
+    void UpdateBubble(const CFbsBitmap* aBmp,const CFbsBitmap* aMaskBmp,const TRect& aPos,TBool aFlag);
     void Clean();
     
     void HandleNGASpecificSignal(TInt aEventType, const TDesC& aEventData);
@@ -240,18 +211,6 @@ public: // New functions
      * @return void
      */
     void SetCursorColor();
-    
-   /**
-    * Enable or disable transition effect.
-    * 
-    * @since Symbian^3
-    * @param aEnableGfxTransEffect, ETrue: enable transition effect
-    *                               EFalse: disable transition effect.
-    */
-    inline void EnableGfxTransEffect( TBool aEnableGfxTransEffect )
-    	{
-    	iEnableGfxTransEffect = aEnableGfxTransEffect;
-    	};
     
 public: // Functions from base classes.
 
@@ -353,12 +312,6 @@ private: // Data
     CFbsBitmap* iChangedBmp;
     RPointerArray<CFbsBitmap> iBubblesArea;
     RPointerArray<CFbsBitmap> iBubblesMaskArea;
-    
-    /**
-     * An array of the Controls' addresses 
-     */
-    RArray<TUint32> iBubblesCtrl;
-    
     RArray<TRect> iBubblesPos;
     
     TPoint iCursorPos;
@@ -397,12 +350,6 @@ private: // Data
      */
     TRgb iCursorColor;
     
-    
-   /**
-    * If transition effect is enabled. 
-    */
-    TBool iEnableGfxTransEffect;
-
 friend class CCursorWindow;
     };
 class CInternalBkCtrl : public CCoeControl

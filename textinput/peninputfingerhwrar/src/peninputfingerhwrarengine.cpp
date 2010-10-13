@@ -16,14 +16,12 @@
 */
 
 
-//SYSTEM INCLUDES
+//FEP INCLUDES
 #include <AknFepGlobalEnums.h>
 #include <aknfeppeninputenums.h>
 #include <PtiHwrRecognizer.h>
 #include <e32property.h>
-#include <peninputcommonlayoutglobalenum.h>
-
-#include "PtiDefs.h"
+#include "ptidefs.h"
 
 //USER INCLUDES
 #include "peninputfingerhwrarengine.h"
@@ -366,13 +364,6 @@ void CPeninputFingerHwrArEngine::SetRecognitionRange( const TInt aRange,
             break;
         case ERangeNumber:
             {
-            aRecognitionRange.iSubRange = EPtiRangeNumber;
-            }
-            break;
-        case ERangeNativeNumber:
-            {
-            //convert to ERangeNumber to let engine recognize both native number
-            //and latin number. 
             aRecognitionRange.iSubRange = EPtiRangeNumber;
             }
             break;

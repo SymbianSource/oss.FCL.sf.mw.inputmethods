@@ -33,7 +33,6 @@ class CSplitItutDataMgr;
 class CFepCtrlDropdownList;
 class CAknFepCtrlCommonBgCtrl;
 class CPeninputSyncBitmapRotator;
-class CBubbleCtrl;
 
 const TInt KUnavailableID = -1;
 
@@ -241,52 +240,36 @@ public:
     void SetPromptTextL( TUint8* aData );
     
     /** 
-     * Set split bubble
+     * Set bubble
      *
+     * @since S60 5.0
      * @return None
      */    
-    void SetSplitIndiBubble();
+    void SetIndiBubble();
     
     /** 
-     * Set spelling bubble
+     * Update bubble prompt text
      *
-     * @return None
-     */    
-    void SetSpellIndiBubble();
-    
-    /** 
-     * Update split bubble prompt text
-     *
+     * @since S60 5.0
      * @param aData text
      * @return None
      */
-    void UpdateSplitIndiBubbleL( TUint8* aData );
-
-    /** 
-     * Update spelling bubble prompt text
-     *
-     * @param aData text
-     * @return None
-     */
-    void UpdateSpellIndiBubbleL( TUint8* aData );    
+    void UpdateIndiBubbleL( TUint8* aData );
     
     /** 
      * Set bubble image
      *
-     * @param aBubble bubble control
-     * @param aRect bubble rect
+     * @since S60 5.0
      * @param aImgID1 image ID1
      * @param aMaskID1 mask image id1
      * @param aImgID2 image ID2
      * @param aMaskID2 mask image id2
      * @return None
      */
-    void SetBubbleImageL( CBubbleCtrl& aBubble,
-                          const TRect& aRect,
-                          const TInt aImgID1,
-						  const TInt aMaskID1,
-                          const TInt aImgID2,
-                          const TInt aMaskID2 );
+    void SetIndiBubbleImageL( const TInt aImgID1,
+						      const TInt aMaskID1,
+                              const TInt aImgID2,
+                              const TInt aMaskID2 );
 private:
     /**
      * C++ constructor
@@ -493,13 +476,6 @@ private:
      * @return None
      */
     void CreateICFL();
-	
-    /**
-     * Create split indicator bubble
-     *
-     * @return None
-     */
-    void CreateSplitIndiBubbleL();
      
     /**
      * Check control size change
@@ -650,7 +626,6 @@ private:
     TSize iIndicatorTextSize;
     TBool iImDimensionSet;
     CFepLayoutMultiLineIcf* iICF;
-    CBubbleCtrl* iSplitIndiBubble;        
     };
    
 // ---------------------------------------------------------------------------

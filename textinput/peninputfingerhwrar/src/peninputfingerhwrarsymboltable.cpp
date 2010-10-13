@@ -28,7 +28,7 @@
 #include <AknLayoutDef.h>
 #include <AknUtils.h>
 #include <AknsUtils.h>
-#include <AknIconUtils.h>
+#include <akniconutils.h>
 #include <aknfeppeninputenums.h>
 #include <AknFepGlobalEnums.h>
 
@@ -41,7 +41,7 @@
 #include "peninputfingerhwrarstoreconstants.h"
 #include "peninputfingerhwrarmultipagevkb.h"
 #include "peninputfingerhwrarsymboltable.h"
-#include "peninputfingerhwarvkbutility.h"
+
 
 //CONST DEFINATION
 const TInt KSymbolButtonInnerPadding = 6;
@@ -216,16 +216,14 @@ void CPeninputArabicFingerHwrSymbolTable::ConstructL()
 // ---------------------------------------------------------------------------
 //	
 void CPeninputArabicFingerHwrSymbolTable::SizeChanged(
-                     const TRect aVirtualKeypadRect, const RArray<TRect> & aBtnRects,
+                     const TRect aVirtualKeypadRect, const RArray<TRect> aBtnRects,
                      const TInt aKeypadRow, const TInt aKeypadCol, TBool aIsLandscape)
     {
-	ASSERT(aBtnRects.Count() > 0);
-	
 	iIsLandscape = aIsLandscape;
 	
 	// relayout the button
-	TRect pageBtnRect = aBtnRects[0];
-    
+	TRect pageBtnRect(aBtnRects[0]);
+
 	if(aIsLandscape)
 	    {
 	    i2Page1Btn->Hide(EFalse);
@@ -255,7 +253,7 @@ void CPeninputArabicFingerHwrSymbolTable::SizeChanged(
 	
 	iMutiPageKeypad->UpdatePaging(aKeypadRow,aKeypadCol);
 	}
-
+	
 // ---------------------------------------------------------------------------
 // create symbol table keypad.
 // ---------------------------------------------------------------------------
@@ -331,6 +329,11 @@ void CPeninputArabicFingerHwrSymbolTable::MoveIconButton( CAknFepCtrlEventButton
     rcInner.Shrink( aXPadding, aYPadding );
     aButton->SizeChanged( aRect, rcInner, aReloadImages );
     }
+
+void CPeninputArabicFingerHwrSymbolTable::OnActivate()
+    {
+    CControlGroup::OnActivate();
+	}
 
 // ---------------------------------------------------------------------------
 //  Read control's background info.
@@ -419,7 +422,53 @@ void CPeninputArabicFingerHwrSymbolTable::LoadBackgroundFromResourceL( const TIn
 //	
 void CPeninputArabicFingerHwrSymbolTable::LoadVkbKeyImageL(TInt aResId, const TSize& aKeySize)
     {
-    PeninputFingerHwrArVkbUtility::LoadVkbKeyImageL(*iMutiPageKeypad,aResId,aKeySize);	    
+	TResourceReader reader;    
+    CCoeEnv::Static()->CreateResourceReaderLC( reader, aResId );      
+    
+    TPtrC bmpFileName = reader.ReadTPtrC();
+    TInt32 imgMajorSkinId = reader.ReadInt32();
+    TAknsItemID id;
+    
+    TSize keySize = aKeySize;
+    
+    for ( TInt index = 0; index <= EKeyBmpLastType ; index += 2 )
+        { 
+        // Get the image ids and mask ids from resource
+        TInt bmpId = reader.ReadInt16(); 
+        TInt bmpMskId = reader.ReadInt16();
+        
+        // read skin item id
+        const TInt skinitemid = reader.ReadInt16();
+        id.Set( TInt( imgMajorSkinId ), skinitemid );
+        
+        if ( bmpId != KInvalidImg )
+            {
+            CFbsBitmap* bmp = NULL;
+            CFbsBitmap* maskbmp = NULL;
+
+            if ( bmpMskId != KInvalidImg )
+                {
+                AknsUtils::CreateIconL( AknsUtils::SkinInstance(),
+                   id, bmp, maskbmp, bmpFileName, bmpId, bmpMskId );
+                
+                // set maskbmp and size
+                AknIconUtils::SetSize( maskbmp, keySize, EAspectRatioNotPreserved );
+                iMutiPageKeypad->SetNonIrregularKeyBitmapL( 
+                TVirtualKeyBmpType( EKeyBmpNormal + index + 1 ), maskbmp );
+                }
+            else
+                {
+                AknsUtils::CreateIconL( AknsUtils::SkinInstance(), id, 
+                    bmp, bmpFileName, bmpId );
+                }
+            // set bmp and size
+            AknIconUtils::SetSize( bmp, keySize, EAspectRatioNotPreserved );
+            iMutiPageKeypad->SetNonIrregularKeyBitmapL( 
+                TVirtualKeyBmpType( EKeyBmpNormal + index ), bmp );
+            }       
+        }
+    // Pop and destroy reader
+    CleanupStack::PopAndDestroy( 1 );        
 	}
 
 // ---------------------------------------------------------------------------
@@ -428,8 +477,116 @@ void CPeninputArabicFingerHwrSymbolTable::LoadVkbKeyImageL(TInt aResId, const TS
 //	
 void CPeninputArabicFingerHwrSymbolTable::LoadVirtualKeypadKeyL(const TInt aResId, const RArray<TRect>& aCellRects)
     {
-	PeninputFingerHwrArVkbUtility::LoadVirtualKeypadKeyL(*iMutiPageKeypad,aResId,aCellRects);
+	iMutiPageKeypad->SetResourceId(aResId);
+	
+	TResourceReader reader;
+    CCoeEnv::Static()->CreateResourceReaderLC( reader, aResId );
+
+    // construct keys
+    TInt resKeyCount = reader.ReadInt16();
+    TInt existsKeyCount = iMutiPageKeypad->KeyArray().Count();
+    TInt rectCount = aCellRects.Count();
+    
+    for ( TInt i = 0; i < resKeyCount; i++ )
+        {
+        if ( i < existsKeyCount )
+            {
+            CVirtualKey* vk = iMutiPageKeypad->KeyArray()[i];
+            UpdateVkbKeyL( vk, reader, aCellRects[i%rectCount] );
+            }
+        else
+            {
+            CVirtualKey* vk = CreateVkbKeyL( reader, aCellRects[i%rectCount] );
+            CleanupStack::PushL( vk );
+            iMutiPageKeypad->AddKeyL( vk );
+            
+            CleanupStack::Pop( vk );
+            }
+        }
+    
+    CleanupStack::PopAndDestroy( 1 ); // reader
+    
+    iMutiPageKeypad->Draw();
+    iMutiPageKeypad->UpdateArea( iMutiPageKeypad->Rect() );
 	}
+
+// ---------------------------------------------------------------------------
+// create virtual key.
+// ---------------------------------------------------------------------------
+//
+CVirtualKey* CPeninputArabicFingerHwrSymbolTable::CreateVkbKeyL( TResourceReader& aReader, 
+    const TRect aKeyRect )
+    {
+    CHBufCArray* keytexts = CHBufCArray::NewL();
+    CleanupStack::PushL( keytexts );
+    
+    for ( TInt i = 0; i <= EPosLast; i++ )
+        {
+        HBufC* unicode = aReader.ReadHBufCL();
+        keytexts->Array().AppendL( unicode );
+        }
+
+    TInt keyscancode = aReader.ReadInt16();
+
+    HBufC* text = keytexts->Array()[0];
+    
+    CVirtualKey* vk = NULL;
+    if ( text )
+        {
+        vk = CVirtualKey::NewL( *text, keyscancode, aKeyRect, aKeyRect, 0 );
+        }
+    else 
+        {
+        vk = CVirtualKey::NewL( KNullDesC, keyscancode, aKeyRect, aKeyRect, 0 );
+        }
+
+    CleanupStack::PopAndDestroy( keytexts ); //keytexts
+
+    
+    TRect innerrect = aKeyRect;
+    innerrect.Shrink( TSize(2, 2) );
+    vk->SetInnerRect( innerrect );
+    
+    return vk;
+    }
+
+// ---------------------------------------------------------------------------
+// update virtual key info.
+// ---------------------------------------------------------------------------
+//
+void CPeninputArabicFingerHwrSymbolTable::UpdateVkbKeyL( CVirtualKey* aVirtualKey, 
+    TResourceReader& aReader, const TRect aKeyRect )
+    {
+    CHBufCArray* keytexts = CHBufCArray::NewL();
+    CleanupStack::PushL( keytexts );
+    
+    for ( TInt i = 0; i <= EPosLast; i++ )
+        {
+        HBufC* unicode = aReader.ReadHBufCL();
+        keytexts->Array().AppendL( unicode );
+        }
+
+    TInt keyscancode = aReader.ReadInt16();
+
+    HBufC* text = keytexts->Array()[0];
+    if ( text )
+        {
+        aVirtualKey->SetKeyData( *text );
+        }
+    else
+        {
+        aVirtualKey->SetKeyData( KNullDesC );
+        }
+    
+    aVirtualKey->SetKeyScancode( keyscancode );
+
+    CleanupStack::PopAndDestroy( keytexts ); //keytexts
+
+    aVirtualKey->SetRect(aKeyRect);
+    TRect innerrect = aKeyRect;
+    innerrect.Shrink( TSize(2,2) );
+    aVirtualKey->SetInnerRect( innerrect );
+    }
 
 // ---------------------------------------------------------------------------
 // Navigate the symbol page
@@ -534,14 +691,17 @@ void CPeninputArabicFingerHwrSymbolTable::Draw()
     {
 	if(AbleToDraw())
         {
+        //Draw button area background.
+//		DrawOpaqueMaskBackground( Rect() );
+//	    DrawOpaqueMaskBackground();
         DrawOpaqueMaskBackground(iMutiPageKeypad->Rect());
 		if( BackgroundBmp() && BackgroundBmp()->SizeInPixels() != Rect().Size() )
 			{
 			AknIconUtils::SetSize(BackgroundBmp(), Rect().Size(), EAspectRatioNotPreserved);
 			}
-        // draw background    
+        // draw background
+//		DrawBackground();    
         DrawBackground(iMutiPageKeypad->Rect());
-        
         // draw group		
 		CControlGroup::Draw();
 		

@@ -50,6 +50,5 @@
 #include "../peninputhwrfscn/group/bld.inf"
 #include "../peninputvkbkr/group/bld.inf"
 #include "../peninputfingerhwr/group/bld.inf"
-#include "../peninputfingerhwrar/group/bld.inf"
 #include "../peninputsplititut/group/bld.inf"
 #include "../peninputsplitqwerty/group/bld.inf"

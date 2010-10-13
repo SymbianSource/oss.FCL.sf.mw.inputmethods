@@ -131,6 +131,18 @@ CAknFepUIAvkonImpl::~CAknFepUIAvkonImpl()
 
 void CAknFepUIAvkonImpl::DeleteDialogs()
     {
+    // If there is no dialog displayed, do not need delete the dialog, 
+    // but set all dialog pointer to null and return
+	if( !CEikonEnv::Static()->EikAppUi()->IsDisplayingMenuOrDialog())
+		{
+		iDialog = NULL;
+		iCharMapDialog = NULL;
+		iListQueryDialog = NULL;
+		iTextQueryDialog = NULL;
+        iPredictiveSettingDialog = NULL;
+		return;
+		}
+	
     if(iDialog)
         {
         delete iDialog;
@@ -332,13 +344,12 @@ void CAknFepUIAvkonImpl::UpdateSoftkeysL(TInt aResourceId, CAknEdwinState* aEdit
                 TInt commandId;
                 if (version == KAknCbaVersion)
                     {
-                    TUint32 shortCommandId = reader.ReadUint16();
-                    TUint32 longCommandId = reader.ReadUint16();
-                    commandId = (longCommandId << 16) | shortCommandId;
+                    commandId = reader.ReadInt16();
+                    reader.ReadInt16(); //long press id
                     }
                 else
                     {
-                    commandId = TInt(TUint(reader.ReadUint16()));
+                    commandId =reader.ReadInt16();
                     }
                 TPtrC text=reader.ReadTPtrC();
                 reader.ReadTPtrC(); // bmp filename

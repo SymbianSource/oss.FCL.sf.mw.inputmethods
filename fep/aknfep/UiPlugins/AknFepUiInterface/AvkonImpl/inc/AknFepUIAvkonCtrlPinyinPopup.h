@@ -504,7 +504,10 @@ protected:
      * second phase construction
      */
     void ConstructL(RWindow& aParent);
-
+	/**
+     * Construct arrow bitmap class
+     */
+	void ConstructBitmapsL();
     /**
      * layout the rectangles
      */
@@ -588,8 +591,14 @@ private: // the following are not owned
     MAknFepUICtrlPinyinPopupSizeChangedObserver* iSizeChangedObserver;
 private: // the following are owned
     CAknsFrameBackgroundControlContext* iBgContext; 
+    CFbsBitmap* iNaviArrowBitmapLeft;
+    CFbsBitmap* iNaviArrowBitmapLeftMask;
+    CFbsBitmap* iNaviArrowBitmapRight;
+    CFbsBitmap* iNaviArrowBitmapRightMask;
 
 private:
+	TAknLayoutRect iIndiFepArrowLeft;
+    TAknLayoutRect iIndiFepArrowRight;
     TInt iSelected;
     TInt iEnabled;
     TToneMark iToneMark;

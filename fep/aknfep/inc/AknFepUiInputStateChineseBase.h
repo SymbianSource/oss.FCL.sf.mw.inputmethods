@@ -38,9 +38,6 @@
 #include "AknFepUiInputStateBase.h"
 #include "AknFepUiCtrlContainerChinese.h"
 
-#include "aknfepuiinputminiqwertysogoupinyinphraseplugin.h"
-#include "aknfepuiinputminiqwertysogoustrokephraseplugin.h"
-
 // CONSTANTS
 
 // FORWARD DECLARATIONS
@@ -91,33 +88,12 @@ public:
      * @param aCommandId Command ID value
      */
     void HandleCommandL( TInt aCommandId );
-    
-    /**
-     * Set plugin to state machine.
-     * This Method is called by CAknFepUIManagerChinese.
-     *
-     * @param aPlugin the plugin for sogou core
-     */
-    void SetPlugin( TAknFepInputMiniQwertySogouPinyinPhrasePlugin aPlugin );
-    
-    /**
-     * Set stroke plugin to state machine.
-     * This Method is called by CAknFepUIManagerChinese.
-     *
-     * @param aPlugin the stroke plugin for sogou core
-     */
-    void SetStrokePlugin( TAknFepInputMiniQwertySogouStrokePhrasePlugin aPlugin );
 
 protected:
     MAknFepUICtrlContainerChinese* iUIContainer;
     
    TBool iUseforResourcechange;    
-   
-   // The plugin for sogou core.
-   TAknFepInputMiniQwertySogouPinyinPhrasePlugin iPlugin;
-   
-   // The stroke plugin for sogou core
-   TAknFepInputMiniQwertySogouStrokePhrasePlugin iStrokePlugin;
+      
     };
 #endif//__AKN_FEP_UI_INPUTSTATE_CHINESE_BASE_H__
 // End of file

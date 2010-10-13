@@ -401,13 +401,6 @@ public:
      * An editor of unlimited length will return its maximum size as zero
      */
     virtual TBool EditorHasFreeSpace( TInt aNumberOfCharacter = 0 ) const = 0;
-    
-    /**
-     * Check whether the editor is a Java number editor
-     * Return ETrue if the editor is a Java number editor 
-     */
-    virtual TBool IsSpecialNumericEditor() = 0;
-
 
     virtual void RedecorateAfterDeletionL( const TDesC& aTextThatWasDeleted ) = 0;
 

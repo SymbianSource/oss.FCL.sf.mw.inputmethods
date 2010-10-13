@@ -49,6 +49,46 @@ const TUint8 KIntSize = sizeof(TInt);
 
 const TInt16 KEmotionKeyMark = 0xFFFE;
 
+class CPeninputFingerHwrArCallBack : public CActive
+    {
+    friend class CPeninputFingerHwrArLayout;
+public:
+    void IssueRequestL();
+private:
+    CPeninputFingerHwrArCallBack(CPeninputFingerHwrArLayout* aHwrArLayout);
+	void RunL();
+	void DoCancel();
+private:
+    CPeninputFingerHwrArLayout* iHwrArLayout;
+	};
+
+CPeninputFingerHwrArCallBack::CPeninputFingerHwrArCallBack(CPeninputFingerHwrArLayout* aHwrArLayout)
+    :CActive(EPriorityHigh)
+    {
+	CActiveScheduler::Add(this);
+	iHwrArLayout = aHwrArLayout;
+	}
+void CPeninputFingerHwrArCallBack::IssueRequestL()
+    {
+    if(!IsActive())
+        {
+        iStatus=KRequestPending;
+        SetActive();        
+        TRequestStatus *pS=(&iStatus);
+        
+        User::RequestComplete(pS,0);
+        }
+    }
+void CPeninputFingerHwrArCallBack::RunL()
+    {
+    iHwrArLayout->CallBackL();
+    }
+
+void CPeninputFingerHwrArCallBack::DoCancel()
+    {
+    
+    }
+
 // ============================ MEMBER FUNCTIONS =============================
 
 // ---------------------------------------------------------------------------
@@ -101,7 +141,9 @@ void CPeninputFingerHwrArLayout::ConstructL( const TAny* aInitData )
 	
 	//retrieve the settings
     LoadAndPublishDefaultL();
-
+	
+    //iCallBack = new (ELeave) CPeninputFingerHwrArCallBack(this);
+    
     //set screen layout extent
     SetRect( TRect( TPoint( 0, 0 ), ScreenSize() ) );
     }
@@ -585,7 +627,17 @@ void CPeninputFingerHwrArLayout::LoadAndPublishDefaultL()
 
     iRepositorySetting->Get( KSettingsPenInputLang, newValue );
     iDataStore->SetLanguageL( newValue );
-
+    
+//    TInt displayLang = 0;
+//    iCommonEngineRepository->Get(KGSDisplayTxtLang,displayLang);
+//    if(displayLang == ELangArabic)
+//        {
+//        iHwrWnd->SetNativeNumMode(ETrue);
+//        }
+//    else
+//        {
+//        iHwrWnd->SetNativeNumMode(EFalse);
+//        }
     iHwrWnd->SetNativeNumMode(iDataStore->IsNativeNumMode());
     }
 
@@ -622,6 +674,8 @@ CPeninputFingerHwrArLayout::~CPeninputFingerHwrArLayout()
 	delete iStateMgr;
     delete iGSRepositoryWatcher;
     delete iRepositorySetting;
+//    delete iCommonEngineRepository;
+    //delete iCallBack;
     }
 
 // ---------------------------------------------------------------------------
@@ -878,6 +932,7 @@ void CPeninputFingerHwrArLayout::OnIcfClicked()
 //                                              
 void CPeninputFingerHwrArLayout::OnHwrStrokeStartedL()
     {
+    //iCallBack->IssueRequestL(); 
 	iHwrWnd->HideIndicator();
 	
 	// The default candidate cell is not highlight

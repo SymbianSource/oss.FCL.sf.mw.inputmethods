@@ -106,7 +106,7 @@ void CVirtualKeyCtrl::ConstructL()
     BaseConstructL();
     
     //tap accuracy enhancement
-    if ( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
+    if( FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay ))
         {
         TMargins margins;
         UiLayout()->GetKeyExtResponseArea( margins );
@@ -151,12 +151,10 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc, const TRect& aRect)
 				if( iKeyboard->ShiftIcon() &&
 					iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyShiftCharacter )
 					{
-				    // Get the rect of the shift icon
-					TRect shiftIconDrawRect = iKeyboard->ShiftIconRect();
-					shiftIconDrawRect.Move( iKeyboard->Rect().iTl );
+					//CFbsBitGc* gc = GetGc();//static_cast<CFbsBitGc*>(BitGc());
 					AknPenInputDrawUtils::DrawColorIcon( iKeyboard->ShiftIcon(),
 														 *aGc,
-														 shiftIconDrawRect );	
+														 textLayout.TextRect() );	
 					}
 				else if(iKeyboard->StarIcon() &&
 						iKeyInfo->KeyUnicodes(TVirtualKeyTextPos(i)) == KKeyStarCharacter )
@@ -164,9 +162,7 @@ void CVirtualKeyCtrl::DrawKeyText(CFbsBitGc* aGc, const TRect& aRect)
 					// Get the size of the icon
 					TSize starIconSize = iKeyboard->StarIcon()->Bitmap()->SizeInPixels();
 					// Get the rect of draw icon area
-					TRect drawIconRect = iKeyboard->StarIconRect();
-					drawIconRect.Move( iKeyboard->Rect().iTl );
-					
+					TRect drawIconRect = textLayout.TextRect();
 					// When the size of icon is different with the size of draw icon area,
 					// because the icon is drew from the left top coordinate of the draw
 					// icon area, so the icon will not be drew in the center. In this case,
@@ -1122,13 +1118,10 @@ void CVirtualKeyCtrl::UpdateChangedArea(TBool aFlag)
     {
     struct SData
         {
-    	TUint32 ctrl;
         TBool flag;
         CFbsBitmap* bmp;
         TRect pos;
         } data;
-        
-    data.ctrl = (TUint32)this;
     data.flag = aFlag;
     data.bmp = Keyboard()->Bitmap();//aFlag ? Keyboard()->iBitmap : 0;
     data.pos = Rect();

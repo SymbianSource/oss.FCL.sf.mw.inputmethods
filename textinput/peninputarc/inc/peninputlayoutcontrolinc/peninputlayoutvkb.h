@@ -455,43 +455,6 @@ public:
     inline void SetKeySkinId(TVirtualKeyBmpType aBmpType, TAknsItemID aSkinId);
     inline TAknsItemID KeySkinId(TVirtualKeyBmpType aBmpType);
     inline void SetTextLineLayout(TAknTextLineLayout aTextLine, TVirtualKeyTextPos aPos);
-    
-    /**
-     * Set the star icon rect
-     *
-     * @since S60 V5.0
-     * @param aRect the rect of the star icon
-     * @return none
-     */
-    inline void SetStarIconRect( const TRect& aRect );
-    
-    /**
-     * Set the shift icon rect
-     *
-     * @since S60 V5.0
-     * @param aRect the rect of the shift icon
-     * @return none
-     */
-    inline void SetShiftIconRect( const TRect& aRect );
-    
-    /**
-     * Get the star icon rect
-     *
-     * @since S60 V5.0
-     * @param none
-     * @return the rect of the star icon
-     */
-    inline TRect StarIconRect();
-    
-    /**
-     * Get the shift icon rect
-     *
-     * @since S60 V5.0
-     * @param none
-     * @return the rect of the shift icon
-     */
-    inline TRect ShiftIconRect();
-    
     inline TAknTextLineLayout TextLineLayout(TVirtualKeyTextPos aPos);
     inline void SetTextLineLayout(TAknTextLineLayout aTextLine);
     inline TAknTextLineLayout TextLineLayout();
@@ -948,16 +911,7 @@ private:
      */    
     CFepUiKeyboardExt* iExt;
 
-    /**
-     * The star icon rect
-     */
-    TRect iStarIconRect;
-    
-    /**
-     * The shift icon rect
-     */
-    TRect iShiftIconRect;
-    
+
 protected:
     //void HandleResourceChange(TInt aType);
     virtual IMPORT_C void HandleResourceChange(TInt aType);

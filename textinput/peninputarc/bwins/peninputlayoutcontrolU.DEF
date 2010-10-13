@@ -607,13 +607,4 @@ EXPORTS
 	?HandleResourceChange@CFepLayoutPopupWnd@@UAEXH@Z @ 606 NONAME ; void CFepLayoutPopupWnd::HandleResourceChange(int)
 	?DisableLayoutDrawing@CFepUiLayout@@QAEXH@Z @ 607 NONAME ; void CFepUiLayout::DisableLayoutDrawing(int)
 	?BkMaskBmp@CFepUiBaseCtrl@@IAEPAVCFbsBitmap@@XZ @ 608 NONAME ; class CFbsBitmap * CFepUiBaseCtrl::BkMaskBmp(void)
-	??0CPopupBubbleCtrl@@IAE@ABVTRect@@PAVCFepUiLayout@@H@Z @ 609 NONAME ; CPopupBubbleCtrl::CPopupBubbleCtrl(class TRect const &, class CFepUiLayout *, int)
-	?SetBitmapParamL@CPopupBubbleCtrl@@QAEXPAVCFbsBitmap@@0VTAknsItemID@@11@Z @ 610 NONAME ; void CPopupBubbleCtrl::SetBitmapParamL(class CFbsBitmap *, class CFbsBitmap *, class TAknsItemID, class TAknsItemID, class TAknsItemID)
-	?Move@CPopupBubbleCtrl@@UAEXABVTPoint@@@Z @ 611 NONAME ; void CPopupBubbleCtrl::Move(class TPoint const &)
-	?SetTextL@CPopupBubbleCtrl@@QAEXABVTDesC16@@@Z @ 612 NONAME ; void CPopupBubbleCtrl::SetTextL(class TDesC16 const &)
-	?Hide@CPopupBubbleCtrl@@UAEXH@Z @ 613 NONAME ; void CPopupBubbleCtrl::Hide(int)
-	?NewL@CPopupBubbleCtrl@@SAPAV1@ABVTRect@@PAVCFepUiLayout@@H@Z @ 614 NONAME ; class CPopupBubbleCtrl * CPopupBubbleCtrl::NewL(class TRect const &, class CFepUiLayout *, int)
-	?SetTextFormat@CPopupBubbleCtrl@@QAEXVTAknTextLineLayout@@@Z @ 615 NONAME ; void CPopupBubbleCtrl::SetTextFormat(class TAknTextLineLayout)
-	?Draw@CPopupBubbleCtrl@@UAEXXZ @ 616 NONAME ; void CPopupBubbleCtrl::Draw(void)
-	??1CPopupBubbleCtrl@@UAE@XZ @ 617 NONAME ; CPopupBubbleCtrl::~CPopupBubbleCtrl(void)
 

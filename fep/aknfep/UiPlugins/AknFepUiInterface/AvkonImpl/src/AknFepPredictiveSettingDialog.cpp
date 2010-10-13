@@ -779,14 +779,6 @@ void CAknFepPredictiveSettingDialog::HandlePointerEventL(const TPointerEvent& aP
     }
 
 /**
- *process the key events
- */
-TKeyResponse CAknFepPredictiveSettingDialog::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
-	{
-	return iSettingsList->OfferKeyEventL(aKeyEvent, aType);
-	}
-    
-/**
  *From MEikCommandObserver
  */
 void CAknFepPredictiveSettingDialog::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPane) 

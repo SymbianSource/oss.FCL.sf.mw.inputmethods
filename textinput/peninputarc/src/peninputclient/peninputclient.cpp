@@ -509,18 +509,5 @@ EXPORT_C void RPeninputServer::EnablePriorityChangeOnOriChange(TBool aEnabled)
     {
 	iSingletonServer->EnablePriorityChangeOnOriChange(aEnabled);
 	}	
-
-// ---------------------------------------------------------------------------
-// Enable or disable transition effect.
-// ---------------------------------------------------------------------------
-//  
-EXPORT_C void RPeninputServer::EnableGfxTransEffect( TBool aEnable )
-    {
-    if ( iSingletonServer )
-        {
-        iSingletonServer->EnableGfxTransEffect( aEnable );
-        }
-    }
-
 //end of class RPeninputServer
 // End of File

@@ -79,15 +79,7 @@ void CAknFepTextQueryDialog::PreLayoutDynInitL()
                 {
                 underlyingEditorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_CHINESE;
                 }
-            }        
-        else if (FeatureManager::FeatureSupported(KFeatureIdKorean))
-            {
-            // Use the special sct resource file for Korean variant.
-            if (!underlyingEditorSCTResId || underlyingEditorSCTResId == R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG)
-                {
-                underlyingEditorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG_KOREAN;
-                }
-            }        
+            }
         else if (!underlyingEditorSCTResId)
             {
             underlyingEditorSCTResId = R_AVKON_SPECIAL_CHARACTER_TABLE_DIALOG;

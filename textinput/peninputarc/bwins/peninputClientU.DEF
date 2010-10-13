@@ -64,5 +64,4 @@ EXPORTS
 	?ConnectAsyc@RPeninputServer@@QAEHAAVTRequestStatus@@@Z @ 63 NONAME ; int RPeninputServer::ConnectAsyc(class TRequestStatus &)
 	?SetDataQueryPopped@RPeninputServer@@QAEXH@Z @ 64 NONAME ; void RPeninputServer::SetDataQueryPopped(int)
 	?EnablePriorityChangeOnOriChange@RPeninputServer@@QAEXH@Z @ 65 NONAME ; void RPeninputServer::EnablePriorityChangeOnOriChange(int)
-        ?EnableGfxTransEffect@RPeninputServer@@QAEXH@Z @ 66 NONAME ; void RPeninputServer::EnableGfxTransEffect(int)
 

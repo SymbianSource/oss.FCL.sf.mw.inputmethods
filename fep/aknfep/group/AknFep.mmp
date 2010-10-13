@@ -215,8 +215,6 @@ SOURCE          AknFepUiInputStateEntryMiniQwertyZhuyinPhrase.cpp
 SOURCE          AknFepUiInputStateCandidateMiniQwertyZhuyinPhrase.cpp
 SOURCE          AknFepUIInputStateEntryMiniQwertyCangJie.cpp
 SOURCE          aknfepuiinputminiqwertypinyinphrasebase.cpp 
-SOURCE          aknfepuiinputminiqwertysogoupinyinphraseplugin.cpp
-SOURCE          aknfepuiinputminiqwertysogoustrokephraseplugin.cpp
 SOURCE          aknfepuiinputminiqwertystrokephrasebase.cpp 
 SOURCE          aknfepuiinputstateminiqwertystrokephrase.cpp
 SOURCE          aknfepinputstateminiqwertyzhuyinkeymap.cpp  

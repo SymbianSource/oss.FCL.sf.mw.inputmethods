@@ -105,11 +105,6 @@ public:
     TPeninputButtonLayoutDataEx iSpaceButtonEx;
     TPeninputButtonLayoutData   iEnterButton;
     TPeninputButtonLayoutData   iRangeButton;
-    TRect iSplitIndiPaneRectWithText;
-    TRect iSplitIndiPaneRectWithoutText;
-    TRect iSplitIndiIconRectWithText;
-    TRect iSplitIndiIconRectWithoutText;
-    TAknTextLineLayout iSplitIndiText;    
     TRect iTitlebarRect;
     TRect iClientRect;
     TRect iQwtRect;
@@ -281,40 +276,6 @@ public:
      */
     TBool IsValid() const;
 
-    /**
-     * Get split indicator rect with text
-     *
-     * @return TRect
-     */
-    const TRect& SplitIndiRectWithText() const;
-    
-    /**
-     * Get split indicator rect without text
-     *
-     * @return TRect
-     */
-    const TRect& SplitIndiRectWithoutText() const;
-    
-    /**
-     * Get split indicator icon rect with text
-     *
-     * @return TRect
-     */    
-    const TRect& SplitIndiIconRectWithText() const;
-    
-    /**
-     * Get split indicator icon rect without text
-     *
-     * @return TRect
-     */        
-    const TRect& SplitIndiIconRectWithoutText() const;
-    
-    /**
-     * Get split indicator text layout
-     *
-     * @return TAknTextLineLayout
-     */        
-    const TAknTextLineLayout& SplitIndiText() const;
 protected:
 
     /**
@@ -628,41 +589,6 @@ public:
     void GetSpaceButtonExLayoutInfo( TRect& aIconsFrameRect,
                                      TRect& aMiddleIconRect ) const;
 
-    /**
-     * Get split indicator rect with text
-     *
-     * @return TRect
-     */
-    const TRect& SplitIndiRectWithText() const;
-    
-    /**
-     * Get split indicator rect without text
-     *
-     * @return TRect
-     */
-    const TRect& SplitIndiRectWithoutText() const;
-    
-    /**
-     * Get split indicator icon rect with text
-     *
-     * @return TRect
-     */    
-    const TRect& SplitIndiIconRectWithText() const;
-    
-    /**
-     * Get split indicator icon rect without text
-     *
-     * @return TRect
-     */        
-    const TRect& SplitIndiIconRectWithoutText() const;
-    
-    /**
-     * Get split indicator text layout
-     *
-     * @return TAknTextLineLayout
-     */        
-    const TAknTextLineLayout& SplitIndiText() const;
-    
 private:
 
     /**

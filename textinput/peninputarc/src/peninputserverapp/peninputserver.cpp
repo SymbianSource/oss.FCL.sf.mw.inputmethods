@@ -45,15 +45,20 @@
 #include <AknDef.h>
 #include <aknfeppeninputenums.h>
 #include <aknappui.h> 
+#include <peninputcmdparam.h>
 
 #include "peninputcrpclient.h"
 #include <avkondomainpskeys.h>
+#include "penuicandidatewnd.h"
+#include "penuiwndeventobserver.h"
+#include "penuiwndeventhandler.h"
 //#define __WND_TEST_
 
 // CONSTANTS
 const TSize KInitialPeninputSize= TSize( 10, 10 );
 const TInt KMsgQueueLen = 1000;
 const TInt KMsgResponseQueueLen = 10;
+const TInt KLiftupPriority = 10;
 
 const TInt KWsSessionFlushPerioid = 50000;//50ms
 const TInt KInvalidValue = -1;
@@ -62,14 +67,6 @@ const TInt KInvalidValue = -1;
 // is used for both orientation in Pen Input server side code.
 const TInt KPenInputSrvPrtFsqUiId = 0x20026837;
 
-// The UID of the PopupClock application
-const TInt KBigClockUid =  0x2000FDC3;
-
-// The UID of the SreenSaver application
-const TInt KScreenSaverUid =  0x100056CF;
-
-// The UID of the AutoLock application
-const TInt KAutoLockUid = 0x100059B5;
 
 enum TActivationFlag
 	{
@@ -226,8 +223,8 @@ CPeninputServer* CPeninputServer::NewL()
 void CPeninputServer::ConstructL( )
     {
 #ifdef RD_TACTILE_FEEDBACK     
-	FeatureManager::InitializeLibL();
-   	iSupportFeedback = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
+    FeatureManager::InitializeLibL();
+    iSupportFeedback = FeatureManager::FeatureSupported( KFeatureIdTactileFeedback );
 
 #endif //RD_TACTILE_FEEDBACK   
     
@@ -250,24 +247,26 @@ void CPeninputServer::ConstructL( )
     iHardwareLayoutChangeWatcher->StartWatching();
     iSoftwareLayoutChangeWatcher->StartWatching();
 
-	RWindowGroup& rootWin = CCoeEnv::Static()->RootWin();
-	rootWin.EnableFocusChangeEvents (); // For cover UI/status pane refresh problems
-	rootWin.EnableGroupListChangeEvents();
-	rootWin.EnableReceiptOfFocus(EFalse);
-	rootWin.AutoForeground(EFalse);
+    RWindowGroup& rootWin = CCoeEnv::Static()->RootWin();
+    rootWin.EnableFocusChangeEvents (); // For cover UI/status pane refresh problems
+    rootWin.EnableGroupListChangeEvents();
+    rootWin.EnableReceiptOfFocus(EFalse);
+    rootWin.AutoForeground(EFalse);
 
     ConstructSpriteL();
     
     //create animation object
-	iAnimObj = CPeninputAnimObj::NewL(iSpriteMember);
-	
-	iLayoutOwner = CPeninputUiLayoutOwner::NewL( *this );
-	iPenUiCtrl = new(ELeave) CPenUiWndCtrl(CCoeEnv::Static()->RootWin(),iSpriteMember.iBitmap);
-	iInternalBackgroundCtrl = new(ELeave) CInternalBkCtrl(CCoeEnv::Static()->RootWin());
-    iInternalBackgroundCtrl->ConstructL();	
-	iPenUiCtrl->ConstructL();
-	
-	iCurScreenFocusedWndGrpId = GetFocusAppUid().iUid;
+    iAnimObj = CPeninputAnimObj::NewL(iSpriteMember);
+    
+    iLayoutOwner = CPeninputUiLayoutOwner::NewL( *this );
+    iPenUiCtrl = new(ELeave) CPenUiWndCtrl(CCoeEnv::Static()->RootWin(),iSpriteMember.iBitmap);
+    iInternalBackgroundCtrl = new(ELeave) CInternalBkCtrl(CCoeEnv::Static()->RootWin());
+    iInternalBackgroundCtrl->ConstructL();    
+    iPenUiCtrl->ConstructL();
+    iObserver = CPenUiWndEventHandler::NewL( this );
+    iCandidateWnd = CPenUiCandidateWnd::NewL( iObserver );
+    
+    iCurScreenFocusedWndGrpId = GetFocusAppUid().iUid;
 #ifdef __LOG_WNDGROU__    
     iLogFile.Replace(CCoeEnv::Static()->FsSession(),KLogFile,EFileShareAny|EFileWrite);
     iLogFile.Close();
@@ -350,6 +349,8 @@ void CPeninputServer::CleanAll()
 #endif // RD_TACTILE_FEEDBACK    
     delete iPenUiCtrl;
     delete iInternalBackgroundCtrl;
+    delete iCandidateWnd;
+    delete iObserver;
 
     iClientProcess.Close();
     iClientLayouts.Close();
@@ -791,7 +792,10 @@ TBool CPeninputServer::DeactivatePenUiLayout(TBool aWaitFlag)
             RecoverButtonEventState();
             iUiLayout->OnDeActivate(); 
             if(iUseWindowCtrl)
-                iPenUiCtrl->OnDeactivate(); //disable non fading             
+                {
+                iPenUiCtrl->OnDeactivate(); //disable non fading
+                iCandidateWnd->HideCandidateList();
+                }
             }								    	
 
         return ETrue;
@@ -848,7 +852,10 @@ void CPeninputServer::DeactivateSprite(TBool aImmediateHideFlag, TBool aRotation
         iForegroundUiHandler->AddDelayedCmd();
 
     if (iUseWindowCtrl)
+        {
         iPenUiCtrl->ClosePenUi(aRotation);
+        iCandidateWnd->HideCandidateList();
+        }
     
     //save current screen mode
     iCurScrMode = CCoeEnv::Static()->ScreenDevice()->CurrentScreenMode();    
@@ -871,17 +878,7 @@ TInt CPeninputServer::HandleMessageL(const RMessage2& aMessage)
     //message requests UI attribute is always handled.
     switch(aMessage.Function())
         {
-        case EPeninputRequestEnableGfxTransEffect:
-            {
-            if( iUseWindowCtrl && iPenUiCtrl )
-                {
-                TBool enable = EFalse;
-                TPckg<TBool> msg( enable );
-                aMessage.ReadL( 0,msg );
-                iPenUiCtrl->EnableGfxTransEffect( enable );
-                }
-            }
-            break;
+        
         case EPeninputRequestUiIsVisible:
             {                      
             TPckg<TBool> msg(iActive);
@@ -2033,9 +2030,34 @@ void CPeninputServer::SignalOwner(TInt aEventType, const TDesC& aEventData)
 				iIsLayoutReDrawAllowWhenActive = *retVal;
 				}
 				break;	
-            case ESignalUpdatePointerSuppressor:
-                {               
-                UpdatePointerEventSuppressor( aEventData );
+            case ESignalShowServerCandidate:
+                {
+                if ( iUseWindowCtrl )
+                    {
+                    // Lift the priority of candidate list window to higher 
+                    // than pen ui wnd.
+                    TInt priority = iPenUiCtrl->WndPriority();
+                    iCandidateWnd->SetPriority( priority + KLiftupPriority );
+                
+                    TUint16* buf = const_cast<TUint16*>( aEventData.Ptr() );
+                    TPeninputCandidateData* cmd = 
+                          reinterpret_cast< TPeninputCandidateData* >( buf );
+                    iCandidateWnd->SetAlign( 
+                            CGraphicsContext::TTextAlign ( cmd->iAlign ) );
+                    iCandidateWnd->SetInitRect( cmd->iInitRect );
+                    iCandidateWnd->EnableSpell( cmd->iSpellEnabled );
+                    iCandidateWnd->EnableTextWidth( cmd->iTextWidthEnabled );
+                    TRAP_IGNORE( iCandidateWnd->ShowCandidateListL( 
+                                      cmd->iItemArray, cmd->iActiveIndex ) );
+                    }
+                }
+                break;
+            case ESignalHideServerCandidate:
+                {
+                if ( iUseWindowCtrl )
+                    {
+                    iCandidateWnd->HideCandidateList();
+                    }
                 }
                 break;
         	default:
@@ -2148,6 +2170,9 @@ void CPeninputServer::HandleResourceChange(TInt aType)
     {
 	// Update the cursor color when resource is changed
 	iPenUiCtrl->SetCursorColor();
+
+    // Update candidate window when resource is changed
+    iCandidateWnd->HandleResourceChange( aType );
 	
 	#ifdef FIX_FOR_NGA 
 	// iEnablePriorityChangeOnOriChange will be set to be EFalse, if some dialog in FEP end were opened and 
@@ -2499,9 +2524,14 @@ void CPeninputServer::HandleRawEventL(const TRawEvent& aEvent)
             {
             SignalOwner( ESignalLayoutClosed, KNullDesC );    
             }
-                   
-        TBool handled = iUiLayout ? iUiLayout->HandleEventL(ERawEvent,&aEvent)
-        		        : EFalse;
+        
+        // Candidate window handles raw event firstly.
+        TBool handled = iCandidateWnd->HandleRawEventL( &aEvent );
+        if( !handled )
+        	{
+            handled = iUiLayout ? iUiLayout->HandleEventL( ERawEvent,&aEvent )
+        		                : EFalse;
+        	}
 
         if (TRawEvent::EButton1Down == aEvent.Type())
             {
@@ -2583,13 +2613,7 @@ void CPeninputServer::HandleWsEventL(const TWsEvent &aEvent,
                         {			  
                         //fix for fast swap case
                         iInGlobalNotesState = EFalse;                        
-
-                        // Don't handle switching focus group 
-                        // when current focus of the application is screen saver, auto lock or popup clock.
-                        if ( iPreNonGloebalNotesWndGrpId != focusApp.iUid && 
-                             focusApp.iUid != KScreenSaverUid && 
-                             focusApp.iUid != KAutoLockUid && 
-                             focusApp.iUid != KBigClockUid )
+                        if(iPreNonGloebalNotesWndGrpId != focusApp.iUid )
                             {                            
                             iPreNonGloebalNotesWndGrpId = focusApp.iUid;
                             DeactivateSprite(ETrue);//hide pen ui immediately if switched to another application
@@ -3059,21 +3083,6 @@ void CPeninputServer::HandleDiscreetPopNotification()
 	iDiscreetPopArea = iAknUiSrv.GetInUseGlobalDiscreetPopupRect();
 	iAnimObj->SetDiscreetPopArea(iDiscreetPopArea);
     }
-
-// ---------------------------------------------------------------------------
-// CPeninputServer::UpdatePointerEventSuppressor()
-// Update parameters of pointer event suppressor.
-// ---------------------------------------------------------------------------
-//
-void CPeninputServer::UpdatePointerEventSuppressor( const TDesC& aData )
-    {
-    TUint16* buf = const_cast<TUint16* >( aData.Ptr() );
-    TPointerEventSuppressorParameters* parameters = 
-            reinterpret_cast<TPointerEventSuppressorParameters*> ( buf );
-    
-    iAnimObj->UpdatePointerEventSuppressor( *parameters );
-    }
-
 // ======== class CEventQueue========
 //
 // ---------------------------------------------------------------------------

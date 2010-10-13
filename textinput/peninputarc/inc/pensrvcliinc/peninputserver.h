@@ -42,6 +42,9 @@ class CPenUiWndCtrl;
 class CInternalBkCtrl;
 class CKeyRotator;
 class CPenInputCrpServiceClient;
+class CPenUiCandidateWnd;
+class MPenUiWndEventObserver;
+
 // panic code
 enum TPeninputServerPanic
     {
@@ -288,6 +291,13 @@ public:
      * @return a CSharableSession instance
      */
     CSession2* NewSessionL(const TVersion& aVersion, const RMessage2& aMessage) const;
+
+    /**
+     * Return pen ui layout
+     *
+     * @since Symbian^3     
+     */     
+    inline MPenUiLayoutBase* PenUiLayout() const;
     
 public: // From MRawEventHandler
     /**
@@ -693,15 +703,6 @@ private:    // New functions
     void CheckSessionValidL(CPeninputServerSession* aSession1,
                             CPeninputServerSession* aSession2) const;
     
-    /**
-     * Update parameters of pointer event suppressor.
-     * 
-     * @since Symbian^3
-     * @param aData parameters of pointer event suppressor
-     * @return none
-     */
-    void UpdatePointerEventSuppressor( const TDesC& aData );
-    
 public:    
     TInt DisabledByDSA(); 
     TInt DisabledByDSAFromAnim();   
@@ -991,7 +992,29 @@ private:    // Data
     TRect iDiscreetPopArea;
 	TBool iEnablePriorityChangeOnOriChange;
     TBool iIsLayoutReDrawAllowWhenActive;
+    
+    /**
+     * Pen ui candidate window.
+     *
+     * Owned.
+     */     
+    CPenUiCandidateWnd* iCandidateWnd;
+    
+    /**
+     * Pen ui window event observer.
+     *
+     * Owned.
+     */
+    MPenUiWndEventObserver* iObserver;
     };
+
+/**
+* Return pen ui layout
+*/ 
+inline MPenUiLayoutBase* CPeninputServer::PenUiLayout() const
+    {
+    return iUiLayout;
+    }
 
 /**
  * Class CEventQueue

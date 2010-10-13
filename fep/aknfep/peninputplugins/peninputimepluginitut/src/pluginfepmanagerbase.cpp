@@ -220,10 +220,11 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
             RArray<TInt> sizeArray;
             for (TInt i = 0; i < count; i++)
                 {
-				TInt size = (*listArray)[i].Size();
+                TInt size = (*listArray)[i].Size();
                 sizeArray.Append(size);
                 transferSize += size + sizeof(TInt);
                 }
+            transferSize += 4 * sizeof( TInt );
 
             HBufC8* buf = HBufC8::NewLC(transferSize);
             TPtr8 bufPtr = buf->Des();
@@ -242,14 +243,19 @@ void CPluginFepManagerBase::HandleCommandL(TInt aCommandId,TInt aParam)
                 const TUint16* piData = (*listArray)[i].Ptr();
                 writeStream.WriteL(piData, sizeArray[i] / 2);
                 }
-			
+            
+            writeStream.WriteInt32L( pCanData->iRect.iTl.iX );
+            writeStream.WriteInt32L( pCanData->iRect.iTl.iY );
+            writeStream.WriteInt32L( pCanData->iRect.iBr.iX );
+            writeStream.WriteInt32L( pCanData->iRect.iBr.iY );            
+            
             writeStream.CommitL();
         
             SendCommandToServer( aCommandId, bufPtr );
 
             sizeArray.Close();    
-			CleanupStack::PopAndDestroy(&writeStream);
-			CleanupStack::PopAndDestroy(buf);
+            CleanupStack::PopAndDestroy(&writeStream);
+            CleanupStack::PopAndDestroy(buf);
             
             }
             break;

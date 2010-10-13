@@ -47,7 +47,6 @@
 
 static const TInt KKeyMappingsLength = 63;
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 TAknFepInputStateEntryQwertyWesternPredictive::
@@ -606,8 +605,6 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::HandleQwertyKeysL(TInt aKey
         // Framework will handle the key event.
        	return EFalse;
     }
-
-
 // use ptiengine's api to tell whether a character mapped on a given key.	
 TBool TAknFepInputStateEntryQwertyWesternPredictive::MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase) const
     {    
@@ -624,8 +621,6 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::MapAgainst(TInt aKey, TInt 
         }
     return EFalse;        
     }
-	
-	
 // Get Scancode from a given character and tell the case at the same time.
 TInt TAknFepInputStateEntryQwertyWesternPredictive::ScanCodeForCharacter( TUint aChar, TPtiTextCase& aCase )
     {

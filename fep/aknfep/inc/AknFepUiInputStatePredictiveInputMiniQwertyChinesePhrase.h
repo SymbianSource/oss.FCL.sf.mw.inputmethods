@@ -47,9 +47,6 @@ public:
      * @param aCommandId Command ID value
      */
     void HandleCommandL( TInt aCommandId );
-     
-    void SubmitTextL( const TDesC& aText );
-
     };
 
 #endif T_AKNFEPUIINPUTSTATEPREDINPUTCHINESEPHRASE_H_

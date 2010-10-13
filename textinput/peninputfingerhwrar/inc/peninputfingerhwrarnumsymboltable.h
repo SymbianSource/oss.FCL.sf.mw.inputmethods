@@ -100,7 +100,8 @@ public:
 	 * sizechanged
 	 *
 	 */
-	void SizeChanged(const TRect& aVirtualKeypadRect);
+	void SizeChanged(const TRect aVirtualKeypadRect, const RArray<TRect> aBtnRects,
+                     const TInt aKeypadRow, const TInt aKeypadCol, TBool aIsLandscape = ETrue);
     
 	/**
 	 * Load VKB image
@@ -121,6 +122,12 @@ public:
 	inline CVirtualKeyboard* KeyPad(){return iNumKeypad;}
     
 	/**
+	 * Navigate page
+	 *
+	 */
+	void UpdateNumSymbolTable(TInt aNumSctType = ENumSCTLatin);
+    
+	/**
 	 * Construct from resource
 	 * This funciton will be called when the resource has changed for example skin was changed
 	 */
@@ -133,7 +140,7 @@ public:
      * @param aNumMapping a string contains numbers and related char. max length is 16.
      * @return none
      */
-    void UpdateTableSymbol( const TDesC& aNumMapping );
+    void SetNumericMapping( const TDesC& aNumMapping );
     
     /*
      * set arabic number mode.
@@ -142,14 +149,6 @@ public:
      * @return none.
      */
     void SetNativeNumMode(const TBool aIsNativeNumMode);
-
-    /**
-     * Update the virtual keys rect.
-     * @since s60 5.2.
-     * @param aCellRects keypad cell rects.
-     * @return None.
-     */
-    void UpdateAllVirtualKeysRect(const RArray<TRect> & aCellRects);
 protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 
     /**
@@ -208,6 +207,20 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
      */
 	void CreateVirtualKeypadL();
 	
+	/** 
+	 * create a new virtual key
+	 *
+	 */
+	CVirtualKey* CreateVkbKeyL(TResourceReader& aReader, const TRect aKeyRect);
+	
+	/**
+	 * update the virtal key
+	 *
+	 */
+	void UpdateVkbKeyL( CVirtualKey* aVirtualKey, TResourceReader& aReader, 
+	                    const TRect aKeyRect );
+    void OnActivate();
+	
 	/**
 	 * Update the virtual key feedback
 	 *
@@ -218,14 +231,7 @@ protected: //virtuals from CControlGroup (CFepUiBaseCtrl)
 	 * Draw group control
 	 */
 	void Draw();
-
-private:
-	/**
-	 * Refresh the symbol table
-	 *
-	 */
-	void RefreshNumSymbolTable();
-		
+	
 	/**
 	 * Load background from resource
 	 *
@@ -236,13 +242,6 @@ private:
 	 * map latin number to arabic number.
 	 */
 	TInt16 MapLatinNumAccordingToNumMode(TInt16 aUnicode);
-	
-	/**
-	 * Generate the char talbe according to the aNumMapping
-	 *
-	 */
-	HBufC* GenerateCharTable(const TDesC& aNumMapping);
-	
 private:
     /**
 	 * multipage viritual keyboard
@@ -255,6 +254,12 @@ private:
      */
     TBool iPopupVisible;
 	
+	/**
+	 * store the layout mode
+	 */
+	TBool iIsLandscape;
+	
+    TInt iCurrentNumSCTType;	
     /*
      * Default number mode.
      */

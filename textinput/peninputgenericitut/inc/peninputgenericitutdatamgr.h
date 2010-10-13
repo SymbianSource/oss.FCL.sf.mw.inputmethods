@@ -145,15 +145,6 @@ public:
     
     TBool IsChineseSpellMode();
     	
-    /**
-     * Get the size of the screen
-     *
-     * @since S60 v5.0
-     * @param none
-     * @return the size of the screen
-     */
-    TRect screenSize();
-    
 	TPoint iSelectionTl;
     TSize iSelectionItemSize;
     TInt iSelectionItemMargin;
@@ -179,12 +170,6 @@ public:
 	TInt iIcfTextHeightCn;
 	
 	TRect iShiftIconRect;
-	
-    /**
-     * The star icon rect
-     */
-	TRect iStarIconRect;
-	
 	TInt iIcfTextLeftMarginForPrtWest;
     TInt iIcfTextRightMarginForPrtWest;
     TInt iIcfTextTopMarginForPrtWest;
@@ -193,10 +178,6 @@ public:
     TInt iIcfTextHeightForPrtWest;
     TRect iShiftIconRectForPrtWest;
     TRect iStarIconRectForPrtWest;
-    /**
-     * The star icon rect under number mode 
-     */
-    TRect iStarIconRectInNumModeForPrtWest;
     TInt iSpellIcfTextHeightForPrtWest;
     
 	TInt iSpellIcfTextLeftMarginForPrtWest;

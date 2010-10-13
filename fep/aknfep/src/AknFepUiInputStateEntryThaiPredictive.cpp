@@ -111,29 +111,7 @@ TBool TAknFepInputStateEntryThaiPredictive::HandleKeyL(TInt aKey, TKeyPressLengt
             }
         else
             {
-			MAknFepManagerUIInterface* fepMan = iOwner->FepMan();
-			TBool isInlineStateOn = EFalse;
-			TBool isInNoMatchState = EFalse;
-			
-			if ( fepMan )
-				{
-			    // Get the editor Inline state
-				isInlineStateOn = fepMan->IsFlagSet( 
-						CAknFepManager::EFlagInsideInlineEditingTransaction );
-				// Get the editor No Matches state
-				isInNoMatchState = fepMan->IsFlagSet( 
-						CAknFepManager::EFlagNoMatches );
-				}
-			
-			// If editor is in inline state and no candidate words are matched
-			if ( isInlineStateOn && isInNoMatchState )
-				{
-				response = HandleStarKeyL( aLength );
-				}
-			else
-				{
-				response = HandleStandardNumericKeysL( aKey, aLength );
-				}
+            response = HandleStandardNumericKeysL(aKey, aLength);
             }
         break;
     case EKeyDownArrow:

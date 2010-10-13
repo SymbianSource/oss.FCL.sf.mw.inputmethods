@@ -89,28 +89,14 @@ TBool TAknFepInputStateInitialKoreanMultitap::HandleKeyL(TInt aKey, TKeyPressLen
             	}
             else
             	{
-                     
             	if (!(fepMan->IsFlagSet(CAknFepManager::EFlagInsideInlineEditingTransaction)))
                 	{ // 'new' inline edit
              	  	ptiengine->ClearCurrentWord();
                 	fepMan->StartInlineEditL();
                 	fepMan->SetInlineEditingCursorVisibilityL(ETrue);
                 	}
-                 
+                      	   	             
             	TPtrC aText = ptiengine->AppendKeyPress((TPtiKey)aKey);
-            	
-                // Get Fep manager pointer
-            	CAknFepManager* fepManager = static_cast<CAknFepManager*>(fepMan);
-            
-               // When reaching the max length of the editor in the Hangul mode, 
-               // the current texts will be committed.     
-            	if( fepManager->IsTextExceedLeghthEditor(aText.Length()))
-            		{
-					fepMan->CommitInlineEditL();
-					ptiengine->ClearCurrentWord();
-					return ETrue;
-            		}
-            	
             	fepMan->UpdateInlineEditL(aText, aText.Length());	
    						
             	// Force commit	when buffer length is 511. Needs to be commited in order to 

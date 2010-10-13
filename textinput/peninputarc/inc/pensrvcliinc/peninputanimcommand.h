@@ -494,37 +494,6 @@ public:
 private:
     TRect iArea;    
     };
-
-//class TAnimUpdatePointerEventSuppressorCmd
-/**
- * Class for handling pointer event suppressor command
- * 
- *
- * @since Symbian^3
- */
-class TAnimUpdatePointerEventSuppressorCmd :  public TAnimCmd
-    {
-public:
-    /**
-     * Default constructor
-     * @param aAnim The animation cliet which executes the command     
-     * @param aParameters parameters of pointer event suppressor
-     */
-    TAnimUpdatePointerEventSuppressorCmd( RPeninputAnim& aAnim, 
-                         const TPointerEventSuppressorParameters& aParameters );
-    
-    /**
-     * Execute the command
-     *
-     * @since Symbian^3
-     * @return ETrue if command has been executed successfully.     
-     */ 
-    virtual TBool ExecuteAnimCommand() const;
-    
-private:
-    TPointerEventSuppressorParameters iParameters;
-    };
-
 #include "peninputanimcommand.inl"
 	
 #endif //C_CPENINPUTANIM_CMD_H

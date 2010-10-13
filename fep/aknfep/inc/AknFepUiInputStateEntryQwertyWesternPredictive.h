@@ -93,6 +93,7 @@ protected:
     * @param    aLength The key press length.
     */
     TBool HandleNaviKeysL(TInt aKey, TKeyPressLength aLength);
+    
 private:
 	
 	/**
@@ -111,6 +112,7 @@ private:
 	* @Return   ETrue : yes it is on the key; EFalse : No it is not on the Key
     */
     TBool MapAgainst(TInt aKey, TInt aMode, TInt16 aAgainst, TInt aCase) const;
+
 };
 
 #endif //__AKN_FEP_UI_INPUT_STATE_ENTRY_QWERTY_WESTERN_PREDICTIVE_H__

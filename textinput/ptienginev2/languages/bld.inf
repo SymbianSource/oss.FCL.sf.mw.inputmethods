@@ -63,9 +63,10 @@ PtiKeymappings_ITUT_18.mmp
 #endif
 
 PRJ_MMPFILES
-#if defined(WINS)
+// Nasty workaround for system error message in sf_refhw rom boot
+//#if defined(WINS)
 PtiKeymappings_ITUT_01.mmp
-#endif
+//#endif
 
 PRJ_MMPFILES
 #if defined(WINS)

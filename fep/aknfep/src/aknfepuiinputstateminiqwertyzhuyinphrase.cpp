@@ -33,7 +33,7 @@
 #include <PtiEngine.h>  
 #include <PtiUserDicEntry.h>
 #include <aknnotewrappers.h> //CAknWarningNote
-#include <aknfep.rsg>  
+#include <aknfep.rsg> 
 
 // User includes
 #include "AknFepUiCtrlContainerChinese.h"
@@ -163,7 +163,7 @@ TBool TAknFepInputStateEditingMiniQwertyZhuyinPhrase::HandleKeyL( TInt aKey,
             iOwner->FepMan()->TryCloseUiL();
             break;
         case EStdKeyEnter:
-            CommitContentL( EFalse );
+        	CommitContentL( EFalse );
             break;
         case EStdKeyDevice0:
         case EStdKeyDevice3:
@@ -1213,28 +1213,14 @@ TBool TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::SelectCandidate(
 void TAknFepInputStateEditingMiniQwertyZhuyinPhrase::HandleCommandL(
     TInt aCommandId )
     {
-    MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
-    MAknFepUICtrlCandidatePane* candidatePane =
-        UIContainer()->CandidatePane();
-    MAknFepUICtrlEditPane* editPane = UIContainer()->EditPaneWindow();
-    TBool state = ETrue;
     switch ( aCommandId )
         {
         // Handle the event frome command.
         case EAknSoftkeySelect:
-            //case (TUint16)EAknSoftkeySelect: //the Selected in soft CBA
-            if ( editPane->IsChangeState() )
-                {
-                state = EFalse;
-                }
-            else
-                {
-                editPane->SetChangeState( EFalse );
-                }
-            if ( state )
-                {
-                HandleCommitL();
-                }
+        case EAknSoftkeyDone:
+			{
+            HandleCommitL();
+            }
             break;
         default:
             TAknFepInputStateChineseBase::HandleCommandL( aCommandId );
@@ -1255,29 +1241,18 @@ void TAknFepInputStateSpellingMiniQwertyZhuyin::HandleCommandL(
         UIContainer()->CandidatePane();
     MAknFepUICtrlEditPane* editPane = UIContainer()->EditPaneWindow();
     MAknFepUICtrlPinyinPopup* popup = uiContainer->PinyinPopupWindow();
-    TBool state = ETrue;
     switch ( aCommandId )
         {
         // Handle the event frome command.
         case EAknSoftkeySelect:
-            //case (TUint16)EAknSoftkeySelect: //the Selected in soft CBA
-            if ( editPane->IsChangeState() )
+        	{
+            if ( popup->IsEnabled() )
                 {
-                state = EFalse;
+                popup->Enable( EFalse );
                 }
-            else
-                {
-                editPane->SetChangeState( EFalse );
-                }
-            if ( state )
-                {
-                if ( popup->IsEnabled() )
-                    {
-                    popup->Enable( EFalse );
-                    }
-                editPane->SetChangeState( ETrue );
-                iOwner->ChangeState( EZhuyinCandidate );
-                }
+            editPane->SetChangeState( ETrue );
+            iOwner->ChangeState( EZhuyinCandidate );
+            }
             break;
         default:
             TAknFepInputStateChineseBase::HandleCommandL( aCommandId );
@@ -1297,26 +1272,14 @@ void TAknFepInputStateCanindateSelectingMiniQwertyZhuyin::HandleCommandL(
     MAknFepUICtrlCandidatePane* candidatePane =
         UIContainer()->CandidatePane();
     MAknFepUICtrlEditPane* editPane = UIContainer()->EditPaneWindow();
-    TBool state = ETrue;
     switch ( aCommandId )
         {
         // Handle the event frome command.
         case EAknSoftkeySelect:
-            //case (TUint16)EAknSoftkeySelect: //the Selected in soft CBA
-            if ( editPane->IsChangeState() )
-                {
-                state = EFalse;
-                }
-            else
-                {
-                editPane->SetChangeState( EFalse );
-                }
-            if ( state )
-                {
-                editPane->SetNeedClearDeliberateSelection( ETrue );
-                CommitCandidateL();
-                }
-
+			{
+            editPane->SetNeedClearDeliberateSelection( ETrue );
+            CommitCandidateL();
+            }
             break;
         default:
             TAknFepInputStateChineseBase::HandleCommandL( aCommandId );

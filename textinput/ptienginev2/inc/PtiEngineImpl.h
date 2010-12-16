@@ -358,7 +358,12 @@ NONSHARABLE_CLASS(CPtiEngineImpl) : public CBase
          * Keeps track of the location of start of punct symbol
          */
         TInt iPunctuationLocation;
-	};
+        
+        /*
+         * Keeps multitap count for no case change languages.
+         */
+        TInt iMultitapCount;
+    };
 
 #include "PtiEngine.inl"
 

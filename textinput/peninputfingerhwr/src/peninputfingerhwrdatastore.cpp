@@ -958,30 +958,12 @@ void CPeninputFingerHwrDataStore::RemoveAccent()
     }
     
  // ----------------------------------------------------------------------------
- // Reset key board type
- // ----------------------------------------------------------------------------
- //   
-void CPeninputFingerHwrDataStore::ResetKeyboardType()
-    {
-    iHwrEngine->ResetKeyboardType();        
-    }
- 
- // ----------------------------------------------------------------------------
  // Set key board type to Qwerty
  // ----------------------------------------------------------------------------
  //   
 void CPeninputFingerHwrDataStore::SetKeyboardToQwerty()
     {
     iHwrEngine->SetKeyboardToQwerty(); 
-    }
-
- // ----------------------------------------------------------------------------
- // Get key board type
- // ----------------------------------------------------------------------------
- //       
-void CPeninputFingerHwrDataStore::GetKeyboardType()
-    {
-    iHwrEngine->GetKeyboardType();
     }
     
 // End Of File

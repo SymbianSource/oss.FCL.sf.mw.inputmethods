@@ -167,7 +167,17 @@ public: //Methods
     
     
     void SetDropdownListImgID(TDropdownListDrawInfo aDropdownListDrawInfo);
-    						  
+
+    /**
+     * Get the rect of focused cell or button in this list.
+     * 
+     * @since Symbian^3
+     * @param aRect the rect of hotspot
+     * @return ETrue if a hotspot exists
+     */
+    TBool GetFocusRect( TRect& aRect );
+
+    
 protected: // Methods
 
     /**

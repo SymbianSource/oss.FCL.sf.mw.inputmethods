@@ -1191,6 +1191,17 @@ protected:
     void ConstructL(const TPoint& aTopLeftPoint, TResourceReader& aReader);
 
     void ConstructL(TPoint aTopLeftPoint, TInt aResId);
+
+private:
+    /**
+     * Move point to center of respone area if tap accuracy adjustment is activated
+     * 
+     * 
+     * @since Symbian^3
+     * @param aPoint point to be adjusted
+     * @return None
+     */
+    void AdjustPointerPosition( TPoint& aPoint );
     
 private:
 
@@ -1403,6 +1414,16 @@ private:
     TSize iBubbleSize;
     
     TInt iBubbleVerticalMargin;
+    
+    /**
+     * activity flag for extra response area
+     */
+    TBool iExtResponseAreaEnabled;
+    
+    /**
+     * margin size of extra response area 
+     */
+    TInt  iExtResponseAreaSize;
     };    
         
 #endif // C_CFEPCTRLDROPDOWNLIST_H

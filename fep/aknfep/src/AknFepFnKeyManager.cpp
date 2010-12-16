@@ -360,21 +360,6 @@ TKeyResponse CAknFepFnKeyManager::HandleFnKeyEventL( const TKeyEvent& aKeyEvent,
         iFepMan.UpdateIndicators();
         return EKeyWasNotConsumed;
         }
-
-    // Check the input mode of the currently focused editor (when available)
-    MCoeFepAwareTextEditor* fepAwareTextEditor = aInputCapabilities.FepAwareTextEditor();
-    
-    if ( fepAwareTextEditor && fepAwareTextEditor->Extension1() )
-        {
-        if( EAknEditorNumericInputMode == 
-            ( static_cast<CAknEdwinState*>( fepAwareTextEditor->Extension1()->State( KNullUid ) ) )->CurrentInputMode() )
-            // If number input mode is detected, handle it as number input
-            // capability with greatest available variation of letters
-            {
-            // Use EDialableCharacters since it provides most flexibility for number input
-            aInputCapabilities.SetCapabilities( TCoeInputCapabilities::EDialableCharacters );
-            }            
-        }
         
     if ( EFnKeyForced != iFnKeyState )
         {
@@ -514,25 +499,33 @@ TKeyResponse CAknFepFnKeyManager::HandleFnKeyEventL( const TKeyEvent& aKeyEvent,
         }        
 */        
     // Now handle the automatic number mode
-    if ((iFnKeyState != EFnKeyForced) && 
-        ( aInputCapabilities.SupportsWesternNumericIntegerPositive() ||
-         aInputCapabilities.SupportsWesternNumericIntegerNegative() ||
-         aInputCapabilities.SupportsWesternNumericReal() ||
-         aInputCapabilities.SupportsDialableCharacters() )         
-       )
-        {
-        // If input mode is numeric, Fn key is automated (=forced)
-        iFnKeyState = EFnKeyForced;
-        
-        UpdatePreviousCase();
-        
-        iFepMan.SetCase( EFnKeyLowerCase );
-        iFepMan.UpdateIndicators();
-        //Forced input mode
-        // The CR key KAknFepFnKeyState set to Locked
-        iSharedDataInterface->SetFnKeyState(EFnKeyForced/*=6*/);        
-        CEikonEnv::Static()->InfoMsg(_L("iFnKeyState = EFnKeyForced"));   
-        }
+    if ( iFnKeyState != EFnKeyForced )
+      {
+		MCoeFepAwareTextEditor* textEditor = aInputCapabilities.FepAwareTextEditor();
+		TInt currentEditorMode = EAknEditorNullInputMode;
+		if ( textEditor && textEditor->Extension1() )
+			{
+			currentEditorMode =  static_cast<CAknEdwinState*>( textEditor ->Extension1()->State( KNullUid ) )->CurrentInputMode();
+			}
+		if ( EAknEditorNumericInputMode == currentEditorMode ||
+			   aInputCapabilities.SupportsWesternNumericIntegerPositive() ||
+			   aInputCapabilities.SupportsWesternNumericIntegerNegative() ||
+			   aInputCapabilities.SupportsWesternNumericReal()    
+			)
+		  {
+		  // If input mode is numeric, Fn key is automated (=forced)
+		  iFnKeyState = EFnKeyForced;
+		  
+		  UpdatePreviousCase();
+		  
+		  iFepMan.SetCase( EFnKeyLowerCase );
+		  iFepMan.UpdateIndicators();
+		  //Forced input mode
+		  // The CR key KAknFepFnKeyState set to Locked
+		  iSharedDataInterface->SetFnKeyState(EFnKeyForced/*=6*/);        
+		  CEikonEnv::Static()->InfoMsg(_L("iFnKeyState = EFnKeyForced"));   
+		  }
+      }
 #ifdef __REVERSE_FN_KEY_SUPPORTED
     //Reverse Fn Key mapping!
     //Just one of the cases for Reverse Fn key mapping!

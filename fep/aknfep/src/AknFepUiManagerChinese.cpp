@@ -122,6 +122,7 @@
 
 #include <avkon.rsg>        //phrase creation
 #include <aknfep.rsg>
+#include <featmgr.h>
 
 // CONSTANTS
 const TInt16 KStrokeHorizontalValue = 0x4e00; 
@@ -139,6 +140,9 @@ const TInt16 KChineseTone2 = 0x02ca;
 const TInt16 KChineseTone3 = 0x02c7; 
 const TInt16 KChineseTone4 = 0x02cb;
 const TInt16 KChineseTone0 = 0x02d9;
+//candidate index array
+const TInt16 KCandidateArrayIndex = 6;
+const TInt16 KOneToSixSelectCandidate[KCandidateArrayIndex] = {0x0031, 0x0032, 0x0033, 0x0034, 0x0035, 0x0036};
 /**
 *  CAknFepUIManagerChinese class.
 * 
@@ -209,6 +213,13 @@ TBool CAknFepUIManagerChinese::HandleKeyL(TInt aKey, TKeyPressLength aLength, TE
         {
         iInitialFepUIState = currentState;
         }
+    
+    // For some product may have no Selection/confirm key, use enter key instead
+    TBool hasSelectionKey = FeatureManager::FeatureSupported( KFeatureIdFfChineseSelectionKey );
+    if ( aKey == EStdKeyEnter && !hasSelectionKey )
+    	{
+    	aKey = EStdKeyDevice3;
+    	}
 
     if(!iStatePtr->HandleKeyL(aKey, aLength))
         {
@@ -443,6 +454,37 @@ TBool CAknFepUIManagerChinese::IsValidChineseInputKey(TInt aKey) const
     }
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 // ---------------------------------------------------------------------------
+// CAknFepUIManagerChinese::IsKeyMappedNumber
+// 
+// 
+// ---------------------------------------------------------------------------
+//
+TBool  CAknFepUIManagerChinese::IsKeyMappedNumber(TInt aKey) const
+	{
+	TBuf<KMaxName> lowerdata;
+	iPtiEngine->MappingDataForKey((TPtiKey)aKey, lowerdata, EPtiCaseFnLower);
+	TBool iscandidateindex = EFalse;
+	if(lowerdata.Length()>0)
+	    {
+	    for(TInt i = 0; i < KCandidateArrayIndex; i++)
+	        {
+	        if (lowerdata[0] == KOneToSixSelectCandidate[i])
+	        	{
+	        iscandidateindex = ETrue;
+	        	}
+	        }
+	    }
+	if (iscandidateindex && (State() == ECandidate || State() == EPredictiveInput))
+		{
+		return ETrue;
+		}
+	else
+		{
+		return EFalse;
+		}
+	}
+
+// ---------------------------------------------------------------------------
 // CAknFepUIManagerChinese::IsKeyMappedStroke
 // 
 // 
@@ -564,7 +606,7 @@ TBool CAknFepUIManagerChinese::IsValidChineseInputKeyQwerty(TInt aKey) const
 #ifdef RD_INTELLIGENT_TEXT_INPUT        
         if(EPtiKeyboardQwerty4x10 == keyboardType ||EPtiKeyboardQwerty3x11 == keyboardType )
             {            
-            if( IsKeyMappedStroke(aKey)|| EPtiKeyQwertySpace == aKey)
+            if( IsKeyMappedStroke(aKey)|| IsKeyMappedNumber(aKey) ||EPtiKeyQwertySpace == aKey)
                 {
                 response = ETrue;
                 if(aKey == EPtiKeyQwertySpace && (State() == EInitial || State() ==EPredictiveInput))
@@ -1674,6 +1716,22 @@ void CAknFepUIManagerChinese::ChangeStateQwerty(TUIState aState)
                             }
 #endif
                         }
+                    break;
+                case ECangJie:
+                	{
+#ifdef RD_INTELLIGENT_TEXT_INPUT        
+                        if ( EPtiKeyboardQwerty4x10 == kbdType ||
+                             EPtiKeyboardQwerty3x11 == kbdType ||
+                             EPtiKeyboardHalfQwerty == kbdType ||
+                             EPtiKeyboardCustomQwerty == kbdType)                           
+                            {
+                            iFepUiState = 
+                            		TAknFepInputStateEntryMiniQwertyCangJie(
+                                                              this, 
+                                                              iContainerPane);
+                            }
+#endif                	
+                	}
                     break;
                 default:
                     break;

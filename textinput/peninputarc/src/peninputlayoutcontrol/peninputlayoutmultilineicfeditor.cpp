@@ -2943,11 +2943,6 @@ TBool CFepLayoutMultiLineIcfEditor::AdjustSelectionL( const TCursorSelection& aC
 		{
 		return EFalse;
 		}
-    if (iCursorSel.iAnchorPos == aCurSel.iAnchorPos
-        && iCursorSel.iCursorPos == aCurSel.iCursorPos)
-        {
-        return EFalse;
-        }
     iCursorSel = aCurSel;   
    
     if ( BelongToPromptText(aCurSel.iCursorPos) )

@@ -284,8 +284,11 @@ void CPtiEngineImpl::InitializeL(TBool aUseDefaultUserDictionary)
 
 	LoadCoresInDefaultDirL(aUseDefaultUserDictionary);
 
-	RefreshLanguageNamesL();
-	}
+    RefreshLanguageNamesL();
+    
+    // Initialize iMultitapCount.
+    iMultitapCount = 0;
+    }
 
 
 // ---------------------------------------------------------------------------
@@ -1212,25 +1215,29 @@ TPtrC CPtiEngineImpl::RedirectKeyForChineseQwerty(TPtiKey aKey, TBool& aRedirect
 			TBool IsStokeKey = EFalse;            
              if(EPtiKeyboardQwerty4x10 == keyboardType ||
                      EPtiKeyboardQwerty3x11 == keyboardType )
-                 {
+                {
                  TInt StrokeUnicodePosition =0;
                  MappingDataForKey((TPtiKey)aKey, data, EPtiCaseLower);  
                  if(data.Length()>0)
-                         {
-                         for(TInt i=0;i<data.Length();i++)
-                             {
-                             if(data[i]==KStrokeUnicode)
-                                 {
-                                 StrokeUnicodePosition = i + 1;
-                                 break;
+                    {
+                    for(TInt i=0;i<data.Length();i++)
+                        {
+                        if(data[i]==KStrokeUnicode)
+                            {
+                            StrokeUnicodePosition = i + 1;
+                            break;
                             }
-                     if(data[0] == KZhuyinTone2 ||
-                        data[0] == KZhuyinTone3 ||
-                        data[0] == KZhuyinTone4 ||
-                        data[0] == KZhuyinTone5 )
-                         {
-                         return TPtrC();
-                         }
+                        
+                        // in case when the input mode is stroke phrase, pressing the key mapped 
+                        // Zhuyin tone mark, the tone mark will be input into the editor like punctuation                        
+                        if ( ( data[0] == KZhuyinTone2 ||
+                               data[0] == KZhuyinTone3 ||
+                               data[0] == KZhuyinTone4 ||
+                               data[0] == KZhuyinTone5 ) &&
+                               EPtiCaseFnLower != iCase )
+                            {
+                            return TPtrC();
+                            }
                         }
                     }
                 if (data.Length() > StrokeUnicodePosition && iCase
@@ -1934,7 +1941,10 @@ void CPtiEngineImpl::ConvertToKeySequence(TPtrC aIn, TDes8& aOut)
 	const TBool vietnamese = iCurrentLanguage->LanguageCode() == ELangVietnamese;
 
 	MPtiKeyMappings* map;
-	if (iInputMode == EPtiEngineQwerty || iInputMode == EPtiEngineQwertyPredictive)
+	if (iInputMode == EPtiEngineQwerty || iInputMode == EPtiEngineQwertyPredictive
+			|| iInputMode == EPtiEngineNormalCangjieQwerty 
+			|| iInputMode == EPtiEngineEasyCangjieQwerty 
+			|| iInputMode == EPtiEngineAdvCangjieQwerty)
 		{
 		map = iCurrentLanguage->GetQwertyKeymappings();
 		}
@@ -2045,7 +2055,9 @@ TInt CPtiEngineImpl::GetSpelling(TUint16 aInput, TDes& aOutput, TPtiSpelling aTy
 // ---------------------------------------------------------------------------
 //
 TInt CPtiEngineImpl::CancelTimerActivity()
-	{
+    {
+    // Rest iMultitapCount.
+    iMultitapCount = 0;
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 	if(iInputMode ==  EPtiEngineInputModeZhuyinMiniQwertyFind)
 	    {
@@ -2223,63 +2235,135 @@ TInt CPtiEngineImpl::NumberOfEntriesInUserDictionary()
 // ---------------------------------------------------------------------------
 //
 void CPtiEngineImpl::Capitalize(TDes& aTextBuffer)
-	{
-	__ASSERT_DEBUG(iCurrentLanguage, User::Panic(KPtiEngineImplPanic, KErrCorrupt));
-	
-	// Predictive QWERTY (XT9) changes ---->
-	// PtiXt9Core handles the capitalization it self, and it should not be overriden 
-	// byt the PtiEngine.
-	if ( IsCurrentCoreSupportCaseInfo() )
-	    {
-	    return;
-	    }
-	// Predictive QWERTY (XT9) changes <----
-	
-	if (aTextBuffer.Length())
-		{
-		TBuf<KPtiMaxWordSize> temp;
-		TBuf<1> one;
+    {
+    __ASSERT_DEBUG(iCurrentLanguage, User::Panic(KPtiEngineImplPanic, KErrCorrupt));
+    
+    // Predictive QWERTY (XT9) changes ---->
+    // PtiXt9Core handles the capitalization it self, and it should not be overriden 
+    // byt the PtiEngine.
+    if ( IsCurrentCoreSupportCaseInfo() )
+        {
+        return;
+        }
+    // Predictive QWERTY (XT9) changes <----
+    iMultitapCount++;
 
-		temp.Copy(aTextBuffer);
-		aTextBuffer.Zero();
-		for (TInt i = 0; i < temp.Length(); i++)
-			{
-			one.Copy(temp.Mid(i, 1));
-			
-			if (AllowCapitalize(one[0]))
-				{											
-				if (iCaseBuffer.Length() >= i + 1) 
-					{
-			   	 if ((iCaseBuffer[i] == EPtiCaseUpper) || (iCaseBuffer[i] == EPtiCaseChrUpper)
+    if (aTextBuffer.Length())
+        {
+        TBuf<KPtiMaxWordSize> temp;
+        TBuf<1> one;
+
+        TBool noCaseChanged = EFalse;
+        // For no case changed languages, the characters mapped on upper case
+        // are not the upper case of characters mapped on lower case.
+        // We need do some special for multitap chr + character of no case changed
+        // languages. when multitap, the length of aTextBuffer and iCaseBuffer
+        // are not same and length of aTextBuffer.Length() is 1.
+        if (( ELangArabic == iCurrentLanguage->LanguageCode() ||
+             ELangFarsi == iCurrentLanguage->LanguageCode() ||
+             ELangHebrew == iCurrentLanguage->LanguageCode() ||
+             ELangHindi == iCurrentLanguage->LanguageCode() ||
+             ELangUrdu == iCurrentLanguage->LanguageCode()) &&
+             ( iInputMode == EPtiEngineQwerty ) &&
+             ( aTextBuffer.Length() != iCaseBuffer.Length()) &&
+             ( aTextBuffer.Length() == 1 )
+            )
+            {
+            noCaseChanged = ETrue;
+            }
+        
+        // Find the right keymapping.
+        MPtiKeyMappings* maps = NULL;
+        if ( noCaseChanged )
+            {
+            if ( iCurrentLanguage->HasInputMode( EPtiEngineQwerty ))
+                {
+                maps = iCurrentLanguage->GetQwertyKeymappings();
+                }
+            }
+        
+        temp.Copy(aTextBuffer);
+        aTextBuffer.Zero();
+        
+        for (TInt i = 0; i < temp.Length(); i++)
+            {
+            one.Copy(temp.Mid(i, 1));
+            
+            if (AllowCapitalize(one[0]))
+                {    
+                // Get the key pressed.
+                TInt retKey = 0;
+                TBuf<KMaxName> upperdata;
+                upperdata.Zero();
+                if ( noCaseChanged && maps )
+                    {
+                    retKey = maps->KeyForCharacter((TUint16)one[0] );
+                    }
+            
+                if (iCaseBuffer.Length() >= i + 1) 
+                    {
+                    if ((iCaseBuffer[i] == EPtiCaseUpper) || (iCaseBuffer[i] == EPtiCaseChrUpper)
 #ifdef RD_INTELLIGENT_TEXT_INPUT
 || ( iCaseBuffer[i] == EPtiCaseFnUpper )
 #endif
-			   	 )
-						{
-						one.UpperCase();
-						}
-					else
-						{
-						one.LowerCase();
-						}
-					}
-				else
-					{
-				    if ((Case() == EPtiCaseUpper) || (Case() == EPtiCaseChrUpper))
-						{
-						one.UpperCase();
-						}
-					else
-						{
-						one.LowerCase();
-						}				
-					}
-				}
-					    					
-			aTextBuffer.Append(one);
-			}
-		}
-	}
+                    )
+                        {
+                        if ( noCaseChanged )
+                            {
+                            // We should find the right character by calculating the counts of 
+                            // inputting character.
+                            MappingDataForKey((TPtiKey)retKey, upperdata, EPtiCaseUpper );
+                            if ( upperdata.Length() > 1 )
+                                {
+                                // chr + character will not loop the first character in keymap
+                                upperdata.Delete( 0, 1 );
+                                TInt length = upperdata.Length();
+                                one.Copy( &(upperdata[( iMultitapCount - 1 ) % length ]), 1 );
+                                }
+                            }
+                        else
+                            {
+                            one.UpperCase();
+                            }
+                        }
+                    else
+                        {
+                        one.LowerCase();
+                        }
+                    }
+                else
+                    {
+                    if ((Case() == EPtiCaseUpper) || (Case() == EPtiCaseChrUpper))
+                        {
+                        if ( noCaseChanged )
+                            {
+                            // We should find the right character by calculating the counts of 
+                            // inputting character.
+                            MappingDataForKey((TPtiKey)retKey, upperdata, EPtiCaseUpper );
+                            if ( upperdata.Length() > 1 )
+                                {
+                                // chr + character will not loop the first character in keymap
+                                upperdata.Delete( 0, 1 );
+                                TInt length = upperdata.Length();
+                                one.Copy( &(upperdata[( iMultitapCount - 1 ) % length ]), 1 );
+                                }
+                            }
+                        else
+                            {
+                            one.UpperCase();
+                            }
+                        }
+                    else
+                        {
+                        one.LowerCase();
+                        }                
+                    }
+                }
+                                            
+            aTextBuffer.Append(one);
+            }
+        }
+    }
 
 
 // ---------------------------------------------------------------------------

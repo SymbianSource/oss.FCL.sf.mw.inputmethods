@@ -598,6 +598,11 @@ void CPtiDefaultCore::ClearBuffer()
 	__ASSERT_DEBUG(iTimer, User::Panic(KPtiEnginePanic, KErrCorrupt));
 	
 	iTimer->Cancel();	
+	
+	if (IsFlagSet( EPtiDeadKeyRootFlag ))
+		{
+		ClearFlag( EPtiDeadKeyRootFlag );	
+		}
 	}
 
 

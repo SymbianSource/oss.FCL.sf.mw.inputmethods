@@ -980,5 +980,17 @@ void CList::SetDropdownListImgID(TDropdownListDrawInfo aDropdownListDrawInfo)
 	iDropdownListDrawInfo = aDropdownListDrawInfo;
 	}
 	
+TBool CList::GetFocusRect( TRect& aRect )
+    {
+    TRect empty = KEmptyRect;
+    if ( iClickedRect == empty )
+        {
+        return EFalse;
+        }
+    
+    aRect = iClickedRect;
+    
+    return ETrue;
+    }
 
 // End Of File

@@ -241,40 +241,29 @@ TBool TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase::HandleKeyL(
 void TAknFepInputStatePredictiveCandidateMiniQwertyChinesePhrase::HandleCommandL(
     TInt aCommandId )
     {
-    TBool state = ETrue;
     switch ( aCommandId )
         {
         // Handle the event frome command.
         case EAknSoftkeySelect:
-            // case (TUint16)EAknSoftkeySelect: //the Selected in soft CBA
-            if ( UIContainer()->EditPaneWindow()->IsChangeState( ) )
+			{
+            TPtrC text = UIContainer()->CandidatePane()->CurrentPhraseCandidate( );
+            if ( text.Length( ) )
                 {
-                state = EFalse;
-                }
-            else
-                {
-                UIContainer()->EditPaneWindow()->SetChangeState( EFalse );
-                }
-            if ( state )
-                {
-                TPtrC text = UIContainer()->CandidatePane()->CurrentPhraseCandidate( );
-                if ( text.Length( ) )
+                MAknFepManagerUIInterface* fepMan = iOwner->FepMan( );
+                fepMan->NewTextL( text );
+                fepMan->CommitInlineEditL( );
+                iOwner->PtiEngine()->SetPredictiveChineseChar( text );
+                if ( fepMan->IsFlagSet( CAknFepManager::EFlagEditorFull ) )
                     {
-                    MAknFepManagerUIInterface* fepMan = iOwner->FepMan( );
-                    fepMan->NewTextL( text );
-                    fepMan->CommitInlineEditL( );
-                    iOwner->PtiEngine()->SetPredictiveChineseChar( text );
-                    if ( fepMan->IsFlagSet( CAknFepManager::EFlagEditorFull ) )
-                        {
-                        fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
-                        iOwner->FepMan()->TryCloseUiL( );
-                        }
-                    else
-                        {
-                        iOwner->ChangeState( EPredictiveCandidate );
-                        }
+                    fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
+                    iOwner->FepMan()->TryCloseUiL( );
+                    }
+                else
+                    {
+                    iOwner->ChangeState( EPredictiveCandidate );
                     }
                 }
+            }
             break;
         default:
             TAknFepInputStateChineseBase::HandleCommandL( aCommandId );

@@ -35,6 +35,7 @@
 #include <peninputdropdownlist.h>
 #include <coemain.h>
 #include <AknUtils.h>
+#include <featmgr.h>
 
 // constant definition
 const TInt32 KInvalidResId = -1;
@@ -360,6 +361,16 @@ void CFepCtrlDropdownList::ConstructL(const TPoint& aTopLeftPoint, TResourceRead
     {
     BaseConstructL();
 
+    //tap accuracy enhancement
+    iExtResponseAreaEnabled = FeatureManager::FeatureSupported( KFeatureIdFfCapacitiveDisplay );
+    iExtResponseAreaSize = 11; //temporary solution
+    if( iExtResponseAreaEnabled )
+        {
+        TInt margin = iExtResponseAreaSize;
+        TRect margins( TPoint( margin, margin ),TSize( margin, margin ) );
+        EnableExtResponseArea( ETrue,  margins );
+        }
+    
     iBitmapDb = CBitmapDb::NewL(aReader, 
                                 TSize(iCellWidth, iCellHeight),
                                 TSize(iNaviWidth, iCellHeight),
@@ -546,7 +557,10 @@ EXPORT_C CFepUiBaseCtrl*  CFepCtrlDropdownList::HandlePointerUpEventL(const TPoi
     {
     CFepUiBaseCtrl::HandlePointerUpEventL(aPoint);
     
-    iListManager->ActiveList()->HandlePointerUpL(aPoint);
+    TPoint point = aPoint;
+    AdjustPointerPosition( point );
+    
+    iListManager->ActiveList()->HandlePointerUpL( point );
     
     return this;
     }
@@ -565,7 +579,10 @@ EXPORT_C CFepUiBaseCtrl* CFepCtrlDropdownList::HandlePointerMoveEventL(const TPo
         return NULL;
         }
     
-    iListManager->ActiveList()->HandlePointerDragL(aPoint);
+    TPoint point = aPoint;
+    AdjustPointerPosition( point );
+
+    iListManager->ActiveList()->HandlePointerDragL( point );
     
     return this;
     }
@@ -574,7 +591,12 @@ EXPORT_C void CFepCtrlDropdownList::HandlePointerLeave(const TPoint& aPoint)
     {
     CFepUiBaseCtrl::HandlePointerLeave(aPoint);
     if(!Hiden())
-        iListManager->ActiveList()->HandlePointerLeave(aPoint);
+        {
+        TPoint point = aPoint;
+        AdjustPointerPosition( point );
+
+        iListManager->ActiveList()->HandlePointerLeave( point );
+        }
     ClearBubble();
     }
 
@@ -2343,5 +2365,27 @@ EXPORT_C void CFepCtrlDropdownList::ReDrawRect(const TRect& /*aRect*/)
     } 
 	
 // end adding
+
+// -----------------------------------------------------------------------------
+// CFepCtrlDropdownList::AdjustPointerPosition
+// Move point to center of respone area if tap accuracy adjustment is activated
+// -----------------------------------------------------------------------------
+//
+void CFepCtrlDropdownList::AdjustPointerPosition( TPoint& aPoint )
+    {   
+    if ( iExtResponseAreaEnabled )
+        {
+        TRect rect;
+        TBool exist = iListManager->ActiveList()->GetFocusRect( rect );
+        if ( exist )
+            {
+            rect.Grow( iExtResponseAreaSize, iExtResponseAreaSize );
+            if ( rect.Contains( aPoint ) )
+                {
+                aPoint = rect.Center();
+                }
+            }
+        }
+    }
 
 // End Of File

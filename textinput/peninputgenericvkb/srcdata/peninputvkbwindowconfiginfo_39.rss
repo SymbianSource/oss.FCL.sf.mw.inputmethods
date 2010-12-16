@@ -2959,8 +2959,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
 	PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x0022>;
-                    scancode=0x0022;
+                    unicode=<0x0026>;
+                    scancode=0x0026;
                     beginrow=2;
                     begincolumn=9;
                     highlightbmpindex=0;
@@ -3073,8 +3073,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x0026>;
-                    scancode=0x0026;
+                    unicode=<0x0022>;
+                    scancode=0x0022;
                     beginrow=0;
                     begincolumn=7;
                     highlightbmpindex=0;
@@ -3262,8 +3262,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
 	PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x00A2>;
-                    scancode=0x00A2;
+                    unicode=<0x20AA>;
+                    scancode=0x20AA;
                     beginrow=2;
                     begincolumn=8;
                     highlightbmpindex=0;
@@ -3271,8 +3271,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
 	PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x20AA>;
-                    scancode=0x20AA;
+                    unicode=<0x00A2>;
+                    scancode=0x00A2;
                     beginrow=2;
                     begincolumn=9;
                     highlightbmpindex=0;

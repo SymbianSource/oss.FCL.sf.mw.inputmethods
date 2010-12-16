@@ -167,7 +167,6 @@ TInt CPeninputFingerHwrLayout::HandleCommandL( const TInt aCmd, TUint8* aData )
             {
             if( !iIsOpenFingerHWR )
                 {
-                iDataStore->GetKeyboardType();
                 iDataStore->SetKeyboardToQwerty();
                 }
             
@@ -187,8 +186,7 @@ TInt CPeninputFingerHwrLayout::HandleCommandL( const TInt aCmd, TUint8* aData )
         case ECmdPenInputWindowClose:
             {
             iIsOpenFingerHWR = EFalse;
-            
-            iDataStore->ResetKeyboardType();
+
             LayoutOwner()->Hide( ETrue );
             ret = KErrNone;
             }
@@ -305,7 +303,6 @@ TInt CPeninputFingerHwrLayout::PenInputType()
 void CPeninputFingerHwrLayout::OnDeActivate()
     {
     iIsOpenFingerHWR = EFalse;
-    iDataStore->ResetKeyboardType();
     
     //cancel writing
     iHwrWnd->CancelWriting();

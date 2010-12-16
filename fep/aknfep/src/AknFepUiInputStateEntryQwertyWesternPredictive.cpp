@@ -485,7 +485,15 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::HandleWordBreakingKeysL(TIn
 	                fepMan->UpdateInlineEditL(KSpace,0);
 	                fepMan->CommitInlineEditL();
                 	retVal = ETrue;
-                	}                
+                	}
+                else
+                	{
+                     if( aKey == EStdKeyEnter && wasInlineEditing )
+					 {
+					  //if select/confirm key doesn't exist in current product, consume this Enter key event.
+					  retVal = !FeatureManager::FeatureSupported( KFeatureIdFfChineseSelectionKey );
+					 }
+                	}
                 /* Temporary Fix */
                 fepMan->TryCloseUiL();                
                 // Asyncronous case update after the editor has handled the key
@@ -580,26 +588,29 @@ TBool TAknFepInputStateEntryQwertyWesternPredictive::HandleQwertyKeysL(TInt aKey
         TPtrC newText = ptiengine->AppendKeyPress((TPtiKey)aKey);
         fepMan->UpdateInlineEditL(newText, newText.Length());
         
-        // Normally we update the case after key press. However, if Chr key is held down, the case update
-        // must not happen until when the Chr is released or the timer expires (in both of these cases
-        // the function KeyTimerExpired() will get callled).         
-        if ( !fepMan->IsFlagSet(CAknFepManager::EFlagQwertyChrKeyDepressed) )
+        // When processing Dead key, this function will be invoked twice
+        // First does not contain actual character, so should not update
+        // case. So add the check for the text length to ensure only process
+        // the second actual dead key event.
+        if ( newText.Length() > 0 )
             {
-       	    iOwner->CaseMan()->UpdateCase(ENullNaviEvent);
-       	    }
-    	else
-            {
-            fepMan->ClearFlag(CAknFepManager::EFlagNoActionDuringChrKeyPress);
+			// Normally we update the case after key press. However, if Chr key is held down, the case update
+			// must not happen until when the Chr is released or the timer expires (in both of these cases
+			// the function KeyTimerExpired() will get callled).         
+			if ( !fepMan->IsFlagSet( CAknFepManager::EFlagQwertyChrKeyDepressed ))
+				{
+				iOwner->CaseMan()->UpdateCase( ENullNaviEvent );
+				}
+			else
+				{
+				fepMan->ClearFlag( CAknFepManager::EFlagNoActionDuringChrKeyPress );
+				}
             }
            
         return ETrue;
         }
-        // MT error fixing : If any key does not map any functionized char, 
-        // its should not display any char fn mode, other behaviour as usual.
-        // If the Fn key stae indicate that fn key pres & we are looking for functionnized
-        // char, if its not availble it will do nothing. So we have to block the event
-        // go to framework.
-        if( aKey!=EStdKeyBackspace && fnKeyState  != CAknFepFnKeyManager::EFnKeyNone)
+
+        if( aKey!=EStdKeyBackspace )
         	return ETrue;
         
         // Framework will handle the key event.

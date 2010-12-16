@@ -245,10 +245,9 @@ TBool TAknFepInputStateQwerty::HandleKeyL(TInt aKey, TKeyPressLength aLength)
         }
 
     TBool isCharacter = ETrue;
-    if (!iData)
-        {
-        isCharacter = IsCharacterKey(aKey);
-        }
+
+    // Need to judge of all the characters.
+    isCharacter = IsCharacterKey(aKey);
 
 	HandleCaseChange(aKey, isCharacter);
 	    
@@ -1198,7 +1197,10 @@ TBool TAknFepInputStateQwerty::CheckForValidNumberEntryForqwerty(TInt aKey)
                 }
             // Disable UI framewroks's qwerty iCode conversion for simulated event.	
             numKey.iModifiers |= EModifierSpecial;					
-            if(!(fepMan->IsHybridAplhaEditor() && !fepMan->IsHybridAlphaModeChangedtoAplhanumeric()))
+            
+            //as the editor is a Java number editor, we did not simulate the number key event  
+            if(!(fepMan->IsHybridAplhaEditor() && !fepMan->IsHybridAlphaModeChangedtoAplhanumeric())
+                 && !fepMan->IsSpecialNumericEditor())
                 {
                 CCoeEnv::Static()->SimulateKeyEventL(numKey, EEventKey);                        
 #ifdef RD_INTELLIGENT_TEXT_INPUT

@@ -453,25 +453,12 @@ public:
                              TInt aTgtStartIdx);
     
     /**
-     * Reset key board type
-     *
-     * @since S60 v5.0
-     */   
-    void ResetKeyboardType();
-    
-    /**
      * Set key board type to qwerty
      *
      * @since S60 v5.0
      */   
     void SetKeyboardToQwerty();
-    
-    /**
-     * Get key board type
-     *
-     * @since S60 v5.0
-     */   
-    void GetKeyboardType();
+
 private:  
 
     /**

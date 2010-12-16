@@ -983,6 +983,10 @@ void CAknFepPluginManager::HandleEventsFromFepL( TInt aEventType, TInt aEventDat
                 else
                     {
                     ClosePluginInputUiL(ETrue);
+                    if(iPenInputSvrConnected ) //lost foreground
+                        {
+                        iPenInputServer.LoseForeground();
+                        }
                     }
                 }
             break;
@@ -1660,6 +1664,9 @@ void CAknFepPluginManager::ClosePluginInputUiL(TBool aResetState)
     // Set the KAknFepTouchInputActive PS to 0, 
     // it means that touch input is inactive now.
     RProperty::Set( KPSUidAknFep, KAknFepTouchInputActive, 0 );
+    
+    // when UI close,iEdwin possible is deleted already,we should not access it.
+    iEdwin = NULL;
     }
 
 // ---------------------------------------------------------------------------

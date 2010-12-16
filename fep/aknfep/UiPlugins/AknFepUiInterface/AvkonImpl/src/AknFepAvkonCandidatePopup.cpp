@@ -239,6 +239,7 @@ TInt CAknFepAvkonCandidatePopup::ExecutePopupL( const TRect& aInlineEditorRect, 
     iListBox->SetCurrentItemIndex( *iSelectedIdx );
     
     iRightToLeftCandidate = aRightToLeftLanguage;
+    RightToLeftPhoneLanguage();
     
     const TSize screenSize = iAvkonAppUi->ApplicationRect().Size(); //TSize(AKN_LAYOUT_WINDOW_screen.iW,AKN_LAYOUT_WINDOW_screen.iH);
     iPopoutCba->SetBoundingRect(TRect(screenSize));
@@ -877,9 +878,10 @@ void CAknFepAvkonCandidatePopup::HandleSizeChanged( TAknPopupWindowLayoutDef &aD
 
     TAknLayoutRect temp, layout;
     temp.LayoutRect( window_rect, AknLayoutScalable_Avkon::listscroll_menu_pane(0));
-	layout.LayoutRect( temp.Rect(), AknLayoutScalable_Avkon::list_menu_pane(0));
-	
-	
+    // adjust list items' coordinate according to writing language 
+    TAknWindowLineLayout listitemLayout = AknLayoutScalable_Avkon::list_menu_pane(0);
+    SetUpLayoutCoords(listitemLayout);
+	layout.LayoutRect( temp.Rect(), listitemLayout);
     TRect tempListRect = layout.Rect(); // this is list's rect for the whole window
 
     // We really don't want parent relative list layout here because findbox will be overwritten.
@@ -917,13 +919,32 @@ void CAknFepAvkonCandidatePopup::HandleSizeChanged( TAknPopupWindowLayoutDef &aD
     TRect scrollBarClientRect(layout.Rect());
 
     varietyIndex = 0;
+    // adjust scroll bar's coordinate according to writing language 
+    TAknWindowLineLayout scrollbarLayout = AknLayoutScalable_Avkon::scroll_pane_cp25(varietyIndex).LayoutLine();
+    SetUpLayoutCoords(scrollbarLayout);
     AknLayoutUtils::LayoutVerticalScrollBar(
         listBox->ScrollBarFrame(),
         scrollBarClientRect, 
-        AknLayoutScalable_Avkon::scroll_pane_cp25(varietyIndex).LayoutLine() ) ;
-
+        scrollbarLayout) ;
+    
     windowOwningControl->SetRect(AknPopupLayouts::WindowRect(aDef));
     AknPopupLayouts::HandleSizeAndPositionOfComponents(aDef, listBox, heading);
+    // adjust text's alignment according to writing language 
+    if((!iRightToLeftCandidate && iIsRightToLeftPhoneLanguage) || (iRightToLeftCandidate && !iIsRightToLeftPhoneLanguage))
+       	{
+        CFormattedCellListBoxItemDrawer *itemDrawer( iList->ItemDrawer() );
+        CFormattedCellListBoxData* formattedCellData = itemDrawer->FormattedCellData();
+        CGraphicsContext::TTextAlign align;
+        if(iIsRightToLeftPhoneLanguage)
+        	{
+            align = CGraphicsContext::ELeft;
+        	}
+        else
+        	{
+			align = CGraphicsContext::ERight;
+        	}
+        TRAP_IGNORE( formattedCellData->SetSubCellAlignmentL(0, align) );
+       	}
 
     window_rect = AknPopupLayouts::WindowRect(aDef);
     MAknsControlContext *cc = AknsDrawUtils::ControlContext( listBox );
@@ -947,5 +968,31 @@ void CAknFepAvkonCandidatePopup::HandleSizeChanged( TAknPopupWindowLayoutDef &aD
             bcc->SetParentPos(TPoint(0,0));
         }        
     }
+
+void CAknFepAvkonCandidatePopup::RightToLeftPhoneLanguage()
+	{
+	iIsRightToLeftPhoneLanguage = EFalse;
+    TInt uilanguage = User::Language();
+    if( uilanguage == ELangArabic || uilanguage == ELangUrdu || uilanguage == ELangFarsi || uilanguage ==ELangHebrew)
+    	{
+		iIsRightToLeftPhoneLanguage = ETrue;
+    	}
+	}
+
+void CAknFepAvkonCandidatePopup::SetUpLayoutCoords(TAknWindowLineLayout& aLayout)
+	{
+    TInt16 l = aLayout.il;
+    TInt16 t = aLayout.it;
+    TInt16 r = aLayout.ir;
+    TInt16 b = aLayout.ib;
+    
+    if((!iRightToLeftCandidate && iIsRightToLeftPhoneLanguage) || (iRightToLeftCandidate && !iIsRightToLeftPhoneLanguage))
+    	{
+		aLayout.il = r;
+		aLayout.it = b;
+		aLayout.ir = l;
+		aLayout.ib = t;
+    	}
+	}
 
 // end of file

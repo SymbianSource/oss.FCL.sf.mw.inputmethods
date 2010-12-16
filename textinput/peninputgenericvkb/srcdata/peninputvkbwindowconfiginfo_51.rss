@@ -552,8 +552,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x002E>;
-                    scancode=0x002E;
+                    unicode=<0x00E7>;
+                    scancode=0x00E7;
                     beginrow=2;
                     begincolumn=7;
                     highlightbmpindex=0;
@@ -561,8 +561,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x003F>;
-                    scancode=0x003F;
+                    unicode=<0x002C>;
+                    scancode=0x002C;
                     beginrow=2;
                     begincolumn=8;
                     highlightbmpindex=0;
@@ -570,8 +570,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x00E7>;
-                    scancode=0x00E7;
+                    unicode=<0x002E>;
+                    scancode=0x002E;
                     beginrow=2;
                     begincolumn=9;
                     highlightbmpindex=0;
@@ -579,8 +579,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x00A8>;
-                    scancode=0x00A8;
+                    unicode=<0x003F>;
+                    scancode=0x003F;
                     beginrow=2;
                     begincolumn=10;
                     highlightbmpindex=0;
@@ -891,8 +891,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x002C>;
-                    scancode=0x002C;
+                    unicode=<0x00C7>;
+                    scancode=0x00C7;
                     beginrow=2;
                     begincolumn=7;
                     highlightbmpindex=0;
@@ -909,8 +909,8 @@ RESOURCE PENINPUT_LAYOUT_VKB_LAYOUT_LIST r_peninput_layout_vkb_vkb_layout_list
                     },
                 PENINPUT_LAYOUT_UNIT_KEY
                     {
-                    unicode=<0x00C7>;
-                    scancode=0x00C7;
+                    unicode=<0x0040>;
+                    scancode=0x0040;
                     beginrow=2;
                     begincolumn=9;
                     highlightbmpindex=0;

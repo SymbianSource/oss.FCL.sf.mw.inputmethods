@@ -164,14 +164,20 @@ void CAknFepUserdbDlg::AddItemL()
         }
     FindBox()->SetFocus( EFalse );
     HBufC* prompt = StringLoader::LoadLC( R_AKNFEP_USER_DB_LIST_ADD_ITEM_TEXT );
-    CAknFepUserDBQueryDlg* dialog = 
-        CAknFepUserDBQueryDlg::NewL( iDBEngine, itemText, *prompt );
-    iQueryDlg = dialog;
+
+    iQueryDlg = CAknFepUserDBQueryDlg::NewL( iDBEngine, itemText, *prompt );
+
     CleanupStack::PopAndDestroy( prompt );   
     //Execute dialog, 
     //In the dialog it will check input and show waring not
-    if ( dialog->ExecuteLD( R_AKNFEP_LISTBOX_DATA_QUERY_DIALOG ) )
+    TInt cmdid = iQueryDlg->ExecuteLD( R_AKNFEP_LISTBOX_DATA_QUERY_DIALOG );
+    iQueryDlg = NULL;
+    if ( EAknSoftkeyOk!=cmdid )
         {
+        return;
+        }
+    
+    
         TInt currentIndex = 0;
         CAknFilteredTextListBoxModel* model = 
             static_cast<CAknFilteredTextListBoxModel*>( ListBox()->Model() );
@@ -229,7 +235,7 @@ void CAknFepUserdbDlg::AddItemL()
         
         model->Filter()->UpdateCachedDataL();
         UpdateListBoxL();
-        }
+    
     }
 
 void CAknFepUserdbDlg::RemoveItemL()
@@ -249,10 +255,17 @@ void CAknFepUserdbDlg::RemoveItemL()
         HBufC * message = StringLoader::LoadLC(
             R_AKNFEP_DELETE_CONFIRMATION_TEXT, markItems,
             iEikonEnv ); //message
-        CAknQueryDialog* delsomenote =
-            CAknQueryDialog::NewL( CAknQueryDialog::EConfirmationTone );       
-        delsomenote->SetPromptL( *message );
-        if ( delsomenote->ExecuteLD( R_AKNFEP_DELETE_QUERY_DIALOG ) )
+        
+        iDelNote = CAknQueryDialog::NewL( CAknQueryDialog::EConfirmationTone );       
+        iDelNote->SetPromptL( *message );
+        TInt ret = iDelNote->ExecuteLD( R_AKNFEP_DELETE_QUERY_DIALOG );
+        iDelNote=NULL;
+        CleanupStack::PopAndDestroy( message );
+        if ( EAknSoftkeyYes != ret )
+            {  
+            return;
+            }
+        
             {  
             iProgressDialog = new (ELeave) CAknProgressDialog(
                 ( REINTERPRET_CAST( CEikDialog**, &iProgressDialog ) ), ETrue );
@@ -307,18 +320,25 @@ void CAknFepUserdbDlg::RemoveItemL()
             model->Filter()->HandleItemArrayChangeL();
             model->Filter()->SelectionIndexes()->Reset();
             ListBox()->View()->ClearSelection();
-            }
-        CleanupStack::PopAndDestroy( message );//
+            }//
         }
     else
         {
         HBufC * message = StringLoader::LoadLC(
             R_AKNFEP_DELETE_CONFIRMATION_TEXT, 1, 
             iEikonEnv );
-        CAknQueryDialog* delonenote =
-            CAknQueryDialog::NewL( CAknQueryDialog::EConfirmationTone );
-        delonenote->SetPromptL( *message );        
-        if ( delonenote->ExecuteLD( R_AKNFEP_DELETE_QUERY_DIALOG ) )
+       
+        iDelNote = CAknQueryDialog::NewL( CAknQueryDialog::EConfirmationTone );
+        iDelNote->SetPromptL( *message );      
+        TInt ret = iDelNote->ExecuteLD( R_AKNFEP_DELETE_QUERY_DIALOG );//modal-dialog
+        iDelNote=NULL;
+        CleanupStack::PopAndDestroy( message );
+        if ( EAknSoftkeyYes!=ret )
+            { 
+            return;
+            }
+
+        
             {    
             //remove from db
             removePhrase.Copy( model->ItemText( ListBox()->CurrentItemIndex() ) );
@@ -340,7 +360,7 @@ void CAknFepUserdbDlg::RemoveItemL()
             // Update the listbox
             ResetSearchFieldL();
             }
-        CleanupStack::PopAndDestroy( message );
+        
         }
     // If focused item is out of range, bring it forth
     if ( ( ( item->Count()-1 ) >= 0 ) && FindBox()->TextLength() == 0 )
@@ -581,6 +601,10 @@ TBool CAknFepUserdbDlg::OkToExitL( TInt aButtonId )
         case EAknCmdUserDBAdd:
             {
             ProcessCommandL(EAknCmdUserDBAdd);
+            if( iNonChineseLang )
+                {
+                return ETrue;
+                }
             }
             break;
         case EAknSoftkeyMark:
@@ -877,22 +901,28 @@ void CAknFepUserdbDlg::InsertIconL( CDesC16Array* aDataArray )
 
 void CAknFepUserdbDlg::OnChangeLanguageL( TInt aInputLanguage )
     {
-    if ( aInputLanguage != ELangPrcChinese &&
-    	 aInputLanguage != ELangTaiwanChinese &&
-    	 aInputLanguage != ELangHongKongChinese )
-    	{
-    	if ( iQueryDlg && iQueryDlg->IsVisible() )
-    		{
-    		delete iQueryDlg;
-    		iQueryDlg = NULL;
-    		}
-    	this->TryExitL( EAknSoftkeyExit );
-    	return;
-    	}
     if ( iOldLanguage == aInputLanguage )
         {
         return;
         }
+    if ( ( iQueryDlg && iQueryDlg->IsVisible() ) ||
+         ( iDelNote && iDelNote->IsVisible() ) )
+        {
+        TKeyEvent eKeyCancle = {EKeyCBA2, EKeyCBA2, 0, 0};
+        CCoeEnv::Static()->SimulateKeyEventL( eKeyCancle, EEventKey );
+        iQueryDlg = NULL;
+        }
+        
+    if ( aInputLanguage != ELangPrcChinese &&
+         aInputLanguage != ELangTaiwanChinese &&
+         aInputLanguage != ELangHongKongChinese )
+        {
+        if( FindBox()->IsVisible() )
+            this->TryExitL(EAknSoftkeyExit);
+        iNonChineseLang = ETrue;
+        return;
+        }
+
     iOldLanguage = aInputLanguage;
     
     CAknFilteredTextListBoxModel* model = 

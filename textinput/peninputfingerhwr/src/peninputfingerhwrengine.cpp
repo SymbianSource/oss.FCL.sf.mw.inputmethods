@@ -664,18 +664,7 @@ void CAknFepHwrEngine::ConvertStrokeEndMark( RArray<TPoint>& aTraceData,
     	    }
         }
     }
-    
-// ---------------------------------------------------------------------------
-// Reset Keyboard type to original type
-// ---------------------------------------------------------------------------
-//
-void CAknFepHwrEngine::ResetKeyboardType()
-    {
-#ifdef RD_INTELLIGENT_TEXT_INPUT    
-    RProperty::Set( KPSUidAknFep, KAknFepVirtualKeyboardType, iKeyboardType );
-#endif
-    }        
-     
+
 // ---------------------------------------------------------------------------
 // Set Keyboard type to Qwerty
 // ---------------------------------------------------------------------------
@@ -686,18 +675,6 @@ void CAknFepHwrEngine::SetKeyboardToQwerty()
     RProperty::Set( KPSUidAknFep, KAknFepVirtualKeyboardType, EPtiKeyboardQwerty4x12 );
 #endif
     }        
-
-// ---------------------------------------------------------------------------
-// Get Keyboard type
-// ---------------------------------------------------------------------------
-//
-void CAknFepHwrEngine::GetKeyboardType()
-    {
-#ifdef RD_INTELLIGENT_TEXT_INPUT
-    RProperty::Get( KPSUidAknFep, KAknFepVirtualKeyboardType, iKeyboardType );
-#endif    
-    }        
-
      
        
 //End Of File

@@ -47,6 +47,7 @@ class CAknFepManager;
 class CAknProgressDialog;
 class CEikProgressInfo;
 class CAknFepUserDBQueryDlg;
+class CAknQueryDialog;
 
 /**
  *  Dialog for user DB management
@@ -392,6 +393,16 @@ private: //data
      * Old cba resouce
      */
     TInt iOldCbaRes;
+    /**
+     * The writing language was changed to non chinese
+     */
+    TBool iNonChineseLang;
+    
+    /**
+     * Ask yes or not for delete oper.
+     */
+    CAknQueryDialog* iDelNote;
+
     };
 
 #endif // C_CAKNFEPUSERDBDLG_H

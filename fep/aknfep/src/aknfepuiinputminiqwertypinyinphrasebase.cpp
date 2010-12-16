@@ -121,6 +121,23 @@ const TMiniQwertyToneMap PinyinToneMap[] =
     {0x02D9, 5}
     };
 
+static TInt FindDelimiters(TDesC& aDes, TInt& pos)
+    {
+    TBuf<1> delimiter; 
+    delimiter.Append( KManualDLT );
+    TInt lastPos = 0,number = 0;
+    pos = 0;
+    TBuf<15> localPtr(aDes);
+    while ( (lastPos = localPtr.Find(delimiter))!= KErrNotFound )
+        {
+        pos ++;
+        pos += lastPos;
+        localPtr = localPtr.Left(localPtr.Length() - localPtr.Find(delimiter) - 1);
+        number++;
+        }
+    pos--; 
+    return number;
+    }
 // ---------------------------------------------------------------------------
 // TAknFepInputStateStrokePhraseCreationBase::TAknFepInputStateStrokePhraseCreationBase
 // C++ default constructor
@@ -131,7 +148,12 @@ TAknFepInputMiniQwertyPinyinPhraseBase::TAknFepInputMiniQwertyPinyinPhraseBase(
     MAknFepUICtrlContainerChinese* aUIContainer) :
     TAknFepInputStateCandidateQwertyBaseChinesePhrase(aOwner, aUIContainer)
     {
-    if (iOwner->PtiEngine()->InputMode() != EPtiEnginePinyinPhraseQwerty)
+    // As this class is also used by the Candidate state of Cangjie, we should 
+    // not change the input mode when Cangjie is active.
+    if (( iOwner->PtiEngine()->InputMode() != EPtiEnginePinyinPhraseQwerty ) &&
+        ( iOwner->PtiEngine()->InputMode() != EPtiEngineNormalCangjieQwerty ) &&
+        ( iOwner->PtiEngine()->InputMode() != EPtiEngineEasyCangjieQwerty ) &&
+        ( iOwner->PtiEngine()->InputMode() != EPtiEngineAdvCangjieQwerty ))
         {
         iOwner->PtiEngine()->SetInputMode(EPtiEnginePinyinPhraseQwerty);
         }
@@ -768,9 +790,9 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseSpellingAddKeyL(
                                             CDesCArrayFlat* aShowKeystroke )
     {
     CPtiEngine* ptiengine = iOwner->PtiEngine();
-    TBuf<1> atuoDLT;
+    TBuf<1> autoDLT;
     TBuf<1> manualDLT;
-    atuoDLT.Append(KAutoDLT);
+    autoDLT.Append(KAutoDLT);
     manualDLT.Append(KManualDLT);
     if ( 0 == aI )
         {
@@ -786,7 +808,7 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseSpellingAddKeyL(
             else
                 {
                 aShowKeystroke->AppendL( aKeystroke->MdcaPoint( aI ) );
-                aShowKeystroke->AppendL( atuoDLT );
+                aShowKeystroke->AppendL( autoDLT );
                 }
             }
         else
@@ -803,9 +825,44 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseSpellingAddKeyL(
                 ( KInvalidToneMark == ToneMark( aShowKeystroke->
                     MdcaPoint( aShowKeystroke->Count() - 1 ) ) ) ) )
                 {
-                aShowKeystroke->AppendL( atuoDLT );
+                aShowKeystroke->AppendL( autoDLT );
                 }
             aShowKeystroke->AppendL( aKeystroke->MdcaPoint( aI ) );
+            }        
+        else
+            {
+            TPtrC ptr = getCurrentLeastDLTSpell();
+            TInt numberOfDelimiters = 0, lastDelimiterPos = 0, lastDelimiterPosInShowKeystroke = 0;
+            numberOfDelimiters = FindDelimiters(ptr, lastDelimiterPos );
+            for (TInt ii = 0; ii < aShowKeystroke->Count(); ++ii)
+                {
+                if (( aShowKeystroke->MdcaPoint(ii).Compare(autoDLT) == 0 ) ||
+                    ( CheckSpellingDLT( aShowKeystroke->MdcaPoint( ii) )) ||
+                    ( KInvalidToneMark != ToneMark( aShowKeystroke->MdcaPoint( ii ) ) ) )
+                    {
+                    lastDelimiterPosInShowKeystroke = ii;
+                    }
+                }
+            if(numberOfDelimiters > 1)
+                {
+                for ( TInt ii = aShowKeystroke->Count() - 1; ii > lastDelimiterPosInShowKeystroke; --ii )
+                    {
+                    aShowKeystroke->Delete( aShowKeystroke->Count() - 1 );
+                    }
+                if(lastDelimiterPosInShowKeystroke == 0)
+                    {
+                    aShowKeystroke->Reset();
+                    }                
+                for ( TInt ii = 0; ii <= lastDelimiterPos; ++ii )
+                    {
+                    if (ptr.Mid(ii, 1).Compare(manualDLT) == 0)
+                        {
+                        aShowKeystroke->AppendL( autoDLT );
+                        continue;
+                        }
+                    aShowKeystroke->AppendL( ptr.Mid(ii, 1) );
+                    }
+                aI = aKeystroke->Count() - (ptr.Length() - lastDelimiterPos - 1) - 1;
             }
         else
             {
@@ -818,9 +875,10 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseSpellingAddKeyL(
                 ( KInvalidToneMark == ToneMark( aShowKeystroke->MdcaPoint( 
                     aShowKeystroke->Count() - 1 ) ) ) )
                 {
-                aShowKeystroke->AppendL( atuoDLT );
+                    aShowKeystroke->AppendL( autoDLT );
                 }
             aI = aI - aDelimterPos;
+                }
             }
         }
     else
@@ -832,7 +890,7 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseSpellingAddKeyL(
                 ( KInvalidToneMark == ToneMark( aShowKeystroke->MdcaPoint( 
                     aShowKeystroke->Count() - 1 ) ) ) )
                 {
-                aShowKeystroke->AppendL( atuoDLT );
+                aShowKeystroke->AppendL( autoDLT );
                 }
             if ( 0 == getCurrentLeastDLTSpell().Length() )
                 {
@@ -850,18 +908,64 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::AnalyseSpellingAddKeyL(
             }
         else
             {
-            for ( TInt ii = 0; ii < aDelimterPos - 1; ++ii )
+            TPtrC ptr = getCurrentLeastDLTSpell();
+            TInt numberOfDelimiters = 0, lastDelimiterPos = 0, lastDelimiterPosInShowKeystroke = 0;
+            // Find last delimiter position in pinyin string
+            numberOfDelimiters = FindDelimiters(ptr, lastDelimiterPos );
+           
+            // Find last delimiter position in showkeystroke string
+            for (TInt ii = 0; ii < aShowKeystroke->Count(); ++ii)
                 {
-                aShowKeystroke->Delete( aShowKeystroke->Count() - 1 );
+                if (( aShowKeystroke->MdcaPoint(ii).Compare(autoDLT) == 0 ) ||
+                    ( CheckSpellingDLT( aShowKeystroke->MdcaPoint( ii) )) ||
+                    ( KInvalidToneMark != ToneMark( aShowKeystroke->MdcaPoint( ii ) ) ) )
+                    {
+                    lastDelimiterPosInShowKeystroke = ii;
+                    }
                 }
-            if ( ( !CheckSpellingDLT( aShowKeystroke->MdcaPoint( 
-                    aShowKeystroke->Count() - 1 ) ) ) &&
-                ( KInvalidToneMark == ToneMark( aShowKeystroke->MdcaPoint( 
-                    aShowKeystroke->Count() - 1 ) ) ) )
+            
+            // If there are more than one delimiter
+            if(numberOfDelimiters > 1)
+                {                
+                // delete content start from last delimiter
+                for ( TInt ii = aShowKeystroke->Count() - 1; ii > lastDelimiterPosInShowKeystroke; --ii )
+                    {
+                    aShowKeystroke->Delete( aShowKeystroke->Count() - 1 );
+                    }                
+                // if there is no delimiter before, clean showkeystroke
+                if(lastDelimiterPosInShowKeystroke == 0)
+                    {
+                    aShowKeystroke->Reset();
+                    }
+                // rebuild showkeystroke according to pinyin string returned by core
+                // start from last delimiter, if no delimiter before, start from beginning
+                for ( TInt ii = 0; ii <= lastDelimiterPos; ++ii )
+                    {
+                    if (ptr.Mid(ii, 1).Compare(manualDLT) == 0)
+                        {
+                        aShowKeystroke->AppendL( autoDLT );
+                        continue;
+                        }
+                    aShowKeystroke->AppendL( ptr.Mid(ii, 1) );
+                    }
+                //update index of outer loop to the next position of the last newly added delimiter
+                aI = aI - (ptr.Length() - lastDelimiterPos - 1);
+                }
+            else
                 {
-                aShowKeystroke->AppendL( atuoDLT );
+	            for ( TInt ii = 0; ii < aDelimterPos - 1; ++ii )
+	                {
+	                aShowKeystroke->Delete( aShowKeystroke->Count() - 1 );
+	                }
+	            if ( ( !CheckSpellingDLT( aShowKeystroke->MdcaPoint( 
+	                    aShowKeystroke->Count() - 1 ) ) ) &&
+	                ( KInvalidToneMark == ToneMark( aShowKeystroke->MdcaPoint( 
+	                    aShowKeystroke->Count() - 1 ) ) ) )
+	                {
+	                aShowKeystroke->AppendL( autoDLT );
+	                }
+	            aI = aI - aDelimterPos;
                 }
-            aI = aI - aDelimterPos;
             }
         }
     }
@@ -998,12 +1102,29 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandleCommitL()
     if ( ( 0 == keyCount ) && (phrase->Count() > 1 ) )
         {
         TBuf<KMaxPhraseCreationCount> phraseCreated;
+        
+        // Here,we pass pinyin-spelling to db together with phrase.
+        CDesCArrayFlat* phraseShowKeyStroke = editPane->PhraseShowKeyStrokeArray();
+        
+        // (Zi+pinyin)* max_Zi
+        TBuf<( 1 + KMaxSpellLength ) * KMaxPhraseCreationCount> phraseCreatedWithPinYin;
+        phraseCreatedWithPinYin.FillZ();
+
         for (TInt i = 0; ( (i < phrase->Count() ) && (i
                 < KMaxPhraseCreationCount ) ); ++i )
             {
             phraseCreated.Append(phrase->MdcaPoint( i ) );
-            AddPhraseToDB(phraseCreated);
+            phraseCreatedWithPinYin.Append( phrase->MdcaPoint( i ));
+            
+            //it mabe include KManualDLT,but no matter
+            TPtrC ptrPinYin = phraseShowKeyStroke->MdcaPoint(i);
+            phraseCreatedWithPinYin.Append( ptrPinYin );
+            
+            TInt zeroTail = ( 1 + KMaxSpellLength ) - ( phrase->MdcaPoint( i ).Length() + ptrPinYin.Length());
+            phraseCreatedWithPinYin.AppendFill( 0, zeroTail );
             }
+
+        AddPhraseToDB( phraseCreatedWithPinYin );
         fepMan->NewTextL(phraseCreated);
         fepMan->CommitInlineEditL();
         if ( !UIContainer()->EditPaneWindow()->GetPhraseCreationFlag() )
@@ -2713,9 +2834,9 @@ void TAknFepInputMiniQwertyPinyinPhraseBase::HandleCommandL( TInt aCommandId )
     {
     switch ( aCommandId )
         {
-        // Handle the event frome command.
+        // Handle the event from command.
         case EAknSoftkeySelect:
-            //case (TUint16)EAknSoftkeySelect: //the Selected in soft CBA
+        case EAknSoftkeyDone:
             HandleCommitL( );
             break;
         default:

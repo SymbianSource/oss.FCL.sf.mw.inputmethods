@@ -747,6 +747,16 @@ private: // Data
      * Indicates whether range button short press is handled.
      */
     TBool iHandleRangeShortPress;
+    
+    /**
+     * Indicates whether US rsc file exist or not
+     */   
+    TBool iUSRscFileExist;
+    
+    /**
+     * Indicates whether French CA rsc file exist or not
+     */   
+    TBool iFrenchCARscFileExist;
     };
 
 inline TBool CPeninputSplitQwertyWindow::IsRtoLLanguage( TInt aLanguage )

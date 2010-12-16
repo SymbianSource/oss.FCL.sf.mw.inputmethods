@@ -186,6 +186,16 @@ protected: // methods
     
     
     static TInt HandleChrKeyMonitorCallback(TAny* aParam);
+    
+    /**
+     * Judge whether phonelanguage is right to left language
+     */
+    void RightToLeftPhoneLanguage();
+    
+    /**
+     * Set the correct coordinate by writing language
+     */
+    void SetUpLayoutCoords(TAknWindowLineLayout& aLayout);
 
 private: // data
 
@@ -215,6 +225,9 @@ private: // data
     CPeriodic*     iChrKeypressMonitor;
     //The inline text rectangle that is used as a reference for showing the candidate list.
     TRect iInlineTextRect;
+    
+    //Judge whether phonelanguage is right to left language
+    TBool iIsRightToLeftPhoneLanguage;
     };
     
 

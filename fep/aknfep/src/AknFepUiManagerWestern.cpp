@@ -31,6 +31,7 @@
 #include <e32svr.h> // RDebug stuff...
 #include <e32keys.h>
 #include <AknsUtils.h>
+#include <featmgr.h>  
 
 #include "AknFepGlobalEnums.h"
 #include "AknFepManagerUIInterface.h"
@@ -386,17 +387,41 @@ TInt CAknFepUIManagerWestern::SupportLanguage(TInt aMode) const
                 {
                 case ELangTaiwanChinese:
                     {
+                    if( FeatureManager::FeatureSupported( KFeatureIdVirtualFullscrQwertyInput ) &&
+                        iFepMan->PtiEngine()->KeyboardType() == EPtiKeyboardQwerty4x12 )
+                        {
                     lang = ELangEnglish_Taiwan;
+                        }
+                    else
+                        {
+                        lang = ELangEnglish;
+                        }
                     break;
                     }
                 case ELangHongKongChinese:
                     {
+                    if( FeatureManager::FeatureSupported( KFeatureIdVirtualFullscrQwertyInput ) &&
+                        iFepMan->PtiEngine()->KeyboardType() == EPtiKeyboardQwerty4x12)
+                        {
                     lang = ELangEnglish_HongKong;
+                        }
+                    else
+                        {
+                        lang = ELangEnglish;
+                        }
                     break;
                     }
                 case ELangPrcChinese:
                     {
+                    if(  FeatureManager::FeatureSupported( KFeatureIdVirtualFullscrQwertyInput ) &&
+                         iFepMan->PtiEngine()->KeyboardType() == EPtiKeyboardQwerty4x12)
+                        {
                     lang = ELangEnglish_Prc;
+                        }
+                    else
+                        {
+                        lang = ELangEnglish;
+                        }                        
                     break;
                     }
                 case ELangJapanese:

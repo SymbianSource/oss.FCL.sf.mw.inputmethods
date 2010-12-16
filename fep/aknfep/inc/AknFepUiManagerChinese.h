@@ -234,6 +234,7 @@ private: // Functions from base classes
      * 
      * since 3.2.3
      */   
+    TBool IsKeyMappedNumber(TInt aKey) const;
     TBool IsKeyMappedStroke(TInt aKey) const;
 #endif
 public: // New Fanctions

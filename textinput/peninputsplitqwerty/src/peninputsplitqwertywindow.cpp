@@ -59,6 +59,8 @@
 #include <peninputaknvkbpreviewbubblerenderer.h>
 #include <peninputlongpressbutton.h>
 
+#include <bautils.h>
+
 // Constants
 const TInt KPeninputVkbWndInvalidIndex = -1;
 const TInt KInvalidImg = -1 ;
@@ -144,6 +146,17 @@ const TDesC& CPeninputSplitQwertyWindow::GetWindowConfigResFileName( TInt aLangI
         {
         return KNullDesC;
         }
+		
+    // If French CA Rsc file exist, use it instead of French rsc file
+    if (( aLangID == ELangFrench ) && iFrenchCARscFileExist )
+        {
+        aLangID = ELangCanadianFrench;
+        }
+     // If US Rsc file exist, use it instead of English rsc file
+     if(( aLangID == ELangEnglish ) && iUSRscFileExist )
+         {
+         aLangID = ELangAmerican; 
+         }
         
     iResourceFilename.Zero();
     // Generate resource file name according to language id
@@ -1337,6 +1350,8 @@ CPeninputSplitQwertyWindow::CPeninputSplitQwertyWindow(
     , iPopupInited( EFalse )
     , iPopupSet( EFalse )
     , iFirstConstruct( ETrue )
+    , iUSRscFileExist( EFalse )
+    , iFrenchCARscFileExist(EFalse)
     {
     }
 
@@ -1350,6 +1365,33 @@ void CPeninputSplitQwertyWindow::ConstructL()
     iLafMgr = CPeninputSplitQwertyLafMgr::NewL();
     iLafMgr->SetInputModeL( TPluginInputMode( iLayoutContext->LayoutType() ) );
     CPeninputLayoutWindowExt::ConstructL();   
+    
+    // Save whether American rsc file exist or not
+    TBuf<KMaxFileLength>  usUSRscFileName; 
+    usUSRscFileName= KConfigurationResourceFile();
+    usUSRscFileName.AppendNum( ELangAmerican );
+    usUSRscFileName.Append( KResourceFileExtName );
+
+    RFs fileSession;
+    User::LeaveIfError( fileSession.Connect() );
+    CleanupClosePushL( fileSession );
+    if ( BaflUtils::FileExists( fileSession , usUSRscFileName ))
+        {
+        iUSRscFileExist = ETrue;
+        }
+    
+    // Save whether French CA rsc file exist or not
+    TBuf<KMaxFileLength>  usFrenchCARscFileName;
+    usFrenchCARscFileName= KConfigurationResourceFile();
+    usFrenchCARscFileName.AppendNum( ELangCanadianFrench );
+    usFrenchCARscFileName.Append( KResourceFileExtName );
+    
+    if ( BaflUtils::FileExists( fileSession , usFrenchCARscFileName ))
+        {
+        iFrenchCARscFileExist = ETrue;
+        }
+    
+    CleanupStack::PopAndDestroy( 1 );
     }
 
 // ---------------------------------------------------------------------------

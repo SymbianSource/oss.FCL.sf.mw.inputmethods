@@ -204,12 +204,9 @@ public:
      */            
     TInt SetScreenSize(TSize& aSize);
     
-    void ResetKeyboardType();
-    
     void SetKeyboardToQwerty();
     
-    void GetKeyboardType();
-    
+  
 private:
     
     /**
@@ -340,8 +337,7 @@ private: //data
      * The number mode
      */
     TInt iNumberMode;
-    
-    TInt iKeyboardType;
+        
     };
 
 #endif //C_PENINPUTFINGERHWRENGINE_H

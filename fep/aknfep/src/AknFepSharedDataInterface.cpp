@@ -46,6 +46,7 @@
 #include <settingsinternalcrkeys.h> //Pen related settings
 #include <sensorplugindomaincrkeys.h> // KCRUidSensorSettings
 #include <featmgr.h>                  // Feature Manager
+#include <PtiEngine.h>              //CPtiEngine
 
 // TODO: include CommonengineInternalCRKeys.h
 const TUid KCRUidCommonEngineKeys = {0x1020503B};
@@ -628,6 +629,7 @@ void CAknFepSharedDataInterface::HandleInputTextLanguageGSChange()
             iFepManager->SetFlag(CAknFepManager::EFlagNewSharedDataInputMode);
             }
         iFepManager->SetActiveInputLanguage( PenInputLanguage() );
+        iFepManager->CleanUpUserDBDialog( PenInputLanguage() );
         }
     }
 
@@ -726,7 +728,21 @@ void CAknFepSharedDataInterface::HandleQwertyModeChangeNotification()
     {
     TInt value = 0;
     iQwertyModeStatusProperty.Get(value);
+    
+    TInt prePtiLang = ELangTest;
+    if ( iFepManager->PtiEngine() && iFepManager->PtiEngine()->CurrentLanguage())
+        {
+        prePtiLang = iFepManager->PtiEngine()->CurrentLanguage()->LanguageCode();
+        }
+
     iFepManager->SetQwertyMode(value);
+    
+    if(( prePtiLang == ELangEnglish_Taiwan ) ||
+       ( prePtiLang == ELangEnglish_HongKong ) ||
+       ( prePtiLang == ELangEnglish_Prc ))
+        {
+        iFepManager->SetFnKeyMappingState();
+        }
     }
 
 TInt CAknFepSharedDataInterface::NumberModeChangesGSNotification()

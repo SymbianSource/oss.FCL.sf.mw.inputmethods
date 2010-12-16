@@ -492,6 +492,7 @@ void CAknFepManager::ConstructFullyL()
     iConcatenationTimer=CPeriodic::NewL(CActive::EPriorityStandard);
     iPostEventCheck=CIdle::NewL(CActive::EPriorityStandard);
     iChrKeypressMonitor = CPeriodic::NewL(CActive::EPriorityStandard);
+    iFnKeypressMonitor = CPeriodic::NewL(CActive::EPriorityStandard);
 
     CCoeEnv* coeEnv = CCoeEnv::Static();
     TInt inputLanguage = iSharedDataInterface->InputTextLanguage();
@@ -578,8 +579,6 @@ void CAknFepManager::ConstructFullyL()
     iIsFnKeyMapped = IsFnKeyMappedL();
     iKeyboardType = (TPtiKeyboardType)iSharedDataInterface->KeyboardLayout();
 #endif
-    
-    iFnKeypressMonitor = CPeriodic::NewL(CActive::EPriorityStandard);
     }
 
 CAknFepManager::~CAknFepManager()
@@ -681,6 +680,8 @@ void CAknFepManager::CommonDestroyFep()
     iConcatenationTimer = NULL;
     delete iChrKeypressMonitor;
     iChrKeypressMonitor = NULL;
+    delete iFnKeypressMonitor;
+    iFnKeypressMonitor = NULL;
     delete iLangMan;
     iLangMan = NULL;
     iCurrentFepUI = NULL;
@@ -708,8 +709,6 @@ void CAknFepManager::CommonDestroyFep()
         iNumericResourceTimer = NULL;    
         }
 #endif
-    delete iFnKeypressMonitor;
-    iFnKeypressMonitor = NULL;
     }
 
 #ifdef RD_INTELLIGENT_TEXT_INPUT
@@ -2111,6 +2110,52 @@ void CAknFepManager::HandleShiftQwertyChineseL(TEventCode aEventCode)
                     TryChangeModeL(ELatin);
                     ClearFlag( EFlagQwertyShiftMode );
                     }
+                // if current range is ELatin and it is a valid shift key press event
+                else if ( iMode == ELatin && validShift )
+                	{
+                    // get the input range setting from Registry
+			        TInt sharedLangDataMode = iSharedDataInterface->InputMode();
+					
+			        if ( language == ELangTaiwanChinese )
+			        	{
+			            if ( sharedLangDataMode == EStroke )
+			            	{
+				            // set to EStroke mode
+				            iModeBefore = EStroke;
+				            }
+			            else
+				            {
+							// set to EZhuyin mode
+				            iModeBefore = EZhuyin;
+				            }
+			            }
+			        else if ( language == ELangHongKongChinese )
+			        	{
+			            if ( iQwertyInputMode && sharedLangDataMode == ECangJie )
+			            	{
+				            // set to ECangJie mode
+				            iModeBefore = ECangJie;
+				            }
+			            else
+				            {
+				            // set to EStroke mode
+				            iModeBefore = EStroke;
+				            }
+			            }
+			        else if ( language == ELangPrcChinese )
+			        	{
+						if ( sharedLangDataMode == EStroke )
+							{
+							// set to EStroke mode
+							iModeBefore = EStroke;
+							}
+						else
+							{
+							// set to EPinyin mode
+							iModeBefore = EPinyin;
+							}
+			        	}
+                	}
                 }
             else
                 {
@@ -4289,6 +4334,7 @@ void CAknFepManager::ProcessCommandL(TInt aCommandId)
         //The soft CBA event from touch screen. 
         case EAknSoftkeyCancel:
         case EAknSoftkeySelect:
+        case EAknSoftkeyDone:
         currentFepUI = FepUI();
         if (currentFepUI)
             currentFepUI->HandleCommandL( aCommandId );
@@ -7641,6 +7687,10 @@ void CAknFepManager::CancelAllTimerActivity()
         {
         iChrKeypressMonitor->Cancel();
         }
+    if (iFnKeypressMonitor->IsActive())
+    	{
+        iFnKeypressMonitor->Cancel();
+    	}
     if (iPostEventCheck->IsActive())
         {
         iPostEventCheck->Cancel();
@@ -7655,7 +7705,6 @@ void CAknFepManager::CancelAllTimerActivity()
         TRAP_IGNORE( NumericResourceMultiTapTimerTimeoutL());
         }
 #endif
-    DeactivateFnkeyPressMonitor();
     }
 
 TBool CAknFepManager::IsModePermitted(TInt aMode, TWidthChar aWidth) const
@@ -9518,7 +9567,6 @@ void CAknFepManager::NewCharacterL(const TDesC& aChar)
     if ( !validNewCandidate )
         {
         TChar firstNewCandidate = ch;
-        TBool goneThroughAllCandidates(EFalse);
         TPtrC8 sequence = iPtiEngine->CurrentInputSequence();
 
         if ( sequence.Length() )
@@ -9533,16 +9581,11 @@ void CAknFepManager::NewCharacterL(const TDesC& aChar)
                 // If there is an ivalid character in chr-loop, try to jump to next valid one.
                 for (TInt jj = 0; jj < mapData.Length(); jj++)
                     {
-                    TPtrC text = iPtiEngine->AppendKeyPress(key);
-				    if ( text.Length() == 0 )
-				    	{
-				    	continue;
-				    	}
-                    ch = text[0];
-                    goneThroughAllCandidates = (ch == firstNewCandidate);                    
-                    validNewCandidate = CharIsValidInEditor(ch);
-                    if (validNewCandidate || goneThroughAllCandidates)
-                        {
+                    TChar tmpText = mapData[jj];
+                    validNewCandidate = CharIsValidInEditor(tmpText);
+                    if (validNewCandidate)
+                    	{
+                        ch = tmpText;
                         break;
                         }                                        
                     }
@@ -14728,6 +14771,8 @@ void CAknFepManager::SetJapanesePredictive(const TBool aJapanesePredictive)
 
 void CAknFepManager::SetQwertyMode(const TBool aQwertyInputMode)
     {
+	  TBool preHWQwertyActive = ExtendedInputCapabilities() 
+									 & CAknExtendedInputCapabilities::EInputEditorQwertyInputActive ;
 #ifdef RD_SCALABLE_UI_V2
     if( aQwertyInputMode && iFepPluginManager && 
         iSharedDataInterface->PluginInputMode() != EPluginInputModeNone
@@ -14746,7 +14791,8 @@ void CAknFepManager::SetQwertyMode(const TBool aQwertyInputMode)
         }
     SetQwertyModeToInputcapbility();
 #endif//RD_SCALABLE_UI_V2
-    if (!COMPARE_BOOLS(aQwertyInputMode, iQwertyInputMode))
+    if (!COMPARE_BOOLS(aQwertyInputMode, iQwertyInputMode) 
+	          || ( !preHWQwertyActive && iSharedDataInterface->QwertyInputMode() ) )
         {
 #ifndef RD_INTELLIGENT_TEXT_INPUT
         if(IsAutoCompleteOn())
@@ -14821,6 +14867,26 @@ void CAknFepManager::SetQwertyMode(const TBool aQwertyInputMode)
 #endif
     }
 
+// ----------------------------------------------------------------------------
+// CAknFepManager::CleanUpUserDBDialog
+// Delete phrase list dialog as change writing language
+// (other items were commented in a header)
+// ----------------------------------------------------------------------------
+//
+void CAknFepManager::CleanUpUserDBDialog( TInt aInputLanguage )
+    {
+    if(iUserdbdlg)
+        {
+        TRAP_IGNORE( iUserdbdlg->OnChangeLanguageL( aInputLanguage ) );    
+        if ( aInputLanguage != ELangPrcChinese &&
+                 aInputLanguage != ELangTaiwanChinese &&
+                 aInputLanguage != ELangHongKongChinese )
+            {
+            iUserdbdlg = NULL;
+            }
+        }
+    }        
+    
 TBool CAknFepManager::WesternPredictive(TInt aMode) const
     {
     TInt mode = iMode;
@@ -20018,42 +20084,35 @@ TKeyResponse CAknFepManager::HandleFnKeyEventL( const TKeyEvent& aKeyEvent, TEve
 		if( EStdKeyRightFunc == aKeyEvent.iScanCode )
 			{
 			switch(aEventCode)
-				{
-				case EEventKeyDown:
-					{
-					  //if current state of fn key is EFnKeyNone or EFnKeyNext..., EFnKeyLock will be set;
-					  //otherwise, EFnKeyNone will be set.
-				      if ( iFnKeyManager->FnKeyState() ==  CAknFepFnKeyManager::EFnKeyLock )
-				    	  {
-			                ClearExtendedFlag( EExtendedFlagFnKeyNeedLockMode );
-				    	  }
-				      else
-				    	  {
-			                SetExtendedFlag( EExtendedFlagFnKeyNeedLockMode );
-				    	  }
-					  ActivateFnkeyPressMonitor();
-					}
-					break;
-				case EEventKeyUp:
-					{
-					if(!iFnKeypressMonitor->IsActive())
+				 {
+				   case EEventKeyDown:
 					   {
-					    //when long pressing event occurrs,
-                        //event has been already handled in HandleFnKeyPressMonitorCallback()
-						if ( !IsExtendedFlagSet ( EExtendedFlagFnKeyNeedLockMode ))
-							{
-							 iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyNone);
-							}
-						return EKeyWasConsumed;
+                        // to avoid starting timer twice the timer is active already , 
+                        // and this case which can cause a crash, only occurs when users press keyboard rather rapidly.
+					    if( iFnKeypressMonitor->IsActive() )
+					    	{
+					         iFnKeypressMonitor->Cancel();
+					    	}
+                        iFnKeypressMonitor->Start(KFnKeyLongPressTimeout, KFnKeyLongPressTimeout, 
+                                      TCallBack(ResetFnKeyMonitorCallback, iFnKeypressMonitor));
 					   }
-					//when short pressing event occurs, 
-                    //only deactive fn Key press monitor and normal event handle flow will work
-					DeactivateFnkeyPressMonitor();
-					}
-					break;
-				default:
-					break;	
-				}			  
+					   break;
+				   case EEventKeyUp:
+					   {
+                        // long pressing event has occurred.
+                        if ( !iFnKeypressMonitor->IsActive() )
+                         {
+                           iFnKeyManager->ClearFnKeyState();
+                           return EKeyWasConsumed;
+                         }
+                        // long pressing event has not occurred yet.
+                        iFnKeypressMonitor->Cancel();
+					   }
+					   break;
+				   default:
+					   break;
+				 }
+
 			}
      	ret = iFnKeyManager->HandleFnKeyEventL( aKeyEvent, aEventCode, 
                                             	iInputCapabilities ) ;     	
@@ -21252,69 +21311,16 @@ void CAknFepManager::UpdateEditorStateFlags( TInt aFlag, TBool aAdd ) const
         }
     }
 
-
 // ---------------------------------------------------------------------------
-// CAknFepManager::HandleFnKeyPressMonitorCallback
-// Handle fnkey press monitor callback
-// static function
+// TAknFepInputStateBase::ResetFnKeyMonitorCallback
+// 
 // ---------------------------------------------------------------------------
 //
-TInt CAknFepManager::HandleFnKeyPressMonitorCallback(TAny* aObj)
+TInt CAknFepManager::ResetFnKeyMonitorCallback(TAny* aObj)
 	{
-    TRAPD(err, static_cast<CAknFepManager*>(aObj)->HandleFnKeyPressMonitor());
-    if (err)
-        {
-        static_cast<CAknFepManager*>(aObj)->CleanUpFep();
-        return KErrDied;
-        }
+    static_cast<CPeriodic*>(aObj)->Cancel();
     return KErrNone;
 	}
-
-// ---------------------------------------------------------------------------
-// CAknFepManager::HandleFnKeyPressMonitor
-// Handle fnkey press monitor callback
-// ---------------------------------------------------------------------------
-//
-void CAknFepManager::HandleFnKeyPressMonitor()
-	{
-	 DeactivateFnkeyPressMonitor();
-	 if (IsExtendedFlagSet ( EExtendedFlagFnKeyNeedLockMode ) )
-		 {
-	      iFnKeyManager->SetFnKeyState(CAknFepFnKeyManager::EFnKeyLock);
-		}
-	}
-
-// ---------------------------------------------------------------------------
-// CAknFepManager::ActivateFnkeyPressMonitor
-// Activate Fnkey press Monitor
-// ---------------------------------------------------------------------------
-//
-void CAknFepManager::ActivateFnkeyPressMonitor()
-	{
-	 if( iFnKeypressMonitor )
-		 {	      
-	      if ( iFnKeypressMonitor->IsActive() )
-	    	  {
-	           iFnKeypressMonitor->Cancel();
-	    	  }	      
-		  iFnKeypressMonitor->Start(KFnKeyLongPressTimeout, KFnKeyLongPressTimeout, 
-							   TCallBack(HandleFnKeyPressMonitorCallback, this));
-		 }
-	}
-
-// ---------------------------------------------------------------------------
-// CAknFepManager::DeactivateFnkeyPressMonitor
-// Deactivate Fnkey press Monitor
-// ---------------------------------------------------------------------------
-//
-void CAknFepManager::DeactivateFnkeyPressMonitor()
-	{
-	 if( iFnKeypressMonitor && iFnKeypressMonitor->IsActive())
-		 {
-		   iFnKeypressMonitor->Cancel();
-		 }
-	}
-
 // ---------------------------------------------------------------------------
 // LOCAL METHODS
 // 

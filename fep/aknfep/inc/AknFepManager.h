@@ -268,10 +268,8 @@ public:
         EExtendedFlagFepAwareDialogLaunched               =0x00000020,
         /* Flag to specify that pointer event type EDrag has happened */ 
         EExtendedFlagPointerEventTypeEDrag                =0x00000040,
-        /* Flag to specify that Fn key will be set as lock mode when long press occurs*/ 
-        EExtendedFlagFnKeyNeedLockMode                    =0x00000080,
         /* Flag to specify point in editor when EFlagNoMatches flag is set*/ 
-        EExtendedFlagPointInNoMatchEditor                 =0x00000100
+        EExtendedFlagPointInNoMatchEditor                 =0x00000080
     	};		
 
     //public constants
@@ -1374,32 +1372,6 @@ private:
        * @return none
        */
      void SetChangeModeByShiftAndSpace( TBool aFlag );
-     
-     /**
-      * Handle the Fn Key Monitor
-      *
-      * @since 3.0
-      * @return KErrNone if succeed, KErrDied if failed
-      */
-     static TInt HandleFnKeyPressMonitorCallback(TAny* aObj);
-     
-     /**
-      * Handle the Fn Key Monitor
-      * for Qwerty only.
-      *
-      * @since 3.0
-      */
-     void HandleFnKeyPressMonitor();
-     
-     /**
-     * Activate fn key press monitor to detect long pressing event
-     */
-     void ActivateFnkeyPressMonitor();
-     
-     /**
-     * Deactivate fn key press monitor
-     */
-     void DeactivateFnkeyPressMonitor();
 
 public:
     //Hash Key Manager Interface
@@ -1547,6 +1519,13 @@ public:
     void SetJapanesePredictive(const TBool aJapanesePredictive);
     void SetQwertyMode(const TBool aQwertyMode); // Empty implementation. Qwerty mode is not supported.
 
+    /**
+     * Delete phrase list dialog as change writing language
+     * @Since S60 vTB9.2
+     * @param aInputLanguage: the value of the new writing language
+     */
+    void CleanUpUserDBDialog( TInt aInputLanguage );
+    
     TBool WesternPredictive(TInt aMode = 0) const;
     TBool IsPredictive(TInt aMode = 0) const;
     TBool Japanese() const;
@@ -2660,6 +2639,14 @@ private:
      * @param aAdd   adding or removing
      */
     void UpdateEditorStateFlags( TInt aFlag, TBool aAdd = ETrue ) const;
+    
+    /**
+     * Tries to Reset the Fn Key Monitor
+     *
+     * @return KErrNone
+     */
+    static TInt ResetFnKeyMonitorCallback(TAny* aObj);
+    
 
 private:
     // Data owned by this class
@@ -2873,11 +2860,12 @@ private:
      */
     TBool iMatchesListLaunched;
     
+    
     /**
-     * monitor the long press event from Fn key
-     * when long press event occurs, Fn key will be set to Lock state
+     * to be used to monitor Fn long pressing event.
+     * owned
      */
-    CPeriodic* iFnKeypressMonitor;
+    CPeriodic* iFnKeypressMonitor; 
 
 public:
 

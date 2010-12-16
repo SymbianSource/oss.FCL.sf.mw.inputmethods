@@ -316,28 +316,11 @@ TBool TAknFepInputStateEditinigMiniQwertyPinyinPhrase::HandleKeyL( TInt aKey ,TK
 void TAknFepInputStateEntryMiniQwertyPinyinPhrase::HandleCommandL(
     TInt aCommandId )
     {
-    TPtrC text = UIContainer()->CandidatePane()->CurrentPhraseCandidate( );
-    MAknFepManagerUIInterface* fepMan = iOwner->FepMan( );
     switch ( aCommandId )
         {
         // Handle the event frome command.
         case EAknSoftkeySelect:
-    //    case (TUint16)EAknSoftkeySelect: //the Selected in soft CBA
-            if ( text.Length( ) )
-                {
-                fepMan->NewTextL( text );
-                fepMan->CommitInlineEditL( );
-                iOwner->PtiEngine()->SetPredictiveChineseChar( text );
-                if ( fepMan->IsFlagSet( CAknFepManager::EFlagEditorFull ) )
-                    {
-                    fepMan->ClearFlag( CAknFepManager::EFlagEditorFull );
-                    iOwner->FepMan()->TryCloseUiL( );
-                    }
-                else
-                    {
-                    iOwner->ChangeState( EPredictiveCandidate );
-                    }
-                }
+            TAknFepInputMiniQwertyPinyinPhraseBase::HandleCommandL( aCommandId );
             break;
         default:
             TAknFepInputStateChineseBase::HandleCommandL( aCommandId );

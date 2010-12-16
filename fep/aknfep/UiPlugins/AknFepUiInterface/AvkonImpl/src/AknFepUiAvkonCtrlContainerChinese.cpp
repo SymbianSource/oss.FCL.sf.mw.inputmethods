@@ -146,6 +146,7 @@ void CAknFepUICtrlContainerChinese::ConstructL()
     CreateWindowL();
     SetNonFocusing();
     RWindow& window=Window();
+    window.SetTransparencyAlphaChannel();
     window.SetOrdinalPosition(0, ECoeWinPriorityFep); // right at the front
     MakeVisible(EFalse);
 
@@ -300,7 +301,6 @@ void CAknFepUICtrlContainerChinese::Draw(const TRect& /*aRect*/) const
     TRect outerRect;
     TRect innerRect;
     CalculateFrameRects(outerRect, innerRect);
-    gc.Clear(Rect());
 
     skinnedDraw = AknsDrawUtils::DrawFrame(
 	    skin, gc, 
@@ -320,25 +320,6 @@ void CAknFepUICtrlContainerChinese::Draw(const TRect& /*aRect*/) const
 	    iRectOutlineFrameInput.DrawRect(gc);
 	    iRectInsideAreaInput.DrawRect(gc);
 	    }
-	    
-    TInt index = ConvertLayoutToIndex();
-    if ( iInputPane->IsVisible( ) || iPinyinPopupWindow->IsVisible() || 
-            iPhraseCreationLaf)
-        {
-        if ( index == 0 || index == 1 )
-            {
-            iHorizLine.DrawRect(gc);
-            }
-        }
-    if ( index == 2 )
-        {
-        iEEPFirstHorizLine.DrawRect(gc);
-        iEEPSecondHorizLine.DrawRect(gc);
-        }
-    else if ( index == 3 )
-        {
-        iEEPFirstHorizLine.DrawRect(gc);
-        }
 
     } 
 

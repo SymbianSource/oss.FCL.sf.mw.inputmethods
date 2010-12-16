@@ -44,6 +44,7 @@ class CKeyRotator;
 class CPenInputCrpServiceClient;
 class CPenUiCandidateWnd;
 class MPenUiWndEventObserver;
+class CPenUiWndEventHandler;
 
 // panic code
 enum TPeninputServerPanic
@@ -1005,7 +1006,7 @@ private:    // Data
      *
      * Owned.
      */
-    MPenUiWndEventObserver* iObserver;
+    CPenUiWndEventHandler* iObserver;
     };
 
 /**

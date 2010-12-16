@@ -87,7 +87,7 @@ const TToneZhuYinMap ZhuyinToneMap[] =
 
 const TInt KMaxPhraseCount = 150;//This should be the same as that in pticpicore. 
 
-_LIT( KZhuyinNote,"\x9020\x65B0\x8BCD" );
+_LIT( KZhuyinNote,"\x9020\x65B0\x8A5E" );
 
 TAknFepInputStateEntryMiniQwertyZhuyinPhrase::TAknFepInputStateEntryMiniQwertyZhuyinPhrase(
     MAknFepUIManagerStateInterface* aOwner,
@@ -989,16 +989,46 @@ void TAknFepInputStateEntryMiniQwertyZhuyinPhrase::HandleCommandL(
     {
     MAknFepUICtrlContainerChinese* uiContainer = UIContainer();
     MAknFepUICtrlPinyinPopup* popup = uiContainer->PinyinPopupWindow();
+    // Get candidate for zhuyin phrase
+    MAknFepUICtrlEditPane* editPane = uiContainer->EditPaneWindow();
+    CDesCArrayFlat* keystroke = editPane->KeystrokeArray();
+    CPtiEngine* ptiengine = iOwner->PtiEngine();
+    TInt keystrokeLength = keystroke->Count();
     switch ( aCommandId )
         {
         // Handle the event frome command.
         case EAknSoftkeySelect:
-            //     case (TUint16)EAknSoftkeySelect: //the Selected in soft CBA
+			{
             if ( popup->IsEnabled() )
                 {
                 popup->Enable( EFalse );
                 }
-            iOwner->ChangeState( ECandidate );
+            editPane->SetChangeState( ETrue );
+            if ( editPane->GetEffictiveLength() == keystroke->Count()
+                && ptiengine->PhoneticSpellingCount()
+                   > popup->CurrentSelection() )
+                {
+                if ( popup->IsEnabled() )
+                    {
+                    popup->Enable( EFalse );
+                    }
+                iOwner->ChangeState( ECandidate );
+                }
+            else
+                {
+                if ( keystrokeLength > 0 && keystroke->MdcaPoint( 0 )[0] == KSai )
+                    {
+                    UIContainer()->SetControlInVisible( EFalse );
+                    iOwner->ChangeState( EMiniQwertyEdit );
+                    }
+                else
+                   {
+                   ClearDeliberateSelection();
+                   editPane->SetNeedClearDeliberateSelection( ETrue );
+                   iOwner->ChangeState( EZhuyinSpelling );
+                   }
+                }  
+			}                    
             break;
         default:
             TAknFepInputStateChineseBase::HandleCommandL( aCommandId );
